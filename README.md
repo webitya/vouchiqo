@@ -182,11 +182,11 @@ node workers/analytics.worker.js
 
 ## 🔑 Test Credentials (Seeded Accounts)
 
-| Account Role | Email Address | Password | Description |
+| Role | Email Address | Password | Profile / Brand Name |
 | :--- | :--- | :--- | :--- |
-| **👤 Customer** | `customer@vouchiqo.com` | `Password123!` | Primary buyer account. |
-| **👤 Customer** | `customer2@vouchiqo.com` | `Password123!` | Secondary buyer account. |
-| **🏪 Merchant** | `merchant@vouchiqo.com` | `Merchant@123!` | Approved owner of *Burger House*. |
-| **🏪 Merchant** | `merchant2@vouchiqo.com` | `Merchant@123!` | Approved owner of *StyleZone*. |
-| **🏪 Merchant** | `merchant3@vouchiqo.com` | `Merchant@123!` | Approved owner of *TechGadgets*. |
-| **🔑 Admin** | `admin@vouchiqo.com` | `Admin@123!` | Platform moderator/approver. |
+| **Customer** | `customer@vouchiqo.com` | `Password123!` | Alice Johnson |
+| **Customer 2** | `customer2@vouchiqo.com` | `Password123!` | Bob Smith |
+| **Merchant 1** | `merchant@vouchiqo.com` | `Merchant@123!` | Burger House |
+| **Merchant 2** | `merchant2@vouchiqo.com` | `Merchant@123!` | StyleZone |
+| **Merchant 3** | `merchant3@vouchiqo.com` | `Merchant@123!` | TechGadgets |
+| **Admin** | `admin@vouchiqo.com` | `Admin@123!` | Super Admin |
