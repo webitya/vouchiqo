@@ -5,6 +5,8 @@ import { ok } from "@/utils/api-response";
 import { asyncHandler } from "@/utils/async-handler";
 import { ROLES } from "@/utils/constants";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/admin/coupons
  * List all coupons regardless of status. Admin only.
