@@ -104,7 +104,7 @@ export default function Sidebar({ role = "customer" }) {
       <div className="p-6 border-b border-white/10">
         <Link href="/" className="flex flex-col">
           <span className="text-xl font-bold font-heading text-white tracking-tight flex items-center gap-1.5">
-            <span className="bg-brand-gradient text-transparent bg-clip-text">
+            <span className="text-brand-gradient">
               Vouchiqo
             </span>
           </span>

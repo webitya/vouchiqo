@@ -12,7 +12,7 @@ import { asyncHandler } from "@/utils/async-handler";
 export const GET = asyncHandler(async (request) => {
   await connectDB();
   const { user } = await requireAuth(request);
-  const profile = await getOrCreateProfile(user.id);
+  const profile = await getOrCreateProfile(user.id, user.role);
   return ok({ user, profile });
 });
 

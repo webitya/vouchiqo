@@ -7,11 +7,11 @@ import { NotFoundError } from "@/utils/app-error";
  *
  * @param {string} authId
  */
-export async function getOrCreateProfile(authId) {
+export async function getOrCreateProfile(authId, defaultRole = "customer") {
   let profile = await UserProfile.findOne({ authId });
 
   if (!profile) {
-    profile = await UserProfile.create({ authId });
+    profile = await UserProfile.create({ authId, role: defaultRole });
   }
 
   return profile;

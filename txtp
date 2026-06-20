@@ -1,0 +1,720 @@
+You are a Principal Product Designer, Frontend Architect, UX Lead, and Senior Next.js Engineer.
+
+Your task is NOT to generate random UI.
+
+Your task is to design a complete frontend system for Vouchiqo.
+
+---
+
+PROJECT UNDERSTANDING
+
+Vouchiqo is NOT a coupon website.
+
+Vouchiqo is:
+
+* Verified Deals Platform
+* Merchant Growth Platform
+* Local Offer Discovery Platform
+* Expired Coupon Revival Platform
+* Savings Analytics Platform
+
+Brand Promise:
+
+Verified Deals.
+Real Savings.
+
+Core Experience:
+
+Trust First.
+Savings Second.
+Technology Third.
+
+The website should feel like:
+
+* Stripe
+* Shopify
+* Notion
+* Linear
+* Razorpay
+* Airbnb Business
+
+Avoid:
+
+* CouponDunia look
+* Cheap discount website look
+* Flashy e-commerce style
+* Gambling style urgency
+* Excessive animations
+
+---
+
+TECH STACK
+
+* Next.js 15 App Router
+* TypeScript
+* Tailwind CSS
+* Shadcn UI
+* TanStack Query
+* Better Auth
+* React Hook Form
+* Zod
+
+---
+
+FRONTEND ARCHITECTURE
+
+Create architecture before creating UI.
+
+Organize application into:
+
+Public Website
+Customer Dashboard
+Merchant Dashboard
+Admin Dashboard
+
+All four areas must share one design system.
+
+---
+
+DESIGN SYSTEM
+
+Use Vouchiqo branding.
+
+Primary Navy:
+#0A2E6E
+
+Secondary Blue:
+#1E4FAF
+
+Gradient:
+#FF7A18 → #FF3D77
+
+Success:
+#00B67A
+
+Warning:
+#FFB020
+
+Error:
+#E5484D
+
+Background:
+#FFFFFF
+
+Surface:
+#F8FAFC
+
+Border:
+#E2E8F0
+
+Text:
+#1E293B
+
+Muted Text:
+#64748B
+
+---
+
+COLOR USAGE
+
+60%
+White / Neutral
+
+25%
+Navy
+
+10%
+Gradient
+
+5%
+Status Colors
+
+Never overuse gradient.
+
+Use gradient only for:
+
+* Primary CTA
+* Hero Highlight
+* Featured Merchant
+* Campaign Banners
+
+Never use gradient for:
+
+* Tables
+* Forms
+* Dashboard Backgrounds
+* Cards
+
+---
+
+TYPOGRAPHY SYSTEM
+
+Use:
+
+* Inter
+* Geist
+
+Typography Scale:
+
+Display
+48
+
+H1
+36
+
+H2
+30
+
+H3
+24
+
+H4
+20
+
+Body
+16
+
+Small
+14
+
+Caption
+12
+
+Maintain consistent hierarchy.
+
+---
+
+SPACING SYSTEM
+
+Use 8px grid system.
+
+Allowed spacing:
+
+4
+8
+12
+16
+24
+32
+40
+48
+64
+80
+
+Never use random spacing values.
+
+---
+
+RADIUS SYSTEM
+
+Button Radius:
+10px
+
+Input Radius:
+10px
+
+Card Radius:
+16px
+
+Dialog Radius:
+20px
+
+---
+
+SHADOW SYSTEM
+
+Small:
+Inputs
+
+Medium:
+Cards
+
+Large:
+Dialogs
+
+Use subtle elevation.
+
+Never use heavy shadows.
+
+---
+
+LAYOUT SYSTEM
+
+Container Width:
+
+1440px max
+
+Content Width:
+
+1200px max
+
+Dashboard Width:
+
+Full Width
+
+Sidebar Width:
+
+280px
+
+Header Height:
+
+72px
+
+---
+
+APPLICATION STRUCTURE
+
+PUBLIC WEBSITE
+
+Pages:
+
+Homepage
+Deals
+Deal Details
+Categories
+Category Details
+Brands
+Brand Details
+Nearby Offers
+Expired Coupon Revival
+About
+Contact
+Login
+Signup
+
+---
+
+CUSTOMER DASHBOARD
+
+Pages:
+
+Overview
+Saved Offers
+Claimed Offers
+Savings Dashboard
+Activity
+Nearby Offers
+Notifications
+Profile
+Settings
+
+---
+
+MERCHANT DASHBOARD
+
+Pages:
+
+Overview
+Coupons
+Create Coupon
+Edit Coupon
+Analytics
+Customers
+Revival Requests
+Subscription
+Billing
+Business Profile
+Settings
+
+---
+
+ADMIN DASHBOARD
+
+Pages:
+
+Overview
+Users
+Merchants
+Merchant Approval
+Coupons
+Coupon Verification
+Featured Deals
+Homepage Ticker
+Revival Requests
+Subscriptions
+Analytics
+Audit Logs
+Settings
+
+---
+
+NAVIGATION SYSTEM
+
+Public Navbar
+
+Logo
+
+Search
+
+Deals
+
+Categories
+
+Nearby Offers
+
+Revive Coupon
+
+For Businesses
+
+Login
+
+Signup
+
+Dashboard
+
+---
+
+DASHBOARD SIDEBAR
+
+Logo
+
+Navigation
+
+User Menu
+
+Notification Center
+
+Theme Toggle
+
+Logout
+
+---
+
+HOMEPAGE STRUCTURE
+
+Navbar
+
+↓
+
+Hot Deals Ticker
+
+↓
+
+Hero
+
+↓
+
+Search
+
+↓
+
+Category Strip
+
+↓
+
+Flash Deals
+
+↓
+
+Featured Brands
+
+↓
+
+How It Works
+
+↓
+
+Expired Coupon Revival Hero Section
+
+↓
+
+Trending Categories
+
+↓
+
+Testimonials
+
+↓
+
+Nearby Offers
+
+↓
+
+Merchant CTA
+
+↓
+
+Newsletter
+
+↓
+
+Footer
+
+---
+
+REUSABLE COMPONENTS
+
+Use Shadcn UI.
+
+Create custom business components.
+
+Required Components:
+
+Navbar
+
+Footer
+
+Section Header
+
+Coupon Card
+
+Featured Coupon Card
+
+Merchant Card
+
+Brand Card
+
+Category Card
+
+Stats Card
+
+Analytics Card
+
+Savings Card
+
+Revival Card
+
+Testimonial Card
+
+Search Bar
+
+Filter Sidebar
+
+Deal Grid
+
+Map Panel
+
+Activity Timeline
+
+Notification Card
+
+Subscription Card
+
+Pricing Card
+
+Data Table
+
+Empty State
+
+Error State
+
+Loading State
+
+---
+
+COUPON CARD DESIGN
+
+Must contain:
+
+Brand Logo
+
+Brand Name
+
+Verified Badge
+
+Offer Title
+
+Discount Badge
+
+Expiry Status
+
+Category
+
+Save Button
+
+Copy Code Button
+
+View Deal Button
+
+Hover Elevation
+
+Professional spacing
+
+---
+
+DEAL DETAILS PAGE
+
+Left:
+
+Offer Information
+
+How To Use
+
+Terms
+
+Comments
+
+Right Sticky Sidebar:
+
+Coupon Code
+
+Copy Button
+
+Visit Merchant
+
+Save
+
+Share
+
+Related Deals
+
+---
+
+MERCHANT DASHBOARD UX
+
+Focus:
+
+Business Growth
+
+Analytics
+
+Revenue
+
+Conversions
+
+Visibility
+
+Do NOT make it look like an admin panel.
+
+Make it feel like a SaaS product.
+
+---
+
+ADMIN DASHBOARD UX
+
+Focus:
+
+Moderation
+
+Verification
+
+Operations
+
+Analytics
+
+System Management
+
+---
+
+TABLE DESIGN
+
+Use:
+
+Shadcn Table
+
+Support:
+
+Search
+
+Filters
+
+Sorting
+
+Pagination
+
+Bulk Actions
+
+---
+
+FORM DESIGN
+
+Use:
+
+React Hook Form
+
+Zod
+
+Shadcn Form
+
+Every form must have:
+
+Validation
+
+Error States
+
+Success States
+
+Loading States
+
+---
+
+MOBILE DESIGN
+
+Mobile first.
+
+All dashboards responsive.
+
+Sidebar becomes drawer.
+
+Tables become cards.
+
+Forms stack vertically.
+
+---
+
+ACCESSIBILITY
+
+Keyboard Navigation
+
+Focus States
+
+ARIA Labels
+
+Color Contrast
+
+Screen Reader Friendly
+
+---
+
+ANIMATION RULES
+
+Use only subtle motion.
+
+Allowed:
+
+Fade
+
+Slide
+
+Hover Elevation
+
+Skeleton Loading
+
+Micro Interactions
+
+Avoid:
+
+Parallax
+
+3D Effects
+
+Heavy Motion
+
+Long Animations
+
+---
+
+OUTPUT REQUIREMENTS
+
+Before generating UI:
+
+1. Create complete frontend architecture.
+2. Create design system.
+3. Create component inventory.
+4. Create page hierarchy.
+5. Create layout system.
+6. Create responsive system.
+7. Create navigation system.
+8. Create dashboard architecture.
+9. Create reusable components.
+10. Create page wireframes.
+
+Then generate production-quality UI.
+
+Do not generate AI-looking UI.
+
+Do not generate random sections.
+
+Everything must support the Vouchiqo business model and brand positioning.
+
+The final product should feel like a premium SaaS marketplace platform, not a traditional coupon website.

@@ -11,7 +11,7 @@ import { auth } from "@/lib/auth";
  * - POST /api/auth/forget-password
  * - POST /api/auth/reset-password
  * - GET  /api/auth/verify-email
- * - GET  /api/auth/session
+ * - GET  /api/auth/get-session
  *
  * Do not add business logic here — use auth.middleware.js in other routes.
  */

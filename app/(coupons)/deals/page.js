@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { RotateCcw, Search, SlidersHorizontal } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import CouponCard from "@/components/CouponCard";
 import Footer from "@/components/Footer";
@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useSearchParams } from "next/navigation";
 
 const CouponSkeleton = () => (
   <div className="bg-brand-bg border border-brand-border rounded-xl p-5 space-y-4 animate-pulse">
@@ -31,13 +32,23 @@ const CouponSkeleton = () => (
   </div>
 );
 
-export default function DealsListing() {
+function DealsListingContent() {
+  const searchParams = useSearchParams();
+  const urlSearch = searchParams?.get("search") || "";
+  const urlLocation = searchParams?.get("location") || "All";
+
   const [selectedCoupon, setSelectedCoupon] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(urlSearch);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedLocation, setSelectedLocation] = useState("All");
+  const [selectedLocation, setSelectedLocation] = useState(urlLocation);
   const [sortBy, setSortBy] = useState("featured");
   const [page, setPage] = useState(1);
+
+  // Sync state if searchParams change (e.g. searching from Navbar)
+  useEffect(() => {
+    setSearchQuery(searchParams?.get("search") || "");
+    setSelectedLocation(searchParams?.get("location") || "All");
+  }, [searchParams]);
 
   // Reset page to 1 when filters change
   // biome-ignore lint/correctness/useExhaustiveDependencies: Reset page on filter state changes
@@ -149,7 +160,7 @@ export default function DealsListing() {
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full flex-grow flex flex-col lg:flex-row gap-8">
         {/* Left Side: Sidebar Filters (Desktop) */}
-        <aside className="w-full lg:w-64 flex-shrink-0 space-y-6 hidden lg:block">
+        <aside className="w-full lg:w-64 flex-shrink-0 space-y-6 hidden lg:block lg:sticky lg:top-[80px] self-start z-20">
           <div className="bg-brand-bg border border-brand-border rounded-lg p-5 space-y-5 shadow-sm">
             <div className="flex items-center justify-between border-b border-brand-border pb-3">
               <span className="text-sm font-bold text-brand-navy uppercase tracking-wider flex items-center gap-1.5">
@@ -224,22 +235,20 @@ export default function DealsListing() {
               <label className="text-xs font-bold text-brand-text uppercase">
                 Location
               </label>
-              <div className="bg-brand-surface border border-brand-border rounded-lg p-2 text-xs font-medium text-brand-text">
-                <Select
-                  value={selectedLocation}
-                  onValueChange={setSelectedLocation}
-                >
-                  <SelectTrigger className="border-0 bg-transparent text-xs font-semibold cursor-pointer text-inherit p-0 h-auto focus:ring-0 focus:ring-offset-0 gap-1 shadow-none w-full justify-between [&>svg]:opacity-100">
-                    <SelectValue placeholder="All Locations" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-brand-bg text-brand-text border-brand-border">
-                    <SelectItem value="All">All Locations</SelectItem>
-                    <SelectItem value="New York">New York</SelectItem>
-                    <SelectItem value="San Francisco">San Francisco</SelectItem>
-                    <SelectItem value="London">London</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select
+                value={selectedLocation}
+                onValueChange={setSelectedLocation}
+              >
+                <SelectTrigger className="w-full bg-brand-surface border border-brand-border rounded-lg px-3 py-2 text-xs font-semibold text-brand-text focus:ring-1 focus:ring-brand-blue/30 shadow-none cursor-pointer">
+                  <SelectValue placeholder="All Locations" />
+                </SelectTrigger>
+                <SelectContent className="bg-brand-bg text-brand-text border-brand-border">
+                  <SelectItem value="All">All Locations</SelectItem>
+                  <SelectItem value="New York">New York</SelectItem>
+                  <SelectItem value="San Francisco">San Francisco</SelectItem>
+                  <SelectItem value="London">London</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </aside>
@@ -247,7 +256,7 @@ export default function DealsListing() {
         {/* Right Side: Main Listing Panel */}
         <section className="flex-1 space-y-6">
           {/* Top Bar (controls search, sort, view type) */}
-          <div className="bg-brand-bg border border-brand-border rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm">
+          <div className="bg-brand-bg border border-brand-border rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm sticky top-[80px] z-20">
             <div className="text-xs font-semibold text-brand-subtext">
               Showing{" "}
               <span className="text-brand-navy font-bold">
@@ -262,18 +271,16 @@ export default function DealsListing() {
                 <span className="text-brand-subtext font-semibold">
                   Sort By:
                 </span>
-                <div className="bg-brand-surface border border-brand-border rounded-lg p-1.5 text-xs font-bold text-brand-navy">
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="border-0 bg-transparent text-xs font-bold cursor-pointer text-brand-navy p-0 h-auto focus:ring-0 focus:ring-offset-0 gap-1 shadow-none justify-between [&>svg]:opacity-100">
-                      <SelectValue placeholder="Featured" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-brand-bg text-brand-text border-brand-border">
-                      <SelectItem value="featured">Featured</SelectItem>
-                      <SelectItem value="success">Success Rate</SelectItem>
-                      <SelectItem value="expiring">Expiring Soon</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-[140px] bg-brand-surface border border-brand-border rounded-lg px-3 py-1.5 text-xs font-bold text-brand-navy focus:ring-1 focus:ring-brand-blue/30 shadow-none cursor-pointer">
+                    <SelectValue placeholder="Featured" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-brand-bg text-brand-text border-brand-border">
+                    <SelectItem value="featured">Featured</SelectItem>
+                    <SelectItem value="success">Success Rate</SelectItem>
+                    <SelectItem value="expiring">Expiring Soon</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -372,5 +379,21 @@ export default function DealsListing() {
         />
       )}
     </div>
+  );
+}
+
+export default function DealsListing() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-brand-surface">
+          <div className="text-sm font-semibold text-brand-subtext animate-pulse">
+            Loading Deals...
+          </div>
+        </div>
+      }
+    >
+      <DealsListingContent />
+    </Suspense>
   );
 }

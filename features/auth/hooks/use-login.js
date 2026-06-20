@@ -1,12 +1,10 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { signIn } from "@/lib/auth-client";
 
 export function useLogin() {
-  const router = useRouter();
 
   return useMutation({
     mutationFn: ({ email, password }) => signIn.email({ email, password }),
@@ -18,9 +16,13 @@ export function useLogin() {
       }
       toast.success("Welcome back!");
       const role = data?.user?.role ?? "customer";
-      if (role === "admin") router.push("/admin");
-      else if (role === "merchant") router.push("/merchant/dashboard");
-      else router.push("/customer/dashboard");
+      const dest = role === "admin"
+        ? "/admin/dashboard"
+        : role === "merchant"
+          ? "/merchant/dashboard"
+          : "/customer/dashboard";
+      
+      window.location.href = dest;
     },
 
     onError: (err) =>

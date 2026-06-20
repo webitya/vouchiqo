@@ -12,7 +12,7 @@ export function AuthCard({ title, loading = false, children }) {
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-4">
         <Link href="/" className="inline-flex flex-col items-center">
           <span className="text-2xl font-bold font-heading text-brand-navy tracking-tight flex items-center gap-1.5">
-            <span className="bg-brand-gradient text-transparent bg-clip-text">
+            <span className="text-brand-gradient">
               Vouchiqo
             </span>
             <CheckCircle2 className="w-5.5 h-5.5 text-brand-success fill-brand-success/10" />

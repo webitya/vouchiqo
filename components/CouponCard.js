@@ -77,13 +77,13 @@ export default function CouponCard({ coupon, onRedeem }) {
       </div>
 
       {/* Ticket Cutout Divider Bar */}
-      <div className="relative w-full my-1">
+      <div className="relative w-full my-2">
         {/* Left Cutout */}
-        <div className="absolute left-[-10px] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-brand-surface border border-brand-border z-10"></div>
+        <div className="absolute left-[-14px] top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-brand-surface border border-brand-border z-10"></div>
         {/* Right Cutout */}
-        <div className="absolute right-[-10px] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-brand-surface border border-brand-border z-10"></div>
+        <div className="absolute right-[-14px] top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-brand-surface border border-brand-border z-10"></div>
         {/* Dashed Line */}
-        <div className="border-t border-dashed border-brand-border w-full"></div>
+        <div className="border-t-2 border-dashed border-brand-border w-full"></div>
       </div>
 
       {/* Bottom Section */}

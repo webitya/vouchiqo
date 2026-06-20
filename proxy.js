@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 /**
- * Next.js Middleware for authentication redirects and route protection.
+ * Next.js Middleware/Proxy for authentication redirects and route protection.
  * Performs a fast, zero-database synchronous check on cookies first.
  * Then fetches session info to enforce role-based routes.
  */
@@ -25,7 +25,7 @@ export async function proxy(request) {
 
   // 2. Session cookie exists. Verify validity and retrieve user role from API route.
   try {
-    const response = await fetch(new URL("/api/auth/session", request.url), {
+    const response = await fetch(new URL("/api/auth/get-session", request.url), {
       headers: {
         cookie: request.headers.get("cookie") || "",
       },
@@ -37,7 +37,8 @@ export async function proxy(request) {
         const { role } = session.user;
 
         // Logged-in users should not access auth forms (login, signup, forgot password, otp verification)
-        if (pathname.startsWith("/auth")) {
+        // Allow /auth/callback to pass through — it performs the role-based redirect itself
+        if (pathname.startsWith("/auth") && pathname !== "/auth/callback") {
           const dest = role === "admin"
             ? "/admin/dashboard"
             : role === "merchant"
@@ -77,6 +78,10 @@ export async function proxy(request) {
 
   return NextResponse.next();
 }
+
+// Export both named middleware and named proxy and default to support all Next.js 16/15 patterns
+export const middleware = proxy;
+export default proxy;
 
 export const config = {
   matcher: [

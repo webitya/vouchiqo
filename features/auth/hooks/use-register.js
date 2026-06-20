@@ -1,16 +1,14 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { signUp } from "@/lib/auth-client";
 
 export function useRegister() {
-  const router = useRouter();
 
   return useMutation({
     mutationFn: ({ email, password, name, role }) =>
-      signUp.email({ email, password, name }),
+      signUp.email({ email, password, name, role }),
 
     onSuccess: ({ data, error }, variables) => {
       if (error) {
@@ -18,11 +16,11 @@ export function useRegister() {
         return;
       }
       toast.success("Account created! Welcome to Vouchiqo 🎉");
-      router.push(
-        variables.role === "merchant"
-          ? "/merchant/dashboard"
-          : "/customer/dashboard",
-      );
+      const dest = variables.role === "merchant"
+        ? "/merchant/dashboard"
+        : "/customer/dashboard";
+      
+      window.location.href = dest;
     },
 
     onError: (err) =>

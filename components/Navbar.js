@@ -4,11 +4,11 @@ import {
   ArrowRight,
   CheckCircle2,
   MapPin,
-  Menu,
   Search,
   User,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/sheet";
 
 export default function Navbar({ user = null }) {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("All Locations");
@@ -40,7 +41,7 @@ export default function Navbar({ user = null }) {
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex flex-col">
               <span className="text-xl font-bold font-heading tracking-tight flex items-center gap-1.5">
-                <span className="bg-brand-gradient text-transparent bg-clip-text">
+                <span className="text-brand-gradient">
                   Vouchiqo
                 </span>
                 <CheckCircle2 className="w-5 h-5 text-brand-success fill-brand-success/10" />
@@ -51,34 +52,41 @@ export default function Navbar({ user = null }) {
             </Link>
           </div>
 
-          {/* Search Bar (Desktop) */}
-          <div className="hidden md:flex flex-1 max-w-lg items-center bg-white/10 border border-white/20 rounded-lg p-1.5 gap-2 transition-all focus-within:bg-white focus-within:border-white focus-within:ring-2 focus-within:ring-brand-blue/30 text-slate-200 focus-within:text-slate-800">
-            <div className="flex items-center gap-1.5 pl-2 border-r border-white/20 pr-2 flex-shrink-0">
-              <MapPin className="w-4 h-4 text-brand-warning" />
-              <Select value={location} onValueChange={setLocation}>
-                <SelectTrigger className="border-0 bg-transparent text-sm font-medium cursor-pointer text-inherit p-0 h-auto focus:ring-0 focus:ring-offset-0 gap-1 shadow-none [&>svg]:opacity-100">
-                  <SelectValue placeholder="All Locations" />
-                </SelectTrigger>
-                <SelectContent className="bg-brand-bg text-brand-text border-brand-border">
-                  <SelectItem value="All Locations">All Locations</SelectItem>
-                  <SelectItem value="New York">New York</SelectItem>
-                  <SelectItem value="San Francisco">San Francisco</SelectItem>
-                  <SelectItem value="London">London</SelectItem>
-                  <SelectItem value="Remote">Online/Remote</SelectItem>
-                </SelectContent>
-              </Select>
+          {/* Search Bar (Desktop) - Hidden on Homepage to avoid redundancy */}
+          {pathname !== "/" && (
+            <div className="hidden md:flex flex-1 max-w-lg items-center bg-white/10 border border-white/20 rounded-lg p-1.5 gap-2 transition-all focus-within:bg-white focus-within:border-white focus-within:ring-2 focus-within:ring-brand-blue/30 text-slate-200 focus-within:text-slate-800">
+              <div className="flex items-center gap-1.5 pl-2 border-r border-white/20 pr-2 flex-shrink-0">
+                <MapPin className="w-4 h-4 text-brand-warning" />
+                <Select value={location} onValueChange={setLocation}>
+                  <SelectTrigger className="border-0 bg-transparent text-sm font-medium cursor-pointer text-inherit p-0 h-auto focus:ring-0 focus:ring-offset-0 gap-1 shadow-none [&>svg]:opacity-100">
+                    <SelectValue placeholder="All Locations" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-brand-bg text-brand-text border-brand-border">
+                    <SelectItem value="All Locations">All Locations</SelectItem>
+                    <SelectItem value="New York">New York</SelectItem>
+                    <SelectItem value="San Francisco">San Francisco</SelectItem>
+                    <SelectItem value="London">London</SelectItem>
+                    <SelectItem value="Remote">Online/Remote</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center flex-1 pr-2">
+                <Search className="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" />
+                <Input
+                  type="text"
+                  placeholder="Search verified deals & brands..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      window.location.href = `/deals?search=${encodeURIComponent(searchQuery)}&location=${encodeURIComponent(location === "All Locations" ? "All" : location)}`;
+                    }
+                  }}
+                  className="border-0 bg-transparent text-sm w-full p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 placeholder-slate-400 text-inherit shadow-none"
+                />
+              </div>
             </div>
-            <div className="flex items-center flex-1 pr-2">
-              <Search className="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" />
-              <Input
-                type="text"
-                placeholder="Search verified deals & brands..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="border-0 bg-transparent text-sm w-full p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 placeholder-slate-400 text-inherit shadow-none"
-              />
-            </div>
-          </div>
+          )}
 
           {/* Nav Items (Desktop) */}
           <div className="hidden lg:flex items-center gap-6">
@@ -134,16 +142,19 @@ export default function Navbar({ user = null }) {
                 </>}
           </div>
 
-          {/* Mobile Menu Trigger via Sheet */}
+          {/* Mobile Menu Trigger via Sheet (Morphing Hamburger to X) */}
           <div className="flex md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:text-slate-300 focus:outline-none p-1.5 h-9 w-9 hover:bg-white/5 cursor-pointer"
+                  className="text-white hover:text-slate-300 focus:outline-none p-2 h-11 w-11 hover:bg-white/5 cursor-pointer flex flex-col justify-center items-center gap-1.5 relative z-50"
+                  aria-label="Toggle menu"
                 >
-                  <Menu className="w-6 h-6" />
+                  <span className={`w-7 h-[2.5px] bg-white transition-all duration-300 rounded-full ${isOpen ? "rotate-45 translate-y-[8.5px]" : ""}`} />
+                  <span className={`w-7 h-[2.5px] bg-white transition-all duration-300 rounded-full ${isOpen ? "opacity-0" : ""}`} />
+                  <span className={`w-7 h-[2.5px] bg-white transition-all duration-300 rounded-full ${isOpen ? "-rotate-45 -translate-y-[8.5px]" : ""}`} />
                 </Button>
               </SheetTrigger>
               <SheetContent
@@ -152,7 +163,7 @@ export default function Navbar({ user = null }) {
               >
                 <SheetHeader className="text-left border-b border-white/10 pb-4">
                   <SheetTitle className="text-xl font-bold font-heading text-white tracking-tight flex items-center gap-1.5">
-                    <span className="bg-brand-gradient text-transparent bg-clip-text">
+                    <span className="text-brand-gradient">
                       Vouchiqo
                     </span>
                   </SheetTitle>

@@ -96,7 +96,7 @@ async function seed() {
         contactEmail: "hello@burgerhouse.com",
         website: "https://burgerhouse.example.com",
         status: MERCHANT_STATUS.APPROVED,
-        location: { city: "New York", state: "NY", country: "US" },
+        location: { city: "Arrah", state: "Bihar", country: "IN" },
         isVerified: true,
       });
       console.log("   ✅ Done\n");
@@ -104,7 +104,7 @@ async function seed() {
   } catch (e) { console.log("   ❌", e.message, "\n"); }
 
   // ════════════════════════════════════════════════════════════════
-  //  MERCHANT 2 — StyleZone (fashion, Los Angeles)
+  //  MERCHANT 2 — StyleZone (fashion, Patna)
   // ════════════════════════════════════════════════════════════════
   console.log("🏪 Creating Merchant: StyleZone...");
   let merchantProfile2 = null;
@@ -122,7 +122,7 @@ async function seed() {
         contactEmail: "deals@stylezone.com",
         website: "https://stylezone.example.com",
         status: MERCHANT_STATUS.APPROVED,
-        location: { city: "Los Angeles", state: "CA", country: "US" },
+        location: { city: "Patna", state: "Bihar", country: "IN" },
         isVerified: true,
       });
       console.log("   ✅ Done\n");
@@ -130,7 +130,7 @@ async function seed() {
   } catch (e) { console.log("   ❌", e.message, "\n"); }
 
   // ════════════════════════════════════════════════════════════════
-  //  MERCHANT 3 — TechGadgets (electronics, San Francisco)
+  //  MERCHANT 3 — TechGadgets (electronics, Delhi)
   // ════════════════════════════════════════════════════════════════
   console.log("🏪 Creating Merchant: TechGadgets...");
   let merchantProfile3 = null;
@@ -148,7 +148,7 @@ async function seed() {
         contactEmail: "support@techgadgets.com",
         website: "https://techgadgets.example.com",
         status: MERCHANT_STATUS.APPROVED,
-        location: { city: "San Francisco", state: "CA", country: "US" },
+        location: { city: "Delhi", state: "Delhi", country: "IN" },
         isVerified: true,
       });
       console.log("   ✅ Done\n");
@@ -170,7 +170,7 @@ async function seed() {
         discountValue: 30,
         category: "food",
         expiresAt: daysFromNow(30),
-        location: { city: "New York", state: "NY", country: "US", isOnline: false },
+        location: { city: "Arrah", state: "Bihar", country: "IN", isOnline: false },
         isFeatured: true,
         status: COUPON_STATUS.ACTIVE,
       },
@@ -183,7 +183,7 @@ async function seed() {
         discountValue: 0,
         category: "food",
         expiresAt: daysFromNow(15),
-        location: { city: "New York", state: "NY", country: "US", isOnline: false },
+        location: { city: "Arrah", state: "Bihar", country: "IN", isOnline: false },
         isHot: true,
         status: COUPON_STATUS.ACTIVE,
       },
@@ -196,7 +196,7 @@ async function seed() {
         discountValue: 0,
         category: "food",
         expiresAt: daysFromNow(20),
-        location: { city: "New York", state: "NY", country: "US", isOnline: false },
+        location: { city: "Arrah", state: "Bihar", country: "IN", isOnline: false },
         status: COUPON_STATUS.ACTIVE,
       },
       {
@@ -243,7 +243,7 @@ async function seed() {
         discountValue: 20,
         category: "fashion",
         expiresAt: daysFromNow(45),
-        location: { city: "Los Angeles", state: "CA", country: "US", isOnline: false },
+        location: { city: "Patna", state: "Bihar", country: "IN", isOnline: false },
         isFeatured: true,
         isHot: true,
         status: COUPON_STATUS.ACTIVE,
@@ -269,7 +269,7 @@ async function seed() {
         discountValue: 15,
         category: "fashion",
         expiresAt: daysFromNow(25),
-        location: { city: "Los Angeles", state: "CA", country: "US", isOnline: false },
+        location: { city: "Patna", state: "Bihar", country: "IN", isOnline: false },
         status: COUPON_STATUS.ACTIVE,
       },
       {
@@ -281,7 +281,7 @@ async function seed() {
         discountValue: 0,
         category: "fashion",
         expiresAt: daysFromNow(10),
-        location: { city: "Los Angeles", state: "CA", country: "US", isOnline: false },
+        location: { city: "Patna", state: "Bihar", country: "IN", isOnline: false },
         isHot: true,
         status: COUPON_STATUS.ACTIVE,
       },
@@ -304,7 +304,7 @@ async function seed() {
         discountValue: 10,
         category: "electronics",
         expiresAt: daysFromNow(20),
-        location: { city: "San Francisco", state: "CA", country: "US", isOnline: false },
+        location: { city: "Delhi", state: "Delhi", country: "IN", isOnline: false },
         isFeatured: true,
         status: COUPON_STATUS.ACTIVE,
       },
@@ -324,13 +324,13 @@ async function seed() {
       {
         merchantId: merchantProfile3._id,
         title: "Free Wireless Earbuds with any Phone",
-        description: "Purchase any smartphone above $300 and receive a free pair of wireless earbuds.",
+        description: "Purchase any smartphone above $300 and receive a pair of wireless earbuds free.",
         code: "EARBUDSFREE",
         discountType: DISCOUNT_TYPE.FREEBIE,
         discountValue: 0,
         category: "electronics",
         expiresAt: daysFromNow(7),
-        location: { city: "San Francisco", state: "CA", country: "US", isOnline: false },
+        location: { city: "Delhi", state: "Delhi", country: "IN", isOnline: false },
         isFeatured: true,
         isHot: true,
         status: COUPON_STATUS.ACTIVE,
