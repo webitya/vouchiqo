@@ -1,0 +1,133 @@
+import Claim from "@/modules/claim/claim.model";
+import Coupon from "@/modules/coupon/coupon.model";
+import Merchant from "@/modules/merchant/merchant.model";
+import { AppError, NotFoundError } from "@/utils/app-error";
+import { CLAIM_STATUS, COUPON_STATUS } from "@/utils/constants";
+import { buildMeta, parsePagination } from "@/utils/pagination";
+
+/**
+ * Claim a coupon — creates a bookmark/save for the user.
+ * Prevents duplicate claims via unique index on {userId, couponId}.
+ *
+ * @param {string} userId - Better Auth user ID
+ * @param {string} couponId
+ */
+export async function claimCoupon(userId, couponId) {
+  const coupon = await Coupon.findOne({
+    _id: couponId,
+    status: COUPON_STATUS.ACTIVE,
+    expiresAt: { $gt: new Date() },
+  }).lean();
+
+  if (!coupon) throw new NotFoundError("Coupon");
+
+  // Check claim limit
+  if (coupon.maxClaims && coupon.totalClaims >= coupon.maxClaims) {
+    throw new AppError(
+      "This coupon has reached its claim limit",
+      400,
+      "CLAIM_LIMIT_REACHED",
+    );
+  }
+
+  // Create the claim — unique index handles duplicate prevention
+  const claim = await Claim.create({
+    userId,
+    couponId: coupon._id,
+    merchantId: coupon.merchantId,
+  });
+
+  // Increment claim counters atomically (coupon + merchant)
+  await Promise.all([
+    Coupon.findByIdAndUpdate(couponId, { $inc: { totalClaims: 1 } }),
+    Merchant.findByIdAndUpdate(coupon.merchantId, {
+      $inc: { totalClaims: 1 },
+    }),
+  ]);
+
+  return claim;
+}
+
+/**
+ * Get all claims for a user (their saved coupons).
+ *
+ * @param {string} userId
+ * @param {URLSearchParams} searchParams
+ */
+export async function getUserClaims(userId, searchParams) {
+  const { page, limit, skip } = parsePagination(searchParams);
+  const status = searchParams.get("status") ?? CLAIM_STATUS.ACTIVE;
+
+  const filter = { userId, status };
+
+  const [claims, total] = await Promise.all([
+    Claim.aggregate([
+      { $match: filter },
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "coupons",
+          localField: "couponId",
+          foreignField: "_id",
+          as: "couponId",
+        },
+      },
+      { $unwind: { path: "$couponId", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "merchants",
+          localField: "couponId.merchantId",
+          foreignField: "_id",
+          as: "couponId.merchantId",
+        },
+      },
+      { $unwind: { path: "$couponId.merchantId", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          userId: 1,
+          status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "couponId._id": 1,
+          "couponId.title": 1,
+          "couponId.discountValue": 1,
+          "couponId.discountType": 1,
+          "couponId.description": 1,
+          "couponId.expiresAt": 1,
+          "couponId.successRate": 1,
+          "couponId.isMerchantVerified": 1,
+          "couponId.isVouchiqoVerified": 1,
+          "couponId.workedToday": 1,
+          "couponId.merchantId._id": 1,
+          "couponId.merchantId.businessName": 1,
+          "couponId.merchantId.slug": 1,
+          "couponId.merchantId.logo": 1,
+        },
+      },
+    ]),
+    Claim.countDocuments(filter),
+  ]);
+
+  return { claims, meta: buildMeta(total, page, limit) };
+}
+
+/**
+ * Remove a saved coupon (delete the claim).
+ *
+ * @param {string} claimId
+ * @param {string} userId
+ */
+export async function removeClaim(claimId, userId) {
+  const claim = await Claim.findOneAndDelete({
+    _id: claimId,
+    userId,
+    status: CLAIM_STATUS.ACTIVE, // Can't remove already-redeemed claims
+  });
+
+  if (!claim) throw new NotFoundError("Claim");
+
+  await Coupon.findByIdAndUpdate(claim.couponId, { $inc: { totalClaims: -1 } });
+}
