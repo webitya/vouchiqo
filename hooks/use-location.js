@@ -15,8 +15,36 @@ const NOMINATIM_URL = "https://nominatim.openstreetmap.org/reverse";
  *  - setCity()   function       — allow manual city override
  */
 export function useLocation() {
-  const [city, setCity] = useState(null);
+  const [city, setCityState] = useState(null);
   const [status, setStatus] = useState("idle"); // idle | detecting | ready | denied | unavailable
+
+  // Hydrate location from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("vouchiqo_city");
+      if (saved) {
+        setCityState(saved);
+        setStatus("ready");
+      }
+    } catch (e) {
+      console.error("Failed to read location from localStorage:", e);
+    }
+  }, []);
+
+  const setCity = useCallback((newCity) => {
+    setCityState(newCity);
+    try {
+      if (newCity) {
+        localStorage.setItem("vouchiqo_city", newCity);
+        setStatus("ready");
+      } else {
+        localStorage.removeItem("vouchiqo_city");
+        setStatus("idle");
+      }
+    } catch (e) {
+      console.error("Failed to write location to localStorage:", e);
+    }
+  }, []);
 
   const detect = useCallback(() => {
     if (!navigator.geolocation) {
@@ -55,7 +83,7 @@ export function useLocation() {
       },
       { timeout: 8000, maximumAge: 5 * 60 * 1000 }, // cache position 5 min
     );
-  }, []);
+  }, [setCity]);
 
   // Auto-detect on mount (silent — no prompt until called)
   useEffect(() => {
@@ -63,7 +91,7 @@ export function useLocation() {
       ?.query({ name: "geolocation" })
       .then(({ state }) => {
         // Only auto-detect if already granted — never auto-prompt
-        if (state === "granted") detect();
+        if (state === "granted" && !localStorage.getItem("vouchiqo_city")) detect();
       })
       .catch(() => {}); // permissions API not available in all browsers
   }, [detect]);
