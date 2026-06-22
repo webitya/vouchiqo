@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Prompt and rules markdown files
+Vouchiqo_Code_Rules.md
+Vouchiqo_Developer_Implementation_Prompt.md
+Vouchiqo_Security_Prompt.md
+Vouchiqo_UIUX_Prompt.md
