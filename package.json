@@ -18,7 +18,6 @@
     "clsx": "^2.1.1",
     "input-otp": "^1.4.2",
     "ioredis": "^5.11.1",
-    "isomorphic-dompurify": "^3.18.0",
     "lucide-react": "^1.21.0",
     "mongoose": "^9.7.1",
     "next": "16.2.9",
