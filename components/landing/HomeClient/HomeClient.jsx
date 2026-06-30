@@ -11,23 +11,7 @@ const ConfirmationModal = dynamicImport(
   { ssr: false },
 );
 
-const NearbyDeals = dynamicImport(
-  () =>
-    import("@/features/location/components/nearby-deals").then(
-      (mod) => mod.NearbyDeals,
-    ),
-  {
-    loading: () => (
-      <div className="py-20 text-center space-y-2 text-brand-text">
-        <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
-        <span className="text-xs text-brand-subtext font-bold">
-          Scanning local coordinates...
-        </span>
-      </div>
-    ),
-    ssr: false,
-  },
-);
+
 
 const HowItWorks = dynamicImport(() =>
   import("../HowItWorks").then((mod) => mod.HowItWorks),
@@ -49,7 +33,7 @@ const PartnerBrands = dynamicImport(() =>
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
 import { useInterests } from "@/hooks/use-interests";
-import { useLocation } from "@/hooks/use-location";
+
 import { useSession } from "@/lib/auth-client";
 // Core components & hooks
 import { HeroSection } from "../HeroSection";
@@ -85,12 +69,7 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [locationSelect, setLocationSelect] = useState("All Locations");
 
-  // Location state
-  const {
-    city,
-    status: locationStatus,
-    detect: detectLocation,
-  } = useLocation();
+
   const [feedTab, setFeedTab] = useState("all");
 
   // Interest banner state
@@ -261,8 +240,7 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
         {/* 13. GrabOn Collections Grid */}
         <VouchiqoCollections />
 
-        {/* 15. Nearby Deals (Geolocation aware) */}
-        <NearbyDeals onRedeem={(c) => setSelectedCoupon(c)} />
+
 
         {/* 17. Popular Categories Grid (High-density 29 links) */}
         <PopularCategories />

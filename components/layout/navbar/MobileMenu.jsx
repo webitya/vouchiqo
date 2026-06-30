@@ -8,7 +8,6 @@ import {
   Plus,
   Store,
   X,
-  Zap,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -18,7 +17,6 @@ const MOBILE_NAV_LINKS = [
   { href: "/june-sales", icon: CalendarDays, label: "June Sales" },
   { href: "/indulge", icon: List, label: "Indulge" },
   { href: "/submit", icon: Plus, label: "Submit Coupon" },
-  { href: "/deals", icon: Zap, label: "Deals Of The Day" },
 ];
 
 export const MobileMenu = () => {

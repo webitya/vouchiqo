@@ -10,19 +10,23 @@ export default function FlatCouponCard({ coupon }) {
     merchantId?.businessName || merchantId?.name || "Partner";
 
   const getLogoUrl = () => {
-    if (merchantId?.logo?.startsWith("http")) return merchantId.logo;
+    if (
+      merchantId?.logo?.startsWith("/") ||
+      merchantId?.logo?.startsWith("http")
+    )
+      return merchantId.logo;
     const nameLower = merchantName.toLowerCase();
     if (nameLower.includes("burger")) {
-      return "https://companieslogo.com/img/orig/YUM-e9f942e4.png";
+      return "/brandlogos/10030.jpg";
     }
     if (nameLower.includes("stylezone")) {
-      return "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png";
+      return "/brandlogos/10021.jpg";
     }
     if (nameLower.includes("techgadgets")) {
-      return "https://companieslogo.com/img/orig/DELL-c06f3680.png";
+      return "/brandlogos/10007.jpg";
     }
     if (nameLower.includes("marbella")) {
-      return "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/BigRock-Logo.svg/1024px-BigRock-Logo.svg.png";
+      return "/brandlogos/10024.jpg";
     }
     return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(merchantName)}&backgroundColor=3e80dd&textColor=ffffff`;
   };
@@ -198,15 +202,15 @@ export default function FlatCouponCard({ coupon }) {
         <div
           className="imw"
           style={{
-            height: "40px",
-            width: "80px",
-            borderRadius: "4px",
+            height: "48px",
+            width: "88px",
+            borderRadius: "6px",
             border: logoHasDarkBg ? "none" : "1px solid #e2e8f0",
             backgroundColor: logoBgColor,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "4px 8px",
+            padding: "4px",
             overflow: "hidden",
             flexShrink: 0,
           }}

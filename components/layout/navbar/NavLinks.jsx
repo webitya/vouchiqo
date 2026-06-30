@@ -7,7 +7,6 @@ import {
   List,
   Plus,
   Store,
-  Zap,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -17,7 +16,6 @@ const ALL_NAV_LINKS = [
   { href: "/june-sales", icon: CalendarDays, label: "June Sales" },
   { href: "/indulge", icon: List, label: "Indulge" },
   { href: "/submit", icon: Plus, label: "Submit Coupon" },
-  { href: "/deals", icon: Zap, label: "Deals Of The Day" },
 ];
 
 const VISIBLE_COUNT = 4;

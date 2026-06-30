@@ -23,12 +23,6 @@ export default async function sitemap() {
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/deals`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
-    {
       url: `${baseUrl}/expired-coupon-revival`,
       lastModified: new Date(),
       changeFrequency: "weekly",
@@ -38,6 +32,12 @@ export default async function sitemap() {
       url: `${baseUrl}/nearby-offers`,
       lastModified: new Date(),
       changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/campaigns`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
       priority: 0.8,
     },
     {

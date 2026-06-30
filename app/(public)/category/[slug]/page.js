@@ -4,6 +4,7 @@ import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
 import CouponCard from "@/components/shared/CouponCard";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { connectDB } from "@/lib/mongodb";
 import Coupon from "@/modules/coupon/coupon.model";
 import { COUPON_CATEGORIES } from "@/utils/constants";

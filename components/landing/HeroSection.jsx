@@ -11,8 +11,8 @@ const LEFT_BRANDS = [
     title: "Power your website with premium hosting",
     subtitle: "Hostinger Premium Web Hosting - Up to 75% OFF",
     buttonText: "Grab Coupon",
-    image:
-      "https://cdn.grabon.in/gograbon/images/banners/banner-1773810900601/Offer%20Code.jpg",
+    image: "/herobanners/Offer%2520Code.jpg.jpeg",
+    logo: "/brandlogos/10002.jpg",
     link: "/brand/hostinger",
   },
   {
@@ -22,8 +22,8 @@ const LEFT_BRANDS = [
     title: "Book bus and train tickets across India online",
     subtitle: "Redrail Exclusive - Flat ₹500 OFF Ticket Bookings",
     buttonText: "Claim Discount",
-    image:
-      "https://cdn.grabon.in/gograbon/images/banners/banner-1781007250960/Coupon%20Codes.jpg",
+    image: "/herobanners/Coupon%2520Codes.jpg.jpeg",
+    logo: "/brandlogos/10003.jpg",
     link: "/brand/redrail",
   },
   {
@@ -33,100 +33,166 @@ const LEFT_BRANDS = [
     title: "Meet new goals with midyear savings",
     subtitle: "Coursera Plus - Limited Time 40% OFF",
     buttonText: "Explore Offer",
-    image:
-      "https://cdn.grabon.in/gograbon/images/banners/banner-1781613909772/Discount%20Codes.jpg",
-    link: "/brand/redrail",
+    image: "/herobanners/Discount%2520Codes.jpg.jpeg",
+    logo: "/brandlogos/10004.jpg",
+    link: "/brand/coursera",
   },
   {
     id: 3,
-    name: "Dell",
-    slug: "dell",
-    title: "Upgrade your productivity gear today",
-    subtitle: "Dell XPS & Inspiron Laptops - Up to 45% OFF",
-    buttonText: "Save Now",
-    image:
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=1200&auto=format&fit=crop",
-    link: "/brand/dell",
+    name: "Samsung",
+    slug: "samsung",
+    title: "Discover the latest tech innovations",
+    subtitle: "Samsung Electronics - Flat 15% OFF",
+    buttonText: "Grab Deal",
+    image: "/herobanners/Coupon%2520Codes.jpg_1.jpeg",
+    logo: "/brandlogos/10005.jpg",
+    link: "/brand/samsung",
   },
   {
     id: 4,
-    name: "Ulta Host",
-    slug: "ultahost",
-    title: "Fastest managed VPS hosting solutions",
-    subtitle: "UltaHost Hosting Plans - Flat 25% OFF sitewide",
-    buttonText: "Explore Plans",
-    image:
-      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop",
-    link: "/brand/ultahost",
+    name: "OnePlus",
+    slug: "oneplus",
+    title: "Never Settle with exclusive phone discounts",
+    subtitle: "OnePlus Store - Up to ₹5000 Instant Discount",
+    buttonText: "Claim Offer",
+    image: "/herobanners/Discount%2520Codes.jpg_1.jpeg",
+    logo: "/brandlogos/10006.jpg",
+    link: "/brand/oneplus",
   },
   {
     id: 5,
-    name: "Google Workspace",
-    slug: "google",
-    title: "Google Workspace with Gemini",
-    subtitle: "UP TO 15% OFF On Your Subscription Purchase For First 3 Months",
-    buttonText: "Start Free Trial",
-    image:
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop",
-    link: "/brand/google",
+    name: "Dell",
+    slug: "dell",
+    title: "Upgrade your productivity gear today",
+    subtitle: "Dell Laptops & Accessories - Up to 45% OFF",
+    buttonText: "Save Now",
+    image: "/herobanners/Coupon%2520Codes.jpg_2.jpeg",
+    logo: "/brandlogos/10007.jpg",
+    link: "/brand/dell",
   },
   {
     id: 6,
-    name: "Ajio",
-    slug: "ajio",
-    title: "Giant Fashion Sale is live now",
-    subtitle: "AJIO Giant Fashion Sale - Flat 22% OFF",
-    buttonText: "Grab Now",
-    image:
-      "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop",
-    link: "/brand/ajio",
+    name: "Asus",
+    slug: "asus",
+    title: "Unleash your creative power",
+    subtitle: "Asus ROG & Zenbook - Up to 35% OFF",
+    buttonText: "Explore",
+    image: "/herobanners/Discount%2520Codes.jpg_2.jpeg",
+    logo: "/brandlogos/10008.jpg",
+    link: "/brand/asus",
   },
   {
     id: 7,
-    name: "Amazon",
-    slug: "amazon",
-    title: "Prime Day Sale is live now",
-    subtitle: "Amazon Deals - Up to 80% OFF + 10% Bank Discount",
-    buttonText: "View Deals",
-    image:
-      "https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?q=80&w=1200&auto=format&fit=crop",
-    link: "/brand/amazon",
+    name: "HP",
+    slug: "hp",
+    title: "Print and compute with ease",
+    subtitle: "HP Store Deals - Flat ₹2000 OFF on Select Laptops",
+    buttonText: "Save Big",
+    image: "/herobanners/Coupon%2520Codes.jpg_3.jpeg",
+    logo: "/brandlogos/10009.jpg",
+    link: "/brand/hp-shopping",
   },
   {
     id: 8,
-    name: "Klook",
-    slug: "klook",
-    title: "Explore popular travel destinations",
-    subtitle: "Klook Travel Deals - Up to 50% OFF activities",
-    buttonText: "Book Now",
-    image:
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-    link: "/brand/klook",
+    name: "Nike",
+    slug: "nike",
+    title: "Just Do It with discount sportswear",
+    subtitle: "Nike Store - Up to 40% OFF Select Shoes",
+    buttonText: "Explore Shoes",
+    image: "/herobanners/Discount%2520Codes.jpg_3.jpeg",
+    logo: "/brandlogos/10010.jpg",
+    link: "/brand/nike",
   },
   {
     id: 9,
+    name: "Puma",
+    slug: "puma",
+    title: "Run faster, feel lighter",
+    subtitle: "Puma End of Season - Flat 50% OFF Sitewide",
+    buttonText: "Shop Puma",
+    image: "/herobanners/Coupon%2520Codes.jpg_4.jpeg",
+    logo: "/brandlogos/10011.jpg",
+    link: "/brand/puma",
+  },
+  {
+    id: 10,
     name: "Adidas",
     slug: "adidas",
-    title: "End of season sports fashion sale",
-    subtitle: "Adidas Apparel & Shoes - Flat 30% OFF + Extra 15%",
-    buttonText: "Grab Offer",
-    image:
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop",
+    title: "Impossible is nothing with style and savings",
+    subtitle: "Adidas Apparel & Accessories - Up to 30% OFF",
+    buttonText: "Get Adidas",
+    image: "/herobanners/Discount%2520Codes.jpg_4.jpeg",
+    logo: "/brandlogos/10012.jpg",
     link: "/brand/adidas",
+  },
+  {
+    id: 11,
+    name: "Apple",
+    slug: "apple",
+    title: "Think different with premium Apple products",
+    subtitle: "Apple Store India - Exclusive Student Discounts",
+    buttonText: "Get Apple",
+    image: "/herobanners/Coupon%2520Codes.jpg_5.jpeg",
+    logo: "/brandlogos/10013.jpg",
+    link: "/brand/apple",
+  },
+  {
+    id: 12,
+    name: "Ajio",
+    slug: "ajio",
+    title: "Giant Fashion Sale is live now",
+    subtitle: "AJIO Deals - Flat 22% OFF",
+    buttonText: "View Clothes",
+    image: "/herobanners/Discount%2520Codes.jpg_5.jpeg",
+    logo: "/brandlogos/10014.jpg",
+    link: "/brand/ajio",
+  },
+  {
+    id: 13,
+    name: "Amazon",
+    slug: "amazon",
+    title: "Everything you need, delivered tomorrow",
+    subtitle: "Amazon Super Deals - Up to 80% OFF",
+    buttonText: "Shop Amazon",
+    image: "/herobanners/Coupon%2520Codes.jpg_6.jpeg",
+    logo: "/brandlogos/10015.jpg",
+    link: "/brand/amazon",
+  },
+  {
+    id: 14,
+    name: "Klook",
+    slug: "klook",
+    title: "Plan your next holiday adventures online",
+    subtitle: "Klook Travel Deals - Up to 50% OFF Activities",
+    buttonText: "Book Travel",
+    image: "/herobanners/Coupon%2520Codes.jpg_7.jpeg",
+    logo: "/brandlogos/10016.jpg",
+    link: "/brand/klook",
+  },
+  {
+    id: 15,
+    name: "Lenovo",
+    slug: "lenovo",
+    title: "Smarter technology for all",
+    subtitle: "Lenovo ThinkPad & Legion - Save up to 40%",
+    buttonText: "Buy Tech",
+    image: "/herobanners/Coupon%2520Codes.jpg_8.jpeg",
+    logo: "/brandlogos/10017.jpg",
+    link: "/brand/lenovo",
   },
 ];
 
 const RIGHT_BRANDS = [
   {
     id: 0,
-    name: "UBER",
+    name: "Uber",
     slug: "uber",
     title: "UBER PROMO",
     headline: "FLAT 50% OFF",
     description:
       "Flat 50% OFF First 3 Uber Rides — Up to ₹100 Per Ride. Valid for new users.",
-    image:
-      "https://images.unsplash.com/photo-1619551734325-81aaf323686c?q=80&w=600&auto=format&fit=crop",
+    image: "/herobanners/Offer%2520Code.jpg.jpeg",
+    logo: "/brandlogos/10018.jpg",
     buttonText: "GRAB NOW",
     link: "/brand/uber",
   },
@@ -138,8 +204,8 @@ const RIGHT_BRANDS = [
     headline: "UP TO 97% OFF",
     description:
       "Grab Up To 97% OFF Best-Selling Online Courses in programming and business.",
-    image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop",
+    image: "/herobanners/Coupon%2520Codes.jpg.jpeg",
+    logo: "/brandlogos/10019.jpg",
     buttonText: "GRAB NOW",
     link: "/brand/udemy",
   },
@@ -151,15 +217,15 @@ const RIGHT_BRANDS = [
     headline: "14-DAY FREE TRIAL",
     description:
       "Start your free Google Workspace trial today and boost your productivity with Gemini AI.",
-    image:
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop",
+    image: "/herobanners/Discount%2520Codes.jpg.jpeg",
+    logo: "/brandlogos/10020.jpg",
     buttonText: "GRAB NOW",
     link: "/brand/google",
   },
 ];
 
 export function HeroSection() {
-  const [currentLeftSlide, setCurrentLeftSlide] = useState(5); // Default to Google Workspace (index 5)
+  const [currentLeftSlide, setCurrentLeftSlide] = useState(0); // Start at Hostinger
   const [currentRightCard, setCurrentRightCard] = useState(0); // Default to UBER (index 0)
   const [autoRotate, setAutoRotate] = useState(true);
 
@@ -220,7 +286,7 @@ export function HeroSection() {
                     <img
                       src={slide.image}
                       alt={slide.title}
-                      className="w-full h-full object-cover cursor-pointer"
+                      className="w-full h-full object-fill cursor-pointer"
                     />
                   </Link>
                 </div>
@@ -269,7 +335,7 @@ export function HeroSection() {
                       <img
                         src={slide.image}
                         alt={slide.name}
-                        className="w-full h-full object-cover cursor-pointer"
+                        className="w-full h-full object-fill cursor-pointer"
                       />
                       {/* Floating card overlay that slides up smoothly when active */}
                       <div
@@ -316,7 +382,7 @@ export function HeroSection() {
       {/* Brands List (Synchronized directly with slider) */}
       <div className="flex flex-col md:flex-row gap-4 mt-2 select-none w-full text-left">
         {/* Left brand list (75% width) */}
-        <div className="md:w-3/4 flex justify-between items-center overflow-x-auto scrollbar-hide py-3 gap-6 text-[11px] font-black text-brand-subtext px-4 border-b border-brand-border">
+        <div className="md:w-3/4 flex justify-start items-center overflow-x-auto scrollbar-hide py-3.5 gap-4 px-4 border-b border-brand-border">
           {LEFT_BRANDS.map((brand) => {
             const isActive = brand.id === currentLeftSlide;
             return (
@@ -324,13 +390,20 @@ export function HeroSection() {
                 key={brand.id}
                 onClick={() => handleLeftBrandClick(brand.id)}
                 type="button"
-                className={`relative whitespace-nowrap uppercase tracking-wider cursor-pointer border-0 bg-transparent py-1 transition-colors ${
-                  isActive ? "text-brand-blue" : "hover:text-brand-blue"
+                className={`relative flex items-center justify-center cursor-pointer border rounded-lg bg-white p-1.5 w-[76px] h-[40px] transition-all duration-200 shrink-0 ${
+                  isActive
+                    ? "border-[#FF7A18] shadow-sm ring-1 ring-[#FF7A18]/30"
+                    : "border-brand-border hover:border-[#FF7A18]/50"
                 }`}
+                title={brand.name}
               >
-                <span>{brand.name}</span>
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className="w-full h-full object-cover rounded-md"
+                />
                 {isActive && (
-                  <span className="w-1.5 h-1.5 bg-brand-blue rounded-full absolute -bottom-1 left-1/2 -translate-x-1/2" />
+                  <span className="w-1.5 h-1.5 bg-[#FF7A18] rounded-full absolute -bottom-3 left-1/2 -translate-x-1/2 animate-pulse" />
                 )}
               </button>
             );
@@ -341,7 +414,7 @@ export function HeroSection() {
         <div className="hidden md:block w-px h-6 bg-brand-border self-center" />
 
         {/* Right brand list (25% width) */}
-        <div className="md:w-1/4 flex justify-around items-center py-3 gap-4 text-[11px] font-black text-brand-subtext px-2 border-b border-brand-border">
+        <div className="md:w-1/4 flex justify-around items-center py-3.5 gap-4 px-2 border-b border-brand-border">
           {RIGHT_BRANDS.map((brand) => {
             const isActive = brand.id === currentRightCard;
             return (
@@ -349,13 +422,20 @@ export function HeroSection() {
                 key={brand.id}
                 onClick={() => handleRightBrandClick(brand.id)}
                 type="button"
-                className={`relative whitespace-nowrap uppercase tracking-wider cursor-pointer border-0 bg-transparent py-1 transition-colors ${
-                  isActive ? "text-brand-blue" : "hover:text-brand-blue"
+                className={`relative flex items-center justify-center cursor-pointer border rounded-lg bg-white p-1.5 w-[76px] h-[40px] transition-all duration-200 shrink-0 ${
+                  isActive
+                    ? "border-[#FF7A18] shadow-sm ring-1 ring-[#FF7A18]/30"
+                    : "border-brand-border hover:border-[#FF7A18]/50"
                 }`}
+                title={brand.name}
               >
-                <span>{brand.name}</span>
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className="w-full h-full object-cover rounded-md"
+                />
                 {isActive && (
-                  <span className="w-1.5 h-1.5 bg-brand-blue rounded-full absolute -bottom-1 left-1/2 -translate-x-1/2" />
+                  <span className="w-1.5 h-1.5 bg-[#FF7A18] rounded-full absolute -bottom-3 left-1/2 -translate-x-1/2 animate-pulse" />
                 )}
               </button>
             );

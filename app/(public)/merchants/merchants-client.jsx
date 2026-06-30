@@ -1,5 +1,6 @@
 "use client";
 
+import { Tag, Ticket } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -22,19 +23,9 @@ const SIDEBAR_NAV = [
     icon: "https://cdn.grabon.in/gograbon/v8/icons/allbrands-small-icon-v2.svg",
   },
   {
-    label: "Banks",
-    href: "/campaigns",
-    icon: "https://cdn.grabon.in/gograbon/v8/icons/allbanks-small-v2.svg",
-  },
-  {
     label: "Festivals",
     href: "/campaigns",
     icon: "https://cdn.grabon.in/gograbon/v8/icons/allfestivals-small-icon-v2.svg",
-  },
-  {
-    label: "Product Deals",
-    href: "/deals",
-    icon: "https://cdn.grabon.in/gograbon/v8/icons/allproduct-small-icon-v2.svg",
   },
   {
     label: "Cities Deals",
@@ -64,28 +55,28 @@ const TRENDING_STORES = [
   {
     slug: "stylezone", // StyleZone fallback to Myntra
     businessName: "Myntra",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png",
+    logo: "/brandlogos/10021.jpg",
     coupons: 34,
     offers: 22,
   },
   {
     slug: "burger-house", // fallback to Air India
     businessName: "Air India",
-    logo: "https://companieslogo.com/img/orig/AIC.NS-4d6423cc.png",
+    logo: "/brandlogos/10022.jpg",
     coupons: 48,
     offers: 30,
   },
   {
     slug: "techgadgets", // TechGadgets fallback to Dell
     businessName: "Dell",
-    logo: "https://companieslogo.com/img/orig/DELL-c06f3680.png",
+    logo: "/brandlogos/10007.jpg",
     coupons: 8,
     offers: 6,
   },
   {
     slug: "ajio",
     businessName: "AJIO",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/8/8e/AJIO_Logo.svg",
+    logo: "/brandlogos/10014.jpg",
     coupons: 34,
     offers: 13,
   },
@@ -211,17 +202,21 @@ export default function MerchantsClient({
   // Combine database merchants with mock merchants
   const allMergedMerchants = useMemo(() => {
     // Convert DB merchants to standard format
-    const dbFormatted = merchants.map((m) => ({
+    const dbFormatted = merchants.map((m, idx) => ({
       businessName: m.businessName,
       slug: m.slug,
       coupons: m.totalCoupons || 3,
       offers: Math.ceil((m.totalCoupons || 3) * 0.7),
       isDb: true,
+      logo: m.logo || `/brandlogos/${10002 + (idx % 42)}.jpg`,
     }));
 
     // Filter out duplicates if any
     const dbSlugs = new Set(dbFormatted.map((m) => m.slug));
-    const mocks = MOCK_MERCHANTS_SEED.filter((m) => !dbSlugs.has(m.slug));
+    const mocks = MOCK_MERCHANTS_SEED.map((m, idx) => ({
+      ...m,
+      logo: `/brandlogos/${10002 + ((idx + dbFormatted.length) % 42)}.jpg`,
+    })).filter((m) => !dbSlugs.has(m.slug));
 
     return [...dbFormatted, ...mocks];
   }, [merchants]);
@@ -628,53 +623,56 @@ export default function MerchantsClient({
                     style={{
                       border: "1px solid #e8eaf0",
                       borderRadius: 12,
-                      padding: "24px 16px 16px",
-                      textAlign: "center",
+                      background: "#fff",
                       cursor: "pointer",
                       transition: "box-shadow 0.2s, transform 0.2s",
-                      background: "#fff",
-                      height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "space-between",
+                      overflow: "hidden",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.boxShadow =
-                        "0 4px 18px rgba(59,91,219,0.12)";
+                        "0 6px 18px rgba(0,0,0,0.06)";
+                      e.currentTarget.style.borderColor = "#3b5bdb";
                       e.currentTarget.style.transform = "translateY(-2px)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.boxShadow = "none";
+                      e.currentTarget.style.borderColor = "#e8eaf0";
                       e.currentTarget.style.transform = "translateY(0)";
                     }}
                   >
+                    {/* Logo container */}
                     <div
                       style={{
-                        height: 48,
+                        height: 95,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        marginBottom: 12,
+                        padding: "8px",
+                        background: "#fff",
                       }}
                     >
                       <img
                         src={store.logo}
                         alt={store.businessName}
                         style={{
-                          maxHeight: 40,
-                          maxWidth: 120,
+                          maxHeight: "85%",
+                          maxWidth: "85%",
                           objectFit: "contain",
                         }}
                       />
                     </div>
-                    <div>
+                    {/* Divider line */}
+                    <div style={{ height: 1, background: "#f1f3f9" }} />
+                    {/* Content area */}
+                    <div style={{ padding: "16px", textAlign: "left" }}>
                       <p
                         style={{
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: 700,
                           color: "#111827",
-                          marginBottom: 6,
+                          margin: "0 0 6px 0",
                         }}
                       >
                         {store.businessName}
@@ -682,32 +680,18 @@ export default function MerchantsClient({
                       <div
                         style={{
                           display: "flex",
-                          justifyContent: "center",
+                          alignItems: "center",
                           gap: 6,
+                          fontSize: 12,
+                          color: "#6b7280",
+                          fontWeight: 500,
                         }}
                       >
-                        <span
-                          style={{
-                            fontSize: 11,
-                            color: "#6b7280",
-                            background: "#f5f6fa",
-                            borderRadius: 4,
-                            padding: "2px 6px",
-                          }}
-                        >
-                          {store.coupons} Coupons
-                        </span>
-                        <span
-                          style={{
-                            fontSize: 11,
-                            color: "#6b7280",
-                            background: "#f5f6fa",
-                            borderRadius: 4,
-                            padding: "2px 6px",
-                          }}
-                        >
-                          {store.offers} Offers
-                        </span>
+                        <Ticket className="w-3.5 h-3.5 text-[#3b5bdb]" />
+                        <span>{store.coupons} Coupons</span>
+                        <span style={{ color: "#d1d5db" }}>•</span>
+                        <Tag className="w-3.5 h-3.5 text-[#FF7A18]" />
+                        <span>{store.offers} Offers</span>
                       </div>
                     </div>
                   </div>
@@ -906,21 +890,18 @@ export default function MerchantsClient({
                     <div
                       style={{
                         border: "1px solid #e8eaf0",
-                        borderRadius: 10,
-                        padding: "16px 12px",
+                        borderRadius: 12,
+                        background: "#fff",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease-in-out",
                         display: "flex",
                         flexDirection: "column",
-                        alignItems: "center",
-                        gap: 8,
-                        cursor: "pointer",
-                        background: "#fff",
-                        transition: "all 0.2s",
-                        textAlign: "center",
+                        overflow: "hidden",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = "#3b5bdb";
                         e.currentTarget.style.boxShadow =
-                          "0 4px 14px rgba(59,91,219,0.1)";
+                          "0 6px 18px rgba(0,0,0,0.05)";
+                        e.currentTarget.style.borderColor = "#3b5bdb";
                         e.currentTarget.style.transform = "translateY(-2px)";
                       }}
                       onMouseLeave={(e) => {
@@ -929,28 +910,62 @@ export default function MerchantsClient({
                         e.currentTarget.style.transform = "translateY(0)";
                       }}
                     >
-                      <p
+                      {/* Logo container */}
+                      <div
                         style={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: "#111827",
-                          margin: 0,
+                          height: 80,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: "6px",
+                          background: "#fff",
                         }}
                       >
-                        {m.businessName}
-                      </p>
-                      <p
-                        style={{
-                          fontSize: 11,
-                          color: "#6b7280",
-                          margin: 0,
-                        }}
-                      >
-                        <span style={{ fontWeight: 600, color: "#3b5bdb" }}>
-                          {m.coupons + m.offers}
-                        </span>{" "}
-                        Coupons &amp; Offers
-                      </p>
+                        <img
+                          src={m.logo}
+                          alt={m.businessName}
+                          style={{
+                            maxHeight: "85%",
+                            maxWidth: "85%",
+                            objectFit: "contain",
+                          }}
+                          onError={(e) => {
+                            e.target.src =
+                              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%233b5bdb' stroke-width='2'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' ry='2'/%3E%3C/svg%3E";
+                          }}
+                        />
+                      </div>
+                      {/* Divider line */}
+                      <div style={{ height: 1, background: "#f1f3f9" }} />
+                      {/* Content area */}
+                      <div style={{ padding: "12px", textAlign: "left" }}>
+                        <p
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#111827",
+                            margin: "0 0 4px 0",
+                          }}
+                        >
+                          {m.businessName}
+                        </p>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                            fontSize: 11,
+                            color: "#6b7280",
+                            fontWeight: 500,
+                          }}
+                        >
+                          <Ticket className="w-3 h-3 text-[#3b5bdb]" />
+                          <span>{m.coupons} Coupons</span>
+                          <span style={{ color: "#d1d5db" }}>•</span>
+                          <Tag className="w-3 h-3 text-[#FF7A18]" />
+                          <span>{m.offers} Offers</span>
+                        </div>
+                      </div>
                     </div>
                   </Link>
                 ))}

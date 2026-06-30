@@ -22,19 +22,9 @@ const SIDEBAR_NAV = [
     icon: "https://cdn.grabon.in/gograbon/v8/icons/allbrands-small-icon-v2.svg",
   },
   {
-    label: "Banks",
-    href: "/campaigns",
-    icon: "https://cdn.grabon.in/gograbon/v8/icons/allbanks-small-v2.svg",
-  },
-  {
     label: "Festivals",
     href: "/campaigns",
     icon: "https://cdn.grabon.in/gograbon/v8/icons/allfestivals-small-icon-v2.svg",
-  },
-  {
-    label: "Product Deals",
-    href: "/deals",
-    icon: "https://cdn.grabon.in/gograbon/v8/icons/allproduct-small-icon-v2.svg",
   },
   {
     label: "Cities Deals",

@@ -1,5 +1,6 @@
 "use client";
 
+import { Tag, Ticket } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -22,19 +23,9 @@ const SIDEBAR_NAV = [
     active: true,
   },
   {
-    label: "Banks",
-    href: "/campaigns",
-    icon: "https://cdn.grabon.in/gograbon/v8/icons/allbanks-small-v2.svg",
-  },
-  {
     label: "Festivals",
     href: "/campaigns",
     icon: "https://cdn.grabon.in/gograbon/v8/icons/allfestivals-small-icon-v2.svg",
-  },
-  {
-    label: "Product Deals",
-    href: "/deals",
-    icon: "https://cdn.grabon.in/gograbon/v8/icons/allproduct-small-icon-v2.svg",
   },
   {
     label: "Cities Deals",
@@ -64,28 +55,28 @@ const POPULAR_BRANDS = [
   {
     slug: "techgadgets", // maps to Samsung
     businessName: "Samsung",
-    logo: "https://companieslogo.com/img/orig/SMSN.IL-47509fb3.png",
+    logo: "/brandlogos/10005.jpg",
     coupons: 1,
     offers: 53,
   },
   {
     slug: "oneplus",
     businessName: "OnePlus",
-    logo: "https://companieslogo.com/img/orig/oneplus.svg",
+    logo: "/brandlogos/10006.jpg",
     coupons: 1,
     offers: 34,
   },
   {
     slug: "stylezone", // maps to Adidas
     businessName: "Adidas",
-    logo: "https://companieslogo.com/img/orig/ADDYY-576e03de.png",
+    logo: "/brandlogos/10012.jpg",
     coupons: 1,
     offers: 32,
   },
   {
     slug: "lenovo",
     businessName: "Lenovo",
-    logo: "https://companieslogo.com/img/orig/LNVGY-234b3e8e.png",
+    logo: "/brandlogos/10017.jpg",
     coupons: 4,
     offers: 32,
   },
@@ -96,62 +87,62 @@ const MOCK_BRANDS_SEED = [
   {
     businessName: "Samsung",
     slug: "samsung",
-    logo: "https://companieslogo.com/img/orig/SMSN.IL-47509fb3.png",
+    logo: "/brandlogos/10005.jpg",
   },
   {
     businessName: "Sony",
     slug: "sony",
-    logo: "https://companieslogo.com/img/orig/SONY-a7a514d8.png",
+    logo: "/brandlogos/10035.jpg",
   },
   {
     businessName: "Sparx",
     slug: "sparx",
-    logo: "https://companieslogo.com/img/orig/sparx.svg",
+    logo: "/brandlogos/10036.jpg",
   },
   {
     businessName: "SOME BY MI",
     slug: "some-by-mi",
-    logo: "https://companieslogo.com/img/orig/somebymi.png",
+    logo: "/brandlogos/10037.jpg",
   },
   {
     businessName: "Adidas",
     slug: "adidas",
-    logo: "https://companieslogo.com/img/orig/ADDYY-576e03de.png",
+    logo: "/brandlogos/10012.jpg",
   },
   {
     businessName: "Apple",
     slug: "apple",
-    logo: "https://companieslogo.com/img/orig/AAPL-48615c89.png",
+    logo: "/brandlogos/10013.jpg",
   },
   {
     businessName: "Asus",
     slug: "asus",
-    logo: "https://companieslogo.com/img/orig/ASUUY-0b5c15ee.png",
+    logo: "/brandlogos/10008.jpg",
   },
   {
     businessName: "Dell",
     slug: "dell",
-    logo: "https://companieslogo.com/img/orig/DELL-c06f3680.png",
+    logo: "/brandlogos/10007.jpg",
   },
   {
     businessName: "HP",
     slug: "hp",
-    logo: "https://companieslogo.com/img/orig/HPQ-cf3bfd0f.png",
+    logo: "/brandlogos/10009.jpg",
   },
   {
     businessName: "Lenovo",
     slug: "lenovo",
-    logo: "https://companieslogo.com/img/orig/LNVGY-234b3e8e.png",
+    logo: "/brandlogos/10017.jpg",
   },
   {
     businessName: "Nike",
     slug: "nike",
-    logo: "https://companieslogo.com/img/orig/NKE-f8319e7a.png",
+    logo: "/brandlogos/10010.jpg",
   },
   {
     businessName: "Puma",
     slug: "puma",
-    logo: "https://companieslogo.com/img/orig/PUM.DE-7f0d0144.png",
+    logo: "/brandlogos/10011.jpg",
   },
 ];
 
@@ -197,7 +188,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
 
   // Combine database brands with mock brands
   const allMergedBrands = useMemo(() => {
-    const dbFormatted = brands.map((b) => {
+    const dbFormatted = brands.map((b, idx) => {
       // Find fallback logo if empty
       let brandLogo = b.logo;
       if (!brandLogo) {
@@ -211,22 +202,22 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
       return {
         businessName: b.businessName,
         slug: b.slug,
-        logo:
-          brandLogo ||
-          `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(b.businessName)}&backgroundColor=3e80dd&textColor=ffffff`,
+        logo: brandLogo || `/brandlogos/${10002 + (idx % 42)}.jpg`,
+        coupons: b.totalCoupons || 4,
+        offers: Math.ceil((b.totalCoupons || 4) * 0.7) + 2,
       };
     });
 
     const dbSlugs = new Set(dbFormatted.map((b) => b.slug));
-    const mocks = MOCK_BRANDS_SEED.filter((m) => !dbSlugs.has(m.slug)).map(
-      (m) => ({
-        businessName: m.businessName,
-        slug: m.slug,
-        logo:
-          m.logo ||
-          `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(m.businessName)}&backgroundColor=3e80dd&textColor=ffffff`,
-      }),
-    );
+    const mocks = MOCK_BRANDS_SEED.map((m, idx) => ({
+      businessName: m.businessName,
+      slug: m.slug,
+      logo:
+        m.logo ||
+        `/brandlogos/${10002 + ((idx + dbFormatted.length) % 42)}.jpg`,
+      coupons: 12 + (idx % 25),
+      offers: 8 + (idx % 15),
+    })).filter((m) => !dbSlugs.has(m.slug));
 
     return [...dbFormatted, ...mocks];
   }, [brands]);
@@ -633,53 +624,56 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                     style={{
                       border: "1px solid #e8eaf0",
                       borderRadius: 12,
-                      padding: "24px 16px 16px",
-                      textAlign: "center",
+                      background: "#fff",
                       cursor: "pointer",
                       transition: "box-shadow 0.2s, transform 0.2s",
-                      background: "#fff",
-                      height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "space-between",
+                      overflow: "hidden",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.boxShadow =
-                        "0 4px 18px rgba(59,91,219,0.12)";
+                        "0 6px 18px rgba(0,0,0,0.06)";
+                      e.currentTarget.style.borderColor = "#3b5bdb";
                       e.currentTarget.style.transform = "translateY(-2px)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.boxShadow = "none";
+                      e.currentTarget.style.borderColor = "#e8eaf0";
                       e.currentTarget.style.transform = "translateY(0)";
                     }}
                   >
+                    {/* Logo container */}
                     <div
                       style={{
-                        height: 48,
+                        height: 95,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        marginBottom: 12,
+                        padding: "8px",
+                        background: "#fff",
                       }}
                     >
                       <img
                         src={brand.logo}
                         alt={brand.businessName}
                         style={{
-                          maxHeight: 40,
-                          maxWidth: 120,
+                          maxHeight: "85%",
+                          maxWidth: "85%",
                           objectFit: "contain",
                         }}
                       />
                     </div>
-                    <div>
+                    {/* Divider line */}
+                    <div style={{ height: 1, background: "#f1f3f9" }} />
+                    {/* Content area */}
+                    <div style={{ padding: "16px", textAlign: "left" }}>
                       <p
                         style={{
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: 700,
                           color: "#111827",
-                          marginBottom: 6,
+                          margin: "0 0 6px 0",
                         }}
                       >
                         {brand.businessName}
@@ -687,32 +681,18 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                       <div
                         style={{
                           display: "flex",
-                          justifyContent: "center",
+                          alignItems: "center",
                           gap: 6,
+                          fontSize: 12,
+                          color: "#6b7280",
+                          fontWeight: 500,
                         }}
                       >
-                        <span
-                          style={{
-                            fontSize: 11,
-                            color: "#6b7280",
-                            background: "#f5f6fa",
-                            borderRadius: 4,
-                            padding: "2px 6px",
-                          }}
-                        >
-                          {brand.coupons} Coupons
-                        </span>
-                        <span
-                          style={{
-                            fontSize: 11,
-                            color: "#6b7280",
-                            background: "#f5f6fa",
-                            borderRadius: 4,
-                            padding: "2px 6px",
-                          }}
-                        >
-                          {brand.offers} Offers
-                        </span>
+                        <Ticket className="w-3.5 h-3.5 text-[#3b5bdb]" />
+                        <span>{brand.coupons} Coupons</span>
+                        <span style={{ color: "#d1d5db" }}>•</span>
+                        <Tag className="w-3.5 h-3.5 text-[#FF7A18]" />
+                        <span>{brand.offers} Offers</span>
                       </div>
                     </div>
                   </div>
@@ -912,22 +892,17 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                       style={{
                         border: "1px solid #e8eaf0",
                         borderRadius: 12,
-                        padding: "16px 12px",
+                        background: "#fff",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease-in-out",
                         display: "flex",
                         flexDirection: "column",
-                        alignItems: "center",
-                        gap: 12,
-                        cursor: "pointer",
-                        background: "#fff",
-                        transition: "all 0.2s",
-                        textAlign: "center",
-                        height: "100%",
-                        justifyContent: "space-between",
+                        overflow: "hidden",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = "#3b5bdb";
                         e.currentTarget.style.boxShadow =
-                          "0 4px 14px rgba(59,91,219,0.1)";
+                          "0 6px 18px rgba(0,0,0,0.05)";
+                        e.currentTarget.style.borderColor = "#3b5bdb";
                         e.currentTarget.style.transform = "translateY(-2px)";
                       }}
                       onMouseLeave={(e) => {
@@ -936,34 +911,63 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                         e.currentTarget.style.transform = "translateY(0)";
                       }}
                     >
+                      {/* Logo container */}
+                      {/* Logo container */}
                       <div
                         style={{
-                          height: 40,
+                          height: 80,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+                          padding: "6px",
+                          background: "#fff",
                         }}
                       >
                         <img
                           src={brand.logo}
                           alt={brand.businessName}
                           style={{
-                            maxHeight: 32,
-                            maxWidth: 90,
+                            maxHeight: "85%",
+                            maxWidth: "85%",
                             objectFit: "contain",
+                          }}
+                          onError={(e) => {
+                            e.target.src =
+                              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%233b5bdb' stroke-width='2'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' ry='2'/%3E%3C/svg%3E";
                           }}
                         />
                       </div>
-                      <p
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: "#111827",
-                          margin: 0,
-                        }}
-                      >
-                        {brand.businessName}
-                      </p>
+                      {/* Divider line */}
+                      <div style={{ height: 1, background: "#f1f3f9" }} />
+                      {/* Content area */}
+                      <div style={{ padding: "12px", textAlign: "left" }}>
+                        <p
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#111827",
+                            margin: "0 0 4px 0",
+                          }}
+                        >
+                          {brand.businessName}
+                        </p>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                            fontSize: 11,
+                            color: "#6b7280",
+                            fontWeight: 500,
+                          }}
+                        >
+                          <Ticket className="w-3 h-3 text-[#3b5bdb]" />
+                          <span>{brand.coupons} Coupons</span>
+                          <span style={{ color: "#d1d5db" }}>•</span>
+                          <Tag className="w-3 h-3 text-[#FF7A18]" />
+                          <span>{brand.offers} Offers</span>
+                        </div>
+                      </div>
                     </div>
                   </Link>
                 ))}

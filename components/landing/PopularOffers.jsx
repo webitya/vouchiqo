@@ -325,15 +325,13 @@ export default function PopularOffers({ coupons = [] }) {
   const displayItems = items.length > 0 ? items : demoCoupons;
 
   return (
-    <section className="g-sub-banner text-left w-full bg-[#F7F7F8] pt-9 pb-0 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <SectionHeader title="Popular Offers of the Day" viewAllHref="/deals" />
+    <section className="g-sub-banner text-left w-full bg-white rounded-2xl border border-brand-border p-6 md:p-8">
+      <SectionHeader title="Popular Offers of the Day" viewAllHref="/deals" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-0">
-          {displayItems.map((coupon) => (
-            <PopularOfferCard key={coupon._id} coupon={coupon} />
-          ))}
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {displayItems.map((coupon) => (
+          <PopularOfferCard key={coupon._id} coupon={coupon} />
+        ))}
       </div>
     </section>
   );

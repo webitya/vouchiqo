@@ -223,11 +223,11 @@ export function AppSidebar({ ...props }) {
     <Sidebar
       collapsible="icon"
       style={{
-        "--sidebar": "#ffffff",
-        "--sidebar-foreground": "#64748b",
-        "--sidebar-border": "#e2e8f0",
-        "--sidebar-accent": "#f1f5f9",
-        "--sidebar-accent-foreground": "#0f172a",
+        "--sidebar": "var(--brand-bg)",
+        "--sidebar-foreground": "var(--brand-subtext)",
+        "--sidebar-border": "var(--brand-border)",
+        "--sidebar-accent": "var(--brand-surface)",
+        "--sidebar-accent-foreground": "var(--brand-navy)",
       }}
       {...props}
     >

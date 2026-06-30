@@ -9,26 +9,26 @@
   --font-sans: var(--font-inter), sans-serif;
   --font-heading: var(--font-geist-sans), sans-serif;
 
-  /* Brand Colors - Light Mode Defaults */
-  --brand-navy: #191F2E;
+  /* Brand Colors - Light Mode Defaults (Derived from Vouchiqo Logo & professional UI/UX laws) */
+  --brand-navy: #08214D;
   --brand-blue: #3E80DD;
-  --brand-success: #59AB02;
-  --brand-warning: #FFB020;
-  --brand-error: #BA1A1A;
+  --brand-success: #10B981;
+  --brand-warning: #F59E0B;
+  --brand-error: #EF4444;
   --brand-bg: #ffffff;
-  --brand-surface: #F8F9FA;
-  --brand-border: #EAECEF;
-  --brand-text: #191F2E;
-  --brand-subtext: #6C757D;
+  --brand-surface: #F8FAFC;
+  --brand-border: #E2E8F0;
+  --brand-text: #08214D;
+  --brand-subtext: #64748B;
   --background: var(--brand-bg);
   --foreground: var(--brand-text);
   --card: var(--brand-bg);
   --card-foreground: var(--brand-text);
   --popover: var(--brand-bg);
   --popover-foreground: var(--brand-text);
-  --primary: var(--brand-success);
+  --primary: #FF7A18;
   --primary-foreground: #ffffff;
-  --secondary: var(--brand-blue);
+  --secondary: #FF3D77;
   --secondary-foreground: #ffffff;
   --muted: var(--brand-surface);
   --muted-foreground: var(--brand-subtext);
@@ -37,7 +37,7 @@
   --destructive: var(--brand-error);
   --border: var(--brand-border);
   --input: var(--brand-border);
-  --ring: var(--brand-blue);
+  --ring: var(--primary);
   --chart-1: oklch(0.871 0.006 286.286);
   --chart-2: oklch(0.552 0.016 285.938);
   --chart-3: oklch(0.442 0.017 285.786);
@@ -58,12 +58,12 @@
   --_g-default-bg: #F7F7F8;
   --_base-white: #fff;
   --_base-white-2: #F4F6FD;
-  --_default-color: #191F2E;
-  --_default-color-2: #6F7583;
-  --_default-border-color: #D0D7E2;
-  --_default-border-color-2: #D0D5DD;
+  --_default-color: #08214D;
+  --_default-color-2: #64748B;
+  --_default-border-color: #E2E8F0;
+  --_default-border-color-2: #E2E8F0;
   --_default-border-color-3: #E3EDFC;
-  --_text-thik-color: #061A38;
+  --_text-thik-color: #08214D;
   --_grid-color: #d5d8dc;
   --_grid-active-color: #515962;
   --_default-boxshadow-color-1: #CBCBDD;
@@ -71,7 +71,7 @@
   --_new-active-color-3: #3F65A9;
   --_new-green-color: #D1DE31;
   --_new-green-color-2: #58A374;
-  --_light-orange-color: #F8991D;
+  --_light-orange-color: #FF7A18;
   --_default-linear-color: #DFE7F6;
   --_icon-new-hover-color: #e9f0de;
   --_cpn-review-no: #e2e8f0;
@@ -143,19 +143,19 @@
    The site always uses light mode to match GrabOn's design.
    Dark mode can be manually enabled by adding the .dark class to <html>. */
 
-/* Support .dark and [data-theme="dark"] class switches */
+/* Support .dark and [data-theme="dark"] class switches - styled with Vouchiqo Brand Dark Navy Palette */
 .dark,
 [data-theme="dark"] {
-  --brand-navy: #0a2e6e;
-  --brand-blue: #3b82f6;
-  --brand-success: #10b981;
-  --brand-warning: #f59e0b;
-  --brand-error: #ef4444;
-  --brand-bg: #090d16;
-  --brand-surface: #111827;
-  --brand-border: #1f2937;
-  --brand-text: #f9fafb;
-  --brand-subtext: #9ca3af;
+  --brand-navy: #F8FAFC;
+  --brand-blue: #3B82F6;
+  --brand-success: #10B981;
+  --brand-warning: #F59E0B;
+  --brand-error: #EF4444;
+  --brand-bg: #091932; /* Deep Navy Card backgrounds */
+  --brand-surface: #061327; /* Darker Navy Page backgrounds */
+  --brand-border: #1E293B;
+  --brand-text: #F8FAFC;
+  --brand-subtext: #94A3B8;
 }
 
 .dark .text-brand-navy,
