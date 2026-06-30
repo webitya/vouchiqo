@@ -10,10 +10,10 @@ import {
   Phone,
 } from "lucide-react";
 import { useState } from "react";
-import ConfirmationModal from "@/components/ConfirmationModal";
-import CouponCard from "@/components/CouponCard";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
+import ConfirmationModal from "@/components/shared/ConfirmationModal";
+import CouponCard from "@/components/shared/CouponCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 

@@ -8,8 +8,8 @@ export const HowItWorks = React.memo(function HowItWorks() {
         Verification is the Vouchiqo Promise
       </h2>
       <p className="text-xs text-brand-subtext max-w-sm mx-auto mb-12">
-        Say goodbye to fake coupon codes and broken links. Here is how
-        Vouchiqo guarantees savings.
+        Say goodbye to fake coupon codes and broken links. Here is how Vouchiqo
+        guarantees savings.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -164,7 +164,7 @@ body {
 }
 
 .btn-primary::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -50%;
@@ -462,7 +462,8 @@ body {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -501,12 +502,24 @@ body {
 }
 
 /* 3. Staggered Delay Utilities */
-.stagger-1 { animation-delay: 60ms; }
-.stagger-2 { animation-delay: 120ms; }
-.stagger-3 { animation-delay: 180ms; }
-.stagger-4 { animation-delay: 240ms; }
-.stagger-5 { animation-delay: 300ms; }
-.stagger-6 { animation-delay: 360ms; }
+.stagger-1 {
+  animation-delay: 60ms;
+}
+.stagger-2 {
+  animation-delay: 120ms;
+}
+.stagger-3 {
+  animation-delay: 180ms;
+}
+.stagger-4 {
+  animation-delay: 240ms;
+}
+.stagger-5 {
+  animation-delay: 300ms;
+}
+.stagger-6 {
+  animation-delay: 360ms;
+}
 
 /* 4. Interactive Card Animation (coupon-card-interactive) */
 .coupon-card-interactive {
@@ -533,7 +546,9 @@ body {
 
 .coupon-card-interactive:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 28px -4px rgba(10, 46, 110, 0.1), 0 8px 16px -6px rgba(10, 46, 110, 0.05);
+  box-shadow:
+    0 12px 28px -4px rgba(10, 46, 110, 0.1),
+    0 8px 16px -6px rgba(10, 46, 110, 0.05);
   border-color: transparent;
 }
 
@@ -561,7 +576,9 @@ body {
 
 .coupon-card-hot:hover {
   border-color: rgba(255, 61, 119, 0.4);
-  box-shadow: 0 12px 30px -4px rgba(255, 61, 119, 0.12), 0 8px 16px -6px rgba(255, 122, 24, 0.08);
+  box-shadow:
+    0 12px 30px -4px rgba(255, 61, 119, 0.12),
+    0 8px 16px -6px rgba(255, 122, 24, 0.08);
 }
 
 /* Category Card Interactions */
@@ -580,7 +597,9 @@ body {
 
 /* General Interactive Lists (Scale transition for list items) */
 .list-item-interactive {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.2s ease;
 }
 
 .list-item-interactive:hover {
@@ -593,8 +612,8 @@ body {
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .scroll-smooth {
@@ -640,5 +659,3 @@ body {
 [data-theme="dark"] * {
   scrollbar-color: rgba(156, 163, 175, 0.2) transparent;
 }
-
-

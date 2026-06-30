@@ -2,7 +2,7 @@
 
 import { Search, Star, StarOff, RefreshCw } from "lucide-react";
 import { useState, useEffect } from "react";
-import DashboardLayout from "@/components/DashboardLayout";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

@@ -2,22 +2,20 @@
 
 import { useQuery } from "@tanstack/react-query";
 import {
-  BarChart2,
   Calendar,
   CheckCircle2,
   FileText,
+  Loader2,
+  Lock,
+  Share2,
   TrendingUp,
   Users,
-  Lock,
-  Loader2,
-  Share2,
-  Clock,
 } from "lucide-react";
-import { useState } from "react";
 import Link from "next/link";
-import AnalyticsCard from "@/components/AnalyticsCard";
-import DashboardLayout from "@/components/DashboardLayout";
-import KPICard from "@/components/KPICard";
+import { useState } from "react";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import AnalyticsCard from "@/components/shared/AnalyticsCard";
+import KPICard from "@/components/shared/KPICard";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -69,12 +67,23 @@ export default function MerchantAnalytics() {
   const tickerImpressions = merchant?.tickerImpressions ?? 3280;
   const totalClaims = merchant?.totalClaims ?? 0;
   const totalRedemptions = merchant?.totalRedemptions ?? 0;
-  const conversionRate = totalClaims > 0 ? ((totalRedemptions / totalClaims) * 100).toFixed(1) : "0.0";
+  const conversionRate =
+    totalClaims > 0
+      ? ((totalRedemptions / totalClaims) * 100).toFixed(1)
+      : "0.0";
 
   // Data for Pro+ Analytics (rendered as custom SVGs or tables)
   const deviceData = [
-    { name: "Mobile Web Browser", count: Math.round(totalClaims * 0.65), pct: 65 },
-    { name: "Desktop Computer", count: Math.round(totalClaims * 0.25), pct: 25 },
+    {
+      name: "Mobile Web Browser",
+      count: Math.round(totalClaims * 0.65),
+      pct: 65,
+    },
+    {
+      name: "Desktop Computer",
+      count: Math.round(totalClaims * 0.25),
+      pct: 25,
+    },
     { name: "Tablet Device", count: Math.round(totalClaims * 0.1), pct: 10 },
   ];
 
@@ -99,7 +108,10 @@ export default function MerchantAnalytics() {
   return (
     <DashboardLayout
       title="Store Analytics"
-      user={{ name: merchant?.businessName || "Merchant Partner", role: "merchant" }}
+      user={{
+        name: merchant?.businessName || "Merchant Partner",
+        role: "merchant",
+      }}
     >
       {/* Top Filter Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-brand-bg border border-brand-border p-4 rounded-[16px] shadow-sm text-left">
@@ -172,7 +184,9 @@ export default function MerchantAnalytics() {
               Unlock Pro Analytics &amp; Demographics
             </h3>
             <p className="text-xs text-brand-subtext max-w-md mt-2 leading-relaxed font-semibold">
-              Get comprehensive insight data about your customers, top regional cities of redemptions, active hours heatmaps, and Expired Offer Revival performance.
+              Get comprehensive insight data about your customers, top regional
+              cities of redemptions, active hours heatmaps, and Expired Offer
+              Revival performance.
             </p>
             <Link
               href="/merchant/billing"
@@ -184,21 +198,31 @@ export default function MerchantAnalytics() {
         )}
 
         {/* Analytics Grid */}
-        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 ${!isProPlus ? "opacity-35 select-none pointer-events-none" : ""}`}>
-          
+        <div
+          className={`grid grid-cols-1 lg:grid-cols-2 gap-6 ${!isProPlus ? "opacity-35 select-none pointer-events-none" : ""}`}
+        >
           {/* User Type & City Demographics */}
           <AnalyticsCard title="Audience Demographics">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-2">
-              
               {/* User Type Donut SVG */}
               <div className="space-y-4 text-center">
                 <span className="text-[10px] font-bold text-brand-subtext uppercase tracking-wider block">
                   New vs Returning
                 </span>
                 <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                  <svg
+                    className="w-full h-full transform -rotate-90"
+                    viewBox="0 0 36 36"
+                  >
                     {/* Background Circle */}
-                    <circle cx="18" cy="18" r="15.915" fill="none" stroke="#f1f5f9" strokeWidth="4" />
+                    <circle
+                      cx="18"
+                      cy="18"
+                      r="15.915"
+                      fill="none"
+                      stroke="#f1f5f9"
+                      strokeWidth="4"
+                    />
                     {/* Slice 1: New (68%) */}
                     <circle
                       cx="18"
@@ -224,7 +248,9 @@ export default function MerchantAnalytics() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center font-bold text-brand-navy">
                     <span className="text-sm font-black">68%</span>
-                    <span className="text-[8px] text-brand-subtext">New Users</span>
+                    <span className="text-[8px] text-brand-subtext">
+                      New Users
+                    </span>
                   </div>
                 </div>
                 <div className="flex justify-center gap-4 text-[10px] font-semibold">
@@ -249,7 +275,9 @@ export default function MerchantAnalytics() {
                     <div key={idx} className="space-y-1">
                       <div className="flex justify-between font-bold text-[10px]">
                         <span className="text-brand-text">{item.city}</span>
-                        <span className="text-brand-navy">{item.count} codes</span>
+                        <span className="text-brand-navy">
+                          {item.count} codes
+                        </span>
                       </div>
                       <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
                         <div
@@ -261,7 +289,6 @@ export default function MerchantAnalytics() {
                   ))}
                 </div>
               </div>
-
             </div>
           </AnalyticsCard>
 
@@ -341,20 +368,31 @@ export default function MerchantAnalytics() {
           <AnalyticsCard title="Expired Offer Revival Stats">
             <div className="grid grid-cols-3 gap-4 py-2 text-center">
               <div className="bg-brand-surface border border-brand-border rounded-xl p-4 space-y-1">
-                <span className="text-xs font-bold text-brand-subtext uppercase">Vouchers Revived</span>
-                <span className="block text-2xl font-black text-brand-navy">{revivalStats.totalRevived}</span>
+                <span className="text-xs font-bold text-brand-subtext uppercase">
+                  Vouchers Revived
+                </span>
+                <span className="block text-2xl font-black text-brand-navy">
+                  {revivalStats.totalRevived}
+                </span>
               </div>
               <div className="bg-brand-surface border border-brand-border rounded-xl p-4 space-y-1">
-                <span className="text-xs font-bold text-brand-subtext uppercase">Approval Rate</span>
-                <span className="block text-2xl font-black text-brand-success">{revivalStats.approvalRate}</span>
+                <span className="text-xs font-bold text-brand-subtext uppercase">
+                  Approval Rate
+                </span>
+                <span className="block text-2xl font-black text-brand-success">
+                  {revivalStats.approvalRate}
+                </span>
               </div>
               <div className="bg-brand-surface border border-brand-border rounded-xl p-4 space-y-1">
-                <span className="text-xs font-bold text-brand-subtext uppercase">Revenue Saved</span>
-                <span className="block text-2xl font-black text-brand-navy">₹{revivalStats.revenueRecovered}</span>
+                <span className="text-xs font-bold text-brand-subtext uppercase">
+                  Revenue Saved
+                </span>
+                <span className="block text-2xl font-black text-brand-navy">
+                  ₹{revivalStats.revenueRecovered}
+                </span>
               </div>
             </div>
           </AnalyticsCard>
-
         </div>
       </div>
     </DashboardLayout>

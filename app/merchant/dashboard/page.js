@@ -8,8 +8,8 @@ import {
   Tag,
   TrendingUp,
 } from "lucide-react";
-import DashboardLayout from "@/components/DashboardLayout";
-import KPICard from "@/components/KPICard";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import KPICard from "@/components/shared/KPICard";
 import {
   Table,
   TableBody,

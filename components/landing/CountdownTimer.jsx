@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export function CountdownTimer() {
   const [countdownTime, setCountdownTime] = useState("24:00:00");
@@ -25,7 +25,7 @@ export function CountdownTimer() {
       setCountdownTime(
         `${hrs.toString().padStart(2, "0")}:${mins
           .toString()
-          .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+          .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`,
       );
     };
 
@@ -37,7 +37,9 @@ export function CountdownTimer() {
   return (
     <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl w-fit">
       <Clock className="w-4 h-4 text-[#FF7A18] animate-pulse" />
-      <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Ends In:</span>
+      <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+        Ends In:
+      </span>
       <span className="font-mono text-sm md:text-base font-black text-[#FFB020] tracking-widest">
         {countdownTime}
       </span>

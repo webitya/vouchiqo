@@ -2,10 +2,10 @@
 
 import { Bookmark, History, PiggyBank, RefreshCw, Star } from "lucide-react";
 import { useState } from "react";
-import ConfirmationModal from "@/components/ConfirmationModal";
-import CouponCard from "@/components/CouponCard";
-import DashboardLayout from "@/components/DashboardLayout";
-import KPICard from "@/components/KPICard";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import ConfirmationModal from "@/components/shared/ConfirmationModal";
+import CouponCard from "@/components/shared/CouponCard";
+import KPICard from "@/components/shared/KPICard";
 
 export default function CustomerDashboard() {
   const [selectedCoupon, setSelectedCoupon] = useState(null);

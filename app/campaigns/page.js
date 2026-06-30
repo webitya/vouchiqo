@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, TrendingUp, RefreshCw } from "lucide-react";
-import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CouponCard from "@/components/CouponCard";
-import ConfirmationModal from "@/components/ConfirmationModal";
+import { RefreshCw, Sparkles, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
+import ConfirmationModal from "@/components/shared/ConfirmationModal";
+import CouponCard from "@/components/shared/CouponCard";
 import { Button } from "@/components/ui/button";
 
 const SkeletonCard = () => (
@@ -28,7 +27,11 @@ export default function CampaignsPage() {
   const [selectedCoupon, setSelectedCoupon] = useState(null);
 
   // Fetch featured coupons (uses Redis cache on backend)
-  const { data: featuredCoupons = [], isLoading: loadingFeatured, refetch: refetchFeatured } = useQuery({
+  const {
+    data: featuredCoupons = [],
+    isLoading: loadingFeatured,
+    refetch: refetchFeatured,
+  } = useQuery({
     queryKey: ["coupons", "featured"],
     queryFn: async () => {
       const res = await fetch("/api/coupons?featured=true");
@@ -39,7 +42,11 @@ export default function CampaignsPage() {
   });
 
   // Fetch trending coupons (uses Redis cache on backend)
-  const { data: trendingCoupons = [], isLoading: loadingTrending, refetch: refetchTrending } = useQuery({
+  const {
+    data: trendingCoupons = [],
+    isLoading: loadingTrending,
+    refetch: refetchTrending,
+  } = useQuery({
     queryKey: ["coupons", "trending"],
     queryFn: async () => {
       const res = await fetch("/api/coupons?trending=true");
@@ -58,7 +65,10 @@ export default function CampaignsPage() {
       });
       if (!res.ok) throw new Error("Claim failed");
       const json = await res.json();
-      return json.data?.code || `VOUCH-CLAIM-${Math.floor(1000 + Math.random() * 9000)}`;
+      return (
+        json.data?.code ||
+        `VOUCH-CLAIM-${Math.floor(1000 + Math.random() * 9000)}`
+      );
     } catch {
       return `VOUCH-DEMO-${Math.floor(1000 + Math.random() * 9000)}`;
     }
@@ -78,7 +88,8 @@ export default function CampaignsPage() {
             Featured Partner Campaigns
           </h1>
           <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
-            Discover verified merchant promotional campaigns. Real-time community performance stats backed by direct business partnerships.
+            Discover verified merchant promotional campaigns. Real-time
+            community performance stats backed by direct business partnerships.
           </p>
         </div>
       </section>
@@ -92,23 +103,29 @@ export default function CampaignsPage() {
             <span>Featured Deals</span>
           </h2>
 
-          {loadingFeatured ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <SkeletonCard key={i} />
-              ))}
-            </div>
-          ) : featuredCoupons.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredCoupons.map((coupon, idx) => (
-                <div key={coupon._id} className={`animate-fade-in-up stagger-${idx + 1}`}>
-                  <CouponCard coupon={coupon} onRedeem={(c) => setSelectedCoupon(c)} />
+          {loadingFeatured
+            ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))}
+              </div>
+            : featuredCoupons.length > 0
+              ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {featuredCoupons.map((coupon, idx) => (
+                    <div
+                      key={coupon._id}
+                      className={`animate-fade-in-up stagger-${idx + 1}`}
+                    >
+                      <CouponCard
+                        coupon={coupon}
+                        onRedeem={(c) => setSelectedCoupon(c)}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs text-brand-subtext font-semibold italic">No featured campaigns active today.</p>
-          )}
+              : <p className="text-xs text-brand-subtext font-semibold italic">
+                  No featured campaigns active today.
+                </p>}
         </section>
 
         {/* Trending Campaigns Section */}
@@ -118,29 +135,37 @@ export default function CampaignsPage() {
             <span>Trending Deals</span>
           </h2>
 
-          {loadingTrending ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <SkeletonCard key={i} />
-              ))}
-            </div>
-          ) : trendingCoupons.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {trendingCoupons.map((coupon, idx) => (
-                <div key={coupon._id} className={`animate-fade-in-up stagger-${(idx % 3) + 1}`}>
-                  <CouponCard coupon={coupon} onRedeem={(c) => setSelectedCoupon(c)} />
+          {loadingTrending
+            ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))}
+              </div>
+            : trendingCoupons.length > 0
+              ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {trendingCoupons.map((coupon, idx) => (
+                    <div
+                      key={coupon._id}
+                      className={`animate-fade-in-up stagger-${(idx % 3) + 1}`}
+                    >
+                      <CouponCard
+                        coupon={coupon}
+                        onRedeem={(c) => setSelectedCoupon(c)}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs text-brand-subtext font-semibold italic">No trending campaigns active today.</p>
-          )}
+              : <p className="text-xs text-brand-subtext font-semibold italic">
+                  No trending campaigns active today.
+                </p>}
         </section>
 
         {!hasCampaigns && !loadingFeatured && !loadingTrending && (
           <div className="text-center py-16 bg-brand-bg border border-brand-border rounded-xl">
             <RefreshCw className="w-12 h-12 text-brand-subtext mx-auto mb-3" />
-            <h3 className="text-base font-bold text-brand-navy">No campaigns found</h3>
+            <h3 className="text-base font-bold text-brand-navy">
+              No campaigns found
+            </h3>
             <p className="text-xs text-brand-subtext mt-1 max-w-xs mx-auto mb-4">
               Try reloading the lists or browsing our general deals catalog.
             </p>

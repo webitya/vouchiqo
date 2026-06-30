@@ -7,20 +7,19 @@ import {
   CreditCard,
   History,
   LayoutDashboard,
+  MapPin,
   PlusCircle,
   Settings,
+  Sparkles,
   Store,
   Tag,
   TrendingUp,
   Users,
-  MapPin,
-  Sparkles,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
-import { useUser } from "@/hooks/use-user";
+import { NavMain } from "@/components/layout/NavMain";
+import { NavUser } from "@/components/layout/NavUser";
+import { TeamSwitcher } from "@/components/layout/TeamSwitcher";
 import {
   Sidebar,
   SidebarContent,
@@ -28,28 +27,33 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useUser } from "@/hooks/use-user";
 
 export function AppSidebar({ ...props }) {
   const pathname = usePathname();
   const { user: authUser, role: authRole } = useUser();
 
   // Dynamically resolve role from pathname or user session
-  const role = authUser ? authRole : (pathname.startsWith("/admin")
-    ? "admin"
-    : pathname.startsWith("/merchant")
-      ? "merchant"
-      : "customer");
+  const role = authUser
+    ? authRole
+    : pathname.startsWith("/admin")
+      ? "admin"
+      : pathname.startsWith("/merchant")
+        ? "merchant"
+        : "customer";
 
   // User details based on the active session
-  const user = authUser ? {
-    name: authUser.name,
-    email: authUser.email,
-    avatar: authUser.image || `/avatars/${role}.jpg`,
-  } : {
-    name: "Loading...",
-    email: "",
-    avatar: `/avatars/${role}.jpg`,
-  };
+  const user = authUser
+    ? {
+        name: authUser.name,
+        email: authUser.email,
+        avatar: authUser.image || `/avatars/${role}.jpg`,
+      }
+    : {
+        name: "Loading...",
+        email: "",
+        avatar: `/avatars/${role}.jpg`,
+      };
 
   // Brand Switcher items
   const getBrandDetails = () => {

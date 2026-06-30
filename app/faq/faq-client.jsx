@@ -1,18 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { HelpCircle, Search, ArrowRight, MessageSquare, ShieldCheck, CreditCard } from "lucide-react";
+import {
+  ArrowRight,
+  CreditCard,
+  HelpCircle,
+  MessageSquare,
+  Search,
+  ShieldCheck,
+} from "lucide-react";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { useState } from "react";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function FAQPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,7 +66,7 @@ export default function FAQPage() {
   const filteredFaqs = faqs.filter(
     (faq) =>
       faq.q.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.a.toLowerCase().includes(searchQuery.toLowerCase())
+      faq.a.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -74,7 +81,8 @@ export default function FAQPage() {
             How can we help you?
           </h1>
           <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
-            Search our Help Center or browse common questions about verified discount codes, revival rules, and partner billing.
+            Search our Help Center or browse common questions about verified
+            discount codes, revival rules, and partner billing.
           </p>
 
           {/* Search bar */}
@@ -102,7 +110,11 @@ export default function FAQPage() {
             {filteredFaqs.map((faq, idx) => {
               const Icon = faq.icon;
               return (
-                <AccordionItem key={idx} value={`faq-${idx}`} className="border-b border-brand-border last:border-0">
+                <AccordionItem
+                  key={idx}
+                  value={`faq-${idx}`}
+                  className="border-b border-brand-border last:border-0"
+                >
                   <AccordionTrigger className="p-5 font-heading font-bold text-sm text-brand-navy hover:no-underline hover:bg-brand-surface/40 transition-all text-left flex justify-between items-center">
                     <span className="flex items-center gap-3">
                       <span className="p-1.5 rounded-md bg-brand-blue/5 text-brand-blue">
@@ -125,7 +137,8 @@ export default function FAQPage() {
               No matching questions found
             </h3>
             <p className="text-xs text-brand-subtext max-w-xs mx-auto mb-4">
-              Try searching with general terms like "coupon", "revival", or "payment".
+              Try searching with general terms like "coupon", "revival", or
+              "payment".
             </p>
             <Button
               onClick={() => setSearchQuery("")}
@@ -144,7 +157,8 @@ export default function FAQPage() {
               <span>Still have questions?</span>
             </h3>
             <p className="text-xs text-slate-300 max-w-md">
-              Can't find the answers you're looking for? Reach out to our dedicated support team and we will get back to you shortly.
+              Can't find the answers you're looking for? Reach out to our
+              dedicated support team and we will get back to you shortly.
             </p>
           </div>
           <Button

@@ -1,13 +1,15 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { ShieldCheck, Clock } from "lucide-react";
+import { Clock, ShieldCheck } from "lucide-react";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
 
 export const metadata = {
   title: "Privacy Policy | Vouchiqo",
-  description: "Learn how Vouchiqo collects, uses, and safeguards your personal data, customer preferences, and geolocation coordinates.",
+  description:
+    "Learn how Vouchiqo collects, uses, and safeguards your personal data, customer preferences, and geolocation coordinates.",
   openGraph: {
     title: "Privacy Policy | Vouchiqo",
-    description: "Learn how Vouchiqo collects, uses, and safeguards your personal data, customer preferences, and geolocation coordinates.",
+    description:
+      "Learn how Vouchiqo collects, uses, and safeguards your personal data, customer preferences, and geolocation coordinates.",
     type: "website",
   },
 };
@@ -36,41 +38,67 @@ export default function PrivacyPolicy() {
         {/* Content */}
         <article className="prose prose-sm max-w-none text-xs text-brand-subtext leading-relaxed space-y-6">
           <p className="font-semibold text-brand-text">
-            At Vouchiqo, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and safeguard your information.
+            At Vouchiqo, we respect your privacy and are committed to protecting
+            your personal data. This Privacy Policy explains how we collect,
+            use, and safeguard your information.
           </p>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">1. Information We Collect</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              1. Information We Collect
+            </h2>
             <p>
-              We collect information you provide directly (such as registration email, name, and profile details) and automated metrics (such as geolocation coordinates during manual city detection, cookie preferences, and checkout claim success logs).
+              We collect information you provide directly (such as registration
+              email, name, and profile details) and automated metrics (such as
+              geolocation coordinates during manual city detection, cookie
+              preferences, and checkout claim success logs).
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">2. How We Use Your Data</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              2. How We Use Your Data
+            </h2>
             <p>
-              We process your data to authenticate your identity, serve location-relevant vouchers, track analytics for merchant dashboards, and notify you regarding coupon revival successes. We never sell your personal information to third parties.
+              We process your data to authenticate your identity, serve
+              location-relevant vouchers, track analytics for merchant
+              dashboards, and notify you regarding coupon revival successes. We
+              never sell your personal information to third parties.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">3. Geolocation and Tracking</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              3. Geolocation and Tracking
+            </h2>
             <p>
-              Our location-aware features query city details via OpenStreetMap reverse lookup. GPS permissions are entirely user-controlled, and coordinates are cached locally for up to 5 minutes to prevent redundant requests.
+              Our location-aware features query city details via OpenStreetMap
+              reverse lookup. GPS permissions are entirely user-controlled, and
+              coordinates are cached locally for up to 5 minutes to prevent
+              redundant requests.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">4. Security</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              4. Security
+            </h2>
             <p>
-              We employ strict industry-standard security protocols, including cryptographic Better Auth OTP tokens, SSL transport encryption, and secure managed databases, to prevent unauthorized data leaks or access.
+              We employ strict industry-standard security protocols, including
+              cryptographic Better Auth OTP tokens, SSL transport encryption,
+              and secure managed databases, to prevent unauthorized data leaks
+              or access.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">5. Your Choices & Rights</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              5. Your Choices & Rights
+            </h2>
             <p>
-              You have the right to edit your settings, opt-out of notifications, or request permanent deletion of your customer profile at any time via your account settings.
+              You have the right to edit your settings, opt-out of
+              notifications, or request permanent deletion of your customer
+              profile at any time via your account settings.
             </p>
           </div>
         </article>

@@ -1,21 +1,43 @@
 "use client";
 
+import {
+  ChevronRight,
+  Compass,
+  Home,
+  MapPin,
+  Play,
+  RotateCcw,
+  Search,
+  Sparkles,
+  User,
+  Wifi,
+} from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Sparkles, CheckCircle2, ChevronRight, Play, Search, MapPin, Home, Compass, RotateCcw, User, Wifi } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 export function HeroSection() {
   // Typewriter effect
-  const categories = ["Fashion", "Electronics", "Dining", "Travel & Stays", "SaaS Tools", "Home Improvement"];
+  const categories = [
+    "Fashion",
+    "Electronics",
+    "Dining",
+    "Travel & Stays",
+    "SaaS Tools",
+    "Home Improvement",
+  ];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [typingSpeed, setTypingSpeed] = useState(150);
 
   // Stats from DB
-  const [stats, setStats] = useState({ verifiedBrands: 16, activeDeals: 120, totalSavings: 4500000 });
+  const [stats, setStats] = useState({
+    verifiedBrands: 16,
+    activeDeals: 120,
+    totalSavings: 4500000,
+  });
 
   useEffect(() => {
     async function fetchStats() {
@@ -59,7 +81,7 @@ export function HeroSection() {
     }
 
     return () => clearTimeout(timer);
-  }, [typedText, isDeleting, currentWordIndex]);
+  }, [typedText, isDeleting, currentWordIndex, typingSpeed]);
 
   return (
     <section className="bg-[#1A3C5E] text-white py-6 md:py-10 px-4 relative overflow-hidden select-none border-b border-white/5">
@@ -69,7 +91,6 @@ export function HeroSection() {
       <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl"></div>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start relative z-10">
-        
         {/* Left Column: Copy & Actions */}
         <div className="space-y-4 text-left animate-fade-in-up stagger-1 lg:pt-[34px]">
           <Badge className="bg-white/10 text-brand-warning hover:bg-white/15 border border-white/10 rounded-full px-3 py-1 font-bold text-xs shadow-none gap-1.5 w-fit animate-float">
@@ -87,7 +108,9 @@ export function HeroSection() {
               </span>
             </h1>
             <p className="text-sm md:text-base text-slate-300 max-w-xl leading-relaxed font-medium">
-              Vouchiqo eliminates expired offers through merchant-authorized verification. Search real active coupons, or request to revive expired ones you love.
+              Vouchiqo eliminates expired offers through merchant-authorized
+              verification. Search real active coupons, or request to revive
+              expired ones you love.
             </p>
           </div>
 
@@ -147,7 +170,7 @@ export function HeroSection() {
         <div className="hidden lg:flex justify-center items-center relative select-none animate-fade-in-scale stagger-2">
           {/* Decorative glows behind phone */}
           <div className="absolute w-72 h-72 bg-gradient-to-tr from-[#FF7A18] to-[#FF3D77] rounded-full opacity-20 blur-3xl z-0" />
-          
+
           {/* Physical Buttons Wrapper */}
           <div className="relative p-4">
             {/* Volume Up Button */}
@@ -159,10 +182,8 @@ export function HeroSection() {
 
             {/* Outer phone frame */}
             <div className="w-[300px] h-[580px] border-[10px] border-slate-800 bg-slate-950 rounded-[44px] relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden p-[6px] flex flex-col z-10 ring-1 ring-white/20">
-              
               {/* Screen Content Wrapper */}
               <div className="bg-[#070A13] flex-1 rounded-[34px] overflow-hidden flex flex-col p-4 relative pt-10 text-left space-y-3.5 border border-white/5">
-                
                 {/* Glossy diagonal highlight */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/2 to-white/8 pointer-events-none z-30 rounded-[34px]" />
 
@@ -211,7 +232,9 @@ export function HeroSection() {
                 {/* Search box */}
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-2 text-slate-400">
                   <Search className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-[10px] font-medium">Search 1,200+ coupons...</span>
+                  <span className="text-[10px] font-medium">
+                    Search 1,200+ coupons...
+                  </span>
                 </div>
 
                 {/* Categories strip */}
@@ -235,16 +258,24 @@ export function HeroSection() {
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <div className="w-4 h-4 rounded-full bg-[#006241] flex items-center justify-center text-[9px] font-black text-white">★</div>
-                      <span className="text-[9px] text-slate-300 font-extrabold uppercase tracking-wide">Starbucks</span>
+                      <div className="w-4 h-4 rounded-full bg-[#006241] flex items-center justify-center text-[9px] font-black text-white">
+                        ★
+                      </div>
+                      <span className="text-[9px] text-slate-300 font-extrabold uppercase tracking-wide">
+                        Starbucks
+                      </span>
                     </div>
                     <span className="text-[8px] bg-[#00B67A]/10 text-[#00B67A] border border-[#00B67A]/20 font-black px-1.5 py-0.5 rounded-full">
                       99% Success
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-black text-xs text-white">Buy 1 Get 1 Free</h3>
-                    <p className="text-[8.5px] text-slate-400 leading-tight mt-0.5">Verified BOGO coffee voucher. Worked 4m ago.</p>
+                    <h3 className="font-black text-xs text-white">
+                      Buy 1 Get 1 Free
+                    </h3>
+                    <p className="text-[8.5px] text-slate-400 leading-tight mt-0.5">
+                      Verified BOGO coffee voucher. Worked 4m ago.
+                    </p>
                   </div>
                   <div className="border-t border-dashed border-white/10 pt-2.5 flex items-center justify-between">
                     <span className="font-mono text-[9px] bg-white/5 border border-white/10 px-2 py-0.5 rounded text-[#FF7A18] font-bold">
@@ -258,29 +289,40 @@ export function HeroSection() {
                 </div>
 
                 {/* Demo Voucher 2 (Marbella Ranchi) */}
-                <div className="bg-[#0E1524] border border-white/5 text-white rounded-2xl p-3.5 shadow-xl space-y-2.5 relative overflow-hidden animate-float" style={{ animationDelay: "1.5s" }}>
+                <div
+                  className="bg-[#0E1524] border border-white/5 text-white rounded-2xl p-3.5 shadow-xl space-y-2.5 relative overflow-hidden animate-float"
+                  style={{ animationDelay: "1.5s" }}
+                >
                   {/* Left & Right Ticket Notch Cutouts */}
                   <div className="absolute w-3 h-5 rounded-full bg-[#070A13] -left-1.5 top-1/2 -translate-y-1/2 border-r border-white/5" />
                   <div className="absolute w-3 h-5 rounded-full bg-[#070A13] -right-1.5 top-1/2 -translate-y-1/2 border-l border-white/5" />
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-[#FF7A18] to-[#FF3D77] flex items-center justify-center text-[9px] font-black text-white">M</div>
-                      <span className="text-[9px] text-slate-300 font-extrabold uppercase tracking-wide">Marbella</span>
+                      <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-[#FF7A18] to-[#FF3D77] flex items-center justify-center text-[9px] font-black text-white">
+                        M
+                      </div>
+                      <span className="text-[9px] text-slate-300 font-extrabold uppercase tracking-wide">
+                        Marbella
+                      </span>
                     </div>
                     <span className="text-[8px] bg-brand-warning/10 text-brand-warning border border-brand-warning/20 font-black px-1.5 py-0.5 rounded-full">
                       🔴 Local Deal
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-black text-xs text-white">Flat ₹5,000 Off</h3>
-                    <p className="text-[8.5px] text-slate-400 leading-tight mt-0.5">Premium Tiles, Sanitary & Flooring in Ranchi.</p>
+                    <h3 className="font-black text-xs text-white">
+                      Flat ₹5,000 Off
+                    </h3>
+                    <p className="text-[8.5px] text-slate-400 leading-tight mt-0.5">
+                      Premium Tiles, Sanitary & Flooring in Ranchi.
+                    </p>
                   </div>
                   <div className="border-t border-dashed border-white/10 pt-2.5 flex items-center justify-between">
                     <span className="font-mono text-[9px] bg-white/5 border border-white/10 px-2 py-0.5 rounded text-[#FF7A18] font-bold">
                       MARBELLA5K
                     </span>
-                    
+
                     {/* Barcode representation */}
                     <div className="flex gap-[1.5px] items-center h-3 opacity-30">
                       <div className="w-[1px] h-full bg-white" />
@@ -309,9 +351,7 @@ export function HeroSection() {
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );
 }
-

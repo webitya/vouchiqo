@@ -2,9 +2,9 @@
 
 import { Store } from "lucide-react";
 import { useState } from "react";
-import DashboardLayout from "@/components/DashboardLayout";
-import EmptyState from "@/components/EmptyState";
-import MerchantCard from "@/components/MerchantCard";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import EmptyState from "@/components/shared/EmptyState";
+import MerchantCard from "@/components/shared/MerchantCard";
 
 export default function FollowedBrands() {
   const user = { name: "Sarah Jenkins", role: "customer" };

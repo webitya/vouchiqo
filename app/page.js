@@ -1,6 +1,9 @@
+import HomeClient from "@/components/landing/HomeClient";
 import { connectDB } from "@/lib/mongodb";
-import { getFeaturedCoupons, listCoupons } from "@/modules/coupon/coupon.service";
-import { HomeClient } from "@/features/home";
+import {
+  getFeaturedCoupons,
+  listCoupons,
+} from "@/modules/coupon/coupon.service";
 
 // Force Next.js to render this page dynamically (SSR) so database queries are fresh
 export const dynamic = "force-dynamic";
@@ -23,5 +26,10 @@ export default async function Home() {
   const latestCoupons = JSON.parse(JSON.stringify(latestResult.coupons || []));
 
   // 4. Render the client-side component shell with hydrated database props
-  return <HomeClient initialCoupons={featuredCoupons} latestCoupons={latestCoupons} />;
+  return (
+    <HomeClient
+      initialCoupons={featuredCoupons}
+      latestCoupons={latestCoupons}
+    />
+  );
 }

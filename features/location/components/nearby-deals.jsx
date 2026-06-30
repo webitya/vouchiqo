@@ -4,7 +4,7 @@ import { ArrowRight, Loader2, MapPin, Navigation, WifiOff } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import CouponCard from "@/components/CouponCard";
+import CouponCard from "@/components/shared/CouponCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocation } from "@/hooks/use-location";

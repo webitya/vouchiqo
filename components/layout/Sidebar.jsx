@@ -114,9 +114,7 @@ export default function Sidebar({ role = "customer" }) {
       <div className="p-6 border-b border-white/10">
         <Link href="/" className="flex flex-col">
           <span className="text-xl font-bold font-heading text-white tracking-tight flex items-center gap-1.5">
-            <span className="text-brand-gradient">
-              Vouchiqo
-            </span>
+            <span className="text-brand-gradient">Vouchiqo</span>
           </span>
           <span className="text-[10px] text-slate-400 font-medium tracking-wide uppercase">
             {role.toUpperCase()} CONSOLE

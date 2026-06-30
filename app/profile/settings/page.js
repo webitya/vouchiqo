@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function SettingsRedirect() {
   const router = useRouter();
-  
+
   useEffect(() => {
     router.replace("/profile?tab=settings");
   }, [router]);

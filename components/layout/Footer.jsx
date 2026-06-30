@@ -10,9 +10,7 @@ export default function Footer() {
           <div className="space-y-4 md:col-span-1">
             <Link href="/" className="flex flex-col">
               <span className="text-xl font-bold font-heading text-white tracking-tight flex items-center gap-1.5">
-                <span className="text-brand-gradient">
-                  Vouchiqo
-                </span>
+                <span className="text-brand-gradient">Vouchiqo</span>
                 <CheckCircle2 className="w-5 h-5 text-brand-success fill-brand-success/10" />
               </span>
               <span className="text-[10px] text-slate-400 font-medium tracking-wide uppercase">

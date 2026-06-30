@@ -43,9 +43,11 @@ export default function KPICard({
                   : "bg-brand-error/10 text-brand-error"
               }`}
             >
-              {isPositive
-                ? <TrendingUp className="w-3 h-3" />
-                : <TrendingDown className="w-3 h-3" />}
+              {isPositive ? (
+                <TrendingUp className="w-3 h-3" />
+              ) : (
+                <TrendingDown className="w-3 h-3" />
+              )}
               <span>
                 {isPositive ? "+" : ""}
                 {change}%

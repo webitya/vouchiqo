@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Loader2,
+  RotateCcw,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RotateCcw, ArrowRight, Loader2, Sparkles, CheckCircle2 } from "lucide-react";
 
 export function RevivalPromo() {
   const [form, setForm] = useState({ code: "", brandName: "", email: "" });
@@ -49,7 +55,6 @@ export function RevivalPromo() {
       <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-80 h-80 bg-orange-500/5 rounded-full blur-3xl z-0" />
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-        
         {/* Left Column: Form & Details (55%) */}
         <div className="lg:col-span-7 space-y-6 text-left animate-fade-in-up stagger-1">
           <Badge className="bg-orange-500/15 text-[#FF7A18] hover:bg-orange-500/20 border border-[#FF7A18]/20 rounded-full px-3.5 py-1 font-extrabold text-xs shadow-none gap-1.5 w-fit">
@@ -64,23 +69,37 @@ export function RevivalPromo() {
               <span className="text-brand-gradient">Claim It.</span>
             </h2>
             <p className="text-sm md:text-base text-slate-300 max-w-xl leading-relaxed font-medium">
-              Don&apos;t throw away your expired discount codes. Vouchiqo&apos;s Revival system reconnects you with the merchant and recovers your savings — 48 hours, zero cost to you.
+              Don&apos;t throw away your expired discount codes. Vouchiqo&apos;s
+              Revival system reconnects you with the merchant and recovers your
+              savings — 48 hours, zero cost to you.
             </p>
           </div>
 
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-2 md:gap-4 py-3 border-t border-b border-white/10 max-w-lg">
             <div>
-              <span className="block text-lg md:text-xl font-black text-white">5,000+</span>
-              <span className="text-[9px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">Revivals Processed</span>
+              <span className="block text-lg md:text-xl font-black text-white">
+                5,000+
+              </span>
+              <span className="text-[9px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">
+                Revivals Processed
+              </span>
             </div>
             <div>
-              <span className="block text-lg md:text-xl font-black text-[#00B67A]">₹25L+</span>
-              <span className="text-[9px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">Recovered Savings</span>
+              <span className="block text-lg md:text-xl font-black text-[#00B67A]">
+                ₹25L+
+              </span>
+              <span className="text-[9px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">
+                Recovered Savings
+              </span>
             </div>
             <div>
-              <span className="block text-lg md:text-xl font-black text-brand-warning">78%</span>
-              <span className="text-[9px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">Approval Rate</span>
+              <span className="block text-lg md:text-xl font-black text-brand-warning">
+                78%
+              </span>
+              <span className="text-[9px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">
+                Approval Rate
+              </span>
             </div>
           </div>
 
@@ -91,9 +110,13 @@ export function RevivalPromo() {
                 <div className="w-12 h-12 rounded-full bg-brand-success/20 text-brand-success flex items-center justify-center mx-auto border border-brand-success/30">
                   <Sparkles className="w-6 h-6 fill-current" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Submission Successful!</h3>
+                <h3 className="text-xl font-bold text-white">
+                  Submission Successful!
+                </h3>
                 <p className="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
-                  We have registered your request. Our system will contact the merchant to negotiate a revival. We will reach out to you within 48 hours.
+                  We have registered your request. Our system will contact the
+                  merchant to negotiate a revival. We will reach out to you
+                  within 48 hours.
                 </p>
                 <Button
                   onClick={() => setSuccess(false)}
@@ -107,37 +130,53 @@ export function RevivalPromo() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Expired Code</label>
+                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      Expired Code
+                    </label>
                     <Input
                       placeholder="e.g. ZOMATO50"
                       value={form.code}
-                      onChange={(e) => setForm({ ...form, code: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, code: e.target.value })
+                      }
                       className="bg-white/10 border-white/20 text-white placeholder-slate-500 text-xs h-10 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue shadow-none"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Brand Name</label>
+                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      Brand Name
+                    </label>
                     <Input
                       placeholder="e.g. Zomato"
                       value={form.brandName}
-                      onChange={(e) => setForm({ ...form, brandName: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, brandName: e.target.value })
+                      }
                       className="bg-white/10 border-white/20 text-white placeholder-slate-500 text-xs h-10 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue shadow-none"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Your Email</label>
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    Your Email
+                  </label>
                   <Input
                     type="email"
                     placeholder="e.g. shopper@email.com"
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
                     className="bg-white/10 border-white/20 text-white placeholder-slate-500 text-xs h-10 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue shadow-none"
                   />
                 </div>
 
-                {error && <p className="text-xs text-brand-error font-semibold">{error}</p>}
+                {error && (
+                  <p className="text-xs text-brand-error font-semibold">
+                    {error}
+                  </p>
+                )}
 
                 <Button
                   type="submit"
@@ -173,10 +212,8 @@ export function RevivalPromo() {
 
         {/* Right Column: Animated Visual (45%) */}
         <div className="lg:col-span-5 flex justify-center items-center select-none animate-fade-in-scale stagger-2">
-          
           {/* Transforming coupon CSS visual */}
           <div className="w-[320px] h-[220px] relative flex items-center justify-center">
-            
             {/* Background glowing ring */}
             <div className="absolute inset-0 bg-gradient-to-tr from-[#FF7A18]/20 to-[#00B67A]/20 rounded-2xl blur-2xl animate-pulse" />
 
@@ -186,11 +223,15 @@ export function RevivalPromo() {
             {/* Expired cracked coupon (sliding left, fading out) */}
             <div className="absolute left-4 w-52 h-32 bg-slate-900/80 border border-brand-error/30 rounded-xl p-4 flex flex-col justify-between shadow-2xl transform -rotate-6 animate-float z-10 opacity-40 hover:opacity-50 transition-opacity">
               <div className="flex justify-between items-start">
-                <span className="text-[8px] font-black text-brand-error border border-brand-error/30 px-1 py-0.5 rounded">EXPIRED</span>
+                <span className="text-[8px] font-black text-brand-error border border-brand-error/30 px-1 py-0.5 rounded">
+                  EXPIRED
+                </span>
                 <span className="text-[14px] text-slate-600 font-bold">✂️</span>
               </div>
               <div className="text-left space-y-1">
-                <h4 className="text-xs font-bold text-slate-400 line-through">Flat 30% OFF</h4>
+                <h4 className="text-xs font-bold text-slate-400 line-through">
+                  Flat 30% OFF
+                </h4>
                 <div className="w-full h-1 bg-white/10 rounded-full" />
               </div>
               {/* Crack overlay line */}
@@ -198,9 +239,14 @@ export function RevivalPromo() {
             </div>
 
             {/* Fresh revived coupon (sliding right, glowing checkmark) */}
-            <div className="absolute right-4 w-52 h-32 bg-slate-900 border border-brand-success/40 rounded-xl p-4 flex flex-col justify-between shadow-2xl transform rotate-3 animate-float z-20" style={{ animationDelay: "1.5s" }}>
+            <div
+              className="absolute right-4 w-52 h-32 bg-slate-900 border border-brand-success/40 rounded-xl p-4 flex flex-col justify-between shadow-2xl transform rotate-3 animate-float z-20"
+              style={{ animationDelay: "1.5s" }}
+            >
               <div className="flex justify-between items-start">
-                <span className="text-[8px] font-black text-brand-success border border-brand-success/30 px-1.5 py-0.5 rounded bg-brand-success/10 animate-pulse">REVIVED</span>
+                <span className="text-[8px] font-black text-brand-success border border-brand-success/30 px-1.5 py-0.5 rounded bg-brand-success/10 animate-pulse">
+                  REVIVED
+                </span>
                 {/* Green checkmark circle */}
                 <div className="w-5 h-5 rounded-full bg-brand-success text-white flex items-center justify-center shadow-md animate-bounce">
                   <CheckCircle2 className="w-3.5 h-3.5 fill-white/10" />
@@ -208,18 +254,19 @@ export function RevivalPromo() {
               </div>
               <div className="text-left space-y-1">
                 <h4 className="text-xs font-black text-white">Flat 30% OFF</h4>
-                <span className="text-[9px] text-[#00B67A] font-bold">Successfully Verified Code!</span>
+                <span className="text-[9px] text-[#00B67A] font-bold">
+                  Successfully Verified Code!
+                </span>
               </div>
               <div className="border-t border-dashed border-white/10 pt-2 flex items-center justify-between">
-                <span className="text-[10px] font-mono text-[#00B67A] font-black">ACTIVE NOW</span>
+                <span className="text-[10px] font-mono text-[#00B67A] font-black">
+                  ACTIVE NOW
+                </span>
                 <span className="text-[9px] text-slate-500">→</span>
               </div>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </section>
   );

@@ -1,10 +1,10 @@
 "use client";
 
+import { CheckCircle2, Mail, MapPin, Phone, Send } from "lucide-react";
 import { useState } from "react";
-import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -46,7 +46,9 @@ export default function ContactPage() {
               Get in touch
             </h1>
             <p className="text-xs text-brand-subtext leading-relaxed font-medium">
-              Have questions about claim verification, coupon revival, or partner billing plans? Fill out the form or reach out via our direct channels.
+              Have questions about claim verification, coupon revival, or
+              partner billing plans? Fill out the form or reach out via our
+              direct channels.
             </p>
           </div>
 
@@ -56,9 +58,15 @@ export default function ContactPage() {
                 <Mail className="w-5 h-5" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider">Email Address</h3>
-                <p className="text-sm font-semibold text-brand-text">support@vouchiqo.com</p>
-                <p className="text-[10px] text-brand-subtext">Estimated reply within 24 hours</p>
+                <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
+                  Email Address
+                </h3>
+                <p className="text-sm font-semibold text-brand-text">
+                  support@vouchiqo.com
+                </p>
+                <p className="text-[10px] text-brand-subtext">
+                  Estimated reply within 24 hours
+                </p>
               </div>
             </div>
 
@@ -67,9 +75,15 @@ export default function ContactPage() {
                 <Phone className="w-5 h-5" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider">Call Support</h3>
-                <p className="text-sm font-semibold text-brand-text">+1 (555) 839-2910</p>
-                <p className="text-[10px] text-brand-subtext">Mon-Fri from 9:00 AM to 5:00 PM EST</p>
+                <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
+                  Call Support
+                </h3>
+                <p className="text-sm font-semibold text-brand-text">
+                  +1 (555) 839-2910
+                </p>
+                <p className="text-[10px] text-brand-subtext">
+                  Mon-Fri from 9:00 AM to 5:00 PM EST
+                </p>
               </div>
             </div>
 
@@ -78,9 +92,15 @@ export default function ContactPage() {
                 <MapPin className="w-5 h-5" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider">Headquarters</h3>
-                <p className="text-sm font-semibold text-brand-text">Vouchiqo Technologies Corp.</p>
-                <p className="text-[10px] text-brand-subtext">100 Broadway St, New York, NY 10005</p>
+                <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
+                  Headquarters
+                </h3>
+                <p className="text-sm font-semibold text-brand-text">
+                  Vouchiqo Technologies Corp.
+                </p>
+                <p className="text-[10px] text-brand-subtext">
+                  100 Broadway St, New York, NY 10005
+                </p>
               </div>
             </div>
           </div>
@@ -95,12 +115,22 @@ export default function ContactPage() {
                 Thank you for reaching out!
               </h2>
               <p className="text-xs text-brand-subtext max-w-sm mx-auto leading-relaxed">
-                Your support request has been received. One of our support representatives will contact you shortly via email at <span className="font-semibold text-brand-text">{formData.email}</span>.
+                Your support request has been received. One of our support
+                representatives will contact you shortly via email at{" "}
+                <span className="font-semibold text-brand-text">
+                  {formData.email}
+                </span>
+                .
               </p>
               <Button
                 onClick={() => {
                   setSubmitted(false);
-                  setFormData({ name: "", email: "", subject: "", message: "" });
+                  setFormData({
+                    name: "",
+                    email: "",
+                    subject: "",
+                    message: "",
+                  });
                 }}
                 className="btn-primary text-xs py-2.5 px-6 border-0 h-auto cursor-pointer shadow-none"
               >
@@ -119,7 +149,9 @@ export default function ContactPage() {
                     required
                     placeholder="Enter your name"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className="border-brand-border bg-brand-surface text-xs h-10 px-3"
                   />
                 </div>
@@ -133,7 +165,9 @@ export default function ContactPage() {
                     required
                     placeholder="Enter your email"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     className="border-brand-border bg-brand-surface text-xs h-10 px-3"
                   />
                 </div>
@@ -147,7 +181,9 @@ export default function ContactPage() {
                   type="text"
                   placeholder="What can we help you with?"
                   value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, subject: e.target.value })
+                  }
                   className="border-brand-border bg-brand-surface text-xs h-10 px-3"
                 />
               </div>
@@ -161,7 +197,9 @@ export default function ContactPage() {
                   rows={5}
                   placeholder="Describe your issue or questions in detail..."
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
                   className="border-brand-border bg-brand-surface text-xs p-3 focus-visible:ring-offset-0"
                 />
               </div>
@@ -171,7 +209,9 @@ export default function ContactPage() {
                 disabled={loading}
                 className="btn-primary w-full text-xs py-3 border-0 h-auto cursor-pointer shadow-none flex items-center justify-center gap-2"
               >
-                <span>{loading ? "Submitting ticket..." : "Submit Support Request"}</span>
+                <span>
+                  {loading ? "Submitting ticket..." : "Submit Support Request"}
+                </span>
                 <Send className="w-4 h-4" />
               </Button>
             </form>

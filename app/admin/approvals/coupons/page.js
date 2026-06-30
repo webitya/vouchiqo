@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { Check, Tag, X, AlertTriangle, RefreshCw } from "lucide-react";
 import { adminFetchPendingCoupons, adminApproveCoupon, adminRejectCoupon } from "@/lib/api-helpers";
-import DashboardLayout from "@/components/DashboardLayout";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import EmptyState from "@/components/EmptyState";
+import EmptyState from "@/components/shared/EmptyState";
 
 export default function CouponModeration() {
   const [coupons, setCoupons] = useState([]);

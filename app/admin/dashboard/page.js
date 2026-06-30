@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import DashboardLayout from "@/components/DashboardLayout";
-import KPICard from "@/components/KPICard";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import KPICard from "@/components/shared/KPICard";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,

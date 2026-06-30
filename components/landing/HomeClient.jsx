@@ -1,64 +1,92 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
-import dynamic from "next/dynamic";
-import { 
-  ArrowRight, 
-  MapPin, 
-  Search, 
-  Sparkles, 
-  Smartphone, 
-  CheckCircle2, 
-  X, 
+import {
+  ArrowRight,
+  CheckCircle2,
   ChevronRight,
-  Settings,
   Heart,
-  Loader2
+  Loader2,
+  MapPin,
+  Search,
+  Settings,
+  Smartphone,
+  Sparkles,
+  X,
 } from "lucide-react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 
 // Defer static loads of heavy below-the-fold and modal overlay components
-const ConfirmationModal = dynamic(() => import("@/components/ConfirmationModal"), {
-  ssr: false,
-});
+const ConfirmationModal = dynamic(
+  () => import("@/components/shared/ConfirmationModal"),
+  {
+    ssr: false,
+  },
+);
 
 const NearbyDeals = dynamic(
-  () => import("@/features/location/components/nearby-deals").then((mod) => mod.NearbyDeals),
+  () =>
+    import("@/features/location/components/nearby-deals").then(
+      (mod) => mod.NearbyDeals,
+    ),
   {
     loading: () => (
       <div className="py-20 text-center space-y-2">
         <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
-        <span className="text-xs text-brand-subtext font-bold">Scanning local coordinates...</span>
+        <span className="text-xs text-brand-subtext font-bold">
+          Scanning local coordinates...
+        </span>
       </div>
     ),
     ssr: false,
-  }
+  },
 );
 
-const HowItWorks = dynamic(() => import("./how-it-works").then((mod) => mod.HowItWorks));
-const Testimonials = dynamic(() => import("./testimonials").then((mod) => mod.Testimonials));
-const FaqSection = dynamic(() => import("./faq-section").then((mod) => mod.FaqSection));
-const MerchantCTA = dynamic(() => import("./merchant-cta").then((mod) => mod.MerchantCTA));
-const PartnerBrands = dynamic(() => import("./partner-brands").then((mod) => mod.PartnerBrands));
+const HowItWorks = dynamic(() =>
+  import("./HowItWorks").then((mod) => mod.HowItWorks),
+);
+const Testimonials = dynamic(() =>
+  import("./Testimonials").then((mod) => mod.Testimonials),
+);
+const FaqSection = dynamic(() =>
+  import("./FAQSection").then((mod) => mod.FaqSection),
+);
+const MerchantCTA = dynamic(() =>
+  import("./MerchantCTA").then((mod) => mod.MerchantCTA),
+);
+const PartnerBrands = dynamic(() =>
+  import("./PartnerBrands").then((mod) => mod.PartnerBrands),
+);
 
-import CouponCard from "@/components/CouponCard";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
+import CouponCard from "@/components/shared/CouponCard";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { useInterests } from "@/hooks/use-interests";
 import { useLocation } from "@/hooks/use-location";
 import { useSession } from "@/lib/auth-client";
-import { useInterests } from "@/hooks/use-interests";
-
+import { CategoryStrip } from "./CategoryStrip";
+import { CountdownTimer } from "./CountdownTimer";
+import { HeroSection } from "./HeroSection";
 // Relative imports for neighboring feature components
-import { HotDealsTicker } from "./hot-deals-ticker";
-import { HeroSection } from "./hero-section";
-import { CategoryStrip } from "./category-strip";
-import { RevivalPromo } from "./revival-promo";
-import { CountdownTimer } from "./countdown-timer";
-import { Badge } from "@/components/ui/badge";
+import { HotDealsTicker } from "./HotDealsTicker";
+import { RevivalPromo } from "./RevivalPromo";
 
 // 10 database-valid categories mapping to friendly icons/labels
 const SYSTEM_CATEGORIES = [
@@ -81,7 +109,11 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
   // Auth & Profile
   const { data: session } = useSession();
   const user = session?.user;
-  const { interests: savedInterests, saveInterests, syncing: updatingPrefs } = useInterests();
+  const {
+    interests: savedInterests,
+    saveInterests,
+    syncing: updatingPrefs,
+  } = useInterests();
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [isPrefSheetOpen, setIsPrefSheetOpen] = useState(false);
 
@@ -90,7 +122,11 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
   const [locationSelect, setLocationSelect] = useState("All Locations");
 
   // Location state
-  const { city, status: locationStatus, detect: detectLocation } = useLocation();
+  const {
+    city,
+    status: locationStatus,
+    detect: detectLocation,
+  } = useLocation();
   const [feedTab, setFeedTab] = useState("all");
 
   // App download capture
@@ -137,7 +173,8 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
 
     // Trigger on 40% scroll
     const handleScroll = () => {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       if (scrollHeight > 0) {
         const scrolled = (window.scrollY / scrollHeight) * 100;
         if (scrolled >= 40) {
@@ -177,13 +214,19 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
   };
 
   // Location details checks
-  const isJharkhand = city && ["ranchi", "jharkhand", "jamshedpur", "bokaro", "dhanbad"].includes(city.toLowerCase());
+  const isJharkhand =
+    city &&
+    ["ranchi", "jharkhand", "jamshedpur", "bokaro", "dhanbad"].includes(
+      city.toLowerCase(),
+    );
 
   const getCardProps = (coupon) => {
     const couponCity = coupon.location?.city?.toLowerCase();
     const userCity = city?.toLowerCase();
     const isLocal = city && couponCity === userCity;
-    const isMarbellaLocal = isJharkhand && coupon.merchantId?.businessName?.toLowerCase() === "marbella";
+    const isMarbellaLocal =
+      isJharkhand &&
+      coupon.merchantId?.businessName?.toLowerCase() === "marbella";
     return { isLocal, isMarbellaLocal };
   };
 
@@ -207,7 +250,9 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
       for (const c of filtered) {
         const catVal = c.category?.toLowerCase();
         const matchesInterest = savedInterests.some(
-          (interest) => interest.toLowerCase() === catVal || interest.toLowerCase() === c.title?.toLowerCase()
+          (interest) =>
+            interest.toLowerCase() === catVal ||
+            interest.toLowerCase() === c.title?.toLowerCase(),
         );
         if (matchesInterest) {
           match.push(c);
@@ -223,7 +268,8 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
       const elevated = [];
       const rest = [];
       for (const c of filtered) {
-        const isMarbella = c.merchantId?.businessName?.toLowerCase() === "marbella";
+        const isMarbella =
+          c.merchantId?.businessName?.toLowerCase() === "marbella";
         const isHomeImprovement = c.category?.toLowerCase() === "home";
         if (isMarbella || isHomeImprovement) {
           elevated.push(c);
@@ -239,11 +285,11 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
 
   const finalFeatured = useMemo(() => {
     return reorderAndFilter(initialCoupons).slice(0, 6);
-  }, [initialCoupons, feedTab, city, savedInterests, forceRefresh]);
+  }, [initialCoupons, reorderAndFilter]);
 
   const finalLatest = useMemo(() => {
     return reorderAndFilter(latestCoupons).slice(0, 6);
-  }, [latestCoupons, feedTab, city, savedInterests, forceRefresh]);
+  }, [latestCoupons, reorderAndFilter]);
 
   // App download form submit
   const handleAppSubscribe = (e) => {
@@ -317,7 +363,10 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
       {isMounted && !city && (
         <div className="bg-[#FFF4D6] border-b border-[#FFB020]/20 py-2.5 px-4 text-center text-xs md:text-sm font-bold text-brand-navy flex items-center justify-center gap-2 relative z-20 animate-fade-in-up">
           <MapPin className="w-4 h-4 text-brand-warning fill-brand-warning/10" />
-          <span>See deals near you — set your location to find verified local savings.</span>
+          <span>
+            See deals near you — set your location to find verified local
+            savings.
+          </span>
           <button
             onClick={detectLocation}
             disabled={locationStatus === "detecting"}
@@ -343,7 +392,7 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
                 Limited Time Offers
               </h2>
             </div>
-            
+
             {/* Live Countdown Timer */}
             <CountdownTimer />
           </div>
@@ -351,7 +400,10 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
           {/* Horizontally scrollable featured cards */}
           <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
             {initialCoupons.slice(0, 4).map((coupon) => (
-              <div key={coupon._id} className="w-[300px] md:w-[320px] flex-shrink-0">
+              <div
+                key={coupon._id}
+                className="w-[300px] md:w-[320px] flex-shrink-0"
+              >
                 <CouponCard
                   coupon={{ ...coupon, isHot: true }}
                   onRedeem={(c) => setSelectedCoupon(c)}
@@ -360,7 +412,9 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
               </div>
             ))}
             {initialCoupons.length === 0 && (
-              <p className="text-slate-400 text-xs py-8">No flash deals active right now.</p>
+              <p className="text-slate-400 text-xs py-8">
+                No flash deals active right now.
+              </p>
             )}
           </div>
         </div>
@@ -374,7 +428,7 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
               {isMounted && user ? (
                 <>Your Personalised Deals, {user.name?.split(" ")[0]}</>
               ) : (
-                <>Featured Deals Today</>
+                "Featured Deals Today"
               )}
               {isMounted && savedInterests.length > 0 && (
                 <span className="text-[10px] bg-brand-success/15 text-brand-success px-2 py-0.5 rounded-full font-bold border border-brand-success/20 animate-pulse">
@@ -438,7 +492,9 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
         {/* Nudge for logged-in users with no preferences */}
         {isMounted && user && savedInterests.length === 0 && (
           <div className="bg-brand-blue/5 border border-brand-blue/20 rounded-xl p-4 mb-6 flex items-center justify-between text-xs md:text-sm text-brand-navy">
-            <span>Tell us what you like for a fully personalised deals feed.</span>
+            <span>
+              Tell us what you like for a fully personalised deals feed.
+            </span>
             <button
               onClick={() => setIsPrefSheetOpen(true)}
               className="text-xs font-black text-brand-blue underline hover:opacity-80"
@@ -450,7 +506,10 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {finalFeatured.map((coupon, idx) => (
-            <div key={coupon._id} className={`animate-fade-in-up stagger-${idx + 1}`}>
+            <div
+              key={coupon._id}
+              className={`animate-fade-in-up stagger-${idx + 1}`}
+            >
               <CouponCard
                 coupon={coupon}
                 onRedeem={(c) => setSelectedCoupon(c)}
@@ -460,7 +519,8 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
           ))}
           {finalFeatured.length === 0 && (
             <div className="col-span-full text-center py-12 text-sm text-brand-subtext font-medium bg-white rounded-xl border border-brand-border">
-              No deals matching your filters are available. Try toggling All India.
+              No deals matching your filters are available. Try toggling All
+              India.
             </div>
           )}
         </div>
@@ -488,7 +548,10 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {finalLatest.map((coupon, idx) => (
-            <div key={coupon._id} className={`animate-fade-in-up stagger-${idx + 1}`}>
+            <div
+              key={coupon._id}
+              className={`animate-fade-in-up stagger-${idx + 1}`}
+            >
               <CouponCard
                 coupon={coupon}
                 onRedeem={(c) => setSelectedCoupon(c)}
@@ -521,7 +584,8 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
               Browse by Trending Categories
             </h2>
             <p className="text-sm text-brand-subtext mt-2 font-medium">
-              Find exactly what you want with our hand-vetted discount categories.
+              Find exactly what you want with our hand-vetted discount
+              categories.
             </p>
           </div>
 
@@ -563,10 +627,14 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
             <h2 className="text-3xl md:text-4xl font-black font-heading text-white tracking-tight leading-tight">
               The Vouchiqo App
               <br />
-              <span className="text-brand-gradient">Instant Geolocation Savings.</span>
+              <span className="text-brand-gradient">
+                Instant Geolocation Savings.
+              </span>
             </h2>
             <p className="text-sm text-slate-300 leading-relaxed max-w-lg font-medium">
-              We are working on bringing Vouchiqo directly to your pocket. Set geofenced alarms for your local Ranchi/Jharkhand businesses, and never miss local verification updates.
+              We are working on bringing Vouchiqo directly to your pocket. Set
+              geofenced alarms for your local Ranchi/Jharkhand businesses, and
+              never miss local verification updates.
             </p>
 
             {appSubscribed ? (
@@ -575,7 +643,10 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
                 <span>You will be notified on launch day!</span>
               </div>
             ) : (
-              <form onSubmit={handleAppSubscribe} className="flex flex-col sm:flex-row gap-2 max-w-md">
+              <form
+                onSubmit={handleAppSubscribe}
+                className="flex flex-col sm:flex-row gap-2 max-w-md"
+              >
                 <Input
                   type="email"
                   required
@@ -634,7 +705,8 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
 
             <div className="space-y-4">
               <p className="text-xs text-brand-subtext font-medium leading-relaxed">
-                Select your favorite shopping categories. Vouchiqo will elevate coupons matching your choices to the top of your homepage feed.
+                Select your favorite shopping categories. Vouchiqo will elevate
+                coupons matching your choices to the top of your homepage feed.
               </p>
 
               <div className="grid grid-cols-1 gap-2.5">
@@ -659,10 +731,16 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
                         <span className="text-lg">{cat.emoji}</span>
                         <span>{cat.name}</span>
                       </span>
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                        isChecked ? "bg-brand-blue border-brand-blue text-white" : "border-slate-300"
-                      }`}>
-                        {isChecked && <CheckCircle2 className="w-3 h-3 stroke-[3]" />}
+                      <div
+                        className={`w-4 h-4 rounded border flex items-center justify-center ${
+                          isChecked
+                            ? "bg-brand-blue border-brand-blue text-white"
+                            : "border-slate-300"
+                        }`}
+                      >
+                        {isChecked && (
+                          <CheckCircle2 className="w-3 h-3 stroke-[3]" />
+                        )}
                       </div>
                     </button>
                   );
@@ -752,7 +830,6 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
           </div>
         </div>
       )}
-
     </div>
   );
 }

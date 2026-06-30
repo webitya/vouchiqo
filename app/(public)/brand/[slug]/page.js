@@ -1,8 +1,8 @@
-import { connectDB } from "@/lib/mongodb";
-import Merchant from "@/modules/merchant/merchant.model";
-import Coupon from "@/modules/coupon/coupon.model";
-import BrandClient from "./brand-client";
 import { notFound } from "next/navigation";
+import { connectDB } from "@/lib/mongodb";
+import Coupon from "@/modules/coupon/coupon.model";
+import Merchant from "@/modules/merchant/merchant.model";
+import BrandClient from "./brand-client";
 
 export const dynamic = "force-dynamic";
 
@@ -14,11 +14,16 @@ export async function generateMetadata({ params }) {
   await connectDB();
 
   try {
-    const merchant = await Merchant.findOne({ slug, status: "approved" }).lean();
+    const merchant = await Merchant.findOne({
+      slug,
+      status: "approved",
+    }).lean();
     if (!merchant) throw new Error();
 
     const title = `${merchant.businessName} Coupons, Promo Codes & Deals | Vouchiqo`;
-    const description = merchant.shortDescription || `Save at ${merchant.businessName} with verified coupon codes, discounts, and expiring offers. 100% community-tested and active.`;
+    const description =
+      merchant.shortDescription ||
+      `Save at ${merchant.businessName} with verified coupon codes, discounts, and expiring offers. 100% community-tested and active.`;
 
     return {
       title,
@@ -32,7 +37,8 @@ export async function generateMetadata({ params }) {
   } catch (err) {
     return {
       title: "Brand Store Not Found | Vouchiqo",
-      description: "The requested brand storefront could not be located on Vouchiqo.",
+      description:
+        "The requested brand storefront could not be located on Vouchiqo.",
     };
   }
 }
@@ -86,7 +92,6 @@ export default async function BrandPage({ params }) {
       .limit(4)
       .lean();
     relatedBrands = JSON.parse(JSON.stringify(rawRelated || []));
-
   } catch (err) {
     console.error("Error loading brand profile:", err);
     notFound();

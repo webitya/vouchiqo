@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { Star, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
-import { CUSTOMER_TESTIMONIALS } from "@/utils/home-data";
+import { CheckCircle2, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { CUSTOMER_TESTIMONIALS } from "@/utils/home-data";
 
 export function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -26,10 +26,12 @@ export function Testimonials() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isPaused]);
+  }, [isPaused, startAutoPlay]);
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? CUSTOMER_TESTIMONIALS.length - 1 : prev - 1));
+    setCurrentIndex((prev) =>
+      prev === 0 ? CUSTOMER_TESTIMONIALS.length - 1 : prev - 1,
+    );
     startAutoPlay();
   };
 
@@ -39,7 +41,7 @@ export function Testimonials() {
   };
 
   return (
-    <section 
+    <section
       className="py-20 bg-brand-surface border-t border-brand-border px-4 max-w-7xl mx-auto w-full select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -49,26 +51,23 @@ export function Testimonials() {
           What Our Members Say
         </h2>
         <p className="text-sm text-brand-subtext mt-2 font-medium">
-          Real savings stories from verified developers, creators, and local shoppers.
+          Real savings stories from verified developers, creators, and local
+          shoppers.
         </p>
       </div>
 
       <div className="relative max-w-5xl mx-auto px-4 md:px-12">
         {/* Carousel Window */}
         <div className="overflow-hidden">
-          <div 
+          <div
             className="flex transition-transform duration-700 ease-in-out"
-            style={{ 
-              transform: `translateX(-${currentIndex * 100}%)` 
+            style={{
+              transform: `translateX(-${currentIndex * 100}%)`,
             }}
           >
             {CUSTOMER_TESTIMONIALS.map((item, idx) => (
-              <div 
-                key={idx} 
-                className="w-full flex-shrink-0 px-2 md:px-6"
-              >
+              <div key={idx} className="w-full flex-shrink-0 px-2 md:px-6">
                 <div className="bg-brand-bg border border-brand-border rounded-xl p-8 md:p-10 shadow-lg relative flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-center">
-                  
                   {/* Left block: Star rating + Quote */}
                   <div className="flex-1 space-y-4">
                     {/* Stars */}
@@ -102,7 +101,6 @@ export function Testimonials() {
                       </Badge>
                     )}
                   </div>
-
                 </div>
               </div>
             ))}
@@ -136,8 +134,8 @@ export function Testimonials() {
                 startAutoPlay();
               }}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                currentIndex === idx 
-                  ? "bg-brand-navy w-6" 
+                currentIndex === idx
+                  ? "bg-brand-navy w-6"
                   : "bg-brand-border hover:bg-slate-400"
               }`}
               aria-label={`Go to slide ${idx + 1}`}

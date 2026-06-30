@@ -5,7 +5,12 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export default function CouponCard({ coupon, onRedeem, isLocal = false, isMarbellaLocal = false }) {
+export default function CouponCard({
+  coupon,
+  onRedeem,
+  isLocal = false,
+  isMarbellaLocal = false,
+}) {
   const {
     _id,
     title,
@@ -34,9 +39,14 @@ export default function CouponCard({ coupon, onRedeem, isLocal = false, isMarbel
   const isHotOrFeatured = coupon.isHot || coupon.isFeatured;
 
   return (
-    <div className={`relative bg-brand-bg border border-brand-border rounded-lg shadow-sm overflow-hidden flex flex-col justify-between h-full group coupon-card-interactive ${isHotOrFeatured ? "coupon-card-hot" : ""}`}>
+    <div
+      className={`relative bg-brand-bg border border-brand-border rounded-lg shadow-sm overflow-hidden flex flex-col justify-between h-full group coupon-card-interactive ${isHotOrFeatured ? "coupon-card-hot" : ""}`}
+    >
       {/* Top Section */}
-      <div className="p-5 flex-1">
+      <Link
+        href={`/deals/${_id}`}
+        className="p-5 flex-1 block hover:no-underline cursor-pointer"
+      >
         {/* Badges Container */}
         <div className="flex flex-wrap gap-1.5 mb-3">
           {isVouchiqoVerified && (
@@ -84,7 +94,7 @@ export default function CouponCard({ coupon, onRedeem, isLocal = false, isMarbel
           {description ||
             "No description provided. Terms and conditions apply."}
         </p>
-      </div>
+      </Link>
 
       {/* Ticket Cutout Divider Bar */}
       <div className="relative w-full my-2">
@@ -106,33 +116,35 @@ export default function CouponCard({ coupon, onRedeem, isLocal = false, isMarbel
           </Badge>
 
           {/* worked today / expiring */}
-          {isExpiringSoon
-            ? <span className="text-[10px] font-bold text-brand-error flex items-center gap-1">
-                <ShieldAlert className="w-3 h-3" />
-                <span>Expiring Soon</span>
-              </span>
-            : workedToday
-              ? <Badge className="bg-brand-warning/10 text-brand-warning hover:bg-brand-warning/15 border-0 shadow-none px-2 py-0.5 rounded-full text-[10px] font-semibold flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 fill-current" />
-                  <span>Worked Today</span>
-                </Badge>
-              : null}
+          {isExpiringSoon ? (
+            <span className="text-[10px] font-bold text-brand-error flex items-center gap-1">
+              <ShieldAlert className="w-3 h-3" />
+              <span>Expiring Soon</span>
+            </span>
+          ) : workedToday ? (
+            <Badge className="bg-brand-warning/10 text-brand-warning hover:bg-brand-warning/15 border-0 shadow-none px-2 py-0.5 rounded-full text-[10px] font-semibold flex items-center gap-1">
+              <Sparkles className="w-3 h-3 fill-current" />
+              <span>Worked Today</span>
+            </Badge>
+          ) : null}
         </div>
 
         {/* CTA Button */}
-        {onRedeem
-          ? <Button
-              onClick={() => onRedeem(coupon)}
-              className="btn-primary w-full text-xs py-2 shadow-none border-0 h-auto cursor-pointer"
-            >
-              Claim Voucher
-            </Button>
-          : <Button
-              asChild
-              className="btn-primary w-full text-xs py-2 shadow-none border-0 h-auto cursor-pointer text-center justify-center"
-            >
-              <Link href={`/deals/${_id}`}>View Offer</Link>
-            </Button>}
+        {onRedeem ? (
+          <Button
+            onClick={() => onRedeem(coupon)}
+            className="btn-primary w-full text-xs py-2 shadow-none border-0 h-auto cursor-pointer"
+          >
+            Claim Voucher
+          </Button>
+        ) : (
+          <Button
+            asChild
+            className="btn-primary w-full text-xs py-2 shadow-none border-0 h-auto cursor-pointer text-center justify-center"
+          >
+            <Link href={`/deals/${_id}`}>View Offer</Link>
+          </Button>
+        )}
       </div>
     </div>
   );

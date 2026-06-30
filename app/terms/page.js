@@ -1,13 +1,15 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { BookOpen, Clock } from "lucide-react";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
 
 export const metadata = {
   title: "Terms of Service | Vouchiqo",
-  description: "Read the Terms of Service for Vouchiqo. Understand user responsibilities, merchant campaign rules, registration requirements, and liability disclaimers.",
+  description:
+    "Read the Terms of Service for Vouchiqo. Understand user responsibilities, merchant campaign rules, registration requirements, and liability disclaimers.",
   openGraph: {
     title: "Terms of Service | Vouchiqo",
-    description: "Read the Terms of Service for Vouchiqo. Understand user responsibilities, merchant campaign rules, registration requirements, and liability disclaimers.",
+    description:
+      "Read the Terms of Service for Vouchiqo. Understand user responsibilities, merchant campaign rules, registration requirements, and liability disclaimers.",
     type: "website",
   },
 };
@@ -36,41 +38,68 @@ export default function TermsOfService() {
         {/* Content */}
         <article className="prose prose-sm max-w-none text-xs text-brand-subtext leading-relaxed space-y-6">
           <p className="font-semibold text-brand-text">
-            Welcome to Vouchiqo. By accessing or using our platform, website, and services, you agree to be bound by these Terms of Service. Please read them carefully.
+            Welcome to Vouchiqo. By accessing or using our platform, website,
+            and services, you agree to be bound by these Terms of Service.
+            Please read them carefully.
           </p>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">1. Use of the Service</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              1. Use of the Service
+            </h2>
             <p>
-              Vouchiqo provides a directory of verified discount vouchers, promotional codes, and merchant integration portals. You agree to use the service only for lawful, personal, non-commercial purposes unless explicitly approved by merchant agreements.
+              Vouchiqo provides a directory of verified discount vouchers,
+              promotional codes, and merchant integration portals. You agree to
+              use the service only for lawful, personal, non-commercial purposes
+              unless explicitly approved by merchant agreements.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">2. Account Registration</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              2. Account Registration
+            </h2>
             <p>
-              To access certain features (such as tracking claims, analytics, or posting coupons), you must create a secure account. You are solely responsible for maintaining the confidentiality of your credentials and Better Auth OTP tokens.
+              To access certain features (such as tracking claims, analytics, or
+              posting coupons), you must create a secure account. You are solely
+              responsible for maintaining the confidentiality of your
+              credentials and Better Auth OTP tokens.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">3. Merchant Campaigns</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              3. Merchant Campaigns
+            </h2>
             <p>
-              Merchant partners agree to honor active, verified campaigns posted on their public profiles. Vouchiqo reserves the right to evict campaigns or restrict accounts displaying high rates of broken checkouts or invalid redemption responses.
+              Merchant partners agree to honor active, verified campaigns posted
+              on their public profiles. Vouchiqo reserves the right to evict
+              campaigns or restrict accounts displaying high rates of broken
+              checkouts or invalid redemption responses.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">4. Disclaimer of Warranties</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              4. Disclaimer of Warranties
+            </h2>
             <p>
-              Vouchiqo provides its services "as is" and "as available". We do not guarantee that every coupon will yield discounts at merchant checkouts due to changing third-party terms, though our verification systems work in real-time to maximize accuracy.
+              Vouchiqo provides its services "as is" and "as available". We do
+              not guarantee that every coupon will yield discounts at merchant
+              checkouts due to changing third-party terms, though our
+              verification systems work in real-time to maximize accuracy.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">5. Limitation of Liability</h2>
+            <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+              5. Limitation of Liability
+            </h2>
             <p>
-              To the maximum extent permitted by law, Vouchiqo Corp. shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your access to or use of the services.
+              To the maximum extent permitted by law, Vouchiqo Corp. shall not
+              be liable for any indirect, incidental, special, consequential, or
+              punitive damages arising out of your access to or use of the
+              services.
             </p>
           </div>
         </article>

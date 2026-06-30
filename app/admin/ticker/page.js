@@ -2,8 +2,8 @@
 
 import { CheckCircle2, TrendingUp, RefreshCw, Pin, Flame, Tag } from "lucide-react";
 import { useEffect, useState } from "react";
-import DashboardLayout from "@/components/DashboardLayout";
-import EmptyState from "@/components/EmptyState";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import EmptyState from "@/components/shared/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {

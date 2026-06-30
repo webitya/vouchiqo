@@ -8,11 +8,13 @@ import { useUser } from "@/hooks/use-user";
 
 export default function Topbar({ title = "Dashboard", user: propUser = null }) {
   const { user: authUser } = useUser();
-  
-  const user = authUser ? {
-    name: authUser.name,
-    role: authUser.role,
-  } : propUser;
+
+  const user = authUser
+    ? {
+        name: authUser.name,
+        role: authUser.role,
+      }
+    : propUser;
   return (
     <header className="h-[72px] bg-brand-bg border-b border-brand-border flex items-center justify-between px-6 sticky top-0 z-40 shadow-sm">
       {/* Left section: Sidebar Trigger and title */}

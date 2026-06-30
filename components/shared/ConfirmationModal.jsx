@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  AlertTriangle,
-  Check,
-  CheckCircle2,
-  Copy,
-  TrendingUp,
-} from "lucide-react";
+import { AlertTriangle, CheckCircle2, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -94,73 +88,73 @@ export default function ConfirmationModal({ coupon, onClose, onConfirm }) {
           </div>
 
           {/* Conditional View States */}
-          {voucherCode
-            ? // Success State
-              <div className="space-y-5 text-center py-2">
-                <div className="mx-auto w-12 h-12 bg-brand-success/10 text-brand-success rounded-full flex items-center justify-center border border-brand-success/20">
-                  <CheckCircle2 className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-heading text-lg font-bold text-brand-text mb-1">
-                    Voucher Claimed Successfully!
-                  </h3>
-                  <p className="text-xs text-brand-subtext max-w-xs mx-auto">
-                    Copy the code below and paste it at check out, or present
-                    this ticket in-store to redeem the offer.
-                  </p>
-                </div>
-
-                {/* Code Container */}
-                <div className="border-2 border-dashed border-orange-300 bg-orange-50/40 rounded-xl p-4 flex items-center justify-between gap-4 transition-all duration-200">
-                  <span className="font-mono font-bold text-xl tracking-[0.15em] text-slate-800 uppercase select-all">
-                    {voucherCode}
-                  </span>
-                  <Button
-                    onClick={copyToClipboard}
-                    className={`text-xs font-semibold py-2 px-4 rounded-lg border-0 h-auto cursor-pointer transition-all duration-200 ${
-                      copied
-                        ? "bg-[#00B67A] text-white"
-                        : "btn-primary shadow-sm"
-                    }`}
-                  >
-                    {copied ? "✅ Copied!" : "Copy Code"}
-                  </Button>
-                </div>
+          {voucherCode ? (
+            // Success State
+            <div className="space-y-5 text-center py-2">
+              <div className="mx-auto w-12 h-12 bg-brand-success/10 text-brand-success rounded-full flex items-center justify-center border border-brand-success/20">
+                <CheckCircle2 className="w-6 h-6" />
               </div>
-            : // Form / Claim Action State
-              <div className="space-y-4">
-                <p className="text-xs text-brand-subtext leading-relaxed">
-                  By claiming this coupon, a unique redemption code will be
-                  reserved for you. Please use this coupon before it expires on{" "}
-                  <strong className="text-brand-text">
-                    {coupon.expiresAt
-                      ? (() => {
-                          const d = new Date(coupon.expiresAt);
-                          const day = String(d.getDate()).padStart(2, "0");
-                          const month = String(d.getMonth() + 1).padStart(2, "0");
-                          const year = d.getFullYear();
-                          return `${day}/${month}/${year}`;
-                        })()
-                      : "the expiry date"}
-                  </strong>
-                  .
+              <div>
+                <h3 className="font-heading text-lg font-bold text-brand-text mb-1">
+                  Voucher Claimed Successfully!
+                </h3>
+                <p className="text-xs text-brand-subtext max-w-xs mx-auto">
+                  Copy the code below and paste it at check out, or present this
+                  ticket in-store to redeem the offer.
                 </p>
+              </div>
 
-                {error && (
-                  <div className="flex gap-2.5 p-3 rounded-lg bg-brand-error/5 border border-brand-error/15 text-brand-error text-xs items-start">
-                    <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                    <span>{error}</span>
-                  </div>
-                )}
-
+              {/* Code Container */}
+              <div className="border-2 border-dashed border-orange-300 bg-orange-50/40 rounded-xl p-4 flex items-center justify-between gap-4 transition-all duration-200">
+                <span className="font-mono font-bold text-xl tracking-[0.15em] text-slate-800 uppercase select-all">
+                  {voucherCode}
+                </span>
                 <Button
-                  disabled={loading}
-                  onClick={handleClaim}
-                  className="btn-primary w-full py-2.5 text-sm h-auto cursor-pointer border-0 shadow-none"
+                  onClick={copyToClipboard}
+                  className={`text-xs font-semibold py-2 px-4 rounded-lg border-0 h-auto cursor-pointer transition-all duration-200 ${
+                    copied ? "bg-[#00B67A] text-white" : "btn-primary shadow-sm"
+                  }`}
                 >
-                  {loading ? "Claiming..." : "Confirm & Claim Voucher"}
+                  {copied ? "✅ Copied!" : "Copy Code"}
                 </Button>
-              </div>}
+              </div>
+            </div>
+          ) : (
+            // Form / Claim Action State
+            <div className="space-y-4">
+              <p className="text-xs text-brand-subtext leading-relaxed">
+                By claiming this coupon, a unique redemption code will be
+                reserved for you. Please use this coupon before it expires on{" "}
+                <strong className="text-brand-text">
+                  {coupon.expiresAt
+                    ? (() => {
+                        const d = new Date(coupon.expiresAt);
+                        const day = String(d.getDate()).padStart(2, "0");
+                        const month = String(d.getMonth() + 1).padStart(2, "0");
+                        const year = d.getFullYear();
+                        return `${day}/${month}/${year}`;
+                      })()
+                    : "the expiry date"}
+                </strong>
+                .
+              </p>
+
+              {error && (
+                <div className="flex gap-2.5 p-3 rounded-lg bg-brand-error/5 border border-brand-error/15 text-brand-error text-xs items-start">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <Button
+                disabled={loading}
+                onClick={handleClaim}
+                className="btn-primary w-full py-2.5 text-sm h-auto cursor-pointer border-0 shadow-none"
+              >
+                {loading ? "Claiming..." : "Confirm & Claim Voucher"}
+              </Button>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

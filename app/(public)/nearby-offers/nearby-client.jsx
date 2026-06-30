@@ -1,42 +1,50 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from "react";
-import { 
-  MapPin, 
-  ChevronRight, 
-  CheckCircle2, 
-  Locate, 
-  Filter, 
-  SlidersHorizontal,
+import {
+  CheckCircle2,
+  ChevronRight,
   Compass,
-  Loader2
+  Filter,
+  Loader2,
+  Locate,
+  MapPin,
+  SlidersHorizontal,
 } from "lucide-react";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Navbar from "@/components/layout/Navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useLocation } from "@/hooks/use-location";
 
 const CITY_COORDINATES = {
   ranchi: [23.3441, 85.3096],
   arrah: [25.5564, 84.6681],
   patna: [25.6112, 85.1384],
-  delhi: [28.5494, 77.2515]
+  delhi: [28.5494, 77.2515],
 };
 
 function getHaversineDistance(lat1, lon1, lat2, lon2) {
-  if (lat1 === null || lon1 === null || lat2 === null || lon2 === null) return 0;
+  if (lat1 === null || lon1 === null || lat2 === null || lon2 === null)
+    return 0;
   const R = 6371; // Radius of the earth in km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const d = R * c; // Distance in km
   return parseFloat(d.toFixed(1));
 }
@@ -53,7 +61,11 @@ export default function NearbyOffers() {
 
   // Manual location modal
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const [manualForm, setManualForm] = useState({ state: "Jharkhand", city: "Ranchi", area: "" });
+  const [manualForm, setManualForm] = useState({
+    state: "Jharkhand",
+    city: "Ranchi",
+    area: "",
+  });
 
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -82,7 +94,9 @@ export default function NearbyOffers() {
       return;
     }
 
-    let link = document.querySelector('link[href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"]');
+    let link = document.querySelector(
+      'link[href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"]',
+    );
     if (!link) {
       link = document.createElement("link");
       link.rel = "stylesheet";
@@ -90,7 +104,9 @@ export default function NearbyOffers() {
       document.head.appendChild(link);
     }
 
-    let script = document.querySelector('script[src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"]');
+    let script = document.querySelector(
+      'script[src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"]',
+    );
     if (!script) {
       script = document.createElement("script");
       script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
@@ -146,29 +162,34 @@ export default function NearbyOffers() {
   const coupons = useMemo(() => {
     return rawCouponsList.map((c) => {
       const mLoc = c.merchantId?.location;
-      const hasCoords = mLoc?.coordinates?.lat !== undefined && mLoc?.coordinates?.lng !== undefined;
-      
+      const hasCoords =
+        mLoc?.coordinates?.lat !== undefined &&
+        mLoc?.coordinates?.lng !== undefined;
+
       let lat = hasCoords ? mLoc.coordinates.lat : null;
       let lng = hasCoords ? mLoc.coordinates.lng : null;
-      
+
       // Fallback coordinates if not populated
       if (lat === null || lng === null) {
-        const center = CITY_COORDINATES[savedCity?.toLowerCase()] || CITY_COORDINATES.ranchi;
+        const center =
+          CITY_COORDINATES[savedCity?.toLowerCase()] || CITY_COORDINATES.ranchi;
         // Deterministic offset per coupon ID to avoid exact overlap of fallbacks
-        const hash = c._id ? c._id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
+        const hash = c._id
+          ? c._id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)
+          : 0;
         lat = center[0] + ((hash % 100) / 100 - 0.5) * 0.04;
         lng = center[1] + (((hash * 13) % 100) / 100 - 0.5) * 0.04;
       }
-      
+
       const dist = getHaversineDistance(mapCenter[0], mapCenter[1], lat, lng);
-      
+
       return {
         ...c,
         coords: [lat, lng],
         distance: dist,
-        address: mLoc?.address 
+        address: mLoc?.address
           ? `${mLoc.address}, ${mLoc.city || ""}, ${mLoc.state || ""}, ${mLoc.pincode || ""}`
-          : `${c.merchantId?.businessName || "Store"} Main Rd, ${savedCity || "Ranchi"}`
+          : `${c.merchantId?.businessName || "Store"} Main Rd, ${savedCity || "Ranchi"}`,
       };
     });
   }, [rawCouponsList, mapCenter, savedCity]);
@@ -181,11 +202,17 @@ export default function NearbyOffers() {
         // Find the first coupon that has coordinates
         const firstCoupon = rawCouponsList.find((c) => {
           const mLoc = c.merchantId?.location;
-          return mLoc?.coordinates?.lat !== undefined && mLoc?.coordinates?.lng !== undefined;
+          return (
+            mLoc?.coordinates?.lat !== undefined &&
+            mLoc?.coordinates?.lng !== undefined
+          );
         });
-        
+
         if (firstCoupon) {
-          const coords = [firstCoupon.merchantId.location.coordinates.lat, firstCoupon.merchantId.location.coordinates.lng];
+          const coords = [
+            firstCoupon.merchantId.location.coordinates.lat,
+            firstCoupon.merchantId.location.coordinates.lng,
+          ];
           setMapCenter(coords);
           if (mapInstanceRef.current) {
             mapInstanceRef.current.setView(coords, 14);
@@ -199,7 +226,7 @@ export default function NearbyOffers() {
     setManualForm({
       state: manualForm.state || "Jharkhand",
       city: savedCity || "Ranchi",
-      area: savedPincode || ""
+      area: savedPincode || "",
     });
     setShowLocationModal(true);
   };
@@ -218,7 +245,7 @@ export default function NearbyOffers() {
         try {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`,
-            { headers: { "Accept-Language": "en" } }
+            { headers: { "Accept-Language": "en" } },
           );
           if (res.ok) {
             const data = await res.json();
@@ -238,7 +265,7 @@ export default function NearbyOffers() {
       },
       () => {
         openLocationModal();
-      }
+      },
     );
   };
 
@@ -268,7 +295,13 @@ export default function NearbyOffers() {
 
   // Re-render Leaflet Map & Markers when center/coupons change
   useEffect(() => {
-    if (!leafletLoaded || !mapRef.current || typeof window === "undefined" || !window.L) return;
+    if (
+      !leafletLoaded ||
+      !mapRef.current ||
+      typeof window === "undefined" ||
+      !window.L
+    )
+      return;
 
     const L = window.L;
 
@@ -284,7 +317,7 @@ export default function NearbyOffers() {
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; OpenStreetMap contributors',
+        attribution: "&copy; OpenStreetMap contributors",
       }).addTo(map);
 
       mapInstanceRef.current = map;
@@ -335,7 +368,9 @@ export default function NearbyOffers() {
             ? `${c.discountValue}% OFF`
             : `₹${c.discountValue} OFF`;
 
-        const marker = L.marker(c.coords, { icon: orangeIcon }).addTo(markersGroup);
+        const marker = L.marker(c.coords, { icon: orangeIcon }).addTo(
+          markersGroup,
+        );
 
         const popupHTML = `
           <div class="p-2 space-y-2 text-left w-48 text-slate-800">
@@ -362,15 +397,16 @@ export default function NearbyOffers() {
       <Navbar />
 
       <div className="flex-1 flex flex-col lg:flex-row items-stretch select-none">
-        
         {/* Left Panel: Deal list (40% / lg:w-[450px]) */}
         <section className="w-full lg:w-[460px] flex-shrink-0 flex flex-col bg-brand-bg border-r border-brand-border h-[calc(100vh-72px)] overflow-hidden">
-          
           {/* Header controls */}
           <div className="p-4 border-b border-brand-border space-y-3 flex-shrink-0 text-left bg-brand-surface/40">
             <div className="flex items-center justify-between">
               <h1 className="text-lg font-black text-brand-navy flex items-center gap-1.5">
-                <Compass className="w-5 h-5 text-brand-blue animate-spin" style={{ animationDuration: "12s" }} />
+                <Compass
+                  className="w-5 h-5 text-brand-blue animate-spin"
+                  style={{ animationDuration: "12s" }}
+                />
                 <span>Nearby Savings</span>
               </h1>
               <Badge className="bg-brand-success/10 text-brand-success hover:bg-brand-success/15 border-0 shadow-none px-2.5 py-0.5 text-[9px] font-bold">
@@ -381,9 +417,10 @@ export default function NearbyOffers() {
             {/* GPS Status Nudge */}
             <div className="flex items-center justify-between bg-brand-surface border border-brand-border p-2 rounded-lg text-xs">
               <span className="text-brand-subtext font-bold">
-                📍 {savedCity || "Ranchi"}{savedPincode ? ` (${savedPincode})` : ""}
+                📍 {savedCity || "Ranchi"}
+                {savedPincode ? ` (${savedPincode})` : ""}
               </span>
-              <button 
+              <button
                 onClick={openLocationModal}
                 className="text-[10px] font-black text-brand-blue hover:underline"
               >
@@ -418,14 +455,19 @@ export default function NearbyOffers() {
                   <Filter className="w-3 h-3 text-slate-400" />
                   Category
                 </span>
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <Select
+                  value={categoryFilter}
+                  onValueChange={setCategoryFilter}
+                >
                   <SelectTrigger className="text-xs h-8 bg-brand-surface border-brand-border cursor-pointer">
                     <SelectValue placeholder="All Deals" />
                   </SelectTrigger>
                   <SelectContent className="bg-brand-bg border-brand-border text-brand-text">
                     <SelectItem value="all">All Deals</SelectItem>
                     <SelectItem value="food">Dining &amp; Food</SelectItem>
-                    <SelectItem value="fashion">Fashion &amp; Apparel</SelectItem>
+                    <SelectItem value="fashion">
+                      Fashion &amp; Apparel
+                    </SelectItem>
                     <SelectItem value="home">Home Improvement</SelectItem>
                     <SelectItem value="travel">Travel &amp; Hotels</SelectItem>
                   </SelectContent>
@@ -439,15 +481,19 @@ export default function NearbyOffers() {
             {loading ? (
               <div className="py-20 text-center space-y-2">
                 <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
-                <span className="text-xs text-brand-subtext font-bold">Scanning local coordinates...</span>
+                <span className="text-xs text-brand-subtext font-bold">
+                  Scanning local coordinates...
+                </span>
               </div>
             ) : filteredCoupons.length === 0 ? (
               <div className="py-20 text-center text-xs text-brand-subtext font-medium bg-brand-surface rounded-xl border border-brand-border p-4">
-                No local deals found within {distance}km radius. Adjust your filters or location.
+                No local deals found within {distance}km radius. Adjust your
+                filters or location.
               </div>
             ) : (
               filteredCoupons.map((coupon) => {
-                const brandName = coupon.merchantId?.businessName || "Verified Brand";
+                const brandName =
+                  coupon.merchantId?.businessName || "Verified Brand";
                 const isMarbella = brandName.toLowerCase() === "marbella";
                 const discountText =
                   coupon.discountType === "percentage"
@@ -455,10 +501,12 @@ export default function NearbyOffers() {
                     : `₹${coupon.discountValue} OFF`;
 
                 return (
-                  <div 
+                  <div
                     key={coupon._id}
                     className={`bg-brand-surface border rounded-xl p-4 transition-all hover:border-brand-blue cursor-pointer shadow-sm relative flex gap-3.5 group hover:shadow-md ${
-                      isMarbella ? "border-orange-500/30 bg-orange-500/[0.03]" : "border-brand-border"
+                      isMarbella
+                        ? "border-orange-500/30 bg-orange-500/[0.03]"
+                        : "border-brand-border"
                     }`}
                     onClick={() => {
                       setMapCenter(coupon.coords);
@@ -471,10 +519,10 @@ export default function NearbyOffers() {
                     <div className="w-11 h-11 rounded-lg bg-brand-navy text-white font-black flex items-center justify-center text-sm shadow-sm flex-shrink-0">
                       {coupon.merchantId?.logo ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img 
-                          src={coupon.merchantId.logo} 
-                          alt={brandName} 
-                          className="w-full h-full object-cover rounded-lg" 
+                        <img
+                          src={coupon.merchantId.logo}
+                          alt={brandName}
+                          className="w-full h-full object-cover rounded-lg"
                         />
                       ) : (
                         brandName[0]
@@ -491,12 +539,14 @@ export default function NearbyOffers() {
                           {coupon.distance} km away
                         </span>
                       </div>
-                      
+
                       <h3 className="font-black text-sm text-brand-text group-hover:text-brand-blue transition-colors">
                         {discountText}
                       </h3>
-                      <p className="text-[10px] text-brand-subtext leading-relaxed line-clamp-1">{coupon.title}</p>
-                      
+                      <p className="text-[10px] text-brand-subtext leading-relaxed line-clamp-1">
+                        {coupon.title}
+                      </p>
+
                       {/* Address */}
                       <p className="text-[9px] text-slate-400 font-semibold truncate leading-none pt-1">
                         📍 {coupon.address}
@@ -508,7 +558,7 @@ export default function NearbyOffers() {
                             LOCAL BUSINESS
                           </Badge>
                         )}
-                        <Link 
+                        <Link
                           href={`/deals/${coupon._id}`}
                           className="text-[10px] font-bold text-brand-blue hover:underline flex items-center gap-0.5 ml-auto"
                         >
@@ -521,7 +571,6 @@ export default function NearbyOffers() {
               })
             )}
           </div>
-
         </section>
 
         {/* Right Panel: Leaflet Map (60% / lg:flex-1) */}
@@ -543,17 +592,18 @@ export default function NearbyOffers() {
           {!leafletLoaded && (
             <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm z-30 flex items-center justify-center text-white space-y-2 flex-col">
               <Loader2 className="w-8 h-8 animate-spin text-white" />
-              <span className="text-xs font-bold tracking-wider">Acquiring OpenStreetMap tile nodes...</span>
+              <span className="text-xs font-bold tracking-wider">
+                Acquiring OpenStreetMap tile nodes...
+              </span>
             </div>
           )}
         </section>
-
       </div>
 
       {/* Manual Location Dialog Modal */}
       {showLocationModal && (
         <div className="fixed inset-0 bg-black/50 z-[250] flex items-center justify-center p-4 animate-fade-in-scale">
-          <form 
+          <form
             onSubmit={handleManualSubmit}
             className="bg-brand-bg border border-brand-border rounded-2xl max-w-sm w-full p-6 text-left space-y-4 shadow-2xl"
           >
@@ -562,8 +612,8 @@ export default function NearbyOffers() {
                 <MapPin className="w-4 h-4 text-brand-warning" />
                 <span>Enter Location Details</span>
               </h3>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setShowLocationModal(false)}
                 className="text-slate-400 hover:text-brand-navy"
               >
@@ -574,14 +624,20 @@ export default function NearbyOffers() {
             <div className="space-y-3 text-xs">
               <div className="space-y-1">
                 <label className="font-bold text-brand-subtext">Country</label>
-                <Input value="India" disabled className="bg-brand-surface/50 cursor-not-allowed border-brand-border text-brand-text h-9 animate-none" />
+                <Input
+                  value="India"
+                  disabled
+                  className="bg-brand-surface/50 cursor-not-allowed border-brand-border text-brand-text h-9 animate-none"
+                />
               </div>
 
               <div className="space-y-1">
                 <label className="font-bold text-brand-subtext">State *</label>
-                <Select 
-                  value={manualForm.state} 
-                  onValueChange={(val) => setManualForm({ ...manualForm, state: val })}
+                <Select
+                  value={manualForm.state}
+                  onValueChange={(val) =>
+                    setManualForm({ ...manualForm, state: val })
+                  }
                 >
                   <SelectTrigger className="h-9 border-brand-border bg-brand-surface text-brand-text cursor-pointer">
                     <SelectValue placeholder="Select State" />
@@ -598,9 +654,11 @@ export default function NearbyOffers() {
 
               <div className="space-y-1">
                 <label className="font-bold text-brand-subtext">City *</label>
-                <Select 
-                  value={manualForm.city} 
-                  onValueChange={(val) => setManualForm({ ...manualForm, city: val })}
+                <Select
+                  value={manualForm.city}
+                  onValueChange={(val) =>
+                    setManualForm({ ...manualForm, city: val })
+                  }
                 >
                   <SelectTrigger className="h-9 border-brand-border bg-brand-surface text-brand-text cursor-pointer">
                     <SelectValue placeholder="Select City" />
@@ -618,12 +676,16 @@ export default function NearbyOffers() {
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-brand-subtext">Area / Pincode</label>
-                <Input 
-                  placeholder="e.g. Lalpur or 834001" 
+                <label className="font-bold text-brand-subtext">
+                  Area / Pincode
+                </label>
+                <Input
+                  placeholder="e.g. Lalpur or 834001"
                   value={manualForm.area}
-                  onChange={(e) => setManualForm({ ...manualForm, area: e.target.value })}
-                  className="border-brand-border bg-brand-surface text-brand-text h-9" 
+                  onChange={(e) =>
+                    setManualForm({ ...manualForm, area: e.target.value })
+                  }
+                  className="border-brand-border bg-brand-surface text-brand-text h-9"
                 />
               </div>
             </div>

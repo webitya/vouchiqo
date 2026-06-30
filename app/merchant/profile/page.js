@@ -2,20 +2,20 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  ArrowUpRight,
   CheckCircle2,
+  Clock,
   Globe,
   Loader2,
   MapPin,
+  Phone,
   Save,
   Store,
   Upload,
-  Phone,
-  Clock,
-  ArrowUpRight,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import DashboardLayout from "@/components/DashboardLayout";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -88,7 +88,8 @@ export default function MerchantBusinessProfile() {
         slug: merchant.slug ?? "",
         category: merchant.category ?? "food",
         description: merchant.description ?? "",
-        shortDescription: merchant.shortDescription ?? merchant.description ?? "",
+        shortDescription:
+          merchant.shortDescription ?? merchant.description ?? "",
         longDescription: merchant.longDescription ?? "",
         contactEmail: merchant.contactEmail ?? "",
         website: merchant.website ?? "",
@@ -176,7 +177,9 @@ export default function MerchantBusinessProfile() {
   // Save profile mutation (POST to create, PUT to update)
   const saveMutation = useMutation({
     mutationFn: async (payload) => {
-      const url = merchant ? `/api/merchants/${merchant._id}` : "/api/merchants";
+      const url = merchant
+        ? `/api/merchants/${merchant._id}`
+        : "/api/merchants";
       const method = merchant ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -275,7 +278,8 @@ export default function MerchantBusinessProfile() {
                 Manage Brand Storefront
               </h3>
               <p className="text-xs text-brand-subtext mt-0.5 font-semibold">
-                Setup your online profile, cover banner, business address, and operational schedules.
+                Setup your online profile, cover banner, business address, and
+                operational schedules.
               </p>
             </div>
           </div>
@@ -312,21 +316,19 @@ export default function MerchantBusinessProfile() {
                   Store Logo
                 </Label>
                 <div className="relative group flex flex-col items-center justify-center border border-dashed border-brand-border rounded-lg p-5 bg-brand-surface hover:bg-brand-surface/75 cursor-pointer h-28 overflow-hidden">
-                  {formData.logo ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={formData.logo}
-                      alt="Store Logo"
-                      className="w-full h-full object-contain"
-                    />
-                  ) : (
-                    <>
-                      <Upload className="w-5 h-5 text-brand-subtext group-hover:text-brand-blue transition-colors mb-2" />
-                      <span className="text-[10px] text-brand-subtext font-semibold">
-                        {uploadingLogo ? "Uploading..." : "Upload 1:1 Image"}
-                      </span>
-                    </>
-                  )}
+                  {formData.logo
+                    ? // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={formData.logo}
+                        alt="Store Logo"
+                        className="w-full h-full object-contain"
+                      />
+                    : <>
+                        <Upload className="w-5 h-5 text-brand-subtext group-hover:text-brand-blue transition-colors mb-2" />
+                        <span className="text-[10px] text-brand-subtext font-semibold">
+                          {uploadingLogo ? "Uploading..." : "Upload 1:1 Image"}
+                        </span>
+                      </>}
                   <input
                     type="file"
                     accept="image/*"
@@ -342,21 +344,21 @@ export default function MerchantBusinessProfile() {
                   Cover Banner
                 </Label>
                 <div className="relative group flex flex-col items-center justify-center border border-dashed border-brand-border rounded-lg p-5 bg-brand-surface hover:bg-brand-surface/75 cursor-pointer h-28 overflow-hidden">
-                  {formData.banner ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={formData.banner}
-                      alt="Cover Banner"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <>
-                      <Upload className="w-5 h-5 text-brand-subtext group-hover:text-brand-blue transition-colors mb-1" />
-                      <span className="text-[10px] text-brand-subtext font-semibold">
-                        {uploadingBanner ? "Uploading..." : "Upload high-res banner (1200x300px)"}
-                      </span>
-                    </>
-                  )}
+                  {formData.banner
+                    ? // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={formData.banner}
+                        alt="Cover Banner"
+                        className="w-full h-full object-cover"
+                      />
+                    : <>
+                        <Upload className="w-5 h-5 text-brand-subtext group-hover:text-brand-blue transition-colors mb-1" />
+                        <span className="text-[10px] text-brand-subtext font-semibold">
+                          {uploadingBanner
+                            ? "Uploading..."
+                            : "Upload high-res banner (1200x300px)"}
+                        </span>
+                      </>}
                   <input
                     type="file"
                     accept="image/*"
@@ -435,13 +437,21 @@ export default function MerchantBusinessProfile() {
                 </Label>
                 <div className="flex gap-4 items-center h-10 px-1">
                   {["online", "physical", "both"].map((type) => (
-                    <label key={type} className="flex items-center gap-2 text-xs font-semibold cursor-pointer capitalize">
+                    <label
+                      key={type}
+                      className="flex items-center gap-2 text-xs font-semibold cursor-pointer capitalize"
+                    >
                       <input
                         type="radio"
                         name="businessType"
                         value={type}
                         checked={formData.businessType === type}
-                        onChange={(e) => setFormData({ ...formData, businessType: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            businessType: e.target.value,
+                          })
+                        }
                         className="w-4 h-4 text-brand-blue"
                       />
                       <span>{type}</span>
@@ -452,14 +462,18 @@ export default function MerchantBusinessProfile() {
 
               <div className="space-y-1.5 sm:col-span-2">
                 <Label className="text-xs font-bold text-brand-text uppercase">
-                  Short Store Description (For card snippets, max 300 characters)
+                  Short Store Description (For card snippets, max 300
+                  characters)
                 </Label>
                 <Input
                   type="text"
                   maxLength={300}
                   value={formData.shortDescription}
                   onChange={(e) =>
-                    setFormData({ ...formData, shortDescription: e.target.value })
+                    setFormData({
+                      ...formData,
+                      shortDescription: e.target.value,
+                    })
                   }
                   className="bg-brand-surface border border-brand-border rounded-lg text-xs w-full h-10 px-3 shadow-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 focus-visible:border-brand-blue"
                 />
@@ -473,7 +487,10 @@ export default function MerchantBusinessProfile() {
                   value={formData.longDescription}
                   maxLength={1000}
                   onChange={(e) =>
-                    setFormData({ ...formData, longDescription: e.target.value })
+                    setFormData({
+                      ...formData,
+                      longDescription: e.target.value,
+                    })
                   }
                   rows={4}
                   className="bg-brand-surface border border-brand-border rounded-lg text-xs w-full min-h-[100px] p-3 shadow-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 focus-visible:border-brand-blue"
@@ -549,7 +566,10 @@ export default function MerchantBusinessProfile() {
                     placeholder="+91 XXXXX XXXXX"
                     value={formData.whatsappNumber}
                     onChange={(e) =>
-                      setFormData({ ...formData, whatsappNumber: e.target.value })
+                      setFormData({
+                        ...formData,
+                        whatsappNumber: e.target.value,
+                      })
                     }
                     className="bg-brand-surface border border-brand-border rounded-lg text-xs w-full h-10 pl-9 pr-3 shadow-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 focus-visible:border-brand-blue"
                   />
@@ -644,17 +664,27 @@ export default function MerchantBusinessProfile() {
               {Object.keys(formData.operatingHours).map((day) => {
                 const hr = formData.operatingHours[day];
                 return (
-                  <div key={day} className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4 py-2 border-b border-slate-100 last:border-0">
-                    <span className="text-xs font-bold text-brand-navy">{day}</span>
+                  <div
+                    key={day}
+                    className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4 py-2 border-b border-slate-100 last:border-0"
+                  >
+                    <span className="text-xs font-bold text-brand-navy">
+                      {day}
+                    </span>
                     <div className="flex items-center gap-2">
                       <input
                         type="checkbox"
                         checked={hr.closed}
-                        onChange={(e) => handleHoursChange(day, "closed", e.target.checked)}
+                        onChange={(e) =>
+                          handleHoursChange(day, "closed", e.target.checked)
+                        }
                         className="w-4 h-4 text-brand-blue cursor-pointer"
                         id={`closed-${day}`}
                       />
-                      <label htmlFor={`closed-${day}`} className="text-xs font-semibold text-brand-subtext cursor-pointer select-none">
+                      <label
+                        htmlFor={`closed-${day}`}
+                        className="text-xs font-semibold text-brand-subtext cursor-pointer select-none"
+                      >
                         Closed All Day
                       </label>
                     </div>
@@ -662,22 +692,30 @@ export default function MerchantBusinessProfile() {
                     {!hr.closed && (
                       <>
                         <div className="space-y-1">
-                          <Label className="text-[10px] font-bold text-brand-subtext uppercase">Open Time</Label>
+                          <Label className="text-[10px] font-bold text-brand-subtext uppercase">
+                            Open Time
+                          </Label>
                           <Input
                             type="text"
                             placeholder="e.g. 09:00 AM"
                             value={hr.open || ""}
-                            onChange={(e) => handleHoursChange(day, "open", e.target.value)}
+                            onChange={(e) =>
+                              handleHoursChange(day, "open", e.target.value)
+                            }
                             className="bg-brand-surface border border-brand-border rounded-lg text-xs h-8 shadow-none"
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label className="text-[10px] font-bold text-brand-subtext uppercase">Close Time</Label>
+                          <Label className="text-[10px] font-bold text-brand-subtext uppercase">
+                            Close Time
+                          </Label>
                           <Input
                             type="text"
                             placeholder="e.g. 09:00 PM"
                             value={hr.close || ""}
-                            onChange={(e) => handleHoursChange(day, "close", e.target.value)}
+                            onChange={(e) =>
+                              handleHoursChange(day, "close", e.target.value)
+                            }
                             className="bg-brand-surface border border-brand-border rounded-lg text-xs h-8 shadow-none"
                           />
                         </div>
@@ -694,13 +732,13 @@ export default function MerchantBusinessProfile() {
             disabled={saveMutation.isPending}
             className="btn-primary w-full py-2.5 text-xs font-semibold flex items-center justify-center gap-1.5 border-0 h-auto cursor-pointer shadow-none"
           >
-            {saveMutation.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Save className="w-4 h-4" />
-            )}
+            {saveMutation.isPending
+              ? <Loader2 className="w-4 h-4 animate-spin" />
+              : <Save className="w-4 h-4" />}
             <span>
-              {saveMutation.isPending ? "Saving changes..." : "Save Business Profile"}
+              {saveMutation.isPending
+                ? "Saving changes..."
+                : "Save Business Profile"}
             </span>
           </Button>
         </form>

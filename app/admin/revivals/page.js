@@ -2,8 +2,8 @@
 
 import { Check, RefreshCw, X, Forward, Mail, Eye, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
-import DashboardLayout from "@/components/DashboardLayout";
-import EmptyState from "@/components/EmptyState";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import EmptyState from "@/components/shared/EmptyState";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

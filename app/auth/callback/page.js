@@ -1,10 +1,10 @@
 "use server";
 
+import mongoose from "mongoose";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
-import mongoose from "mongoose";
 import UserProfile from "@/modules/user/user.model";
 
 /**
@@ -38,16 +38,15 @@ export default async function AuthCallbackPage({ searchParams }) {
     const db = mongoose.connection.db;
 
     // Update role in Better Auth's user collection
-    await db.collection("user").updateOne(
-      { _id: session.user.id },
-      { $set: { role: requestedRole } }
-    );
+    await db
+      .collection("user")
+      .updateOne({ _id: session.user.id }, { $set: { role: requestedRole } });
 
     // Update/upsert UserProfile model role
     await UserProfile.findOneAndUpdate(
       { authId: session.user.id },
       { $set: { role: requestedRole } },
-      { upsert: true }
+      { upsert: true },
     );
 
     finalRole = requestedRole;
@@ -57,7 +56,7 @@ export default async function AuthCallbackPage({ searchParams }) {
     await UserProfile.findOneAndUpdate(
       { authId: session.user.id },
       { $setOnInsert: { role: currentRole } },
-      { upsert: true }
+      { upsert: true },
     );
   }
 

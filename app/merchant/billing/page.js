@@ -8,11 +8,10 @@ import {
   FileText,
   Loader2,
   Lock,
-  Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import DashboardLayout from "@/components/DashboardLayout";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +30,7 @@ export default function MerchantSubscription() {
   const [billingCycle, setBillingCycle] = useState("monthly"); // "monthly" | "yearly"
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [selectedAddOn, setSelectedAddOn] = useState(null);
-  
+
   // Checkout modal states
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState(1); // 1: review, 2: pay, 3: success
@@ -73,7 +72,7 @@ export default function MerchantSubscription() {
       toast.success(
         selectedPlan
           ? `Upgraded to ${selectedPlan.name} successfully!`
-          : "Add-on purchased successfully!"
+          : "Add-on purchased successfully!",
       );
       setCheckoutStep(3);
     },
@@ -165,8 +164,20 @@ export default function MerchantSubscription() {
   ];
 
   const invoices = [
-    { id: "INV-2948", date: "2026-06-15", amount: "₹1,499.00", plan: "Growth Partner", status: "Paid" },
-    { id: "INV-1834", date: "2026-05-15", amount: "₹1,499.00", plan: "Growth Partner", status: "Paid" },
+    {
+      id: "INV-2948",
+      date: "2026-06-15",
+      amount: "₹1,499.00",
+      plan: "Growth Partner",
+      status: "Paid",
+    },
+    {
+      id: "INV-1834",
+      date: "2026-05-15",
+      amount: "₹1,499.00",
+      plan: "Growth Partner",
+      status: "Paid",
+    },
   ];
 
   const handleOpenUpgrade = (plan) => {
@@ -207,7 +218,7 @@ export default function MerchantSubscription() {
       ? selectedPlan.priceYearly
       : selectedPlan.priceMonthly
     : selectedAddOn?.price || 0;
-  
+
   const gst = parseFloat((basePrice * 0.18).toFixed(2));
   const totalPrice = basePrice + gst;
 
@@ -226,7 +237,9 @@ export default function MerchantSubscription() {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-heading text-base font-bold text-brand-navy capitalize">
-                  {plans.find((p) => p.id === currentPlanId)?.name || currentPlanId} Plan
+                  {plans.find((p) => p.id === currentPlanId)?.name ||
+                    currentPlanId}{" "}
+                  Plan
                 </h3>
                 <Badge className="bg-brand-success/15 text-brand-success rounded-full border-0 font-bold text-[10px] py-0.5 px-2 hover:bg-brand-success/15 shadow-none uppercase">
                   Active
@@ -292,7 +305,9 @@ export default function MerchantSubscription() {
             {plans.map((plan) => {
               const isActive = currentPlanId === plan.id;
               const displayPrice =
-                billingCycle === "yearly" ? plan.priceYearly : plan.priceMonthly;
+                billingCycle === "yearly"
+                  ? plan.priceYearly
+                  : plan.priceMonthly;
 
               return (
                 <div
@@ -314,7 +329,9 @@ export default function MerchantSubscription() {
                       <h4 className="font-heading text-base font-bold text-brand-navy">
                         {plan.name}
                       </h4>
-                      <p className="text-xs text-brand-subtext mt-1">{plan.desc}</p>
+                      <p className="text-xs text-brand-subtext mt-1">
+                        {plan.desc}
+                      </p>
                     </div>
 
                     <div className="flex items-baseline gap-1 py-2 border-y border-brand-surface">
@@ -328,7 +345,10 @@ export default function MerchantSubscription() {
 
                     <ul className="space-y-2 text-xs">
                       {plan.features.map((feat, idx) => (
-                        <li key={idx} className="flex gap-2 items-start text-brand-text leading-snug">
+                        <li
+                          key={idx}
+                          className="flex gap-2 items-start text-brand-text leading-snug"
+                        >
                           <Check className="w-4 h-4 text-brand-success flex-shrink-0 mt-0.5" />
                           <span>{feat}</span>
                         </li>
@@ -367,7 +387,9 @@ export default function MerchantSubscription() {
                 className="bg-brand-bg border border-brand-border rounded-xl p-5 hover:shadow-sm flex flex-col justify-between"
               >
                 <div className="space-y-2">
-                  <span className="text-xs font-bold text-brand-navy block">{addon.name}</span>
+                  <span className="text-xs font-bold text-brand-navy block">
+                    {addon.name}
+                  </span>
                   <p className="text-[11px] text-brand-subtext leading-relaxed font-medium">
                     {addon.desc}
                   </p>
@@ -448,7 +470,6 @@ export default function MerchantSubscription() {
       {isCheckoutOpen && (
         <div className="fixed inset-0 bg-black/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white border border-brand-border rounded-[20px] max-w-md w-full p-6 shadow-2xl space-y-6 text-left relative animate-fade-in-scale">
-            
             {/* Step 1: Review Order */}
             {checkoutStep === 1 && (
               <div className="space-y-4 font-semibold text-brand-text">
@@ -457,7 +478,9 @@ export default function MerchantSubscription() {
                     <h4 className="font-heading text-sm font-black text-brand-navy uppercase tracking-wider">
                       Review Your Order
                     </h4>
-                    <p className="text-[10px] text-brand-subtext">Razorpay Checkout Sandbox</p>
+                    <p className="text-[10px] text-brand-subtext">
+                      Razorpay Checkout Sandbox
+                    </p>
                   </div>
                   <button
                     onClick={() => setIsCheckoutOpen(false)}
@@ -471,16 +494,22 @@ export default function MerchantSubscription() {
                   <div className="flex justify-between">
                     <span className="text-brand-subtext">Product:</span>
                     <span className="font-bold text-brand-navy">
-                      {selectedPlan ? `${selectedPlan.name} (${billingCycle})` : selectedAddOn?.name}
+                      {selectedPlan
+                        ? `${selectedPlan.name} (${billingCycle})`
+                        : selectedAddOn?.name}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-brand-subtext">Base Amount:</span>
-                    <span className="font-bold text-brand-text">₹{basePrice.toLocaleString()}</span>
+                    <span className="font-bold text-brand-text">
+                      ₹{basePrice.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-brand-subtext">GST (18%):</span>
-                    <span className="font-bold text-brand-text">₹{gst.toLocaleString()}</span>
+                    <span className="font-bold text-brand-text">
+                      ₹{gst.toLocaleString()}
+                    </span>
                   </div>
                   <div className="border-t border-slate-200 pt-2.5 flex justify-between font-black text-brand-navy">
                     <span>Total Amount:</span>
@@ -508,66 +537,96 @@ export default function MerchantSubscription() {
                       <h4 className="font-heading text-sm font-black text-brand-navy uppercase tracking-wider">
                         Razorpay Secure Checkout
                       </h4>
-                      <p className="text-[10px] text-brand-subtext">128-bit SSL encrypted connection</p>
+                      <p className="text-[10px] text-brand-subtext">
+                        128-bit SSL encrypted connection
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                {upgradeMutation.isPending ? (
-                  <div className="py-8 text-center space-y-3">
-                    <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
-                    <span className="text-xs font-bold text-brand-navy">Processing Sandbox Transaction...</span>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-bold text-brand-text uppercase">Card Number</Label>
-                      <Input
-                        type="text"
-                        value={cardDetails.number}
-                        onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value })}
-                        className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
-                      />
+                {upgradeMutation.isPending
+                  ? <div className="py-8 text-center space-y-3">
+                      <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
+                      <span className="text-xs font-bold text-brand-navy">
+                        Processing Sandbox Transaction...
+                      </span>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                  : <div className="space-y-4">
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-brand-text uppercase">Expiry Date</Label>
+                        <Label className="text-xs font-bold text-brand-text uppercase">
+                          Card Number
+                        </Label>
                         <Input
                           type="text"
-                          value={cardDetails.expiry}
-                          onChange={(e) => setCardDetails({ ...cardDetails, expiry: e.target.value })}
+                          value={cardDetails.number}
+                          onChange={(e) =>
+                            setCardDetails({
+                              ...cardDetails,
+                              number: e.target.value,
+                            })
+                          }
                           className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
                         />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-bold text-brand-text uppercase">
+                            Expiry Date
+                          </Label>
+                          <Input
+                            type="text"
+                            value={cardDetails.expiry}
+                            onChange={(e) =>
+                              setCardDetails({
+                                ...cardDetails,
+                                expiry: e.target.value,
+                              })
+                            }
+                            className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-bold text-brand-text uppercase">
+                            CVV
+                          </Label>
+                          <Input
+                            type="password"
+                            value={cardDetails.cvv}
+                            onChange={(e) =>
+                              setCardDetails({
+                                ...cardDetails,
+                                cvv: e.target.value,
+                              })
+                            }
+                            className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
+                          />
+                        </div>
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-brand-text uppercase">CVV</Label>
+                        <Label className="text-xs font-bold text-brand-text uppercase">
+                          Cardholder Name
+                        </Label>
                         <Input
-                          type="password"
-                          value={cardDetails.cvv}
-                          onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
+                          type="text"
+                          placeholder="John Doe"
+                          value={cardDetails.name}
+                          onChange={(e) =>
+                            setCardDetails({
+                              ...cardDetails,
+                              name: e.target.value,
+                            })
+                          }
                           className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
                         />
                       </div>
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-bold text-brand-text uppercase">Cardholder Name</Label>
-                      <Input
-                        type="text"
-                        placeholder="John Doe"
-                        value={cardDetails.name}
-                        onChange={(e) => setCardDetails({ ...cardDetails, name: e.target.value })}
-                        className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
-                      />
-                    </div>
 
-                    <Button
-                      onClick={executePayment}
-                      className="btn-primary w-full text-xs py-2.5 border-0 h-auto cursor-pointer shadow-none font-bold"
-                    >
-                      Pay ₹{totalPrice.toLocaleString()}
-                    </Button>
-                  </div>
-                )}
+                      <Button
+                        onClick={executePayment}
+                        className="btn-primary w-full text-xs py-2.5 border-0 h-auto cursor-pointer shadow-none font-bold"
+                      >
+                        Pay ₹{totalPrice.toLocaleString()}
+                      </Button>
+                    </div>}
               </div>
             )}
 
@@ -595,7 +654,6 @@ export default function MerchantSubscription() {
                 </Button>
               </div>
             )}
-
           </div>
         </div>
       )}
