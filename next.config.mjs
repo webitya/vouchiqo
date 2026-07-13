@@ -56,6 +56,20 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/admin%20login",
+        destination: "/admin-login",
+        permanent: true,
+      },
+      {
+        source: "/admin login",
+        destination: "/admin-login",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

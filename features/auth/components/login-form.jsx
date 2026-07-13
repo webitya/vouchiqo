@@ -34,10 +34,7 @@ export function LoginForm() {
           callbackURL: "/auth/callback",
         });
       } else {
-        toast("Dev Mode: Google OAuth not configured. Logging in as Demo...", {
-          icon: "🔧",
-        });
-        login({ email: "customer@vouchiqo.com", password: "Password123!" });
+        toast.error("Google sign-in is not available. Please use email and password.");
       }
     } catch (err) {
       toast.error(err?.message ?? "Google authentication failed.");

@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { signIn } from "@/lib/auth-client";
 
 export function useLogin() {
-
   return useMutation({
     mutationFn: ({ email, password }) => signIn.email({ email, password }),
 
@@ -16,12 +15,13 @@ export function useLogin() {
       }
       toast.success("Welcome back!");
       const role = data?.user?.role ?? "customer";
-      const dest = role === "admin"
-        ? "/admin/dashboard"
-        : role === "merchant"
-          ? "/merchant/dashboard"
-          : "/profile";
-      
+      const dest =
+        role === "admin"
+          ? "/admin/dashboard"
+          : role === "merchant"
+            ? "/merchant/dashboard"
+            : "/";
+
       window.location.href = dest;
     },
 

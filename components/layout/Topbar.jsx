@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ChevronDown, Search, User } from "lucide-react";
+import { Bell, Search, User, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,9 +66,11 @@ export default function Topbar({ title = "Dashboard", user: propUser = null }) {
             <span className="text-xs font-bold text-brand-text group-hover:text-brand-blue transition-colors">
               {user?.name || "Premium User"}
             </span>
-            <span className="text-[10px] text-brand-subtext uppercase font-semibold">
-              {user?.role || "Customer"}
-            </span>
+            {user?.role && user.role !== "customer" && (
+              <span className="text-[10px] text-brand-subtext uppercase font-semibold">
+                {user.role}
+              </span>
+            )}
           </div>
           <ChevronDown className="w-3.5 h-3.5 text-brand-subtext group-hover:text-brand-text transition-colors" />
         </div>

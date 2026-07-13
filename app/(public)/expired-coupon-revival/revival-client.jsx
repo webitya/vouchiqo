@@ -8,10 +8,6 @@ import {
   Loader2,
   RotateCcw,
   Send,
-  Building,
-  Tag,
-  Phone,
-  CheckSquare,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -19,10 +15,14 @@ import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/lib/auth-client";
 import { INDIAN_CITIES } from "@/utils/cities";
+import HowItWorks from "./components/HowItWorks";
+import SuccessStories from "./components/SuccessStories";
+import Step1Merchant from "./components/Step1Merchant";
+import Step2Offer from "./components/Step2Offer";
+import Step3Contact from "./components/Step3Contact";
+import Step4Review from "./components/Step4Review";
 
 // 15 Vouchiqo standard categories
 const VOUCHIQO_CATEGORIES = [
@@ -461,310 +461,46 @@ export default function ExpiredCouponRevival() {
 
               {/* STEP 1: MERCHANT DETAILS */}
               {step === 1 && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 border-b border-brand-border pb-2 mb-2">
-                    <Building className="w-4 h-4 text-brand-blue" />
-                    <h2 className="text-xs font-black uppercase tracking-wider text-slate-700">1. Merchant Details</h2>
-                  </div>
-
-                  {/* Brand Name Input with Autocomplete */}
-                  <div className="space-y-1 relative">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Brand Name *</label>
-                    <Input
-                      placeholder="e.g. Marbella, Starbucks"
-                      value={form.brandName}
-                      onChange={(e) => handleBrandChange(e.target.value)}
-                      onBlur={checkBrandOnBlur}
-                      className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9"
-                    />
-                    {brandSuggestions.length > 0 && (
-                      <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-brand-border rounded-lg shadow-lg z-50 overflow-hidden text-xs max-h-40 overflow-y-auto">
-                        {brandSuggestions.map((b, idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => selectBrand(b)}
-                            className="w-full text-left px-3 py-2 hover:bg-brand-surface transition-colors border-b border-brand-border/40 font-medium"
-                          >
-                            {b.name} <span className="text-[10px] text-slate-400">({b.category})</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Category Dropdown */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Business Category *</label>
-                    <select
-                      value={form.category}
-                      disabled={isCategoryLocked}
-                      onChange={(e) => setForm({ ...form, category: e.target.value })}
-                      className="w-full bg-brand-surface border border-brand-border rounded-md px-3 py-2 text-xs focus:ring-brand-blue focus:border-brand-blue h-9 disabled:opacity-60"
-                    >
-                      <option value="">Select category...</option>
-                      {VOUCHIQO_CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* City Autocomplete */}
-                  <div className="space-y-1 relative">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Merchant Location (City) *</label>
-                    <Input
-                      placeholder="e.g. Ranchi"
-                      value={form.city}
-                      onChange={(e) => handleCityChange(e.target.value)}
-                      className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9"
-                    />
-                    {citySuggestions.length > 0 && (
-                      <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-brand-border rounded-lg shadow-lg z-50 overflow-hidden text-xs">
-                        {citySuggestions.map((c, idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => selectCity(c)}
-                            className="w-full text-left px-3 py-2 hover:bg-brand-surface transition-colors border-b border-brand-border/40 font-medium"
-                          >
-                            {c}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Where did you find this? */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Where did you find this offer? *</label>
-                    <select
-                      value={form.foundWhere}
-                      onChange={(e) => setForm({ ...form, foundWhere: e.target.value })}
-                      className="w-full bg-brand-surface border border-brand-border rounded-md px-3 py-2 text-xs focus:ring-brand-blue focus:border-brand-blue h-9"
-                    >
-                      {FOUND_SOURCES.map((src) => (
-                        <option key={src} value={src}>{src}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* If other/another website */}
-                  {(form.foundWhere === "Other" || form.foundWhere === "Another Coupon Website") && (
-                    <div className="space-y-1 animate-fadeIn">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Specify Website or Platform *</label>
-                      <Input
-                        placeholder="e.g. GrabOn, physical banner"
-                        value={form.foundWhereOther}
-                        onChange={(e) => setForm({ ...form, foundWhereOther: e.target.value })}
-                        className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9"
-                      />
-                    </div>
-                  )}
-
-                  {/* Merchant Website Link */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Merchant Website / Social Link (Optional)</label>
-                    <Input
-                      placeholder="e.g. @marbellaranchi or website URL"
-                      value={form.merchantWebsite}
-                      onChange={(e) => setForm({ ...form, merchantWebsite: e.target.value })}
-                      className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9"
-                    />
-                  </div>
-                </div>
+                <Step1Merchant
+                  form={form}
+                  setForm={setForm}
+                  brandSuggestions={brandSuggestions}
+                  handleBrandChange={handleBrandChange}
+                  checkBrandOnBlur={checkBrandOnBlur}
+                  selectBrand={selectBrand}
+                  isCategoryLocked={isCategoryLocked}
+                  VOUCHIQO_CATEGORIES={VOUCHIQO_CATEGORIES}
+                  citySuggestions={citySuggestions}
+                  handleCityChange={handleCityChange}
+                  selectCity={selectCity}
+                  FOUND_SOURCES={FOUND_SOURCES}
+                />
               )}
 
               {/* STEP 2: OFFER DETAILS */}
               {step === 2 && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 border-b border-brand-border pb-2 mb-2">
-                    <Tag className="w-4 h-4 text-brand-blue" />
-                    <h2 className="text-xs font-black uppercase tracking-wider text-slate-700">2. Offer Details</h2>
-                  </div>
-
-                  {/* Expired Code */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Expired Coupon Code (Optional)</label>
-                    <Input
-                      placeholder="e.g. OFF50"
-                      value={form.code}
-                      onChange={(e) => setForm({ ...form, code: e.target.value })}
-                      className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9 uppercase"
-                    />
-                  </div>
-
-                  {/* Discount Type */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Discount Type *</label>
-                    <div className="flex flex-wrap gap-3">
-                      {[
-                        { label: "% Off", value: "percentage" },
-                        { label: "Flat ₹ Off", value: "fixed" },
-                        { label: "BOGO", value: "bogo" },
-                        { label: "Free Gift", value: "freebie" },
-                        { label: "Other", value: "other" },
-                      ].map((t) => (
-                        <label key={t.value} className="flex items-center gap-1.5 text-xs text-slate-700 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="discountType"
-                            value={t.value}
-                            checked={form.discountType === t.value}
-                            onChange={(e) => setForm({ ...form, discountType: e.target.value, discountValue: "" })}
-                            className="text-brand-blue focus:ring-brand-blue"
-                          />
-                          <span>{t.label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Discount Value */}
-                  {(form.discountType === "percentage" || form.discountType === "fixed") && (
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                        Discount Value ({form.discountType === "percentage" ? "%" : "₹"}) *
-                      </label>
-                      <Input
-                        type="number"
-                        placeholder={form.discountType === "percentage" ? "e.g. 15" : "e.g. 500"}
-                        value={form.discountValue}
-                        onChange={(e) => setForm({ ...form, discountValue: e.target.value })}
-                        className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9"
-                      />
-                    </div>
-                  )}
-
-                  {/* Brief Description */}
-                  <div className="space-y-1">
-                    <div className="flex justify-between items-center">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Brief Offer Description *</label>
-                      <span className="text-[9px] font-semibold text-slate-400">{form.description.length}/100</span>
-                    </div>
-                    <Input
-                      placeholder="e.g. 20% off all bathroom fittings"
-                      value={form.description}
-                      maxLength={100}
-                      onChange={(e) => setForm({ ...form, description: e.target.value })}
-                      className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9"
-                    />
-                  </div>
-
-                  {/* When did you find this? */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">When did you see/find this offer? *</label>
-                    <Input
-                      type="date"
-                      value={form.foundAtDate}
-                      onChange={(e) => setForm({ ...form, foundAtDate: e.target.value })}
-                      max={new Date().toISOString().split("T")[0]}
-                      className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9"
-                    />
-                  </div>
-
-                  {/* What were you trying to buy? */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">What were you trying to buy? (Optional)</label>
-                    <Input
-                      placeholder="e.g. Kitchen wall tiles"
-                      value={form.buyingIntent}
-                      maxLength={150}
-                      onChange={(e) => setForm({ ...form, buyingIntent: e.target.value })}
-                      className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9"
-                    />
-                  </div>
-                </div>
+                <Step2Offer
+                  form={form}
+                  setForm={setForm}
+                />
               )}
 
               {/* STEP 3: CUSTOMER CONTACT */}
               {step === 3 && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 border-b border-brand-border pb-2 mb-2">
-                    <Phone className="w-4 h-4 text-brand-blue" />
-                    <h2 className="text-xs font-black uppercase tracking-wider text-slate-700">3. Contact Details</h2>
-                  </div>
-
-                  {isExpedited && (
-                    <div className="bg-brand-blue/5 border border-brand-blue/15 rounded-lg p-3 text-xs text-brand-blue font-medium mb-3">
-                      Expedited Flow: Reactivating pre-loaded coupon details for <strong>{form.brandName}</strong>. Fill in your contact info to submit!
-                    </div>
-                  )}
-
-                  {/* Email */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Your Email Address *</label>
-                    <Input
-                      type="email"
-                      placeholder="e.g. name@domain.com"
-                      value={form.email}
-                      disabled={!!session?.user?.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9 disabled:opacity-75"
-                    />
-                  </div>
-
-                  {/* Mobile Number */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Your Mobile Number (WhatsApp Updates) *</label>
-                    <Input
-                      type="tel"
-                      placeholder="e.g. +91 9999999999"
-                      value={form.mobile}
-                      onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-                      className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9"
-                    />
-                  </div>
-                </div>
+                <Step3Contact
+                  form={form}
+                  setForm={setForm}
+                  isExpedited={isExpedited}
+                  session={session}
+                />
               )}
 
               {/* STEP 4: CONSENT & SUBMIT */}
               {step === 4 && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 border-b border-brand-border pb-2 mb-2">
-                    <CheckSquare className="w-4 h-4 text-brand-blue" />
-                    <h2 className="text-xs font-black uppercase tracking-wider text-slate-700">4. Review & Confirm</h2>
-                  </div>
-
-                  {/* Summary card */}
-                  <div className="bg-brand-surface border border-brand-border rounded-lg p-4 text-xs space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-medium">Merchant:</span>
-                      <span className="font-bold text-brand-navy">{form.brandName}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-medium">Category:</span>
-                      <span className="font-bold text-brand-navy">{form.category}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-medium">Offer Code:</span>
-                      <span className="font-bold text-brand-navy">{form.code || "N/A"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-medium">Offer Value:</span>
-                      <span className="font-bold text-brand-success">
-                        {form.discountType === "percentage" && `${form.discountValue}% OFF`}
-                        {form.discountType === "fixed" && `₹${form.discountValue} OFF`}
-                        {form.discountType === "bogo" && "BOGO Deal"}
-                        {form.discountType === "freebie" && "Free Gift"}
-                        {form.discountType === "other" && "Discount"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Expectation-Setting Consent Checkbox */}
-                  <div className="flex gap-2.5 items-start p-3 bg-brand-surface border border-brand-border rounded-lg">
-                    <input
-                      type="checkbox"
-                      id="consent-check"
-                      checked={form.consent}
-                      onChange={(e) => setForm({ ...form, consent: e.target.checked })}
-                      className="mt-1 text-brand-blue focus:ring-brand-blue cursor-pointer"
-                    />
-                    <label htmlFor="consent-check" className="text-[11px] leading-relaxed text-slate-600 font-medium cursor-pointer">
-                      I understand Vouchiqo will try to get this offer reactivated, but cannot guarantee a working code will be available. If this isn't possible, I'll be notified and may be offered a similar active offer from this brand or category instead.
-                    </label>
-                  </div>
-                </div>
+                <Step4Review
+                  form={form}
+                  setForm={setForm}
+                />
               )}
 
               {/* BUTTONS NAVIGATION */}
@@ -816,86 +552,8 @@ export default function ExpiredCouponRevival() {
 
         {/* Right: Success Stories */}
         <section className="lg:col-span-5 space-y-6">
-          {/* How it works */}
-          <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm space-y-4">
-            <h3 className="font-heading text-xs font-black text-brand-navy uppercase tracking-wider border-b border-brand-border pb-2">
-              How Revival Works
-            </h3>
-
-            <div className="space-y-3 text-[11px]">
-              <div className="flex gap-2.5 items-start">
-                <div className="w-5 h-5 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue font-bold flex-shrink-0">
-                  1
-                </div>
-                <div>
-                  <h4 className="font-bold text-brand-navy">Submit Details</h4>
-                  <p className="text-brand-subtext leading-relaxed mt-0.5">
-                    Provide the expired coupon code or deal details. We cross-reference with our database.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-2.5 items-start">
-                <div className="w-5 h-5 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue font-bold flex-shrink-0">
-                  2
-                </div>
-                <div>
-                  <h4 className="font-bold text-brand-navy">Outreach Automation</h4>
-                  <p className="text-brand-subtext leading-relaxed mt-0.5">
-                    We aggregate demand and present recovery insights directly to the brand dashboard.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-2.5 items-start">
-                <div className="w-5 h-5 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue font-bold flex-shrink-0">
-                  3
-                </div>
-                <div>
-                  <h4 className="font-bold text-brand-navy">Enjoy Savings</h4>
-                  <p className="text-brand-subtext leading-relaxed mt-0.5">
-                    Once approved by the merchant, a renewed active offer code is dispatched to your email/WhatsApp.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Social Proof Success Feed */}
-          <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm space-y-4">
-            <h3 className="font-heading text-xs font-black text-brand-navy uppercase tracking-wider border-b border-brand-border pb-2">
-              Recent Successes
-            </h3>
-
-            <div className="space-y-3.5 max-h-[300px] overflow-y-auto pr-1">
-              {successStories.map((story, idx) => (
-                <div
-                  key={idx}
-                  className="bg-brand-surface border border-brand-border/40 rounded-lg p-3 space-y-2 text-xs"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="font-black text-brand-navy block">
-                        {story.brand}
-                      </span>
-                      <span className="text-[10px] text-brand-success font-bold">
-                        {story.offer}
-                      </span>
-                    </div>
-                    <Badge className="bg-brand-success/10 text-brand-success border-0 px-2 py-0.5 text-[8px] font-bold">
-                      {story.date}
-                    </Badge>
-                  </div>
-                  <p className="text-brand-subtext leading-relaxed italic bg-white p-2.5 rounded border border-brand-border/30">
-                    &ldquo;{story.text}&rdquo;
-                  </p>
-                  <span className="text-[10px] font-bold text-slate-500 block text-right">
-                    — {story.user}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <HowItWorks />
+          <SuccessStories successStories={successStories} />
         </section>
       </main>
 

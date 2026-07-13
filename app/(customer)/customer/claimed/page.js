@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import EmptyState from "@/components/shared/EmptyState";
-import { useSession } from "@/lib/auth-client";
 import {
   Table,
   TableBody,
@@ -14,9 +13,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useUser } from "@/hooks/use-user";
 
 export default function ClaimedCoupons() {
-  const { data: session } = useSession();
+  const { user: authUser } = useUser();
+  const user = authUser || { name: "User", role: "customer" };
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [redemptions, setRedemptions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,12 +51,9 @@ export default function ClaimedCoupons() {
   };
 
   return (
-    <DashboardLayout
-      title="Claimed Coupons"
-      user={{ name: session?.user?.name || "Member", role: "customer" }}
-    >
+    <DashboardLayout title="Claimed Coupons" user={user}>
       <div className="flex justify-between items-center border-b border-brand-border pb-3">
-        <h2 className="text-base font-bold text-brand-navy font-heading uppercase tracking-wider">
+        <h2 className="text-base font-bold text-brand-navy font-sans uppercase tracking-wider">
           Your Coupon Claims & Redeemed History
         </h2>
         <span className="text-xs text-brand-subtext font-semibold">

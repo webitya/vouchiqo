@@ -6,7 +6,6 @@ import {
   History,
   MapPin,
   PiggyBank,
-  User,
   Wallet,
 } from "lucide-react";
 import { useEffect, useState, Suspense } from "react";
@@ -16,6 +15,7 @@ import toast from "react-hot-toast";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import ConfirmationModal from "@/components/shared/ConfirmationModal";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/hooks/use-user";
 import ActivityTab from "./components/ActivityTab";
 import NearbyOffersTab from "./components/NearbyOffersTab";
 import SavedDealsTab from "./components/SavedDealsTab";
@@ -70,6 +70,7 @@ function ConfettiOverlay({ active }) {
 }
 
 function ProfileHubContent() {
+  const { user: authUser } = useUser();
   const [activeTab, setActiveTab] = useState("savings");
   const [loading, setLoading] = useState(true);
   const [savingsData, setSavingsData] = useState(null);
@@ -336,11 +337,13 @@ function ProfileHubContent() {
     setProfileData({ ...profileData, interests: nextInterests });
   };
 
+  const profileUsername = authUser?.name ? authUser.name.split(" ")[0] : "User";
+
   if (loading && !savingsData) {
     return (
       <DashboardLayout
-        title="Customer Profile"
-        user={{ name: "User", role: "customer" }}
+        title={`${profileUsername} Profile`}
+        user={authUser || { name: "User", role: "customer" }}
       >
         <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
           <div className="w-10 h-10 border-4 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
@@ -354,8 +357,13 @@ function ProfileHubContent() {
 
   return (
     <DashboardLayout
-      title="Customer Profile"
-      user={{ name: profileData.name || "Sarah Jenkins", role: "customer" }}
+      title={`${profileUsername} Profile`}
+      user={
+        authUser || {
+          name: profileData.name || "Sarah Jenkins",
+          role: "customer",
+        }
+      }
     >
       <ConfettiOverlay active={triggerConfetti} />
 

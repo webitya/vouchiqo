@@ -250,7 +250,7 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
       <HotDealsTicker />
 
       {/* Main Container */}
-      <main className="container mx-auto px-4 py-6 max-w-7xl">
+      <main className="w-full px-4 md:px-8 py-6">
         {/* 4. Split Hero Section */}
         <section
           className="g-main-banner main__banner__div"
@@ -264,7 +264,7 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
       <LeadingTaglineBar />
 
       {/* Main Container */}
-      <main className="container mx-auto px-4 py-6 space-y-12 max-w-7xl">
+      <main className="w-full px-4 md:px-8 py-6 space-y-12">
         {/* 8. Popular Offers of the Day */}
         <PopularOffers coupons={initialCoupons} />
 

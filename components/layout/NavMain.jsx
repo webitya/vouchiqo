@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -28,26 +27,17 @@ export function NavMain({ groups }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {groups.map((group) => {
         const isOpen = openGroups[group.title] !== false;
 
         return (
-          <div key={group.title} className="space-y-1">
+          <div key={group.title} className="space-y-0.5">
             {/* Group Label / Collapse Button */}
-            {!isCollapsed && (
-              <button
-                type="button"
-                onClick={() => toggleGroup(group.title)}
-                className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors border-0 bg-transparent cursor-pointer"
-              >
+            {!isCollapsed && group.title !== "Navigation" && (
+              <div className="flex w-full items-center gap-2 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
                 <span className="flex-1 text-start">{group.title}</span>
-                <ChevronRight
-                  className={`size-3 transition-transform duration-200 text-slate-400 ${
-                    isOpen ? "rotate-90" : "rotate-0"
-                  }`}
-                />
-              </button>
+              </div>
             )}
 
             {/* Group Items container */}
@@ -58,7 +48,7 @@ export function NavMain({ groups }) {
                   : "grid-rows-[0fr] opacity-0 h-0"
               }`}
             >
-              <div className="mt-1 space-y-0.5">
+              <div className="mt-0.5 space-y-0.5">
                 {group.items.map((item) => {
                   const isActive = (() => {
                     const itemUrlPath = item.url.split("?")[0];
@@ -80,8 +70,8 @@ export function NavMain({ groups }) {
                       href={item.url}
                       className={`group relative flex items-center transition-all duration-200 ${
                         isCollapsed
-                          ? "justify-center p-2 rounded-lg"
-                          : "gap-3 rounded-lg px-3 py-2 text-sm font-medium"
+                          ? "justify-center p-1.5 rounded-lg"
+                          : "gap-2 rounded-lg px-2 py-1.5 text-xs font-semibold"
                       } ${
                         isActive
                           ? "bg-[#f1f5f9] text-[#0f172a]"
@@ -90,7 +80,7 @@ export function NavMain({ groups }) {
                     >
                       {Icon && (
                         <Icon
-                          className={`h-[18px] w-[18px] shrink-0 transition-colors ${
+                          className={`h-4 w-4 shrink-0 transition-colors ${
                             isActive
                               ? "text-[#0f172a]"
                               : "text-slate-400 group-hover:text-slate-600"
