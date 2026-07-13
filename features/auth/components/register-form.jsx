@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Lock, Mail, Store, User } from "lucide-react";
+import { ArrowRight, Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -12,16 +12,13 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLogin } from "@/features/auth/hooks/use-login";
 import { useRegister } from "@/features/auth/hooks/use-register";
 import { signIn } from "@/lib/auth-client";
 import { AuthCard } from "./auth-card";
 
 export function RegisterForm() {
-  const [role, setRole] = useState("customer");
   const [name, setName] = useState("");
-  const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [agreed, setAgreed] = useState(false);
@@ -37,23 +34,13 @@ export function RegisterForm() {
       if (isConfigured) {
         await signIn.social({
           provider: "google",
-          callbackURL: `/auth/callback?role=${role}`,
+          callbackURL: `/auth/callback?role=customer`,
         });
       } else {
-        const demoEmail =
-          role === "merchant"
-            ? "merchant@vouchiqo.com"
-            : "customer@vouchiqo.com";
-        const demoPassword =
-          role === "merchant" ? "Merchant@123!" : "Password123!";
-
-        toast(
-          `Dev Mode: Google OAuth not configured. Logging in as Demo ${role}...`,
-          {
-            icon: "🔧",
-          },
-        );
-        login({ email: demoEmail, password: demoPassword });
+        toast("Dev Mode: Google OAuth not configured. Logging in as Demo customer...", {
+          icon: "🔧",
+        });
+        login({ email: "customer@vouchiqo.com", password: "Password123!" });
       }
     } catch (err) {
       toast.error(err?.message ?? "Google authentication failed.");
@@ -63,61 +50,23 @@ export function RegisterForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!agreed) return toast.error("Please agree to the Terms of Service.");
-    register({ email, password, name: name || businessName, role });
+    register({ email, password, name, role: "customer" });
   };
 
   return (
     <AuthCard title="Create your free account">
-      <Tabs value={role} onValueChange={setRole}>
-        <TabsList className="grid w-full grid-cols-2 bg-brand-surface p-1 border border-brand-border h-10">
-          <TabsTrigger
-            value="customer"
-            className="flex items-center gap-2 text-xs font-bold data-[state=active]:bg-brand-bg data-[state=active]:text-brand-navy data-[state=active]:shadow-sm"
-          >
-            <User className="w-4 h-4" /> Customer
-          </TabsTrigger>
-          <TabsTrigger
-            value="merchant"
-            className="flex items-center gap-2 text-xs font-bold data-[state=active]:bg-brand-bg data-[state=active]:text-brand-navy data-[state=active]:shadow-sm"
-          >
-            <Store className="w-4 h-4" /> Merchant
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-
       <form onSubmit={handleSubmit} className="space-y-4">
-        {role === "merchant" && (
-          <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-brand-text uppercase">
-              Brand Name
-            </Label>
-            <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
-              <InputGroupAddon>
-                <Store className="w-4 h-4 text-brand-subtext" />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="text"
-                placeholder="e.g. Starbucks"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                className="text-base md:text-sm placeholder-brand-subtext h-full"
-                required
-              />
-            </InputGroup>
-          </div>
-        )}
-
         <div className="space-y-1.5">
-          <Label className="text-xs font-bold text-brand-text uppercase">
-            {role === "merchant" ? "Contact Name" : "Full Name"}
+          <Label className="text-sm font-medium text-brand-text">
+            Full Name
           </Label>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
             <InputGroupAddon>
               <User className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
             <InputGroupInput
               type="text"
-              placeholder={role === "merchant" ? "John Doe" : "Sarah Jenkins"}
+              placeholder="Sarah Jenkins"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="text-base md:text-sm placeholder-brand-subtext h-full"
@@ -128,10 +77,10 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs font-bold text-brand-text uppercase">
-            Email
+          <Label className="text-sm font-medium text-brand-text">
+            Email Address
           </Label>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
             <InputGroupAddon>
               <Mail className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
@@ -147,10 +96,10 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs font-bold text-brand-text uppercase">
+          <Label className="text-sm font-medium text-brand-text">
             Password
           </Label>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
             <InputGroupAddon>
               <Lock className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
@@ -218,7 +167,7 @@ export function RegisterForm() {
       <Button
         type="button"
         onClick={handleGoogleSignIn}
-        className="w-full h-10 border border-brand-border bg-brand-surface hover:bg-brand-bg text-brand-text hover:text-brand-navy flex items-center justify-center gap-2.5 rounded-lg text-sm font-bold transition-all shadow-none cursor-pointer"
+        className="w-full h-10 border border-brand-border bg-brand-surface hover:bg-brand-bg text-brand-text hover:text-brand-navy flex items-center justify-center gap-2.5 rounded-md text-sm font-bold transition-all shadow-none cursor-pointer"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path
@@ -238,7 +187,7 @@ export function RegisterForm() {
             d="M23.52 12.273c0-.818-.073-1.609-.208-2.373H12v4.582h6.473c-.273 1.455-1.09 2.69-2.318 3.518l3.864 3c2.255-2.082 3.5-5.155 3.5-8.727Z"
           />
         </svg>
-        <span>Continue with Google</span>
+        <span>Google Account</span>
       </Button>
 
       <p className="text-center text-sm font-semibold text-brand-subtext">

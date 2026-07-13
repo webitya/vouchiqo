@@ -20,13 +20,14 @@ export async function GET() {
   await connectDB();
   const db = mongoose.connection.db;
 
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@vouchiqo.com";
   const demoEmails = [
     "customer@vouchiqo.com",
     "customer2@vouchiqo.com",
     "merchant@vouchiqo.com",
     "merchant2@vouchiqo.com",
     "merchant3@vouchiqo.com",
-    "admin@vouchiqo.com",
+    adminEmail,
   ];
 
   // 1. Clean data
@@ -66,16 +67,17 @@ export async function GET() {
     },
   });
 
+  const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "Admin@123!";
   await auth.api.signUpEmail({
     body: {
-      email: "admin@vouchiqo.com",
-      password: "Admin@123!",
+      email: adminEmail,
+      password: adminPassword,
       name: "Super Admin",
     },
   });
   const adminUser = await db
     .collection("user")
-    .findOne({ email: "admin@vouchiqo.com" });
+    .findOne({ email: adminEmail });
   if (adminUser) {
     await db
       .collection("user")

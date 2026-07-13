@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Lock, Mail, ShieldAlert } from "lucide-react";
+import { ArrowRight, Lock, ShieldAlert, User } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
@@ -15,8 +15,12 @@ import { signIn, signOut } from "@/lib/auth-client";
 import { AuthCard } from "./auth-card";
 
 export function AdminLoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(
+    process.env.NEXT_PUBLIC_ADMIN_USERNAME || ""
+  );
+  const [password, setPassword] = useState(
+    process.env.NEXT_PUBLIC_ADMIN_PASSWORD || ""
+  );
 
   const loginMutation = useMutation({
     mutationFn: ({ email, password }) => signIn.email({ email, password }),
@@ -39,6 +43,20 @@ export function AdminLoginForm() {
     }
   });
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const configuredUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";
+    const configuredEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@vouchiqo.com";
+    
+    let loginEmail = username;
+    // Map typed username to the registered administrator email under-the-hood
+    if (username.trim() === configuredUsername) {
+      loginEmail = configuredEmail;
+    }
+    
+    loginMutation.mutate({ email: loginEmail, password });
+  };
+
   const isPending = loginMutation.isPending;
 
   return (
@@ -50,26 +68,20 @@ export function AdminLoginForm() {
         </div>
       </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          loginMutation.mutate({ email, password });
-        }}
-        className="space-y-4"
-      >
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
           <Label className="text-sm font-medium text-brand-text">
-            Admin Email Address
+            Admin Username
           </Label>
           <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
             <InputGroupAddon>
-              <Mail className="w-4 h-4 text-brand-subtext" />
+              <User className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
             <InputGroupInput
-              type="email"
-              placeholder="admin@vouchiqo.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="e.g. admin"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="text-base md:text-sm placeholder-brand-subtext h-full"
               required
               autoFocus

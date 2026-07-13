@@ -28,6 +28,7 @@ async function seed() {
   const db = mongoose.connection.db;
 
   // ─── Emails to clean ────────────────────────────────────────────────────────
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@vouchiqo.com";
   const demoEmails = [
     "customer@vouchiqo.com",
     "customer2@vouchiqo.com",
@@ -35,7 +36,7 @@ async function seed() {
     "merchant2@vouchiqo.com",
     "merchant3@vouchiqo.com",
     "marbella@vouchiqo.com",
-    "admin@vouchiqo.com",
+    adminEmail,
   ];
 
   console.log("🧹 Cleaning old demo data...");
@@ -72,10 +73,11 @@ async function seed() {
   } catch (e) { console.log("   ⚠️", e.message, "\n"); }
 
   // Admin
-  console.log("👤 Creating admin@vouchiqo.com ...");
+  const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "Admin@123!";
+  console.log(`👤 Creating ${adminEmail} ...`);
   try {
-    await auth.api.signUpEmail({ body: { email: "admin@vouchiqo.com", password: "Admin@123!", name: "Super Admin" } });
-    const adminUser = await db.collection("user").findOne({ email: "admin@vouchiqo.com" });
+    await auth.api.signUpEmail({ body: { email: adminEmail, password: adminPassword, name: "Super Admin" } });
+    const adminUser = await db.collection("user").findOne({ email: adminEmail });
     if (adminUser) await db.collection("user").updateOne({ _id: adminUser._id }, { $set: { role: ROLES.ADMIN } });
     console.log("   ✅ Done\n");
   } catch (e) { console.log("   ⚠️", e.message, "\n"); }
