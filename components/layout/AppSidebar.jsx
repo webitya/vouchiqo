@@ -13,7 +13,9 @@ import {
   Sparkles,
   Store,
   Tag,
+  Ticket,
   TrendingUp,
+  User,
   Users,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -169,7 +171,7 @@ export function AppSidebar({ ...props }) {
       default:
         return [
           {
-            title: "Overview",
+            title: "Navigation",
             items: [
               {
                 title: "Dashboard",
@@ -177,39 +179,14 @@ export function AppSidebar({ ...props }) {
                 icon: LayoutDashboard,
               },
               {
-                title: "My Savings",
-                url: "/profile?tab=savings",
-                icon: TrendingUp,
+                title: "My Profile",
+                url: "/profile",
+                icon: User,
               },
               {
-                title: "Saved Deals",
-                url: "/profile?tab=saved",
-                icon: Bookmark,
-              },
-              {
-                title: "Cashback Wallet",
-                url: "/profile?tab=wallet",
-                icon: CreditCard,
-              },
-            ],
-          },
-          {
-            title: "Apps",
-            items: [
-              {
-                title: "My Activity",
-                url: "/profile?tab=activity",
-                icon: History,
-              },
-              {
-                title: "Nearby Offers",
-                url: "/profile?tab=nearby",
-                icon: MapPin,
-              },
-              {
-                title: "Settings",
-                url: "/profile?tab=settings",
-                icon: Settings,
+                title: "My Coupons",
+                url: "/customer/claimed",
+                icon: Ticket,
               },
             ],
           },

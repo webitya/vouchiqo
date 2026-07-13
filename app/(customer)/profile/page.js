@@ -377,7 +377,6 @@ export default function ProfileHub() {
           { id: "wallet", label: "Cashback Wallet", icon: Wallet },
           { id: "activity", label: "My Activity", icon: History },
           { id: "nearby", label: "Nearby Offers", icon: MapPin },
-          { id: "settings", label: "Settings", icon: User },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

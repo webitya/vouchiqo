@@ -70,7 +70,6 @@ export default function Topbar({ title = "Dashboard", user: propUser = null }) {
               {user?.role || "Customer"}
             </span>
           </div>
-          <ChevronDown className="w-3.5 h-3.5 text-brand-subtext group-hover:text-brand-text transition-colors" />
         </div>
       </div>
     </header>
