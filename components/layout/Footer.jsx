@@ -109,15 +109,20 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Col 3: Discover */}
+          {/* Col 3: Quick Links */}
           <div>
             <h4 className="text-white font-semibold mb-4 flex items-center relative text-sm uppercase tracking-wider">
               <span className="relative z-10 bg-[#191F2E] pr-2">
-                Discover
+                Quick Links
               </span>
               <span className="absolute left-0 bottom-0 w-8 h-[2px] bg-brand-success -mb-[2px]" />
             </h4>
             <ul className="space-y-2 text-xs font-bold text-slate-400">
+              <li>
+                <Link className="hover:text-white transition-colors" href="/expired-coupon-revival">
+                  Expired Coupon Revival
+                </Link>
+              </li>
               <li>
                 <Link className="hover:text-white transition-colors" href="/deals">
                   Verified Offers
@@ -126,11 +131,6 @@ export default function Footer() {
               <li>
                 <Link className="hover:text-white transition-colors" href="/nearby-offers">
                   Nearby Offers
-                </Link>
-              </li>
-              <li>
-                <Link className="hover:text-white transition-colors" href="/expired-coupon-revival">
-                  Revive an Expired Offer
                 </Link>
               </li>
               <li>
@@ -146,36 +146,36 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Col 4: For Merchants */}
+          {/* Col 4: Portals & Accounts */}
           <div>
             <h4 className="text-white font-semibold mb-4 flex items-center relative text-sm uppercase tracking-wider">
-              <span className="relative z-10 bg-[#191F2E] pr-2">For Merchants</span>
+              <span className="relative z-10 bg-[#191F2E] pr-2">Portals &amp; Accounts</span>
               <span className="absolute left-0 bottom-0 w-8 h-[2px] bg-brand-success -mb-[2px]" />
             </h4>
             <ul className="space-y-2 text-xs font-bold text-slate-400">
               <li>
-                <Link className="hover:text-white transition-colors" href="/merchant/register">
-                  List Your Business
+                <Link className="hover:text-white transition-colors" href="/login">
+                  Customer Login
                 </Link>
               </li>
               <li>
-                <Link className="hover:text-white transition-colors" href="/merchant/register#founding">
-                  Founding Merchant Program
+                <Link className="hover:text-white transition-colors" href="/register">
+                  Customer Register
                 </Link>
               </li>
               <li>
-                <Link className="hover:text-white transition-colors" href="/merchant/login">
+                <Link className="hover:text-white transition-colors" href="/merchant-login">
                   Merchant Login
                 </Link>
               </li>
               <li>
-                <Link className="hover:text-white transition-colors" href="/merchant/how-it-works">
-                  How Vouchiqo Works
+                <Link className="hover:text-white transition-colors" href="/merchant-register">
+                  Merchant Register
                 </Link>
               </li>
               <li>
-                <Link className="hover:text-white transition-colors" href="/merchant/register#plans">
-                  Plans & Pricing
+                <Link className="hover:text-white transition-colors" href="/admin-login">
+                  Admin Portal
                 </Link>
               </li>
             </ul>
@@ -266,7 +266,7 @@ export default function Footer() {
         {/* Footer Bottom Block */}
         <div className="text-center pt-8 border-t border-slate-800 flex flex-col items-center select-none">
           <p className="text-[10px] text-slate-500 font-bold leading-normal">
-            &copy; {new Date().getFullYear()} Vouchiqo. All Rights Reserved. | Registered in India
+            &copy; {new Date().getFullYear()} Vouchiqo is Registered Trademark Of Inspirelabs Solutions Ltd. - All Rights Reserved.
           </p>
         </div>
       </div>
