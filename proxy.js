@@ -27,7 +27,12 @@ export async function proxy(request) {
 
   // 2. Cookie is present. Fetch session validation via the centralized API endpoint.
   try {
-    const response = await fetch(new URL(ROUTES.API.GET_SESSION, request.url), {
+    let fetchUrl = new URL(ROUTES.API.GET_SESSION, request.url);
+    if (fetchUrl.hostname === "localhost") {
+      fetchUrl.hostname = "127.0.0.1";
+    }
+
+    const response = await fetch(fetchUrl, {
       headers: {
         cookie: request.headers.get("cookie") || "",
       },
@@ -37,6 +42,7 @@ export async function proxy(request) {
       const session = await response.json();
       if (session?.user) {
         const { role } = session.user;
+        console.log(`[Middleware] Path: "${pathname}", User: "${session.user.email}", Role: "${role}"`);
 
         // Redirect logged-in users away from auth forms (e.g. login, register)
         const isAuthForm =
@@ -52,12 +58,14 @@ export async function proxy(request) {
 
         if (isAuthForm) {
           const dest = getRedirectForRole(role);
+          console.log(`[Middleware] Redirecting logged-in user away from auth form to: "${dest}"`);
           return NextResponse.redirect(new URL(dest, request.url));
         }
 
         // Enforce centralized authorization rules on protected path folders
         if (!isAuthorizedForRoute(pathname, role)) {
           const dest = getRedirectForRole(role);
+          console.log(`[Middleware] Unauthorized access attempt for "${pathname}". Redirecting to: "${dest}"`);
           return NextResponse.redirect(new URL(dest, request.url));
         }
 
@@ -65,7 +73,7 @@ export async function proxy(request) {
       }
     }
   } catch (error) {
-    console.error("Middleware session verification failed:", error);
+    console.error("[Middleware] session verification failed:", error.message);
   }
 
   // Fallback: If verification failed/expired, redirect from protected routes to login
