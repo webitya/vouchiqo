@@ -12,7 +12,6 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
-import { useLogin } from "@/features/auth/hooks/use-login";
 import { useRegister } from "@/features/auth/hooks/use-register";
 import { signIn } from "@/lib/auth-client";
 import { AuthCard } from "./auth-card";
@@ -27,7 +26,6 @@ export function RegisterForm() {
   const [agreed, setAgreed] = useState(false);
 
   const { mutate: register, isPending } = useRegister();
-  const { mutate: login } = useLogin();
 
   const handleGoogleSignIn = async () => {
     try {
@@ -40,10 +38,7 @@ export function RegisterForm() {
           callbackURL: `/auth/callback?role=customer`,
         });
       } else {
-        toast("Dev Mode: Google OAuth not configured. Logging in as Demo customer...", {
-          icon: "🔧",
-        });
-        login({ email: "customer@vouchiqo.com", password: "Password123!" });
+        toast.error("Google sign-in is not available. Please use email and password.");
       }
     } catch (err) {
       toast.error(err?.message ?? "Google authentication failed.");

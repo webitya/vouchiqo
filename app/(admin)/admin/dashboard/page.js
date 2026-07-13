@@ -115,7 +115,7 @@ export default function AdminDashboard() {
   const pendingActions = analyticsData?.pendingActions ?? [];
 
   // Data ranges for metrics tabs matching the exact screenshot values
-  const trendData = [
+  const defaultTrendData = [
     { label: "Jan", revenue: 18500, orders: 240, profit: 6200 },
     { label: "Feb", revenue: 22000, orders: 310, profit: 8200 },
     { label: "Mar", revenue: 20000, orders: 280, profit: 7200 },
@@ -130,13 +130,15 @@ export default function AdminDashboard() {
     { label: "Dec", revenue: 48000, orders: 610, profit: 22500 },
   ];
 
+  const trendData = analyticsData?.trendData ?? defaultTrendData;
+
   const chartSeries = {
     revenue: [{ key: "revenue", name: "Revenue ($)", color: "#2563eb" }],
-    orders: [{ key: "orders", name: "Orders", color: "#134e5e" }],
-    profit: [{ key: "profit", name: "Profit ($)", color: "#2563eb" }],
+    orders: [{ key: "orders", name: "Orders", color: "#1d4ed8" }],
+    profit: [{ key: "profit", name: "Profit ($)", color: "#0a2e6e" }],
   };
 
-  // Mock list of pending approvals styled exactly like the Vouchiqo image
+  // Mock list of pending approvals themed in white, black, and blue
   const defaultPending = [
     {
       initials: "EW",
@@ -145,6 +147,7 @@ export default function AdminDashboard() {
       type: "Merchant",
       date: "2026-06-25",
       status: "Pending Approval",
+      amount: "$49.00",
     },
     {
       initials: "JC",
@@ -153,6 +156,7 @@ export default function AdminDashboard() {
       type: "Coupon",
       date: "2026-06-24",
       status: "Auditing",
+      amount: "$0.00",
     },
     {
       initials: "SG",
@@ -161,14 +165,16 @@ export default function AdminDashboard() {
       type: "Merchant",
       date: "2026-06-23",
       status: "Pending Approval",
+      amount: "$49.00",
     },
     {
       initials: "AT",
-      bg: "bg-amber-500",
+      bg: "bg-[#3e80dd]",
       name: "Alex Clothing Code",
       type: "Coupon",
       date: "2026-06-22",
       status: "Auditing",
+      amount: "$0.00",
     },
   ];
 
@@ -183,16 +189,17 @@ export default function AdminDashboard() {
             .toUpperCase();
           return {
             initials,
-            bg: item.type === "Merchant" ? "bg-[#3e80dd]" : "bg-amber-500",
+            bg: item.type === "Merchant" ? "bg-[#3e80dd]" : "bg-[#2563eb]",
             name: item.name,
             type: item.type,
             date: item.date,
             status: item.status,
+            amount: item.type === "Merchant" ? "$49.00" : "$0.00",
           };
         })
       : defaultPending;
 
-  // Mock list of activities exactly matching the Vouchiqo image
+  // Mock list of activities themed in white, black, and blue
   const defaultActivities = [
     {
       icon: Store,
@@ -212,8 +219,8 @@ export default function AdminDashboard() {
     },
     {
       icon: Tag,
-      color: "text-amber-500",
-      bg: "bg-amber-500/10",
+      color: "text-[#3e80dd]",
+      bg: "bg-[#3e80dd]/10",
       title: "Moderation review completed",
       desc: "Boat coupons approved by admin root",
       time: "1 hour ago",
@@ -228,8 +235,8 @@ export default function AdminDashboard() {
     },
     {
       icon: AlertTriangle,
-      color: "text-rose-500",
-      bg: "bg-rose-500/10",
+      color: "text-[#1d4ed8]",
+      bg: "bg-[#1d4ed8]/10",
       title: "System check warning",
       desc: "Starbucks checkout validation check timeout",
       time: "3 hours ago",
@@ -245,7 +252,7 @@ export default function AdminDashboard() {
         {/* Welcome Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="space-y-1">
-            <h1 className="text-2xl font-black font-heading text-slate-900 tracking-tight">
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
               Dashboard
             </h1>
             <p className="text-xs text-slate-500 font-semibold">
@@ -354,8 +361,8 @@ export default function AdminDashboard() {
                     {kpis.activeCoupons.toLocaleString()}
                   </p>
                   <div className="flex items-center gap-1.5">
-                    <TrendingDown className="h-3.5 w-3.5 text-rose-600" />
-                    <span className="text-xs font-semibold text-rose-600">
+                    <TrendingDown className="h-3.5 w-3.5 text-slate-500" />
+                    <span className="text-xs font-semibold text-slate-500">
                       -3.1%
                     </span>
                     <span className="text-xs text-muted-foreground">
@@ -363,15 +370,15 @@ export default function AdminDashboard() {
                     </span>
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#3e80dd]/10">
-                  <Tag className="h-5 w-5 text-[#3e80dd]" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#2563eb]/10">
+                  <Tag className="h-5 w-5 text-[#2563eb]" />
                 </div>
               </div>
             </div>
             <div className="h-12 w-full mt-3">
               <Sparkline
                 points={[45, 42, 40, 38, 35, 32, 29, 33, 31, 30, 27, 25]}
-                color="#3e80dd"
+                color="#2563eb"
                 id="orders"
               />
             </div>
@@ -401,15 +408,15 @@ export default function AdminDashboard() {
                     </span>
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#eab308]/10">
-                  <Store className="h-5 w-5 text-[#eab308]" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#0a2e6e]/10">
+                  <Store className="h-5 w-5 text-[#0a2e6e]" />
                 </div>
               </div>
             </div>
             <div className="h-12 w-full mt-3">
               <Sparkline
                 points={[15, 18, 16, 21, 26, 23, 29, 34, 38, 36, 42, 48]}
-                color="#eab308"
+                color="#0a2e6e"
                 id="views"
               />
             </div>
@@ -771,7 +778,7 @@ export default function AdminDashboard() {
                           <Badge
                             className={`rounded px-2.5 py-0.5 border-0 text-[9px] font-bold shadow-none ${
                               item.status === "Pending Approval"
-                                ? "bg-amber-100 text-amber-800"
+                                ? "bg-blue-50 text-blue-800"
                                 : item.status === "Auditing"
                                   ? "bg-slate-900 text-white"
                                   : "bg-blue-100 text-blue-800"
@@ -781,16 +788,21 @@ export default function AdminDashboard() {
                           </Badge>
                         </TableCell>
                         <TableCell className="p-4 text-right">
-                          <Link
-                            href={
-                              item.type === "Merchant"
-                                ? "/admin/approvals/merchants"
-                                : "/admin/approvals/coupons"
-                            }
-                            className="text-[#3e80dd] hover:underline font-bold text-xs"
-                          >
-                            Review
-                          </Link>
+                          <div className="flex flex-col items-end justify-center">
+                            <span className="font-bold text-slate-800">
+                              {item.amount}
+                            </span>
+                            <Link
+                              href={
+                                item.type === "Merchant"
+                                  ? "/admin/approvals/merchants"
+                                  : "/admin/approvals/coupons"
+                              }
+                              className="text-[10px] text-[#2563eb] hover:underline font-semibold"
+                            >
+                              Review
+                            </Link>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}

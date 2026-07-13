@@ -2,12 +2,10 @@
 
 import {
   AlertCircle,
-  Bookmark,
   CheckSquare,
   CreditCard,
-  History,
+  Home,
   LayoutDashboard,
-  MapPin,
   PlusCircle,
   Settings,
   Sparkles,
@@ -205,14 +203,15 @@ export function AppSidebar({ ...props }) {
         "--sidebar-border": "var(--brand-border)",
         "--sidebar-accent": "var(--brand-surface)",
         "--sidebar-accent-foreground": "var(--brand-navy)",
+        "--sidebar-width": "200px",
       }}
       {...props}
     >
       <SidebarHeader className="p-0 border-b border-sidebar-border">
         <div
-          className={`flex h-16 items-center gap-3 ${isCollapsed ? "justify-center px-0" : "px-4"}`}
+          className={`flex h-12 items-center gap-2.5 ${isCollapsed ? "justify-center px-0" : "px-3"}`}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0f172a] text-white">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#0f172a] text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -223,17 +222,17 @@ export function AppSidebar({ ...props }) {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-4 w-4 text-white"
+              className="h-3.5 w-3.5 text-white"
             >
               <path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z" />
             </svg>
           </div>
           {!isCollapsed && (
-            <div className="flex flex-col text-left">
-              <span className="text-sm font-bold tracking-tight text-slate-800">
-                Vouchiqo
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-xs font-bold tracking-tight text-slate-800 truncate max-w-[120px]">
+                {user.name ? user.name.split(" ")[0] : "Vouchiqo"}
               </span>
-              <span className="text-[10px] font-medium uppercase tracking-widest text-slate-400">
+              <span className="text-[9px] font-medium uppercase tracking-widest text-slate-400">
                 Dashboard
               </span>
             </div>
@@ -241,8 +240,30 @@ export function AppSidebar({ ...props }) {
         </div>
       </SidebarHeader>
       <SidebarContent
-        className={`py-4 ${isCollapsed ? "px-1" : "px-3"} space-y-3`}
+        className={`py-2 ${isCollapsed ? "px-1" : "px-2"} space-y-2`}
       >
+        {/* Redirect to Homepage Button */}
+        {!isCollapsed ? (
+          <div className="px-1.5 mb-1">
+            <a
+              href="/"
+              className="flex items-center justify-center gap-1.5 w-full py-1 px-2.5 bg-brand-navy hover:bg-slate-800 text-white rounded-md text-[11px] font-semibold shadow-sm transition-colors cursor-pointer text-center"
+            >
+              <Home className="w-3.5 h-3.5" />
+              <span>Go to Homepage</span>
+            </a>
+          </div>
+        ) : (
+          <div className="flex justify-center mb-1">
+            <a
+              href="/"
+              className="p-1 bg-brand-navy hover:bg-slate-800 text-white rounded-md flex items-center justify-center transition-colors cursor-pointer"
+              title="Go to Homepage"
+            >
+              <Home className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        )}
         <NavMain groups={groups} />
       </SidebarContent>
       <SidebarFooter

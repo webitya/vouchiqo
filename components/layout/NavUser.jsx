@@ -44,9 +44,11 @@ export function NavUser({ user, role = "admin" }) {
             <span className="text-sm font-semibold text-slate-800 truncate">
               {user.name || "Aigars S."}
             </span>
-            <span className="text-[11px] text-slate-400 font-medium truncate uppercase tracking-wider">
-              {formattedRole}
-            </span>
+            {formattedRole !== "Customer" && (
+              <span className="text-[11px] text-slate-400 font-medium truncate uppercase tracking-wider">
+                {formattedRole}
+              </span>
+            )}
           </div>
         )}
       </Link>

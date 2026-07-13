@@ -65,6 +65,6 @@ export default async function AuthCallbackPage({ searchParams }) {
   } else if (finalRole === "merchant") {
     redirect("/merchant/dashboard");
   } else {
-    redirect("/profile");
+    redirect("/");
   }
 }
