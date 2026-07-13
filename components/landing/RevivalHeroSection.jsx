@@ -298,8 +298,7 @@ export function RevivalHeroSection() {
         </div>
       </div>
 
-      {/* Embedded keyframe styles for animations inside this section */}
-      <style jsx global>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes revival-out {
           0%, 30% {
             opacity: 1;
@@ -328,7 +327,7 @@ export function RevivalHeroSection() {
           animation: revival-in 8s infinite ease-in-out;
           transform-origin: center;
         }
-      `}</style>
+      `}} />
     </section>
   );
 }
