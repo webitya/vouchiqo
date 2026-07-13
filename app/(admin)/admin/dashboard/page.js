@@ -250,7 +250,7 @@ export default function AdminDashboard() {
             <TrafficSources />
             <MonthlyGoals />
           </div>
-        </div>,
+        </div>
 
         {/* Bottom Section: Recent Orders & Recent Activity */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">

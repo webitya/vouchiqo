@@ -68,6 +68,10 @@ export function AppSidebar({ ...props }) {
         avatar: `/avatars/${role}.jpg`,
       };
 
+  const brandName = role === "merchant"
+    ? (merchantProfile?.data?.businessName || "Merchant")
+    : "Vouchiqo";
+
   // Grouped Navigation Items matching Zenith structure
   const getNavGroups = () => {
     switch (role) {
@@ -276,7 +280,7 @@ export function AppSidebar({ ...props }) {
           {!isCollapsed && (
             <div className="flex flex-col text-left leading-tight">
               <span className="text-xs font-bold tracking-tight text-slate-800 truncate max-w-[120px]">
-                {user.name ? user.name.split(" ")[0] : "Vouchiqo"}
+                {brandName}
               </span>
               <span className="text-[9px] font-medium uppercase tracking-widest text-slate-400">
                 Dashboard

@@ -88,16 +88,21 @@ export function RecentOrders({ recentPending }) {
                     </Badge>
                   </TableCell>
                   <TableCell className="p-4 text-right">
-                    <Link
-                      href={
-                        item.type === "Merchant"
-                          ? "/admin/approvals/merchants"
-                          : "/admin/approvals/coupons"
-                      }
-                      className="text-[#3e80dd] hover:underline font-bold text-xs"
-                    >
-                      Review
-                    </Link>
+                    <div className="flex flex-col items-end justify-center">
+                      <span className="font-bold text-slate-800">
+                        {item.amount}
+                      </span>
+                      <Link
+                        href={
+                          item.type === "Merchant"
+                            ? "/admin/approvals/merchants"
+                            : "/admin/approvals/coupons"
+                        }
+                        className="text-[10px] text-[#2563eb] hover:underline font-semibold"
+                      >
+                        Review
+                      </Link>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
