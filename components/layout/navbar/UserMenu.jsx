@@ -10,7 +10,6 @@ import { signOut, useSession } from "@/lib/auth-client";
 const USER_MENU = [
   { icon: User, label: "My Profile", href: "/profile" },
   { icon: Ticket, label: "My Coupons", href: "/customer/claimed" },
-  { icon: Settings, label: "Settings", href: "/profile/settings" },
 ];
 
 export const UserMenu = () => {
@@ -61,8 +60,8 @@ export const UserMenu = () => {
   if (!session) {
     return (
       <Link
-        href="/auth/login"
-        className="text-[12px] font-extrabold text-[#FF7A18] hover:bg-[#FF7A18]/5 transition-all px-3.5 py-2 rounded-xl border border-[#FF7A18]/30 flex items-center gap-1.5 uppercase tracking-wider whitespace-nowrap"
+        href="/login"
+        className="text-[12px] font-extrabold text-[#2563eb] hover:bg-[#2563eb]/5 transition-all px-3.5 py-2 rounded-xl border border-[#2563eb]/30 flex items-center gap-1.5 uppercase tracking-wider whitespace-nowrap"
       >
         <User className="h-3.5 w-3.5" />
         Sign In
