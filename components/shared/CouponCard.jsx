@@ -62,7 +62,7 @@ export default function CouponCard({
             </Badge>
           )}
           {isLocal && (
-            <Badge className="bg-orange-500/10 text-[#FF7A18] hover:bg-orange-500/15 border border-[#FF7A18]/20 shadow-none px-2.5 py-0.5 rounded-full text-[10px] font-semibold flex items-center gap-1">
+            <Badge className="bg-blue-600/10 text-[#2563eb] hover:bg-blue-600/15 border border-[#2563eb]/20 shadow-none px-2.5 py-0.5 rounded-full text-[10px] font-semibold flex items-center gap-1">
               <span>🔴 Local Deal</span>
             </Badge>
           )}

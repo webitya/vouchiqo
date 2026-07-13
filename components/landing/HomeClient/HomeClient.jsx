@@ -147,16 +147,15 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
 
         switch (couponTab) {
           case "travel":
-            return category.includes("travel") || category.includes("hotel");
-          case "recharge":
             return (
-              category.includes("recharge") ||
-              category.includes("utility") ||
-              title.includes("recharge")
+              category.includes("travel") ||
+              category.includes("hotel") ||
+              category.includes("hospitality")
             );
           case "fashion":
             return (
               category.includes("fashion") ||
+              category.includes("clothing") ||
               category.includes("apparel") ||
               title.includes("fashion")
             );
@@ -174,13 +173,24 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
               title.includes("laptop") ||
               title.includes("soundbar")
             );
-          case "ott":
+          case "beauty":
             return (
-              category.includes("ott") ||
-              category.includes("entertainment") ||
-              title.includes("ott") ||
-              title.includes("prime") ||
-              title.includes("tv")
+              category.includes("beauty") ||
+              category.includes("wellness") ||
+              category.includes("skincare")
+            );
+          case "home":
+            return (
+              category.includes("home") ||
+              category.includes("living") ||
+              category.includes("furniture")
+            );
+          case "home-improvement":
+            return (
+              category.includes("home-improvement") ||
+              category.includes("improvement") ||
+              category.includes("tiles") ||
+              category.includes("hardware")
             );
           default:
             return true;

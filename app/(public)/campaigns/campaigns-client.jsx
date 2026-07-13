@@ -808,7 +808,7 @@ export default function CampaignsClient() {
                         <Ticket className="w-3.5 h-3.5 text-[#3b5bdb]" />
                         <span>{fest.coupons} Coupons</span>
                         <span style={{ color: "#d1d5db" }}>•</span>
-                        <Tag className="w-3.5 h-3.5 text-[#FF7A18]" />
+                        <Tag className="w-3.5 h-3.5 text-[#2563eb]" />
                         <span>{fest.offers} Offers</span>
                       </div>
                     </div>

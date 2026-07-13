@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/table";
 
 // Smooth Recharts-style Sparkline component matching the user's requested layout
-function Sparkline({ points = [], color = "#ff7a18", id = "revenue" }) {
+function Sparkline({ points = [], color = "#2563eb", id = "revenue" }) {
   if (points.length === 0) return null;
   const W = 292;
   const H = 48;
@@ -144,16 +144,16 @@ export default function MerchantDashboard() {
   ];
 
   const chartSeries = {
-    revenue: [{ key: "revenue", name: "Revenue ($)", color: "#ff7a18" }],
+    revenue: [{ key: "revenue", name: "Revenue ($)", color: "#2563eb" }],
     orders: [{ key: "orders", name: "Orders", color: "#134e5e" }],
-    profit: [{ key: "profit", name: "Profit ($)", color: "#00a389" }],
+    profit: [{ key: "profit", name: "Profit ($)", color: "#2563eb" }],
   };
 
-  // Mock list of transactions exactly matching the Zenith image
+  // Mock list of transactions exactly matching the Vouchiqo image
   const defaultTransactions = [
     {
       initials: "EW",
-      bg: "bg-[#ff7a18]",
+      bg: "bg-[#2563eb]",
       name: "Emma Wilson",
       email: "emma@example.com",
       id: "ORD-7891",
@@ -163,7 +163,7 @@ export default function MerchantDashboard() {
     },
     {
       initials: "JC",
-      bg: "bg-[#10b981]",
+      bg: "bg-[#2563eb]",
       name: "James Chen",
       email: "james@company.io",
       id: "ORD-7890",
@@ -241,20 +241,20 @@ export default function MerchantDashboard() {
         })
       : defaultTransactions;
 
-  // Mock list of activities exactly matching the Zenith image
+  // Mock list of activities exactly matching the Vouchiqo image
   const defaultActivities = [
     {
       icon: ShoppingCart,
-      color: "text-[#ff7a18]",
-      bg: "bg-[#ff7a18]/10",
+      color: "text-[#2563eb]",
+      bg: "bg-[#2563eb]/10",
       title: "New order placed",
       desc: "Emma Wilson purchased Pro Dashboard License",
       time: "2 min ago",
     },
     {
       icon: UserCheck,
-      color: "text-[#10b981]",
-      bg: "bg-[#10b981]/10",
+      color: "text-[#2563eb]",
+      bg: "bg-[#2563eb]/10",
       title: "New customer registered",
       desc: "James Chen created an account",
       time: "15 min ago",
@@ -285,8 +285,8 @@ export default function MerchantDashboard() {
     },
     {
       icon: ShoppingCart,
-      color: "text-[#ff7a18]",
-      bg: "bg-[#ff7a18]/10",
+      color: "text-[#2563eb]",
+      bg: "bg-[#2563eb]/10",
       title: "New order placed",
       desc: "Alex Thompson purchased Single License",
       time: "5 hours ago",
@@ -336,8 +336,8 @@ export default function MerchantDashboard() {
                     ₹{totalRevenue.toLocaleString("en-IN")}
                   </p>
                   <div className="flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
-                    <span className="text-xs font-semibold text-emerald-600">
+                    <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
+                    <span className="text-xs font-semibold text-blue-600">
                       +12.5%
                     </span>
                     <span className="text-xs text-muted-foreground">
@@ -345,15 +345,15 @@ export default function MerchantDashboard() {
                     </span>
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#ff7a18]/10">
-                  <DollarSign className="h-5 w-5 text-[#ff7a18]" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#2563eb]/10">
+                  <DollarSign className="h-5 w-5 text-[#2563eb]" />
                 </div>
               </div>
             </div>
             <div className="h-12 w-full mt-3">
               <Sparkline
                 points={[35, 38, 36, 42, 49, 45, 52, 58, 62, 59, 65, 74]}
-                color="#ff7a18"
+                color="#2563eb"
                 id="revenue"
               />
             </div>
@@ -374,8 +374,8 @@ export default function MerchantDashboard() {
                     {totalClaims.toLocaleString()}
                   </p>
                   <div className="flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
-                    <span className="text-xs font-semibold text-emerald-600">
+                    <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
+                    <span className="text-xs font-semibold text-blue-600">
                       +8.2%
                     </span>
                     <span className="text-xs text-muted-foreground">
@@ -383,15 +383,15 @@ export default function MerchantDashboard() {
                     </span>
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#10b981]/10">
-                  <Users className="h-5 w-5 text-[#10b981]" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#2563eb]/10">
+                  <Users className="h-5 w-5 text-[#2563eb]" />
                 </div>
               </div>
             </div>
             <div className="h-12 w-full mt-3">
               <Sparkline
                 points={[20, 24, 22, 28, 34, 31, 38, 41, 46, 43, 49, 55]}
-                color="#10b981"
+                color="#2563eb"
                 id="users"
               />
             </div>
@@ -450,8 +450,8 @@ export default function MerchantDashboard() {
                     {(pageViews / 1000).toFixed(0)}K
                   </p>
                   <div className="flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
-                    <span className="text-xs font-semibold text-emerald-600">
+                    <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
+                    <span className="text-xs font-semibold text-blue-600">
                       +24.7%
                     </span>
                     <span className="text-xs text-muted-foreground">
@@ -588,7 +588,7 @@ export default function MerchantDashboard() {
                                     cx="72"
                                     cy="72"
                                     strokeWidth="0"
-                                    fill="#10b981"
+                                    fill="#2563eb"
                                     stroke="#fff"
                                     name="Organic"
                                     d="M 34.9036,18.6253 A 65,65,0,0,0,23.8782,115.6954 L 40.9059,100.234 A 42,42,0,0,1,48.03,37.5117 Z"
@@ -610,7 +610,7 @@ export default function MerchantDashboard() {
                                     cx="72"
                                     cy="72"
                                     strokeWidth="0"
-                                    fill="#ff7a18"
+                                    fill="#2563eb"
                                     stroke="#fff"
                                     name="Social"
                                     d="M 109.0964,125.3747 A 65,65,0,0,0,136.9109,75.4018 L 113.9424,74.1981 A 42,42,0,0,1,95.97,106.4883 Z"
@@ -645,7 +645,7 @@ export default function MerchantDashboard() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="h-2.5 w-2.5 rounded-full bg-[#10b981]"></div>
+                        <div className="h-2.5 w-2.5 rounded-full bg-[#2563eb]"></div>
                         <span className="text-xs text-muted-foreground">
                           Organic
                         </span>
@@ -667,7 +667,7 @@ export default function MerchantDashboard() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="h-2.5 w-2.5 rounded-full bg-[#ff7a18]"></div>
+                        <div className="h-2.5 w-2.5 rounded-full bg-[#2563eb]"></div>
                         <span className="text-xs text-muted-foreground">
                           Social
                         </span>
@@ -705,7 +705,7 @@ export default function MerchantDashboard() {
                   </div>
                   <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
                     <div
-                      className="h-full rounded-full transition-all duration-500 ease-out bg-[#ff7a18]"
+                      className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
                       style={{ width: "88%" }}
                     ></div>
                   </div>
@@ -723,7 +723,7 @@ export default function MerchantDashboard() {
                   </div>
                   <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
                     <div
-                      className="h-full rounded-full transition-all duration-500 ease-out bg-[#10b981]"
+                      className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
                       style={{ width: "85%" }}
                     ></div>
                   </div>
@@ -829,7 +829,7 @@ export default function MerchantDashboard() {
                           <Badge
                             className={`rounded px-2.5 py-0.5 border-0 text-[9px] font-bold shadow-none ${
                               tx.status === "Completed"
-                                ? "bg-emerald-100 text-emerald-800"
+                                ? "bg-blue-100 text-blue-800"
                                 : tx.status === "Processing"
                                   ? "bg-slate-900 text-white"
                                   : tx.status === "Pending"

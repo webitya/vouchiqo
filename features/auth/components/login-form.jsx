@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Lock, Mail } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -18,6 +18,7 @@ import { AuthCard } from "./auth-card";
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isGooglePending, setIsGooglePending] = useState(false);
   const { mutate: login, isPending } = useLogin();
 
@@ -46,7 +47,7 @@ export function LoginForm() {
   };
 
   return (
-    <AuthCard title="Sign in to your account">
+    <AuthCard title="Log In">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -55,10 +56,10 @@ export function LoginForm() {
         className="space-y-4"
       >
         <div className="space-y-1.5">
-          <Label className="text-xs font-bold text-brand-text uppercase">
-            Email
+          <Label className="text-sm font-medium text-brand-text">
+            Email Address
           </Label>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
             <InputGroupAddon>
               <Mail className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
@@ -76,37 +77,50 @@ export function LoginForm() {
 
         <div className="space-y-1.5">
           <div className="flex justify-between items-center">
-            <Label className="text-xs font-bold text-brand-text uppercase">
+            <Label className="text-sm font-medium text-brand-text">
               Password
             </Label>
             <Link
               href="/auth/forgot-password"
-              className="text-xs md:text-sm text-brand-blue font-bold hover:underline"
+              className="text-xs md:text-sm text-brand-blue font-semibold hover:underline"
             >
-              Forgot?
+              Forgot Password?
             </Link>
           </div>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
             <InputGroupAddon>
               <Lock className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
             <InputGroupInput
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="text-base md:text-sm placeholder-brand-subtext h-full"
               required
             />
+            <InputGroupAddon align="inline-end" className="pr-1.5">
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-brand-subtext hover:text-brand-text p-1 focus:outline-none cursor-pointer border-0 bg-transparent"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4.5 h-4.5" />
+                ) : (
+                  <Eye className="w-4.5 h-4.5" />
+                )}
+              </button>
+            </InputGroupAddon>
           </InputGroup>
         </div>
 
         <Button
           type="submit"
           disabled={isPending}
-          className="btn-primary w-full py-2.5 text-sm font-semibold flex items-center justify-center gap-1 border-0 h-auto cursor-pointer shadow-none"
+          className="btn-primary w-full py-2.5 rounded-md text-sm font-semibold flex items-center justify-center gap-1 border-0 h-auto cursor-pointer shadow-none"
         >
-          <span>{isPending ? "Signing in..." : "Sign In"}</span>
+          <span>{isPending ? "Logging in..." : "Log In"}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Button>
       </form>
@@ -114,8 +128,8 @@ export function LoginForm() {
       {/* Divider */}
       <div className="relative my-4 flex items-center justify-center">
         <hr className="border-t border-brand-border w-full" />
-        <span className="absolute bg-brand-bg px-3 text-[10px] uppercase font-bold text-brand-subtext tracking-wider">
-          Or continue with
+        <span className="absolute bg-brand-bg px-3 text-[11px] font-medium text-brand-subtext">
+          or log in with
         </span>
       </div>
 
@@ -124,7 +138,7 @@ export function LoginForm() {
         type="button"
         onClick={handleGoogleSignIn}
         disabled={isGooglePending || isPending}
-        className="w-full h-10 border border-brand-border bg-brand-surface hover:bg-brand-bg text-brand-text hover:text-brand-navy flex items-center justify-center gap-2.5 rounded-lg text-sm font-bold transition-all shadow-none cursor-pointer"
+        className="w-full h-10 border border-brand-border bg-brand-surface hover:bg-brand-bg text-brand-text hover:text-brand-navy flex items-center justify-center gap-2.5 rounded-md text-sm font-semibold transition-all shadow-none cursor-pointer"
       >
         {isGooglePending ? (
           <div className="w-4 h-4 border-2 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
@@ -148,13 +162,13 @@ export function LoginForm() {
             />
           </svg>
         )}
-        <span>{isGooglePending ? "Redirecting to Google..." : "Continue with Google"}</span>
+        <span>{isGooglePending ? "Redirecting to Google..." : "Google Account"}</span>
       </Button>
 
-      <p className="text-center text-sm font-semibold text-brand-subtext">
-        No account?{" "}
+      <p className="text-center text-sm font-medium text-brand-subtext mt-4">
+        Don't have an account?{" "}
         <Link
-          href="/auth/register"
+          href="/register"
           className="text-brand-blue font-bold hover:underline"
         >
           Create one free

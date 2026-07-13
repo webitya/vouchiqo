@@ -20,7 +20,7 @@ export function useLogin() {
         ? "/admin/dashboard"
         : role === "merchant"
           ? "/merchant/dashboard"
-          : "/customer/dashboard";
+          : "/profile";
       
       window.location.href = dest;
     },

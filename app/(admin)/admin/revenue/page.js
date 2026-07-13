@@ -172,7 +172,7 @@ export default function PlatformRevenue() {
               <span className="text-[10px] font-bold text-brand-subtext uppercase tracking-wider">
                 Average Plan Value
               </span>
-              <div className="p-1.5 rounded-lg bg-orange-500/10 text-orange-600">
+              <div className="p-1.5 rounded-lg bg-blue-600/10 text-blue-600">
                 <Receipt className="w-4 h-4" />
               </div>
             </CardHeader>
@@ -249,7 +249,7 @@ export default function PlatformRevenue() {
               {/* Enterprise */}
               <div className="flex justify-between items-center text-xs font-semibold">
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
                   <span className="text-brand-text">Enterprise (₹9,999)</span>
                 </div>
                 <span className="text-brand-navy font-bold">{planCounts?.enterprise || 0} merchants</span>

@@ -50,7 +50,7 @@ export default function TickerManagement() {
 
   const getPlanBadgeVariant = (plan) => {
     switch (plan) {
-      case "enterprise": return "bg-orange-500/10 text-orange-600 border-orange-500/20";
+      case "enterprise": return "bg-blue-600/10 text-blue-600 border-blue-600/20";
       case "pro": return "bg-purple-500/10 text-purple-600 border-purple-500/20";
       case "growth": return "bg-blue-500/10 text-blue-600 border-blue-500/20";
       default: return "bg-slate-500/10 text-slate-600 border-slate-500/20";

@@ -423,7 +423,7 @@ export default function NearbyOffers() {
     const orangeIcon = L.divIcon({
       className: "custom-marker-wrapper",
       html: `
-        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#FF7A18] to-[#FF3D77] border-2 border-white shadow-lg transform hover:scale-110 transition-transform">
+        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#2563eb] to-[#1d4ed8] border-2 border-white shadow-lg transform hover:scale-110 transition-transform">
           <span class="text-white text-xs font-black">🏷️</span>
         </div>
       `,
@@ -467,7 +467,7 @@ export default function NearbyOffers() {
         const popupHTML = `
           <div class="p-2 space-y-2 text-left w-48 text-slate-800 font-sans">
             <h4 class="font-bold text-xs text-brand-navy leading-none">${brandName}</h4>
-            <p class="font-extrabold text-[11px] text-[#00B67A]">${discountText}</p>
+            <p class="font-extrabold text-[11px] text-[#2563eb]">${discountText}</p>
             <p class="text-[9px] text-slate-400 font-semibold leading-tight line-clamp-2">${c.title}</p>
             <p class="text-[9px] text-slate-500 font-medium">${c.distance} km away</p>
             <a href="/deals/${c._id}" class="inline-block w-full text-center bg-brand-blue text-white text-[9px] font-bold py-1 rounded hover:bg-blue-600 mt-1">View Deal</a>
@@ -805,7 +805,7 @@ export default function NearbyOffers() {
         key={coupon._id}
         className={`bg-white border rounded-2xl p-4 transition-all hover:border-brand-blue cursor-pointer shadow-sm relative flex gap-3.5 group hover:shadow-md ${
           isMarbella
-            ? "border-[#FF7A18]/45 bg-[#FF7A18]/[0.02]"
+            ? "border-[#2563eb]/45 bg-[#2563eb]/[0.02]"
             : "border-brand-border"
         }`}
         onClick={() => {
@@ -900,7 +900,7 @@ export default function NearbyOffers() {
       >
         <div className="flex justify-between items-center border-b border-brand-border pb-3">
           <h3 className="font-heading text-base font-black text-brand-navy flex items-center gap-1.5">
-            <MapPin className="w-4 h-4 text-[#FF7A18]" />
+            <MapPin className="w-4 h-4 text-[#2563eb]" />
             <span>Select Manual Location</span>
           </h3>
           <button
@@ -1032,7 +1032,7 @@ export default function NearbyOffers() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <div className="bg-white border border-brand-border px-3.5 py-2 rounded-xl text-xs flex items-center gap-4 shadow-sm justify-between">
                 <span className="font-bold text-brand-navy flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-[#FF7A18] animate-bounce" />
+                  <MapPin className="w-3.5 h-3.5 text-[#2563eb] animate-bounce" />
                   <span>
                     {savedCity}, {savedState}{" "}
                     {savedPincode ? `(${savedPincode})` : ""}
@@ -1127,7 +1127,7 @@ export default function NearbyOffers() {
               {/* Active location Selector */}
               <div className="flex items-center justify-between bg-brand-surface border border-brand-border px-3 py-1.5 rounded-xl text-xs">
                 <span className="text-brand-navy font-bold flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#FF7A18]" />
+                  <MapPin className="w-3.5 h-3.5 text-[#2563eb]" />
                   {savedCity}, {savedState}
                 </span>
                 <button

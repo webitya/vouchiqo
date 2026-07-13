@@ -20,7 +20,7 @@ export default function LocationModal({ onClose, manualForm, setManualForm, onSu
       <form onSubmit={onSubmit} className="bg-brand-bg border border-brand-border rounded-2xl max-w-sm w-full p-6 text-left space-y-4 shadow-2xl">
         <div className="flex justify-between items-center border-b border-brand-border pb-3">
           <h3 className="font-heading text-base font-black text-brand-navy flex items-center gap-1.5">
-            <MapPin className="w-4 h-4 text-[#FF7A18]" />
+            <MapPin className="w-4 h-4 text-[#2563eb]" />
             <span>Select Manual Location</span>
           </h3>
           <button

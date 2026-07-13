@@ -229,7 +229,7 @@ export default function MerchantAnalytics() {
                       cy="18"
                       r="15.915"
                       fill="none"
-                      stroke="#ff7a18"
+                      stroke="#2563eb"
                       strokeWidth="4"
                       strokeDasharray="68 32"
                       strokeDashoffset="0"
@@ -303,7 +303,7 @@ export default function MerchantAnalytics() {
                   // Simulate higher density at lunch (12-2 PM) and dinner (7-9 PM)
                   let opacity = "bg-slate-100 text-slate-400";
                   if ([12, 13, 19, 20, 21].includes(hour)) {
-                    opacity = "bg-orange-500 text-white font-bold";
+                    opacity = "bg-blue-600 text-white font-bold";
                   } else if ([11, 14, 18, 22].includes(hour)) {
                     opacity = "bg-brand-navy/60 text-white";
                   } else if (hour > 8 && hour < 23) {
@@ -335,7 +335,7 @@ export default function MerchantAnalytics() {
                   <span>Med</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="w-2.5 h-2.5 rounded bg-orange-500" />
+                  <span className="w-2.5 h-2.5 rounded bg-blue-600" />
                   <span>Peak Hours</span>
                 </div>
               </div>

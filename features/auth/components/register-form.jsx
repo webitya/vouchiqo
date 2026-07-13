@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Lock, Mail, Store, User } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -12,26 +12,24 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLogin } from "@/features/auth/hooks/use-login";
 import { useRegister } from "@/features/auth/hooks/use-register";
 import { signIn } from "@/lib/auth-client";
 import { AuthCard } from "./auth-card";
 
 export function RegisterForm() {
-  const [role, setRole] = useState("customer");
   const [name, setName] = useState("");
-  const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreed, setAgreed] = useState(false);
 
-  const [isGooglePending, setIsGooglePending] = useState(false);
   const { mutate: register, isPending } = useRegister();
   const { mutate: login } = useLogin();
 
   const handleGoogleSignIn = async () => {
-    setIsGooglePending(true);
     try {
       const res = await fetch("/api/auth/google-check");
       const { isConfigured } = await res.json();
@@ -39,89 +37,42 @@ export function RegisterForm() {
       if (isConfigured) {
         await signIn.social({
           provider: "google",
-          callbackURL: `/auth/callback?role=${role}`,
+          callbackURL: `/auth/callback?role=customer`,
         });
       } else {
-        const demoEmail =
-          role === "merchant"
-            ? "merchant@vouchiqo.com"
-            : "customer@vouchiqo.com";
-        const demoPassword =
-          role === "merchant" ? "Merchant@123!" : "Password123!";
-
-        toast(
-          `Dev Mode: Google OAuth not configured. Logging in as Demo ${role}...`,
-          {
-            icon: "🔧",
-          },
-        );
-        login({ email: demoEmail, password: demoPassword });
+        toast("Dev Mode: Google OAuth not configured. Logging in as Demo customer...", {
+          icon: "🔧",
+        });
+        login({ email: "customer@vouchiqo.com", password: "Password123!" });
       }
     } catch (err) {
       toast.error(err?.message ?? "Google authentication failed.");
-    } finally {
-      setIsGooglePending(false);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      return toast.error("Passwords do not match.");
+    }
     if (!agreed) return toast.error("Please agree to the Terms of Service.");
-    register({ email, password, name: name || businessName, role });
+    register({ email, password, name, role: "customer" });
   };
 
   return (
     <AuthCard title="Create your free account">
-      <Tabs value={role} onValueChange={setRole}>
-        <TabsList className="grid w-full grid-cols-2 bg-brand-surface p-1 border border-brand-border h-10">
-          <TabsTrigger
-            value="customer"
-            className="flex items-center gap-2 text-xs font-bold data-[state=active]:bg-brand-bg data-[state=active]:text-brand-navy data-[state=active]:shadow-sm"
-          >
-            <User className="w-4 h-4" /> Customer
-          </TabsTrigger>
-          <TabsTrigger
-            value="merchant"
-            className="flex items-center gap-2 text-xs font-bold data-[state=active]:bg-brand-bg data-[state=active]:text-brand-navy data-[state=active]:shadow-sm"
-          >
-            <Store className="w-4 h-4" /> Merchant
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-
       <form onSubmit={handleSubmit} className="space-y-4">
-        {role === "merchant" && (
-          <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-brand-text uppercase">
-              Brand Name
-            </Label>
-            <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
-              <InputGroupAddon>
-                <Store className="w-4 h-4 text-brand-subtext" />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="text"
-                placeholder="e.g. Starbucks"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                className="text-base md:text-sm placeholder-brand-subtext h-full"
-                required
-              />
-            </InputGroup>
-          </div>
-        )}
-
         <div className="space-y-1.5">
-          <Label className="text-xs font-bold text-brand-text uppercase">
-            {role === "merchant" ? "Contact Name" : "Full Name"}
+          <Label className="text-sm font-medium text-brand-text">
+            Full Name
           </Label>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
             <InputGroupAddon>
               <User className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
             <InputGroupInput
               type="text"
-              placeholder={role === "merchant" ? "John Doe" : "Sarah Jenkins"}
+              placeholder="Sarah Jenkins"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="text-base md:text-sm placeholder-brand-subtext h-full"
@@ -132,10 +83,10 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs font-bold text-brand-text uppercase">
-            Email
+          <Label className="text-sm font-medium text-brand-text">
+            Email Address
           </Label>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
             <InputGroupAddon>
               <Mail className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
@@ -151,15 +102,15 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs font-bold text-brand-text uppercase">
+          <Label className="text-sm font-medium text-brand-text">
             Password
           </Label>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-lg h-10 px-1">
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
             <InputGroupAddon>
               <Lock className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
             <InputGroupInput
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Min. 8 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -167,6 +118,52 @@ export function RegisterForm() {
               required
               minLength={8}
             />
+            <InputGroupAddon align="inline-end" className="pr-1.5">
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-brand-subtext hover:text-brand-text p-1 focus:outline-none cursor-pointer border-0 bg-transparent"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4.5 h-4.5" />
+                ) : (
+                  <Eye className="w-4.5 h-4.5" />
+                )}
+              </button>
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-sm font-medium text-brand-text">
+            Confirm Password
+          </Label>
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
+            <InputGroupAddon>
+              <Lock className="w-4 h-4 text-brand-subtext" />
+            </InputGroupAddon>
+            <InputGroupInput
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Re-enter your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="text-base md:text-sm placeholder-brand-subtext h-full"
+              required
+              minLength={8}
+            />
+            <InputGroupAddon align="inline-end" className="pr-1.5">
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="text-brand-subtext hover:text-brand-text p-1 focus:outline-none cursor-pointer border-0 bg-transparent"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="w-4.5 h-4.5" />
+                ) : (
+                  <Eye className="w-4.5 h-4.5" />
+                )}
+              </button>
+            </InputGroupAddon>
           </InputGroup>
         </div>
 
@@ -222,38 +219,33 @@ export function RegisterForm() {
       <Button
         type="button"
         onClick={handleGoogleSignIn}
-        disabled={isGooglePending || isPending}
-        className="w-full h-10 border border-brand-border bg-brand-surface hover:bg-brand-bg text-brand-text hover:text-brand-navy flex items-center justify-center gap-2.5 rounded-lg text-sm font-bold transition-all shadow-none cursor-pointer"
+        className="w-full h-10 border border-brand-border bg-brand-surface hover:bg-brand-bg text-brand-text hover:text-brand-navy flex items-center justify-center gap-2.5 rounded-md text-sm font-bold transition-all shadow-none cursor-pointer"
       >
-        {isGooglePending ? (
-          <div className="w-4 h-4 border-2 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
-        ) : (
-          <svg className="w-4 h-4" viewBox="0 0 24 24">
-            <path
-              fill="#EA4335"
-              d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.23 2.673 1.24 6.636l4.026 3.129Z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M1.24 6.636A11.954 11.954 0 0 0 0 12c0 1.92.453 3.737 1.24 5.364L5.266 14.23A7.054 7.054 0 0 1 4.91 12c0-1.127.263-2.2.734-3.13L1.24 6.636Z"
-            />
-            <path
-              fill="#4285F4"
-              d="M12 24c3.245 0 5.973-1.073 7.964-2.927l-3.864-3A7.064 7.064 0 0 1 12 19.091c-3.69 0-6.809-2.49-7.927-5.86L1.24 17.36A11.996 11.996 0 0 0 12 24Z"
-            />
-            <path
-              fill="#34A853"
-              d="M23.52 12.273c0-.818-.073-1.609-.208-2.373H12v4.582h6.473c-.273 1.455-1.09 2.69-2.318 3.518l3.864 3c2.255-2.082 3.5-5.155 3.5-8.727Z"
-            />
-          </svg>
-        )}
-        <span>{isGooglePending ? "Redirecting to Google..." : "Continue with Google"}</span>
+        <svg className="w-4 h-4" viewBox="0 0 24 24">
+          <path
+            fill="#EA4335"
+            d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.23 2.673 1.24 6.636l4.026 3.129Z"
+          />
+          <path
+            fill="#FBBC05"
+            d="M1.24 6.636A11.954 11.954 0 0 0 0 12c0 1.92.453 3.737 1.24 5.364L5.266 14.23A7.054 7.054 0 0 1 4.91 12c0-1.127.263-2.2.734-3.13L1.24 6.636Z"
+          />
+          <path
+            fill="#4285F4"
+            d="M12 24c3.245 0 5.973-1.073 7.964-2.927l-3.864-3A7.064 7.064 0 0 1 12 19.091c-3.69 0-6.809-2.49-7.927-5.86L1.24 17.36A11.996 11.996 0 0 0 12 24Z"
+          />
+          <path
+            fill="#34A853"
+            d="M23.52 12.273c0-.818-.073-1.609-.208-2.373H12v4.582h6.473c-.273 1.455-1.09 2.69-2.318 3.518l3.864 3c2.255-2.082 3.5-5.155 3.5-8.727Z"
+          />
+        </svg>
+        <span>Google Account</span>
       </Button>
 
       <p className="text-center text-sm font-semibold text-brand-subtext">
         Have an account?{" "}
         <Link
-          href="/auth/login"
+          href="/login"
           className="text-brand-blue font-bold hover:underline"
         >
           Sign in

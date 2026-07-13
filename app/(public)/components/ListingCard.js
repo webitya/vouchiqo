@@ -105,7 +105,7 @@ export default function ListingCard({
               <Ticket className="w-3 h-3 text-[#3b5bdb]" />
               <span>{coupons} Coupons</span>
               <span style={{ color: "#d1d5db" }}>•</span>
-              <Tag className="w-3 h-3 text-[#FF7A18]" />
+              <Tag className="w-3 h-3 text-[#2563eb]" />
               <span>{offers} Offers</span>
             </div>
           )}

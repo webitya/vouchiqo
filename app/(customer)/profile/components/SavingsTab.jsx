@@ -26,9 +26,9 @@ import {
 } from "@/components/ui/table";
 
 const DONUT_COLORS = [
-  "#FF7A18",
+  "#2563eb",
   "#1E4FAF",
-  "#00B67A",
+  "#2563eb",
   "#FFB020",
   "#A855F7",
   "#3B82F6",
@@ -355,8 +355,8 @@ export default function SavingsTab({
               {/* Gradients */}
               <defs>
                 <linearGradient id="savings-grad2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#FF7A18" stopOpacity="0.12" />
-                  <stop offset="100%" stopColor="#FF7A18" stopOpacity="0.0" />
+                  <stop offset="0%" stopColor="#2563eb" stopOpacity="0.12" />
+                  <stop offset="100%" stopColor="#2563eb" stopOpacity="0.0" />
                 </linearGradient>
                 <linearGradient id="spent-grad2" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#1E4FAF" stopOpacity="0.10" />
@@ -395,7 +395,7 @@ export default function SavingsTab({
                   <path
                     d={lineSavedPath}
                     fill="none"
-                    stroke="#FF7A18"
+                    stroke="#2563eb"
                     strokeWidth="2.5"
                   />
                 </>
@@ -409,7 +409,7 @@ export default function SavingsTab({
                   cy={p.y}
                   r="3"
                   fill="#ffffff"
-                  stroke="#FF7A18"
+                  stroke="#2563eb"
                   strokeWidth="1.5"
                 />
               ))}
@@ -483,7 +483,7 @@ export default function SavingsTab({
                 </div>
                 <div className="flex justify-between">
                   <span>Saved:</span>
-                  <span className="font-bold text-orange-400">
+                  <span className="font-bold text-blue-400">
                     ₹
                     {pointsSaved[hoveredChartIdx].saved.toLocaleString("en-IN")}
                   </span>
@@ -501,7 +501,7 @@ export default function SavingsTab({
 
           <div className="flex justify-center gap-6 text-[9px] font-bold text-brand-subtext pt-2 border-t border-brand-border/40 select-none">
             <div className="flex items-center gap-1">
-              <span className="w-2.5 h-1.5 rounded-full bg-orange-500"></span>
+              <span className="w-2.5 h-1.5 rounded-full bg-blue-600"></span>
               <span>Savings</span>
             </div>
             <div className="flex items-center gap-1">

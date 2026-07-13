@@ -19,7 +19,7 @@ export default function NearbyCouponCard({ coupon, showMap, onCardClick }) {
   return (
     <div
       className={`bg-white border rounded-2xl p-4 transition-all hover:border-brand-blue cursor-pointer shadow-sm relative flex gap-3.5 group hover:shadow-md ${
-        isMarbella ? "border-[#FF7A18]/45 bg-[#FF7A18]/[0.02]" : "border-brand-border"
+        isMarbella ? "border-[#2563eb]/45 bg-[#2563eb]/[0.02]" : "border-brand-border"
       }`}
       onClick={() => onCardClick?.(coupon)}
     >
