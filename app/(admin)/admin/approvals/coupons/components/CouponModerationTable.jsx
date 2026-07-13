@@ -1,0 +1,111 @@
+import { Check, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+export default function CouponModerationTable({
+  coupons,
+  actionLoading,
+  onApprove,
+  onRejectClick,
+}) {
+  return (
+    <div className="bg-brand-bg border border-brand-border rounded-xl shadow-sm overflow-hidden flex flex-col justify-between">
+      <div className="overflow-x-auto flex-1">
+        <Table className="w-full text-xs">
+          <TableHeader className="bg-brand-surface border-b border-brand-border hover:bg-transparent">
+            <TableRow className="hover:bg-transparent border-b border-brand-border">
+              <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                Merchant / Brand
+              </TableHead>
+              <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                Offer Title
+              </TableHead>
+              <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                Discount Value
+              </TableHead>
+              <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                Redemption Rules
+              </TableHead>
+              <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                Expiry Date
+              </TableHead>
+              <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider text-right h-auto">
+                Moderation Actions
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="divide-y divide-brand-border font-semibold text-brand-text">
+            {coupons.map((coupon) => (
+              <TableRow
+                key={coupon._id}
+                className="hover:bg-brand-surface/40 transition-colors border-b border-brand-border last:border-b-0"
+              >
+                <TableCell className="p-4 font-bold text-brand-navy h-auto">
+                  {coupon.merchantId?.businessName || "Unknown Merchant"}
+                  <span className="block text-[10px] text-brand-subtext font-bold uppercase mt-0.5">
+                    Plan: {coupon.merchantId?.plan || "starter"}
+                  </span>
+                </TableCell>
+                <TableCell className="p-4">
+                  <div className="font-bold text-brand-text">
+                    {coupon.title}
+                  </div>
+                  {coupon.description && (
+                    <div className="text-[10px] text-brand-subtext mt-0.5 line-clamp-1">
+                      {coupon.description}
+                    </div>
+                  )}
+                </TableCell>
+                <TableCell className="p-4 text-brand-blue font-bold">
+                  {coupon.discountType === "percentage"
+                    ? `${coupon.discountValue}% OFF`
+                    : coupon.discountType === "fixed"
+                      ? `₹${coupon.discountValue} OFF`
+                      : "FREEBIE"}
+                </TableCell>
+                <TableCell className="p-4 text-brand-subtext max-w-[200px] truncate">
+                  Code:{" "}
+                  <code className="bg-brand-surface px-1.5 py-0.5 rounded font-bold text-brand-navy">
+                    {coupon.code}
+                  </code>
+                </TableCell>
+                <TableCell className="p-4 text-brand-subtext">
+                  {new Date(coupon.expiresAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="p-4 text-right">
+                  <div className="flex justify-end gap-1.5">
+                    <Button
+                      size="icon"
+                      disabled={actionLoading}
+                      onClick={() => onApprove(coupon._id)}
+                      className="bg-brand-success/15 text-brand-success hover:bg-brand-success hover:text-white border-0 w-8 h-8 rounded-lg transition-all flex items-center justify-center cursor-pointer shadow-none"
+                      title="Approve & Publish"
+                    >
+                      <Check className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      disabled={actionLoading}
+                      onClick={() => onRejectClick(coupon._id)}
+                      className="bg-brand-error/15 text-brand-error hover:bg-brand-error hover:text-white border-0 w-8 h-8 rounded-lg transition-all flex items-center justify-center cursor-pointer shadow-none"
+                      title="Reject Offer"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}

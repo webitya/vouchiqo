@@ -1,0 +1,147 @@
+import mongoose, { Schema } from "mongoose";
+
+/**
+ * CustomerRevival model.
+ * Stores coupon revival requests submitted by customers/visitors.
+ * Includes coupon code, brand name, submitter email, and status.
+ *
+ * Collection: customer_revivals
+ */
+const customerRevivalSchema = new Schema(
+  {
+    brandName: {
+      type: String,
+      required: [true, "Brand/store name is required"],
+      trim: true,
+    },
+
+    category: {
+      type: String,
+      required: [true, "Category is required"],
+      trim: true,
+    },
+
+    foundWhere: {
+      type: String,
+      required: [true, "Where you found this is required"],
+      trim: true,
+    },
+
+    foundWhereOther: {
+      type: String,
+      trim: true,
+    },
+
+    merchantWebsite: {
+      type: String,
+      trim: true,
+    },
+
+    city: {
+      type: String,
+      required: [true, "City is required"],
+      trim: true,
+    },
+
+    code: {
+      type: String,
+      trim: true,
+      uppercase: true,
+    },
+
+    discountType: {
+      type: String,
+      required: [true, "Discount type is required"],
+      enum: ["percentage", "fixed", "bogo", "freebie", "other"],
+    },
+
+    discountValue: {
+      type: Number,
+    },
+
+    description: {
+      type: String,
+      required: [true, "Description is required"],
+      maxlength: 100,
+      trim: true,
+    },
+
+    foundAtDate: {
+      type: Date,
+      required: [true, "Date found is required"],
+    },
+
+    buyingIntent: {
+      type: String,
+      maxlength: 150,
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      required: [true, "Email address is required"],
+      lowercase: true,
+      trim: true,
+    },
+
+    mobile: {
+      type: String,
+      required: [true, "Mobile number is required"],
+      trim: true,
+    },
+
+    routingCategory: {
+      type: String,
+      enum: ["A", "B", "C"],
+      default: "C",
+      index: true,
+    },
+
+    priority: {
+      type: String,
+      enum: ["HIGH", "MEDIUM", "LOW"],
+      default: "LOW",
+      index: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["pending", "code_regenerated", "alternative_provided", "declined", "contacted"],
+      default: "pending",
+      index: true,
+    },
+
+    votes: {
+      type: Number,
+      default: 1,
+    },
+
+    isPossibleDuplicate: {
+      type: Boolean,
+      default: false,
+    },
+
+    includeInPublicFeed: {
+      type: Boolean,
+      default: false,
+    },
+
+    declineReason: {
+      type: String,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+    collection: "customer_revivals",
+  }
+);
+
+// Compound index to count unique codes requested per brand
+customerRevivalSchema.index({ brandName: 1, code: 1 });
+
+const CustomerRevival =
+  mongoose.models.CustomerRevival ??
+  mongoose.model("CustomerRevival", customerRevivalSchema);
+
+export default CustomerRevival;
