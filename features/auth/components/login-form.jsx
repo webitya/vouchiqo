@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Lock, Mail } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -18,6 +18,7 @@ import { AuthCard } from "./auth-card";
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { mutate: login, isPending } = useLogin();
 
   const handleGoogleSignIn = async () => {
@@ -87,13 +88,26 @@ export function LoginForm() {
               <Lock className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
             <InputGroupInput
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="text-base md:text-sm placeholder-brand-subtext h-full"
               required
             />
+            <InputGroupAddon align="inline-end" className="pr-1.5">
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-brand-subtext hover:text-brand-text p-1 focus:outline-none cursor-pointer border-0 bg-transparent"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4.5 h-4.5" />
+                ) : (
+                  <Eye className="w-4.5 h-4.5" />
+                )}
+              </button>
+            </InputGroupAddon>
           </InputGroup>
         </div>
 

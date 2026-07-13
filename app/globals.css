@@ -12,7 +12,7 @@
   /* Brand Colors - Light Mode Defaults (Derived from Vouchiqo Logo & professional UI/UX laws) */
   --brand-navy: #08214D;
   --brand-blue: #3E80DD;
-  --brand-success: #10B981;
+  --brand-success: #2563eb;
   --brand-warning: #F59E0B;
   --brand-error: #EF4444;
   --brand-bg: #ffffff;
@@ -26,9 +26,9 @@
   --card-foreground: var(--brand-text);
   --popover: var(--brand-bg);
   --popover-foreground: var(--brand-text);
-  --primary: #FF7A18;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
-  --secondary: #FF3D77;
+  --secondary: #1d4ed8;
   --secondary-foreground: #ffffff;
   --muted: var(--brand-surface);
   --muted-foreground: var(--brand-subtext);
@@ -71,7 +71,7 @@
   --_new-active-color-3: #3F65A9;
   --_new-green-color: #D1DE31;
   --_new-green-color-2: #58A374;
-  --_light-orange-color: #FF7A18;
+  --_light-blue-color: #2563eb;
   --_default-linear-color: #DFE7F6;
   --_icon-new-hover-color: #e9f0de;
   --_cpn-review-no: #e2e8f0;
@@ -148,7 +148,7 @@
 [data-theme="dark"] {
   --brand-navy: #F8FAFC;
   --brand-blue: #3B82F6;
-  --brand-success: #10B981;
+  --brand-success: #2563eb;
   --brand-warning: #F59E0B;
   --brand-error: #EF4444;
   --brand-bg: #091932; /* Deep Navy Card backgrounds */
@@ -206,7 +206,7 @@ body {
 
 /* Signature Gradient Utilities */
 .bg-brand-gradient {
-  background: linear-gradient(90deg, #ff7a18 0%, #ff3d77 100%);
+  background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
   background-size: 200% auto;
   transition: background-position 0.3s ease;
 }
@@ -216,7 +216,7 @@ body {
 }
 
 .text-brand-gradient {
-  background: linear-gradient(90deg, #ff7a18 0%, #ff3d77 100%);
+  background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -612,7 +612,7 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  background: linear-gradient(90deg, #ff7a18 0%, #ff3d77 100%);
+  background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
   transform: scale-x(0);
   transition: transform 0.25s ease-out;
   transform-origin: left;
@@ -644,7 +644,7 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  background: linear-gradient(90deg, #ff7a18 0%, #ff3d77 100%);
+  background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
   transform: scale-x(1);
   z-index: 20;
 }

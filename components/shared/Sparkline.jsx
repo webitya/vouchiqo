@@ -12,7 +12,7 @@
  */
 export default function Sparkline({
   points = [],
-  color = "#ff7a18",
+  color = "#2563eb",
   id = "revenue",
 }) {
   if (points.length === 0) return null;

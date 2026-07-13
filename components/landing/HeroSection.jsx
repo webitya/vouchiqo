@@ -392,8 +392,8 @@ export function HeroSection() {
                 type="button"
                 className={`relative flex items-center justify-center cursor-pointer border rounded-md bg-white p-1.5 w-[76px] h-[40px] transition-all duration-200 shrink-0 ${
                   isActive
-                    ? "border-[#FF7A18] shadow-sm ring-1 ring-[#FF7A18]/30"
-                    : "border-brand-border hover:border-[#FF7A18]/50"
+                    ? "border-[#2563eb] shadow-sm ring-1 ring-[#2563eb]/30"
+                    : "border-brand-border hover:border-[#2563eb]/50"
                 }`}
                 title={brand.name}
               >
@@ -403,7 +403,7 @@ export function HeroSection() {
                   className="w-full h-full object-cover rounded-md"
                 />
                 {isActive && (
-                  <span className="w-1.5 h-1.5 bg-[#FF7A18] rounded-full absolute -bottom-3 left-1/2 -translate-x-1/2 animate-pulse" />
+                  <span className="w-1.5 h-1.5 bg-[#2563eb] rounded-full absolute -bottom-3 left-1/2 -translate-x-1/2 animate-pulse" />
                 )}
               </button>
             );
@@ -424,8 +424,8 @@ export function HeroSection() {
                 type="button"
                 className={`relative flex items-center justify-center cursor-pointer border rounded-md bg-white p-1.5 w-[76px] h-[40px] transition-all duration-200 shrink-0 ${
                   isActive
-                    ? "border-[#FF7A18] shadow-sm ring-1 ring-[#FF7A18]/30"
-                    : "border-brand-border hover:border-[#FF7A18]/50"
+                    ? "border-[#2563eb] shadow-sm ring-1 ring-[#2563eb]/30"
+                    : "border-brand-border hover:border-[#2563eb]/50"
                 }`}
                 title={brand.name}
               >
@@ -435,7 +435,7 @@ export function HeroSection() {
                   className="w-full h-full object-cover rounded-md"
                 />
                 {isActive && (
-                  <span className="w-1.5 h-1.5 bg-[#FF7A18] rounded-full absolute -bottom-3 left-1/2 -translate-x-1/2 animate-pulse" />
+                  <span className="w-1.5 h-1.5 bg-[#2563eb] rounded-full absolute -bottom-3 left-1/2 -translate-x-1/2 animate-pulse" />
                 )}
               </button>
             );

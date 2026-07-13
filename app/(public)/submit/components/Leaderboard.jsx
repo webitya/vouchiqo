@@ -33,7 +33,7 @@ export default function Leaderboard() {
                       : user.rank === 2
                         ? "bg-slate-100 text-slate-700"
                         : user.rank === 3
-                          ? "bg-orange-100 text-orange-700"
+                          ? "bg-blue-100 text-blue-700"
                           : "bg-transparent text-slate-400"
                   }`}
                 >

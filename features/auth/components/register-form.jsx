@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Lock, Mail, User } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -21,6 +21,9 @@ export function RegisterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreed, setAgreed] = useState(false);
 
   const { mutate: register, isPending } = useRegister();
@@ -49,6 +52,9 @@ export function RegisterForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      return toast.error("Passwords do not match.");
+    }
     if (!agreed) return toast.error("Please agree to the Terms of Service.");
     register({ email, password, name, role: "customer" });
   };
@@ -104,7 +110,7 @@ export function RegisterForm() {
               <Lock className="w-4 h-4 text-brand-subtext" />
             </InputGroupAddon>
             <InputGroupInput
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Min. 8 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -112,6 +118,52 @@ export function RegisterForm() {
               required
               minLength={8}
             />
+            <InputGroupAddon align="inline-end" className="pr-1.5">
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-brand-subtext hover:text-brand-text p-1 focus:outline-none cursor-pointer border-0 bg-transparent"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4.5 h-4.5" />
+                ) : (
+                  <Eye className="w-4.5 h-4.5" />
+                )}
+              </button>
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-sm font-medium text-brand-text">
+            Confirm Password
+          </Label>
+          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
+            <InputGroupAddon>
+              <Lock className="w-4 h-4 text-brand-subtext" />
+            </InputGroupAddon>
+            <InputGroupInput
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Re-enter your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="text-base md:text-sm placeholder-brand-subtext h-full"
+              required
+              minLength={8}
+            />
+            <InputGroupAddon align="inline-end" className="pr-1.5">
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="text-brand-subtext hover:text-brand-text p-1 focus:outline-none cursor-pointer border-0 bg-transparent"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="w-4.5 h-4.5" />
+                ) : (
+                  <Eye className="w-4.5 h-4.5" />
+                )}
+              </button>
+            </InputGroupAddon>
           </InputGroup>
         </div>
 

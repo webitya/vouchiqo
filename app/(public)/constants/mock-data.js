@@ -65,7 +65,7 @@ export const MOCK_MERCHANTS_SEED = [
   { businessName: "ZOROY", slug: "zoroy", coupons: 7, offers: 3 },
   { businessName: "7NetLive", slug: "7netlive", coupons: 12, offers: 6 },
   { businessName: "Zestpics", slug: "zestpics", coupons: 18, offers: 9 },
-  { businessName: "Zenith Nutrition", slug: "zenith-nutrition", coupons: 9, offers: 4 },
+  { businessName: "Vouchiqo Nutrition", slug: "vouchiqo-nutrition", coupons: 9, offers: 4 },
   { businessName: "Zyppys", slug: "zyppys", coupons: 11, offers: 5 },
   { businessName: "Zymrat", slug: "zymrat", coupons: 12, offers: 6 },
   { businessName: "Zoe", slug: "zoe", coupons: 10, offers: 4 },

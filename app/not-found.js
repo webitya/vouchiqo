@@ -19,7 +19,7 @@ export default function NotFound() {
       <main className="flex-grow flex items-center justify-center py-16 px-4">
         <div className="max-w-xl w-full text-center space-y-8 bg-white border border-[#e2e8f0] rounded-3xl p-8 md:p-12 shadow-lg relative overflow-hidden">
           {/* Decorative glowing gradient backdrop */}
-          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#3e80dd] via-purple-500 to-[#10b981]" />
+          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#3e80dd] via-purple-500 to-[#2563eb]" />
 
           {/* Warning Icon with floating animation */}
           <div className="flex justify-center">

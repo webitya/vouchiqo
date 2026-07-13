@@ -93,8 +93,8 @@ const MOCK_MERCHANTS_SEED = [
   { businessName: "7NetLive", slug: "7netlive", coupons: 12, offers: 6 },
   { businessName: "Zestpics", slug: "zestpics", coupons: 18, offers: 9 },
   {
-    businessName: "Zenith Nutrition",
-    slug: "zenith-nutrition",
+    businessName: "Vouchiqo Nutrition",
+    slug: "vouchiqo-nutrition",
     coupons: 9,
     offers: 4,
   },
@@ -690,7 +690,7 @@ export default function MerchantsClient({
                         <Ticket className="w-3.5 h-3.5 text-[#3b5bdb]" />
                         <span>{store.coupons} Coupons</span>
                         <span style={{ color: "#d1d5db" }}>•</span>
-                        <Tag className="w-3.5 h-3.5 text-[#FF7A18]" />
+                        <Tag className="w-3.5 h-3.5 text-[#2563eb]" />
                         <span>{store.offers} Offers</span>
                       </div>
                     </div>
@@ -962,7 +962,7 @@ export default function MerchantsClient({
                           <Ticket className="w-3 h-3 text-[#3b5bdb]" />
                           <span>{m.coupons} Coupons</span>
                           <span style={{ color: "#d1d5db" }}>•</span>
-                          <Tag className="w-3 h-3 text-[#FF7A18]" />
+                          <Tag className="w-3 h-3 text-[#2563eb]" />
                           <span>{m.offers} Offers</span>
                         </div>
                       </div>

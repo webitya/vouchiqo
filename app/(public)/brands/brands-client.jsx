@@ -691,7 +691,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                         <Ticket className="w-3.5 h-3.5 text-[#3b5bdb]" />
                         <span>{brand.coupons} Coupons</span>
                         <span style={{ color: "#d1d5db" }}>•</span>
-                        <Tag className="w-3.5 h-3.5 text-[#FF7A18]" />
+                        <Tag className="w-3.5 h-3.5 text-[#2563eb]" />
                         <span>{brand.offers} Offers</span>
                       </div>
                     </div>
@@ -964,7 +964,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                           <Ticket className="w-3 h-3 text-[#3b5bdb]" />
                           <span>{brand.coupons} Coupons</span>
                           <span style={{ color: "#d1d5db" }}>•</span>
-                          <Tag className="w-3 h-3 text-[#FF7A18]" />
+                          <Tag className="w-3 h-3 text-[#2563eb]" />
                           <span>{brand.offers} Offers</span>
                         </div>
                       </div>

@@ -101,7 +101,7 @@ export function MerchantLoginForm() {
         <Button
           type="submit"
           disabled={isPending}
-          className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-sm font-semibold flex items-center justify-center gap-1 border-0 h-auto cursor-pointer shadow-none transition-all"
+          className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-semibold flex items-center justify-center gap-1 border-0 h-auto cursor-pointer shadow-none transition-all"
         >
           <span>{isPending ? "Logging in..." : "Log In as Merchant"}</span>
           <ArrowRight className="w-3.5 h-3.5" />

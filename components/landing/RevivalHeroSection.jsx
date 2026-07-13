@@ -104,7 +104,7 @@ export function RevivalHeroSection() {
               </p>
             </div>
             <div>
-              <p className="text-2xl md:text-3xl font-black text-emerald-400">
+              <p className="text-2xl md:text-3xl font-black text-blue-400">
                 78%
               </p>
               <p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">
@@ -181,7 +181,7 @@ export function RevivalHeroSection() {
             </div>
 
             {isSuccess && (
-              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400 animate-fade-in">
+              <div className="flex items-center gap-2 text-xs font-semibold text-blue-400 animate-fade-in">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>
                   We've received your request and will contact the merchant!
@@ -196,7 +196,7 @@ export function RevivalHeroSection() {
           <div className="relative w-72 h-72 md:w-80 md:h-80 flex items-center justify-center bg-white/5 rounded-full border border-white/10 shadow-inner overflow-hidden group">
             {/* Pulsing ring */}
             <div className="absolute inset-4 rounded-full border border-brand-warning/20 animate-ping opacity-30" />
-            <div className="absolute inset-12 rounded-full border border-emerald-500/20 animate-pulse" />
+            <div className="absolute inset-12 rounded-full border border-blue-500/20 animate-pulse" />
 
             {/* SVG Visual */}
             <svg
@@ -253,9 +253,9 @@ export function RevivalHeroSection() {
                 {/* Coupon body */}
                 <path
                   d="M30 60C30 54.4772 34.4772 50 40 50H85C87.7614 50 90 52.2386 90 55C90 63.2843 96.7157 70 105 70C113.284 70 120 63.2843 120 55C120 52.2386 122.239 50 125 50H160C165.523 50 170 54.4772 170 60V140C170 145.523 165.523 150 160 150H125C122.239 150 120 147.761 120 145C120 136.716 113.284 130 105 130C96.7157 130 90 136.716 90 145C90 147.761 87.7614 150 85 150H40C34.4772 150 30 145.523 30 140V60Z"
-                  fill="#10b981"
+                  fill="#2563eb"
                   fillOpacity="0.15"
-                  stroke="#10b981"
+                  stroke="#2563eb"
                   strokeWidth="3.5"
                 />
 
@@ -264,30 +264,30 @@ export function RevivalHeroSection() {
                   cx="105"
                   cy="100"
                   r="24"
-                  fill="#10b981"
+                  fill="#2563eb"
                   fillOpacity="0.2"
                 />
 
                 <path
                   d="M97 97C97 92.5817 100.582 89 105 89C109.418 89 113 92.5817 113 97C113 99.5 111 102 108 104L105 107"
-                  stroke="#10b981"
+                  stroke="#2563eb"
                   strokeWidth="3"
                   strokeLinecap="round"
                 />
-                <circle cx="105" cy="113" r="1.5" fill="#10b981" />
+                <circle cx="105" cy="113" r="1.5" fill="#2563eb" />
 
                 {/* Sparkles around */}
-                <path d="M50 80L53 83L50 86L47 83L50 80Z" fill="#10b981" />
+                <path d="M50 80L53 83L50 86L47 83L50 80Z" fill="#2563eb" />
                 <path
                   d="M150 120L152 122L150 124L148 122L150 120Z"
-                  fill="#10b981"
+                  fill="#2563eb"
                 />
-                <path d="M140 70L144 74L140 78L136 74L140 70Z" fill="#10b981" />
+                <path d="M140 70L144 74L140 78L136 74L140 70Z" fill="#2563eb" />
               </g>
             </svg>
 
             {/* Float badges */}
-            <div className="absolute top-4 left-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+            <div className="absolute top-4 left-4 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
               <RefreshCw className="w-3 h-3 animate-spin" />
               <span>Renewing</span>
             </div>

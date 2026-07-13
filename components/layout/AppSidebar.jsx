@@ -52,12 +52,12 @@ export function AppSidebar({ ...props }) {
         avatar: authUser.image || `/avatars/${role}.jpg`,
       }
     : {
-        name: "Aigars S.",
-        email: "admin@zenith.com",
+        name: "Admin User",
+        email: "admin@vouchiqo.com",
         avatar: `/avatars/${role}.jpg`,
       };
 
-  // Grouped Navigation Items matching Zenith structure
+  // Grouped Navigation Items matching Vouchiqo structure
   const getNavGroups = () => {
     switch (role) {
       case "admin":
@@ -254,7 +254,7 @@ export function AppSidebar({ ...props }) {
           {!isCollapsed && (
             <div className="flex flex-col text-left">
               <span className="text-sm font-bold tracking-tight text-slate-800">
-                Zenith
+                Vouchiqo
               </span>
               <span className="text-[10px] font-medium uppercase tracking-widest text-slate-400">
                 Dashboard

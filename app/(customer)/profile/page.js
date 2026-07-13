@@ -24,9 +24,9 @@ import SettingsTab from "./components/SettingsTab";
 import WalletTab from "./components/WalletTab";
 
 const DONUT_COLORS = [
-  "#FF7A18",
+  "#2563eb",
   "#1E4FAF",
-  "#00B67A",
+  "#2563eb",
   "#FFB020",
   "#A855F7",
   "#3B82F6",

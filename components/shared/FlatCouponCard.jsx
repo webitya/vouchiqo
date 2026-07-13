@@ -106,7 +106,7 @@ export default function FlatCouponCard({ coupon }) {
             position: "absolute",
             top: "8px",
             right: "8px",
-            backgroundColor: "#FF7A18",
+            backgroundColor: "#2563eb",
             color: "#ffffff",
             fontSize: "9px",
             fontWeight: 800,

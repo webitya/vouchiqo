@@ -57,8 +57,8 @@ export function RevivalPromo() {
       <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
         {/* Left Column: Form & Details (55%) */}
         <div className="lg:col-span-7 space-y-6 text-left animate-fade-in-up stagger-1">
-          <Badge className="bg-orange-500/15 text-[#FF7A18] hover:bg-orange-500/20 border border-[#FF7A18]/20 rounded-full px-3.5 py-1 font-extrabold text-xs shadow-none gap-1.5 w-fit">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping" />
+          <Badge className="bg-blue-600/15 text-[#2563eb] hover:bg-blue-600/20 border border-[#2563eb]/20 rounded-full px-3.5 py-1 font-extrabold text-xs shadow-none gap-1.5 w-fit">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
             <span>INDIA'S ONLY EXPIRED COUPON REVIVAL</span>
           </Badge>
 
@@ -86,7 +86,7 @@ export function RevivalPromo() {
               </span>
             </div>
             <div>
-              <span className="block text-lg md:text-xl font-black text-[#00B67A]">
+              <span className="block text-lg md:text-xl font-black text-[#2563eb]">
                 ₹25L+
               </span>
               <span className="text-[9px] md:text-xs text-brand-subtext font-bold uppercase tracking-wider">
@@ -202,7 +202,7 @@ export function RevivalPromo() {
           <div className="pt-2">
             <Link
               href="/expired-coupon-revival"
-              className="text-xs font-bold text-[#FF7A18] hover:text-[#FF3D77] transition-colors flex items-center gap-1 hover:underline"
+              className="text-xs font-bold text-[#2563eb] hover:text-[#1d4ed8] transition-colors flex items-center gap-1 hover:underline"
             >
               <span>Learn how Vouchiqo Revival works</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -215,7 +215,7 @@ export function RevivalPromo() {
           {/* Transforming coupon CSS visual */}
           <div className="w-[320px] h-[220px] relative flex items-center justify-center">
             {/* Background glowing ring */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#FF7A18]/10 to-[#00B67A]/10 rounded-md blur-2xl animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#2563eb]/10 to-[#2563eb]/10 rounded-md blur-2xl animate-pulse" />
 
             {/* Glowing active success border */}
             <div className="absolute inset-2 border border-brand-success/15 rounded-md animate-pulse z-0" />
@@ -258,12 +258,12 @@ export function RevivalPromo() {
                 <h4 className="text-xs font-black text-brand-text">
                   Flat 30% OFF
                 </h4>
-                <span className="text-[9px] text-[#00B67A] font-bold">
+                <span className="text-[9px] text-[#2563eb] font-bold">
                   Successfully Verified Code!
                 </span>
               </div>
               <div className="border-t border-dashed border-brand-border pt-2 flex items-center justify-between">
-                <span className="text-[10px] font-mono text-[#00B67A] font-black">
+                <span className="text-[10px] font-mono text-[#2563eb] font-black">
                   ACTIVE NOW
                 </span>
                 <span className="text-[9px] text-brand-subtext">→</span>

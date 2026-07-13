@@ -129,7 +129,7 @@ export default function ExpiredCouponRevival() {
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff04_1px,transparent_1px)] [background-size:20px_20px] opacity-40"></div>
 
         <div className="max-w-4xl mx-auto space-y-6 relative z-10">
-          <Badge className="bg-orange-500/15 text-[#FF7A18] hover:bg-orange-500/20 border border-[#FF7A18]/20 rounded-full px-3.5 py-1 font-bold text-xs shadow-none gap-1.5 w-fit mx-auto animate-float">
+          <Badge className="bg-blue-600/15 text-[#2563eb] hover:bg-blue-600/20 border border-[#2563eb]/20 rounded-full px-3.5 py-1 font-bold text-xs shadow-none gap-1.5 w-fit mx-auto animate-float">
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Community-Driven Restorations</span>
           </Badge>
@@ -158,7 +158,7 @@ export default function ExpiredCouponRevival() {
             </div>
             <div className="w-[1px] h-10 bg-white/10" />
             <div className="text-center flex-1">
-              <span className="block text-2xl font-black text-[#00B67A]">
+              <span className="block text-2xl font-black text-[#2563eb]">
                 {stats.totalRequests}
               </span>
               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
