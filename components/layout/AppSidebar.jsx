@@ -23,7 +23,17 @@ import {
 import { usePathname } from "next/navigation";
 import { NavMain } from "@/components/layout/NavMain";
 import { NavUser } from "@/components/layout/NavUser";
-import { useSidebar, Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@/components/ui/sidebar";
 import { useUser } from "@/hooks/use-user";
 import { useQuery } from "@tanstack/react-query";
 import { qk } from "@/lib/query-keys";
@@ -31,8 +41,6 @@ import { qk } from "@/lib/query-keys";
 export function AppSidebar({ ...props }) {
   const pathname = usePathname();
   const { user: authUser, role: authRole } = useUser();
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
 
   // Dynamically resolve role from pathname or user session
   const role = authUser
@@ -249,18 +257,19 @@ export function AppSidebar({ ...props }) {
       collapsible="icon"
       style={{
         "--sidebar": "var(--brand-bg)",
-        "--sidebar-foreground": "var(--brand-subtext)",
+        "--sidebar-foreground": "var(--brand-text)",
         "--sidebar-border": "var(--brand-border)",
         "--sidebar-accent": "var(--brand-surface)",
         "--sidebar-accent-foreground": "var(--brand-navy)",
-        "--sidebar-width": "200px",
+        "--sidebar-primary": "var(--brand-navy)",
+        "--sidebar-primary-foreground": "#ffffff",
+        "--sidebar-ring": "var(--brand-blue)",
+        "--sidebar-width": "220px",
       }}
       {...props}
     >
       <SidebarHeader className="p-0 border-b border-sidebar-border">
-        <div
-          className={`flex h-12 items-center gap-2.5 ${isCollapsed ? "justify-center px-0" : "px-3"}`}
-        >
+        <div className="flex h-12 items-center gap-2.5 px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#0f172a] text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -277,50 +286,39 @@ export function AppSidebar({ ...props }) {
               <path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z" />
             </svg>
           </div>
-          {!isCollapsed && (
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-xs font-bold tracking-tight text-slate-800 truncate max-w-[120px]">
-                {brandName}
-              </span>
-              <span className="text-[9px] font-medium uppercase tracking-widest text-slate-400">
-                Dashboard
-              </span>
-            </div>
-          )}
+          <div className="flex flex-col text-left leading-tight group-data-[collapsible=icon]:hidden">
+            <span className="text-xs font-bold tracking-tight text-slate-800 truncate max-w-[120px]">
+              {brandName}
+            </span>
+            <span className="text-[9px] font-medium uppercase tracking-widest text-slate-400">
+              Dashboard
+            </span>
+          </div>
         </div>
       </SidebarHeader>
-      <SidebarContent
-        className={`py-2 ${isCollapsed ? "px-1" : "px-2"} space-y-2`}
-      >
+      <SidebarContent className="py-2 px-2">
         {/* Redirect to Homepage Button */}
-        {!isCollapsed ? (
-          <div className="px-1.5 mb-1">
-            <a
-              href="/"
-              className="flex items-center justify-center gap-1.5 w-full py-1 px-2.5 bg-brand-navy hover:bg-slate-800 text-white rounded-md text-[11px] font-semibold shadow-sm transition-colors cursor-pointer text-center"
-            >
-              <Home className="w-3.5 h-3.5" />
-              <span>Go to Homepage</span>
-            </a>
-          </div>
-        ) : (
-          <div className="flex justify-center mb-1">
-            <a
-              href="/"
-              className="p-1 bg-brand-navy hover:bg-slate-800 text-white rounded-md flex items-center justify-center transition-colors cursor-pointer"
-              title="Go to Homepage"
-            >
-              <Home className="w-3.5 h-3.5" />
-            </a>
-          </div>
-        )}
+        <SidebarGroup className="p-0 pb-1">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                tooltip="Go to Homepage"
+                className="bg-brand-navy hover:bg-slate-800 text-white rounded-lg text-xs font-semibold group-data-[collapsible=icon]:justify-center"
+              >
+                <a href="/">
+                  <Home className="w-3.5 h-3.5" />
+                  <span>Go to Homepage</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
         <Suspense fallback={<div className="h-20 animate-pulse bg-brand-surface rounded-lg"></div>}>
           <NavMain groups={groups} />
         </Suspense>
       </SidebarContent>
-      <SidebarFooter
-        className={`border-t border-sidebar-border ${isCollapsed ? "p-1.5 flex justify-center" : "p-3"}`}
-      >
+      <SidebarFooter className="border-t border-sidebar-border p-2">
         <NavUser user={user} role={role} />
       </SidebarFooter>
       <SidebarRail />
