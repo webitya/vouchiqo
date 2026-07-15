@@ -36,8 +36,9 @@ export async function proxy(request) {
     const response = await fetch(fetchUrl, {
       headers: {
         cookie: request.headers.get("cookie") || "",
-        host: "localhost:3000",
-        "x-forwarded-host": "localhost:3000",
+        host: request.headers.get("host") || "",
+        "x-forwarded-host": request.headers.get("host") || "",
+        "x-forwarded-proto": request.headers.get("x-forwarded-proto") || (request.nextUrl.protocol === "https:" ? "https" : "http"),
       },
     });
 
