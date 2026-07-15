@@ -56,7 +56,7 @@ export default async function MerchantsPage() {
   const totalCouponsCount = couponCounts.reduce((a, c) => a + c.total, 0);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f5f6fa]">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <MerchantsClient
         merchants={merchantsList}

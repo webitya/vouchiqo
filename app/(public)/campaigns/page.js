@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function CampaignsPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#f5f6fa]">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <CampaignsClient />
       <Footer />

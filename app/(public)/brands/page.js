@@ -8,9 +8,9 @@ import BrandsClient from "./brands-client";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "All Brands Coupons, Offers & Promo Codes | Vouchiqo",
+  title: "All Brands Offers, Deals & Promo Codes | Vouchiqo",
   description:
-    "Find verified coupon codes, discounts and deals from all your favorite brands on Vouchiqo.",
+    "Find verified promo codes, discounts and deals from all your favorite brands on Vouchiqo.",
 };
 
 export default async function BrandsPage() {

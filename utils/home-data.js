@@ -189,4 +189,32 @@ export const HOME_FAQS = [
     q: "Is Vouchiqo free to use for customers?",
     a: "Absolutely! Vouchiqo is completely free for members to discover, claim, and save coupons. Merchants pay a small monthly subscription to list campaign dashboards.",
   },
+  {
+    q: "How do I redeem a coupon on Vouchiqo?",
+    a: "Simply click on the coupon you want, copy the code shown, and paste it at the checkout page of the respective brand's website. Some offers are click-to-activate and apply automatically.",
+  },
+  {
+    q: "Can merchants list their own deals on Vouchiqo?",
+    a: "Yes! Merchants can register and create a verified brand profile. After approval, they can list deals, track coupon usage analytics, and run revival campaigns directly from their dashboard.",
+  },
+  {
+    q: "Are the deals on Vouchiqo location-specific?",
+    a: "Yes, Vouchiqo supports geo-targeted offers. Based on your detected city, we surface deals from nearby brands and local merchants first, so you always see the most relevant offers.",
+  },
+  {
+    q: "How often are new coupons added?",
+    a: "New coupons and deals are added daily. Merchants update their campaigns in real time, and our system automatically removes expired codes to keep the listings fresh and reliable.",
+  },
+  {
+    q: "What categories of deals does Vouchiqo cover?",
+    a: "Vouchiqo covers 15+ categories including Fashion, Food & Dining, Electronics, Travel, Beauty, Home & Living, Grocery, Finance, Education, Gaming, and more.",
+  },
+  {
+    q: "Does Vouchiqo have a mobile app?",
+    a: "A dedicated mobile app is currently in development. In the meantime, our website is fully responsive and works seamlessly on all smartphones and tablets.",
+  },
+  {
+    q: "How do I report a coupon that doesn't work?",
+    a: "You can click the 'Report' button on any coupon card. Our team reviews reported codes within 24 hours and either updates or removes them to maintain high success rates.",
+  },
 ];

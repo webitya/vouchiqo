@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const LEFT_BRANDS = [
   {
@@ -259,6 +260,16 @@ export function HeroSection() {
     setCurrentRightCard(idx);
   };
 
+  const handleRightPrev = useCallback(() => {
+    setCurrentRightCard(
+      (prev) => (prev - 1 + RIGHT_BRANDS.length) % RIGHT_BRANDS.length,
+    );
+  }, []);
+
+  const handleRightNext = useCallback(() => {
+    setCurrentRightCard((prev) => (prev + 1) % RIGHT_BRANDS.length);
+  }, []);
+
   const activeLeft = LEFT_BRANDS[currentLeftSlide];
   const activeRight = RIGHT_BRANDS[currentRightCard];
 
@@ -291,15 +302,31 @@ export function HeroSection() {
             </div>
           </div>
 
+          {/* Navigation Arrows */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md backdrop-blur-sm border-0 cursor-pointer"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md backdrop-blur-sm border-0 cursor-pointer"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
           {/* Pagination Dots */}
-          <div className="absolute bottom-4 right-4 z-20 flex gap-1.5">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
             {LEFT_BRANDS.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => handleLeftBrandClick(idx)}
                 className={`w-2 h-2 rounded-full transition-all border-0 cursor-pointer ${
-                  idx === currentLeftSlide ? "bg-white w-4" : "bg-white/40"
+                  idx === currentLeftSlide ? "bg-white w-5" : "bg-white/40 hover:bg-white/60"
                 }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
@@ -315,56 +342,48 @@ export function HeroSection() {
               className="flex h-full transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentRightCard * 100}%)` }}
             >
-              {RIGHT_BRANDS.map((slide, idx) => {
-                const isActive = idx === currentRightCard;
-                return (
-                  <div
-                    key={slide.id}
-                    className="w-full h-full flex-shrink-0 min-w-full relative"
-                  >
-                    <Link
-                      href={slide.link}
-                      className="block w-full h-full relative overflow-hidden"
-                    >
-                      <img
-                        src={slide.image}
-                        alt={slide.name}
-                        className="w-full h-full object-cover cursor-pointer"
-                      />
-                      {/* Floating card overlay that slides up smoothly when active */}
-                      <div
-                        className={`absolute bottom-5 left-4 right-4 bg-white rounded-md p-5 shadow-lg text-left transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                          isActive
-                            ? "translate-y-0 opacity-100 delay-150"
-                            : "translate-y-16 opacity-0"
-                        }`}
-                      >
-                        <h3 className="font-extrabold text-[#191F2E] text-[15px] leading-snug mb-1">
-                          {slide.headline}
-                        </h3>
-                        <p className="text-[12px] text-[#4A5568] leading-relaxed mb-3 line-clamp-2">
-                          {slide.description}
-                        </p>
-                        <span className="text-[12px] font-bold uppercase tracking-wider text-[#3E80DD]">
-                          {slide.buttonText}
-                        </span>
-                      </div>
-                    </Link>
-                  </div>
-                );
-              })}
+              {RIGHT_BRANDS.map((slide) => (
+                <div
+                  key={slide.id}
+                  className="w-full h-full flex-shrink-0 min-w-full relative"
+                >
+                  <Link href={slide.link} className="block w-full h-full">
+                    <img
+                      src={slide.image}
+                      alt={slide.name}
+                      className="w-full h-full object-cover cursor-pointer"
+                    />
+                  </Link>
+                </div>
+              ))}
             </div>
           </div>
 
+          {/* Navigation Arrows */}
+          <button
+            onClick={handleRightPrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md backdrop-blur-sm border-0 cursor-pointer"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={handleRightNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md backdrop-blur-sm border-0 cursor-pointer"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
           {/* Pagination Dots */}
-          <div className="absolute bottom-4 right-4 z-20 flex gap-1.5">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
             {RIGHT_BRANDS.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => handleRightBrandClick(idx)}
                 className={`w-2 h-2 rounded-full transition-all border-0 cursor-pointer ${
-                  idx === currentRightCard ? "bg-white w-4" : "bg-white/40"
+                  idx === currentRightCard ? "bg-white w-5" : "bg-white/40 hover:bg-white/60"
                 }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />

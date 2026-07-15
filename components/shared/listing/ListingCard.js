@@ -32,8 +32,8 @@ export default function ListingCard({
     <Link href={linkHref} style={{ textDecoration: "none" }}>
       <div
         style={{
-          border: "1px solid #e8eaf0",
-          borderRadius: 12,
+          border: "1px solid #e5e7eb",
+          borderRadius: 6,
           background: "#fff",
           cursor: "pointer",
           transition: "all 0.2s ease-in-out",
@@ -42,12 +42,12 @@ export default function ListingCard({
           overflow: "hidden",
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = "0 6px 18px rgba(0,0,0,0.05)";
-          e.currentTarget.style.borderColor = "#3b5bdb";
-          e.currentTarget.style.transform = "translateY(-2px)";
+          e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.06)";
+          e.currentTarget.style.borderColor = "#2563eb";
+          e.currentTarget.style.transform = "translateY(-1px)";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = "#e8eaf0";
+          e.currentTarget.style.borderColor = "#e5e7eb";
           e.currentTarget.style.boxShadow = "none";
           e.currentTarget.style.transform = "translateY(0)";
         }}
@@ -73,19 +73,19 @@ export default function ListingCard({
             }}
             onError={(e) => {
               e.target.src =
-                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%233b5bdb' stroke-width='2'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' ry='2'/%3E%3C/svg%3E";
+                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2'%3E%3Crect x='3' y='3' width='18' height='18' rx='1' ry='1'/%3E%3C/svg%3E";
             }}
           />
         </div>
         {/* Divider */}
-        <div style={{ height: 1, background: "#f1f3f9" }} />
+        <div style={{ height: 1, background: "#f3f4f6" }} />
         {/* Content area */}
         <div style={{ padding: "12px", textAlign: "left" }}>
           <p
             style={{
               fontSize: 13,
               fontWeight: 700,
-              color: "#111827",
+              color: "#000000",
               margin: "0 0 4px 0",
             }}
           >
@@ -98,15 +98,12 @@ export default function ListingCard({
                 alignItems: "center",
                 gap: 4,
                 fontSize: 11,
-                color: "#6b7280",
-                fontWeight: 500,
+                color: "#2563eb",
+                fontWeight: 600,
               }}
             >
-              <Ticket className="w-3 h-3 text-[#3b5bdb]" />
-              <span>{coupons} Coupons</span>
-              <span style={{ color: "#d1d5db" }}>•</span>
               <Tag className="w-3 h-3 text-[#2563eb]" />
-              <span>{offers} Offers</span>
+              <span>{coupons + offers} Active Offers</span>
             </div>
           )}
         </div>

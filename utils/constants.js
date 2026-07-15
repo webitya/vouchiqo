@@ -24,26 +24,21 @@ export const DISCOUNT_TYPE = {
 };
 
 export const COUPON_CATEGORIES = [
-  "food",
   "fashion",
+  "food",
   "electronics",
   "beauty",
   "travel",
-  "fitness",
   "home",
-  "entertainment",
-  "services",
   "home-improvement",
+  "fitness",
   "education",
-  "finance",
-  "gaming",
-  "automotive",
-  "automobile",
   "kids-baby",
   "jewellery",
-  "pets",
-  "organic",
+  "automotive",
+  "entertainment",
   "grocery",
+  "finance",
   "other",
 ];
 

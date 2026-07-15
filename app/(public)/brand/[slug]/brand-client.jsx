@@ -183,16 +183,16 @@ export default function BrandClient({
     const brand = merchant.businessName || "this brand";
     return [
       {
-        q: `How do I apply a discount coupon for ${brand}?`,
-        a: `Select a verified coupon from our page, click 'Get Coupon Code' to copy it, then paste it into the coupon/promo code entry box on ${brand}'s official website during checkout.`,
+        q: `How do I apply a discount promo code for ${brand}?`,
+        a: `Select a verified offer from our page, click 'Get Code' to copy it, then paste it into the promo code entry box on ${brand}'s official website during checkout.`,
       },
       {
-        q: `Are all coupons on Vouchiqo verified?`,
+        q: `Are all offers on Vouchiqo verified?`,
         a: `Yes! Every discount code and offer listed on Vouchiqo is manually checked and verified by our deal hunters daily to ensure you always get working discounts.`,
       },
       {
-        q: `What can I do if a coupon has expired?`,
-        a: `If a coupon has expired, you can vote to revive it by clicking 'Revive Coupon'. Our team monitors these requests and reaches out to ${brand} to secure new active promotional offers.`,
+        q: `What can I do if an offer has expired?`,
+        a: `If an offer has expired, you can vote to revive it by clicking 'Revive Offer'. Our team monitors these requests and reaches out to ${brand} to secure new active promotional offers.`,
       },
     ];
   }, [merchant.businessName]);
@@ -236,7 +236,7 @@ export default function BrandClient({
             </li>
             <span>/</span>
             <li className="text-[#191f2e] font-semibold">
-              {merchant.businessName} Coupons
+              {merchant.businessName} Offers
             </li>
           </ul>
         </div>
@@ -301,7 +301,7 @@ export default function BrandClient({
                   )}
                 </div>
                 <p className="text-[13px] text-[#6b7280] font-medium">
-                  Best {coupons.length} Coupons &amp; Offers last validated on{" "}
+                  Best {coupons.length} Offers last validated on{" "}
                   <span className="text-[#191f2e] font-semibold">
                     {todayStr}
                   </span>
@@ -459,7 +459,7 @@ export default function BrandClient({
                   : "text-[#6b7280] hover:text-[#3e80dd]"
               }`}
             >
-              {"Coupons "}
+              {"Codes "}
               <span className="text-[11px] font-bold text-[#9ca3af]">
                 ({couponsCount})
               </span>
@@ -701,8 +701,8 @@ export default function BrandClient({
 
             {filteredCoupons.length === 0 && (
               <div className="py-16 text-center bg-white border border-[#e2e8f0] rounded-2xl p-6">
-                <p className="text-sm font-bold text-[#6b7280]">
-                  No active coupon campaigns matching your selection listed for
+                <p className="text-[13px] font-bold text-[#6b7280]">
+                  No active campaigns matching your selection listed for
                   this brand currently.
                 </p>
                 <button
@@ -723,7 +723,7 @@ export default function BrandClient({
           {expiredCoupons.length > 0 && (
             <div className="space-y-3 pt-4">
               <h3 className="text-sm font-extrabold text-[#4b5563] uppercase tracking-wider text-left">
-                Expired Coupons &amp; Offers
+                Expired Offers
               </h3>
               <div className="space-y-2">
                 {expiredCoupons.map((coupon) => {
@@ -776,7 +776,7 @@ export default function BrandClient({
                             ) : (
                               <>
                                 <RotateCcw className="w-3.5 h-3.5" />
-                                <span>Revive Coupon</span>
+                                <span>Revive Offer</span>
                               </>
                             )}
                           </button>

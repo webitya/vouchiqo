@@ -30,18 +30,18 @@ export const SIDEBAR_NAV = [
 ];
 
 export const POPULAR_MERCHANTS_SIDEBAR = [
-  { label: "Air India Coupons", href: "#" },
-  { label: "Myntra Coupons", href: "#" },
-  { label: "Amazon Coupons", href: "#" },
-  { label: "Hostinger Coupons", href: "#" },
-  { label: "Etihad Coupons", href: "#" },
-  { label: "Samsung Coupons", href: "#" },
-  { label: "Udemy Coupons", href: "#" },
-  { label: "Puma Coupons", href: "#" },
-  { label: "Myprotein Coupons", href: "#" },
-  { label: "BigRock Coupons", href: "#" },
-  { label: "RedBus Coupons", href: "#" },
-  { label: "GoDaddy Coupons", href: "#" },
+  { label: "Lenskart Offers", href: "/brand/lenskart" },
+  { label: "Croma Offers", href: "/brand/croma" },
+  { label: "Starbucks Offers", href: "/brand/starbucks" },
+  { label: "Puma Offers", href: "/brand/puma" },
+  { label: "Sonata Offers", href: "/brand/sonata" },
+  { label: "Domino's Offers", href: "/brand/dominos" },
+  { label: "Bata Offers", href: "/brand/bata" },
+  { label: "Samsung Offers", href: "/brand/samsung" },
+  { label: "Manyavar Offers", href: "/brand/manyavar" },
+  { label: "Haldiram's Offers", href: "/brand/haldirams" },
+  { label: "Apollo Pharmacy", href: "/brand/apollo-pharmacy" },
+  { label: "Tanishq Offers", href: "/brand/tanishq" },
 ];
 
 export const ALPHA_LETTERS = [

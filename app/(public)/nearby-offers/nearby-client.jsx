@@ -1,36 +1,13 @@
 "use client";
 
-import {
-  Activity,
-  Building2,
-  CheckCircle2,
-  ChevronRight,
-  Compass,
-  Filter,
-  Loader2,
-  Locate,
-  Map,
-  MapPin,
-  Search,
-  SlidersHorizontal,
-  Tag,
-  Ticket,
-} from "lucide-react";
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import Navbar from "@/components/layout/navbar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import Footer from "@/components/layout/Footer";
 import { useLocation } from "@/hooks/use-location";
+
+// ─── Constants ───────────────────────────────────────────────────────────────
 
 const CITY_COORDINATES = {
   ranchi: [23.3441, 85.3096],
@@ -52,820 +29,441 @@ const CITY_TO_STATE = {
   bangalore: "Karnataka",
 };
 
-function getHaversineDistance(lat1, lon1, lat2, lon2) {
-  if (lat1 === null || lon1 === null || lat2 === null || lon2 === null)
-    return 0;
-  const R = 6371; // Radius of the earth in km
+const TABS = [
+  { key: "nearest", label: "Near Me" },
+  { key: "city", label: "In My City" },
+  { key: "state", label: "In My State" },
+  { key: "all", label: "All Deals" },
+];
+
+const CATEGORY_OPTIONS = [
+  { value: "all", label: "All Categories" },
+  { value: "food", label: "Food & Dining" },
+  { value: "fashion", label: "Fashion" },
+  { value: "home", label: "Home & Living" },
+  { value: "travel", label: "Travel" },
+  { value: "electronics", label: "Electronics" },
+  { value: "beauty", label: "Beauty" },
+  { value: "fitness", label: "Fitness" },
+];
+
+// ─── Distance helper ──────────────────────────────────────────────────────────
+
+function haversine(lat1, lon1, lat2, lon2) {
+  if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) return 0;
+  const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lon2 - lon1) * Math.PI) / 180;
   const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLat / 2) ** 2 +
     Math.cos((lat1 * Math.PI) / 180) *
       Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const d = R * c; // Distance in km
-  return parseFloat(d.toFixed(1));
+      Math.sin(dLon / 2) ** 2;
+  return parseFloat((R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))).toFixed(1));
 }
+
+// ─── SVG Icons (inline, no dependencies) ─────────────────────────────────────
+
+const SkeletonCard = () => (
+  <div style={{
+    background: "white",
+    border: "1px solid #eaecf0",
+    borderRadius: "10px",
+    padding: "13px 14px",
+    display: "flex",
+    gap: "12px",
+    boxShadow: "0 1px 6px rgba(0,0,0,0.07)",
+    animation: "pulse 1.5s infinite ease-in-out"
+  }}>
+    <div style={{ width: "44px", height: "44px", borderRadius: "8px", background: "#e5e7eb", flexShrink: 0 }} />
+    <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ width: "60px", height: "10px", background: "#e5e7eb", borderRadius: "4px" }} />
+        <div style={{ width: "50px", height: "14px", background: "#eff6ff", borderRadius: "10px" }} />
+      </div>
+      <div style={{ width: "100px", height: "16px", background: "#e5e7eb", borderRadius: "4px", margin: "2px 0" }} />
+      <div style={{ width: "160px", height: "11px", background: "#e5e7eb", borderRadius: "4px" }} />
+      <div style={{ width: "120px", height: "10px", background: "#e5e7eb", borderRadius: "4px", marginTop: "2px" }} />
+      <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: "7px", borderTop: "1px solid #f3f4f6", marginTop: "4px" }}>
+        <div style={{ width: "60px", height: "12px", background: "#e5e7eb", borderRadius: "4px" }} />
+      </div>
+    </div>
+  </div>
+);
+
+const IconSearch = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+  </svg>
+);
+const IconPin = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+  </svg>
+);
+const IconGPS = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="2" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="22" y2="12"/>
+    <line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/>
+    <circle cx="12" cy="12" r="4"/>
+  </svg>
+);
+const IconMap = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+    <line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>
+  </svg>
+);
+
+const IconFilter = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/>
+    <line x1="11" y1="18" x2="13" y2="18"/>
+  </svg>
+);
+const IconClose = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+  </svg>
+);
+const IconArrow = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m9 18 6-6-6-6"/>
+  </svg>
+);
+const IconLoader = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
+    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+  </svg>
+);
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function NearbyOffers() {
   const { city: savedCity, setCity: setSavedCity } = useLocation();
   const [savedState, setSavedState] = useState("Jharkhand");
   const [savedPincode, setSavedPincode] = useState("");
-  const [leafletLoaded, setLeafletLoaded] = useState(false);
-  const [mapCenter, setMapCenter] = useState([23.3441, 85.3096]); // Default Ranchi center
-  const [distance, setDistance] = useState("10"); // Default 10 km
+  const [mapCenter, setMapCenter] = useState([23.3441, 85.3096]);
+  const [distance, setDistance] = useState("10");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [dealTypeFilter, setDealTypeFilter] = useState("all"); // 'all' | 'coupon' | 'offer'
-  const [sortOrder, setSortOrder] = useState("distance"); // 'distance' | 'discount'
+  const [sortOrder, setSortOrder] = useState("distance");
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("nearest"); // 'nearest' | 'city' | 'state' | 'all'
-  const [rawCouponsList, setRawCouponsList] = useState([]);
+  const [activeTab, setActiveTab] = useState("nearest");
+  const [rawCoupons, setRawCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [gpsDetecting, setGpsDetecting] = useState(false);
-
-  // Map view toggle: initially false (don't show map)
-  const [showMap, setShowMap] = useState(false);
-  // Unified Collapsible Filters drawer
+  const [gpsLoading, setGpsLoading] = useState(false);
+  const [showMap, setShowMap] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-
-  // Manual location modal
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const [manualForm, setManualForm] = useState({
-    state: "Jharkhand",
-    city: "Ranchi",
-    area: "",
-  });
+  const [leafletLoaded, setLeafletLoaded] = useState(false);
+  const [manualForm, setManualForm] = useState({ state: "Jharkhand", city: "Ranchi", area: "" });
 
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersGroupRef = useRef(null);
 
-  // Hydrate location state from localStorage and set map center on mount/city change
+  // Hydrate saved location
   useEffect(() => {
     try {
       const pin = localStorage.getItem("vouchiqo_pincode") || "";
       setSavedPincode(pin);
-
-      const storedState = localStorage.getItem("vouchiqo_state") || "";
-      if (storedState) {
-        setSavedState(storedState);
-      } else if (savedCity) {
-        const derivedState = CITY_TO_STATE[savedCity.toLowerCase()];
-        if (derivedState) setSavedState(derivedState);
+      const st = localStorage.getItem("vouchiqo_state") || "";
+      if (st) setSavedState(st);
+      else if (savedCity) {
+        const ds = CITY_TO_STATE[savedCity.toLowerCase()];
+        if (ds) setSavedState(ds);
       }
-
       if (savedCity) {
-        const lowerCity = savedCity.toLowerCase();
-        if (CITY_COORDINATES[lowerCity]) {
-          setMapCenter(CITY_COORDINATES[lowerCity]);
-        }
+        const c = CITY_COORDINATES[savedCity.toLowerCase()];
+        if (c) setMapCenter(c);
       }
-    } catch (e) {
-      console.error("Failed to read location from localStorage:", e);
-    }
+    } catch {}
   }, [savedCity]);
 
-  // Load Leaflet dynamically on mount
+  // Load Leaflet
   useEffect(() => {
-    if (typeof window !== "undefined" && window.L) {
-      setLeafletLoaded(true);
-      return;
-    }
-
-    let link = document.querySelector(
-      'link[href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"]',
-    );
-    if (!link) {
-      link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-      document.head.appendChild(link);
-    }
-
-    let script = document.querySelector(
-      'script[src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"]',
-    );
-    if (!script) {
-      script = document.createElement("script");
-      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-      script.async = true;
-      script.onload = () => setLeafletLoaded(true);
-      document.head.appendChild(script);
-    } else {
-      if (window.L) {
-        setLeafletLoaded(true);
-      } else {
-        script.addEventListener("load", () => setLeafletLoaded(true));
-      }
-    }
+    if (typeof window !== "undefined" && window.L) { setLeafletLoaded(true); return; }
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+    document.head.appendChild(link);
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    script.async = true;
+    script.onload = () => setLeafletLoaded(true);
+    document.head.appendChild(script);
   }, []);
 
-  // Cleanup map instance on unmount
-  useEffect(() => {
-    return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-    };
-  }, []);
+  useEffect(() => () => { if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; } }, []);
 
-  // Fetch local coupons
+  // Fetch coupons
   useEffect(() => {
-    async function fetchLocalCoupons() {
+    async function fetch_() {
       setLoading(true);
       try {
-        const queryParams = new URLSearchParams({ limit: "60" });
-        if (savedCity) {
-          queryParams.set("city", savedCity);
-        }
-        const res = await fetch(`/api/coupons?${queryParams.toString()}`);
+        const q = new URLSearchParams({ limit: "60" });
+        if (savedCity) q.set("city", savedCity);
+        const res = await fetch(`/api/coupons?${q}`);
         if (res.ok) {
-          const data = await res.json();
-          setRawCouponsList(data.data?.coupons || []);
+          const d = await res.json();
+          setRawCoupons(d.data?.coupons || []);
         }
-      } catch (err) {
-        console.error("Failed to fetch nearby coupons:", err);
-      } finally {
-        setLoading(false);
-      }
+      } catch {}
+      finally { setLoading(false); }
     }
-    fetchLocalCoupons();
+    fetch_();
   }, [savedCity]);
 
-  // Process raw coupons list to compute geodesic distances
-  const coupons = useMemo(() => {
-    return rawCouponsList.map((c) => {
+  // Enrich coupons with distance
+  const coupons = useMemo(() =>
+    rawCoupons.map((c) => {
       const mLoc = c.merchantId?.location;
-      const hasCoords =
-        mLoc?.coordinates?.lat !== undefined &&
-        mLoc?.coordinates?.lng !== undefined;
-
+      const hasCoords = mLoc?.coordinates?.lat != null && mLoc?.coordinates?.lng != null;
       let lat = hasCoords ? mLoc.coordinates.lat : null;
       let lng = hasCoords ? mLoc.coordinates.lng : null;
-
-      // Fallback coordinates if not populated (distribute around center)
-      if (lat === null || lng === null) {
-        const center =
-          CITY_COORDINATES[savedCity?.toLowerCase()] || CITY_COORDINATES.ranchi;
-        const hash = c._id
-          ? c._id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)
-          : 0;
+      if (lat == null) {
+        const center = CITY_COORDINATES[savedCity?.toLowerCase()] || CITY_COORDINATES.ranchi;
+        const hash = c._id ? c._id.split("").reduce((a, ch) => a + ch.charCodeAt(0), 0) : 0;
         lat = center[0] + ((hash % 100) / 100 - 0.5) * 0.03;
         lng = center[1] + (((hash * 13) % 100) / 100 - 0.5) * 0.03;
       }
-
-      const dist = getHaversineDistance(mapCenter[0], mapCenter[1], lat, lng);
-
       return {
         ...c,
         coords: [lat, lng],
-        distance: dist,
+        distance: haversine(mapCenter[0], mapCenter[1], lat, lng),
         address: mLoc?.address
-          ? `${mLoc.address}, ${mLoc.city || ""}, ${mLoc.state || ""}, ${mLoc.pincode || ""}`
-          : `${c.merchantId?.businessName || "Store"} Main Rd, ${savedCity || "Ranchi"}`,
+          ? `${mLoc.address}, ${mLoc.city || ""}`
+          : `${c.merchantId?.businessName || "Store"}, ${savedCity || "Ranchi"}`,
         city: mLoc?.city || savedCity || "Ranchi",
         state: mLoc?.state || savedState || "Jharkhand",
       };
+    }),
+    [rawCoupons, mapCenter, savedCity, savedState]
+  );
+
+  // Filter & group
+  const grouped = useMemo(() => {
+    let list = coupons.filter((c) => {
+      if (categoryFilter !== "all" && c.category !== categoryFilter) return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        if (!c.title?.toLowerCase().includes(q) && !c.merchantId?.businessName?.toLowerCase().includes(q)) return false;
+      }
+      return true;
     });
-  }, [rawCouponsList, mapCenter, savedCity, savedState]);
+    list = sortOrder === "distance"
+      ? [...list].sort((a, b) => a.distance - b.distance)
+      : [...list].sort((a, b) => (b.discountValue || 0) - (a.discountValue || 0));
+    return {
+      nearest: list.filter((c) => c.distance <= parseFloat(distance)),
+      city: list.filter((c) => c.city?.toLowerCase() === savedCity?.toLowerCase()),
+      state: list.filter((c) => c.state?.toLowerCase() === savedState?.toLowerCase()),
+      all: list,
+    };
+  }, [coupons, distance, categoryFilter, sortOrder, searchQuery, savedCity, savedState]);
 
-  // Center map to first coupon if city has no hardcoded coordinates
+  const activeList = grouped[activeTab] || [];
+
+  // Leaflet map rendering
   useEffect(() => {
-    if (rawCouponsList.length > 0 && savedCity) {
-      const lowerCity = savedCity.toLowerCase();
-      if (!CITY_COORDINATES[lowerCity]) {
-        const firstCoupon = rawCouponsList.find((c) => {
-          const mLoc = c.merchantId?.location;
-          return (
-            mLoc?.coordinates?.lat !== undefined &&
-            mLoc?.coordinates?.lng !== undefined
-          );
-        });
-
-        if (firstCoupon) {
-          const coords = [
-            firstCoupon.merchantId.location.coordinates.lat,
-            firstCoupon.merchantId.location.coordinates.lng,
-          ];
-          setMapCenter(coords);
-          if (mapInstanceRef.current) {
-            mapInstanceRef.current.setView(coords, 14);
-          }
-        }
-      }
-    }
-  }, [rawCouponsList, savedCity]);
-
-  const openLocationModal = () => {
-    setManualForm({
-      state: savedState || "Jharkhand",
-      city: savedCity || "Ranchi",
-      area: savedPincode || "",
-    });
-    setShowLocationModal(true);
-  };
-
-  // Detect location via GPS
-  const handleGPSDetect = () => {
-    if (!navigator.geolocation) {
-      toast.error("Geolocation is not supported by your browser");
-      return;
-    }
-    setGpsDetecting(true);
-    toast.loading("Requesting GPS coordinates...", { id: "gps-status" });
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const coords = [pos.coords.latitude, pos.coords.longitude];
-        setMapCenter(coords);
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.setView(coords, 14);
-        }
-        // Reverse geocode to find city and state
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`,
-            { headers: { "Accept-Language": "en" } },
-          );
-          if (res.ok) {
-            const data = await res.json();
-            const detectedCity =
-              data.address?.city ||
-              data.address?.town ||
-              data.address?.village ||
-              data.address?.county ||
-              null;
-            const detectedState = data.address?.state || null;
-            if (detectedCity) {
-              setSavedCity(detectedCity);
-              if (detectedState) {
-                setSavedState(detectedState);
-                localStorage.setItem("vouchiqo_state", detectedState);
-              }
-              toast.success(`Location updated to ${detectedCity}!`, {
-                id: "gps-status",
-              });
-            } else {
-              toast.success("Location synced successfully!", {
-                id: "gps-status",
-              });
-            }
-          } else {
-            toast.success("Coordinates synced successfully!", {
-              id: "gps-status",
-            });
-          }
-        } catch (e) {
-          console.error("GPS reverse geocode failed:", e);
-          toast.success("Location synced successfully!", { id: "gps-status" });
-        } finally {
-          setGpsDetecting(false);
-        }
-      },
-      (err) => {
-        setGpsDetecting(false);
-        toast.dismiss("gps-status");
-        if (err.code === err.PERMISSION_DENIED) {
-          toast.error("GPS access denied. Please set manually.");
-        } else {
-          toast.error("Unable to retrieve GPS location.");
-        }
-        openLocationModal();
-      },
-      { timeout: 10000 },
-    );
-  };
-
-  // Set manual location
-  const handleManualSubmit = (e) => {
-    e.preventDefault();
-    if (manualForm.city) {
-      const selectedCity = manualForm.city;
-      const selectedState = manualForm.state;
-      setSavedCity(selectedCity);
-      setSavedState(selectedState);
-      const pin = manualForm.area ? manualForm.area.trim() : "";
-      setSavedPincode(pin);
-
-      try {
-        localStorage.setItem("vouchiqo_pincode", pin);
-        localStorage.setItem("vouchiqo_state", selectedState);
-      } catch (err) {
-        console.error("Failed to write to localStorage:", err);
-      }
-
-      const lowerCity = selectedCity.toLowerCase();
-      if (CITY_COORDINATES[lowerCity]) {
-        const coords = CITY_COORDINATES[lowerCity];
-        setMapCenter(coords);
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.setView(coords, 14);
-        }
-      }
-      setShowLocationModal(false);
-      toast.success(`Location set to ${selectedCity}, ${selectedState}!`);
-    }
-  };
-
-  // Re-render Leaflet Map & Markers when center/filters change
-  useEffect(() => {
-    if (
-      !showMap ||
-      !leafletLoaded ||
-      !mapRef.current ||
-      typeof window === "undefined" ||
-      !window.L
-    )
-      return;
-
+    if (!leafletLoaded || !mapRef.current || typeof window === "undefined" || !window.L) return;
     const L = window.L;
-
-    // Create Map Instance if not exists
     if (!mapInstanceRef.current) {
-      const map = L.map(mapRef.current, {
-        center: mapCenter,
-        zoom: 13,
-        zoomControl: false,
-      });
-
+      const map = L.map(mapRef.current, { center: mapCenter, zoom: 13, zoomControl: false });
       L.control.zoom({ position: "bottomright" }).addTo(map);
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors",
-      }).addTo(map);
-
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap" }).addTo(map);
       mapInstanceRef.current = map;
       markersGroupRef.current = L.layerGroup().addTo(map);
     } else {
       mapInstanceRef.current.setView(mapCenter, 13);
     }
-
-    const map = mapInstanceRef.current;
-    const markersGroup = markersGroupRef.current;
-    markersGroup.clearLayers();
-
-    // Custom Ping Icon for User
-    const userIcon = L.divIcon({
-      className: "user-marker-wrapper",
-      html: `
-        <div class="w-7 h-7 bg-brand-blue border-2 border-white rounded-full flex items-center justify-center shadow-lg">
-          <div class="w-3.5 h-3.5 bg-white rounded-full animate-ping" />
-        </div>
-      `,
-      iconSize: [28, 28],
-      iconAnchor: [14, 14],
+    markersGroupRef.current.clearLayers();
+    const pinIcon = L.divIcon({
+      className: "",
+      html: `<div style="width:28px;height:28px;background:#2563eb;border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(37,99,235,0.4);display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:10px;background:white;border-radius:50%;"></div></div>`,
+      iconSize: [28, 28], iconAnchor: [14, 14],
     });
-    L.marker(mapCenter, { icon: userIcon }).addTo(markersGroup);
-
-    // Custom Tag Icon for Deals
-    const orangeIcon = L.divIcon({
-      className: "custom-marker-wrapper",
-      html: `
-        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#2563eb] to-[#1d4ed8] border-2 border-white shadow-lg transform hover:scale-110 transition-transform">
-          <span class="text-white text-xs font-black">🏷️</span>
-        </div>
-      `,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [0, -10],
+    L.marker(mapCenter, { icon: pinIcon }).addTo(markersGroupRef.current);
+    const dealIcon = L.divIcon({
+      className: "",
+      html: `<div style="width:32px;height:32px;background:#2563eb;border:2px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;font-size:13px;">🏷️</div>`,
+      iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -10],
     });
-
-    // Populate markers based on all coupons currently in view
-    coupons
-      .filter((c) => {
-        if (categoryFilter !== "all" && c.category !== categoryFilter)
-          return false;
-        if (
-          dealTypeFilter !== "all" &&
-          c.discountType !==
-            (dealTypeFilter === "coupon" ? "percentage" : "flat")
-        )
-          return false;
-        if (searchQuery.trim()) {
-          const query = searchQuery.toLowerCase();
-          const matchTitle = c.title?.toLowerCase().includes(query);
-          const matchBrand = c.merchantId?.businessName
-            ?.toLowerCase()
-            .includes(query);
-          if (!matchTitle && !matchBrand) return false;
-        }
-        return true;
-      })
-      .forEach((c) => {
-        const brandName = c.merchantId?.businessName || "Verified Partner";
-        const discountText =
-          c.discountType === "percentage"
-            ? `${c.discountValue}% OFF`
-            : `₹${c.discountValue} OFF`;
-
-        const marker = L.marker(c.coords, { icon: orangeIcon }).addTo(
-          markersGroup,
-        );
-
-        const popupHTML = `
-          <div class="p-2 space-y-2 text-left w-48 text-slate-800 font-sans">
-            <h4 class="font-bold text-xs text-brand-navy leading-none">${brandName}</h4>
-            <p class="font-extrabold text-[11px] text-[#2563eb]">${discountText}</p>
-            <p class="text-[9px] text-slate-400 font-semibold leading-tight line-clamp-2">${c.title}</p>
-            <p class="text-[9px] text-slate-500 font-medium">${c.distance} km away</p>
-            <a href="/deals/${c._id}" class="inline-block w-full text-center bg-brand-blue text-white text-[9px] font-bold py-1 rounded hover:bg-blue-600 mt-1">View Deal</a>
-          </div>
-        `;
-
-        marker.bindPopup(popupHTML);
-      });
-  }, [
-    showMap,
-    leafletLoaded,
-    mapCenter,
-    coupons,
-    categoryFilter,
-    dealTypeFilter,
-    searchQuery,
-  ]);
-
-  // Trigger leaflet redraw size when Map View is toggled
-  useEffect(() => {
-    if (showMap && leafletLoaded && mapInstanceRef.current) {
-      setTimeout(() => {
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.invalidateSize();
-        }
-      }, 100);
-    }
-  }, [showMap, leafletLoaded]);
-
-  // Compute distinct lists for grouping tab selection
-  const groupedCoupons = useMemo(() => {
-    let list = coupons.filter((c) => {
-      if (categoryFilter !== "all" && c.category !== categoryFilter)
-        return false;
-      if (
-        dealTypeFilter !== "all" &&
-        c.discountType !== (dealTypeFilter === "coupon" ? "percentage" : "flat")
-      )
-        return false;
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        const matchTitle = c.title?.toLowerCase().includes(query);
-        const matchBrand = c.merchantId?.businessName
-          ?.toLowerCase()
-          .includes(query);
-        if (!matchTitle && !matchBrand) return false;
-      }
-      return true;
+    activeList.forEach((c) => {
+      const name = c.merchantId?.businessName || "Store";
+      const disc = c.discountType === "percentage" ? `${c.discountValue}% OFF` : `₹${c.discountValue} OFF`;
+      const m = L.marker(c.coords, { icon: dealIcon }).addTo(markersGroupRef.current);
+      m.bindPopup(`<div style="font-family:sans-serif;width:180px;padding:8px;"><strong style="font-size:12px;color:#1e3a5f;">${name}</strong><br/><span style="font-size:14px;font-weight:800;color:#2563eb;">${disc}</span><br/><span style="font-size:11px;color:#6b7280;">${c.distance} km away</span><br/><a href="/deals/${c._id}" style="display:block;margin-top:6px;text-align:center;background:#2563eb;color:white;border-radius:6px;padding:4px;font-size:11px;font-weight:700;text-decoration:none;">View Deal</a></div>`);
     });
+  }, [leafletLoaded, mapCenter, activeList]);
 
-    if (sortOrder === "distance") {
-      list = list.sort((a, b) => a.distance - b.distance);
-    } else {
-      list = list.sort(
-        (a, b) => (b.discountValue || 0) - (a.discountValue || 0),
-      );
-    }
+  useEffect(() => { if (leafletLoaded && mapInstanceRef.current) setTimeout(() => mapInstanceRef.current?.invalidateSize(), 100); }, [leafletLoaded]);
 
-    const nearest = list.filter((c) => c.distance <= parseFloat(distance));
-    const cityWide = list.filter(
-      (c) => c.city?.toLowerCase() === savedCity?.toLowerCase(),
+  // GPS detect
+  const handleGPS = () => {
+    if (!navigator.geolocation) { toast.error("GPS not supported by your browser"); return; }
+    setGpsLoading(true);
+    toast.loading("Detecting your location...", { id: "gps" });
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const coords = [pos.coords.latitude, pos.coords.longitude];
+        setMapCenter(coords);
+        mapInstanceRef.current?.setView(coords, 14);
+        try {
+          const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`, { headers: { "Accept-Language": "en" } });
+          if (r.ok) {
+            const d = await r.json();
+            const city = d.address?.city || d.address?.town || d.address?.village || null;
+            const state = d.address?.state || null;
+            if (city) { setSavedCity(city); if (state) { setSavedState(state); localStorage.setItem("vouchiqo_state", state); } toast.success(`Location: ${city}`, { id: "gps" }); }
+            else toast.success("Location updated!", { id: "gps" });
+          }
+        } catch { toast.success("Location synced!", { id: "gps" }); }
+        setGpsLoading(false);
+      },
+      (err) => {
+        setGpsLoading(false);
+        toast.dismiss("gps");
+        if (err.code === err.PERMISSION_DENIED) toast.error("GPS access denied. Set location manually.");
+        else toast.error("Could not get your location.");
+        setShowLocationModal(true);
+      },
+      { timeout: 10000 }
     );
-    const stateWide = list.filter(
-      (c) => c.state?.toLowerCase() === savedState?.toLowerCase(),
-    );
+  };
 
-    return {
-      nearest,
-      city: cityWide,
-      state: stateWide,
-      all: list,
-    };
-  }, [
-    coupons,
-    distance,
-    categoryFilter,
-    dealTypeFilter,
-    sortOrder,
-    searchQuery,
-    savedCity,
-    savedState,
-  ]);
+  // Manual location submit
+  const handleManualSubmit = (e) => {
+    e.preventDefault();
+    if (!manualForm.city) return;
+    setSavedCity(manualForm.city);
+    setSavedState(manualForm.state);
+    setSavedPincode(manualForm.area);
+    try { localStorage.setItem("vouchiqo_pincode", manualForm.area); localStorage.setItem("vouchiqo_state", manualForm.state); } catch {}
+    const c = CITY_COORDINATES[manualForm.city.toLowerCase()];
+    if (c) { setMapCenter(c); mapInstanceRef.current?.setView(c, 14); }
+    setShowLocationModal(false);
+    toast.success(`Location set to ${manualForm.city}`);
+  };
 
-  const activeCouponsList = groupedCoupons[activeTab];
+  const activeFiltersCount = [distance !== "10", categoryFilter !== "all", sortOrder !== "distance"].filter(Boolean).length;
 
-  // Number of active filters
-  const activeFilterCount = useMemo(() => {
-    let count = 0;
-    if (distance !== "10") count++;
-    if (categoryFilter !== "all") count++;
-    if (dealTypeFilter !== "all") count++;
-    if (sortOrder !== "distance") count++;
-    return count;
-  }, [distance, categoryFilter, dealTypeFilter, sortOrder]);
+  // ─── Styles ─────────────────────────────────────────────────────────────────
+  const s = {
+    page: { minHeight: "100vh", display: "flex", flexDirection: "column", background: "#f4f6f9", fontFamily: "'Inter', 'Segoe UI', -apple-system, sans-serif", fontWeight: 400, color: "#374151" },
+    main: { width: "100%", padding: "16px 20px 40px", flex: 1, boxSizing: "border-box" },
 
-  // Reusable components/elements
-  const filterControlsRow = (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2">
-        {/* Search Bar */}
-        <div className="relative flex-grow">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-          <Input
-            type="text"
-            placeholder="Search brands or discount deals..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 h-9 text-xs border-brand-border bg-white rounded-xl focus:ring-brand-blue w-full shadow-none"
-          />
-        </div>
+    // Header
+    header: { display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "10px", marginBottom: "16px", paddingBottom: "14px", borderBottom: "1px solid #e5e7eb" },
+    breadcrumb: { display: "flex", alignItems: "center", gap: "5px", fontSize: "12px", color: "#9ca3af", marginBottom: "5px", fontWeight: 400 },
+    h1: { fontSize: "20px", fontWeight: 600, color: "#111827", margin: "0 0 3px", letterSpacing: "-0.3px" },
+    subtitle: { fontSize: "12.5px", color: "#6b7280", margin: 0, fontWeight: 400, lineHeight: 1.4 },
+    locationBar: { display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" },
+    locationPill: { display: "flex", alignItems: "center", gap: "6px", background: "white", border: "1px solid #e5e7eb", borderRadius: "8px", padding: "6px 12px", fontSize: "13px", fontWeight: 500, color: "#1f2937", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" },
+    changeBtn: { background: "none", border: "none", color: "#2563eb", fontSize: "12px", fontWeight: 500, cursor: "pointer", padding: "0 0 0 8px", borderLeft: "1px solid #e5e7eb" },
+    gpsBtn: (loading) => ({ display: "flex", alignItems: "center", gap: "6px", background: loading ? "#f0f4ff" : "#2563eb", color: loading ? "#2563eb" : "white", border: loading ? "1px solid #c7d7fd" : "none", borderRadius: "8px", padding: "7px 13px", fontSize: "13px", fontWeight: 500, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.75 : 1, boxShadow: loading ? "none" : "0 2px 8px rgba(37,99,235,0.28)" }),
+    mapToggle: (active) => ({ display: "flex", alignItems: "center", gap: "6px", background: active ? "#2563eb" : "white", color: active ? "white" : "#4b5563", border: "1px solid " + (active ? "#2563eb" : "#e5e7eb"), borderRadius: "8px", padding: "7px 13px", fontSize: "13px", fontWeight: 500, cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }),
 
-        {/* Unified Filters Toggle */}
-        <button
-          onClick={() => setShowFilters((v) => !v)}
-          className={`flex items-center gap-1.5 px-3 h-9 border rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
-            showFilters || activeFilterCount > 0
-              ? "bg-[#eff6ff] text-brand-blue border-blue-200"
-              : "bg-white text-slate-700 border-brand-border hover:bg-slate-50"
-          }`}
-        >
-          <SlidersHorizontal className="w-3.5 h-3.5" />
-          <span>Filters</span>
-          {activeFilterCount > 0 && (
-            <span className="bg-brand-blue text-white rounded-full w-4.5 h-4.5 flex items-center justify-center text-[9px] font-bold">
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
+    // Search & Filter bar
+    searchRow: { display: "flex", gap: "8px", alignItems: "stretch", marginBottom: "10px", flexWrap: "wrap" },
+    searchWrap: { position: "relative", flex: 1, minWidth: "180px" },
+    searchInput: { width: "100%", paddingLeft: "36px", paddingRight: "12px", height: "38px", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "13px", fontWeight: 400, background: "white", color: "#111827", outline: "none", boxSizing: "border-box", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" },
+    searchIcon: { position: "absolute", left: "11px", top: "50%", transform: "translateY(-50%)", color: "#9ca3af", pointerEvents: "none" },
+    filterBtn: (active) => ({ display: "flex", alignItems: "center", gap: "6px", background: active ? "#eff6ff" : "white", color: active ? "#2563eb" : "#4b5563", border: "1px solid " + (active ? "#bfdbfe" : "#e5e7eb"), borderRadius: "8px", padding: "0 13px", height: "38px", fontSize: "13px", fontWeight: 500, cursor: "pointer", whiteSpace: "nowrap", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }),
+    badge: { background: "#2563eb", color: "white", borderRadius: "50%", width: "17px", height: "17px", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 600 },
 
-        {/* Map View Toggle (Only in list view) */}
-        {!showMap && (
-          <button
-            onClick={() => setShowMap(true)}
-            className="flex items-center gap-1.5 px-3 h-9 bg-white text-slate-700 border border-brand-border hover:bg-slate-50 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 shadow-none"
-          >
-            <Map className="w-3.5 h-3.5" />
-            <span>Map View</span>
-          </button>
-        )}
-      </div>
+    // Filter panel
+    filterPanel: { background: "white", border: "1px solid #e5e7eb", borderRadius: "10px", padding: "14px 16px", marginBottom: "10px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(155px, 1fr))", gap: "12px", boxShadow: "0 2px 10px rgba(0,0,0,0.06)" },
+    filterGroup: { display: "flex", flexDirection: "column", gap: "5px" },
+    filterLabel: { fontSize: "10.5px", fontWeight: 500, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.05em" },
+    filterSelect: { height: "34px", border: "1px solid #e5e7eb", borderRadius: "7px", padding: "0 8px", fontSize: "13px", fontWeight: 400, background: "white", color: "#374151", cursor: "pointer", outline: "none" },
+    resetBtn: { background: "none", border: "none", color: "#9ca3af", fontSize: "12px", fontWeight: 400, cursor: "pointer", textDecoration: "underline", alignSelf: "flex-end" },
 
-      {/* Unified collapsible drawer */}
-      {showFilters && (
-        <div className="bg-brand-surface border border-brand-border rounded-xl p-3.5 text-left animate-fade-in-up space-y-3.5 shadow-sm">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-            {/* Radius filter */}
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold text-brand-subtext uppercase tracking-wide">
-                Radius Distance
-              </label>
-              <Select value={distance} onValueChange={setDistance}>
-                <SelectTrigger className="text-[10px] h-8 bg-white border-brand-border cursor-pointer">
-                  <SelectValue placeholder="10 km" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-brand-border text-brand-text text-xs">
-                  <SelectItem value="2">Within 2 km</SelectItem>
-                  <SelectItem value="5">Within 5 km</SelectItem>
-                  <SelectItem value="10">Within 10 km (Default)</SelectItem>
-                  <SelectItem value="25">Within 25 km</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+    // Tabs
+    tabsRow: { display: "flex", gap: "3px", background: "white", border: "1px solid #e5e7eb", borderRadius: "10px", padding: "4px", marginBottom: "16px", overflowX: "auto", boxShadow: "0 1px 6px rgba(0,0,0,0.06)", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" },
+    tab: (active) => ({ display: "flex", alignItems: "center", gap: "5px", padding: "7px 16px", borderRadius: "7px", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: active ? 600 : 400, whiteSpace: "nowrap", background: active ? "#2563eb" : "transparent", color: active ? "white" : "#6b7280", transition: "all 0.15s", flexShrink: 0 }),
+    tabCount: (active) => ({ background: active ? "rgba(255,255,255,0.22)" : "#f3f4f6", color: active ? "white" : "#9ca3af", borderRadius: "20px", padding: "1px 7px", fontSize: "11px", fontWeight: 500 }),
 
-            {/* Category filter */}
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold text-brand-subtext uppercase tracking-wide">
-                Category
-              </label>
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="text-[10px] h-8 bg-white border-brand-border cursor-pointer">
-                  <SelectValue placeholder="All Categories" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-brand-border text-brand-text text-xs">
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="food">Dining &amp; Food</SelectItem>
-                  <SelectItem value="fashion">Fashion &amp; Apparel</SelectItem>
-                  <SelectItem value="home">Home Improvements</SelectItem>
-                  <SelectItem value="travel">Travel &amp; Hotels</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+    // Cards grid
+    grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "12px" },
+    card: { background: "white", border: "1px solid #eaecf0", borderRadius: "10px", padding: "13px 14px", display: "flex", gap: "12px", cursor: "pointer", transition: "box-shadow 0.18s, border-color 0.18s, transform 0.18s", position: "relative", boxShadow: "0 1px 6px rgba(0,0,0,0.07)" },
+    logoBox: { width: "44px", height: "44px", borderRadius: "8px", background: "#f8f9fb", border: "1px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" },
+    logoText: { width: "100%", height: "100%", background: "#1e3a5f", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 600 },
+    cardBody: { flex: 1, minWidth: 0 },
+    cardTop: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "6px", marginBottom: "3px" },
+    brandName: { fontSize: "11px", fontWeight: 500, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+    distancePill: { background: "#eff6ff", color: "#2563eb", fontSize: "11px", fontWeight: 500, borderRadius: "20px", padding: "2px 8px", whiteSpace: "nowrap", flexShrink: 0 },
+    discount: { fontSize: "17px", fontWeight: 700, color: "#111827", lineHeight: 1.15, marginBottom: "2px" },
+    dealTitle: { fontSize: "12px", color: "#6b7280", fontWeight: 400, marginBottom: "5px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.4 },
+    addressRow: { display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", color: "#9ca3af", fontWeight: 400, marginBottom: "7px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+    cardFooter: { display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "7px", borderTop: "1px solid #f3f4f6" },
+    categoryTag: { background: "#f3f4f6", color: "#9ca3af", fontSize: "11px", fontWeight: 400, borderRadius: "5px", padding: "2px 8px", textTransform: "capitalize" },
+    claimBtn: { display: "flex", alignItems: "center", gap: "3px", color: "#2563eb", fontSize: "12px", fontWeight: 500, textDecoration: "none" },
 
-            {/* Deal Type filter */}
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold text-brand-subtext uppercase tracking-wide">
-                Coupon Type
-              </label>
-              <Select value={dealTypeFilter} onValueChange={setDealTypeFilter}>
-                <SelectTrigger className="text-[10px] h-8 bg-white border-brand-border cursor-pointer">
-                  <SelectValue placeholder="All Deals" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-brand-border text-brand-text text-xs">
-                  <SelectItem value="all">All Coupon Types</SelectItem>
-                  <SelectItem value="coupon">Promo Codes Only</SelectItem>
-                  <SelectItem value="offer">Direct Offers Only</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+    // Empty state
+    empty: { background: "white", border: "1px solid #e5e7eb", borderRadius: "12px", padding: "48px 24px", textAlign: "center", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" },
+    emptyTitle: { fontSize: "15px", fontWeight: 600, color: "#374151", marginBottom: "7px" },
+    emptyText: { fontSize: "13px", color: "#6b7280", fontWeight: 400, marginBottom: "14px", lineHeight: 1.5 },
+    clearBtn: { background: "#2563eb", color: "white", border: "none", borderRadius: "8px", padding: "8px 22px", fontSize: "13px", fontWeight: 500, cursor: "pointer", boxShadow: "0 2px 8px rgba(37,99,235,0.25)" },
 
-            {/* Sort Order filter */}
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold text-brand-subtext uppercase tracking-wide">
-                Sort Results
-              </label>
-              <Select value={sortOrder} onValueChange={setSortOrder}>
-                <SelectTrigger className="text-[10px] h-8 bg-white border-brand-border cursor-pointer">
-                  <SelectValue placeholder="Nearest First" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-brand-border text-brand-text text-xs">
-                  <SelectItem value="distance">Nearest First</SelectItem>
-                  <SelectItem value="discount">Highest Discount</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+    // Loading
+    loading: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 24px", gap: "10px" },
+    loadingText: { fontSize: "13px", color: "#9ca3af", fontWeight: 400 },
 
-          <div className="flex justify-end pt-2 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={() => {
-                setCategoryFilter("all");
-                setDealTypeFilter("all");
-                setDistance("10");
-                setSortOrder("distance");
-                setSearchQuery("");
-              }}
-              className="text-[10px] font-bold text-slate-500 hover:text-brand-navy hover:underline cursor-pointer bg-transparent border-none"
-            >
-              Reset Filters
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+    // Modal
+    overlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 300, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", backdropFilter: "blur(2px)" },
+    modal: { background: "white", borderRadius: "14px", maxWidth: "380px", width: "100%", padding: "22px 24px", boxShadow: "0 24px 60px rgba(0,0,0,0.18)" },
+    modalHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", paddingBottom: "14px", borderBottom: "1px solid #f3f4f6" },
+    modalTitle: { fontSize: "15px", fontWeight: 600, color: "#111827", display: "flex", alignItems: "center", gap: "7px" },
+    modalField: { marginBottom: "13px" },
+    modalLabel: { display: "block", fontSize: "12px", fontWeight: 500, color: "#4b5563", marginBottom: "5px" },
+    modalSelect: { width: "100%", height: "39px", border: "1px solid #d1d5db", borderRadius: "8px", padding: "0 10px", fontSize: "13px", fontWeight: 400, background: "white", color: "#374151", outline: "none", cursor: "pointer", boxSizing: "border-box" },
+    modalInput: { width: "100%", height: "39px", border: "1px solid #d1d5db", borderRadius: "8px", padding: "0 12px", fontSize: "13px", fontWeight: 400, color: "#374151", outline: "none", boxSizing: "border-box" },
+    modalSubmit: { width: "100%", height: "40px", background: "#2563eb", color: "white", border: "none", borderRadius: "9px", fontSize: "14px", fontWeight: 500, cursor: "pointer", marginTop: "6px", boxShadow: "0 2px 10px rgba(37,99,235,0.3)" },
+    iconBtn: { background: "none", border: "none", cursor: "pointer", color: "#9ca3af", display: "flex", padding: "3px" },
 
-  const tabsRow = (
-    <div className="flex border-b border-brand-border bg-white flex-shrink-0 p-1">
-      <button
-        onClick={() => setActiveTab("nearest")}
-        className={`flex-1 text-[11px] font-black py-2 rounded-lg cursor-pointer transition-colors flex items-center justify-center gap-1 border-none ${
-          activeTab === "nearest"
-            ? "bg-brand-blue text-white shadow-sm"
-            : "text-slate-500 hover:bg-slate-100"
-        }`}
-      >
-        <Activity className="w-3.5 h-3.5" />
-        <span>Nearest</span>
-        <span
-          className={`px-1.5 py-0.2 rounded-full text-[9px] ${
-            activeTab === "nearest"
-              ? "bg-white/20 text-white"
-              : "bg-slate-100 text-slate-600"
-          }`}
-        >
-          {groupedCoupons.nearest.length}
-        </span>
-      </button>
+    // Map layout — fills exactly screen height below navbar, no global scroll
+    mapLayout: { display: "flex", flexDirection: "row", height: "calc(100vh - 64px)", overflow: "hidden", background: "#f4f6f9" },
+    mapSidebar: { width: "400px", flexShrink: 0, display: "flex", flexDirection: "column", background: "white", borderRight: "1px solid #e5e7eb", overflow: "hidden", boxShadow: "2px 0 8px rgba(0,0,0,0.06)" },
+    mapSidebarHeader: { padding: "13px 14px", borderBottom: "1px solid #f3f4f6", flexShrink: 0 },
+    mapSidebarList: { flex: 1, overflowY: "auto", padding: "10px", scrollbarWidth: "thin" },
+    mapPanel: { flex: 1, position: "relative", padding: "12px", boxSizing: "border-box" },
+  };
 
-      <button
-        onClick={() => setActiveTab("city")}
-        className={`flex-1 text-[11px] font-black py-2 rounded-lg cursor-pointer transition-colors flex items-center justify-center gap-1 border-none ${
-          activeTab === "city"
-            ? "bg-brand-blue text-white shadow-sm"
-            : "text-slate-500 hover:bg-slate-100"
-        }`}
-      >
-        <Building2 className="w-3.5 h-3.5" />
-        <span>City</span>
-        <span
-          className={`px-1.5 py-0.2 rounded-full text-[9px] ${
-            activeTab === "city"
-              ? "bg-white/20 text-white"
-              : "bg-slate-100 text-slate-600"
-          }`}
-        >
-          {groupedCoupons.city.length}
-        </span>
-      </button>
-
-      <button
-        onClick={() => setActiveTab("state")}
-        className={`flex-1 text-[11px] font-black py-2 rounded-lg cursor-pointer transition-colors flex items-center justify-center gap-1 border-none ${
-          activeTab === "state"
-            ? "bg-brand-blue text-white shadow-sm"
-            : "text-slate-500 hover:bg-slate-100"
-        }`}
-      >
-        <Map className="w-3.5 h-3.5" />
-        <span>State</span>
-        <span
-          className={`px-1.5 py-0.2 rounded-full text-[9px] ${
-            activeTab === "state"
-              ? "bg-white/20 text-white"
-              : "bg-slate-100 text-slate-600"
-          }`}
-        >
-          {groupedCoupons.state.length}
-        </span>
-      </button>
-
-      <button
-        onClick={() => setActiveTab("all")}
-        className={`flex-1 text-[11px] font-black py-2 rounded-lg cursor-pointer transition-colors flex items-center justify-center gap-1 border-none ${
-          activeTab === "all"
-            ? "bg-brand-blue text-white shadow-sm"
-            : "text-slate-500 hover:bg-slate-100"
-        }`}
-      >
-        <SlidersHorizontal className="w-3.5 h-3.5" />
-        <span>All Local</span>
-        <span
-          className={`px-1.5 py-0.2 rounded-full text-[9px] ${
-            activeTab === "all"
-              ? "bg-white/20 text-white"
-              : "bg-slate-100 text-slate-600"
-          }`}
-        >
-          {groupedCoupons.all.length}
-        </span>
-      </button>
-    </div>
-  );
-
-  const renderCouponCard = (coupon) => {
-    const brandName = coupon.merchantId?.businessName || "Verified Brand";
-    const isMarbella = brandName.toLowerCase() === "marbella";
-    const discountText =
-      coupon.discountType === "percentage"
-        ? `${coupon.discountValue}% OFF`
-        : `₹${coupon.discountValue} OFF`;
-
+  // ─── Coupon Card ──────────────────────────────────────────────────────────────
+  const renderCard = (coupon) => {
+    const name = coupon.merchantId?.businessName || "Local Store";
+    const disc = coupon.discountType === "percentage" ? `${coupon.discountValue}% OFF` : `₹${coupon.discountValue} OFF`;
     return (
       <div
         key={coupon._id}
-        className={`bg-white border rounded-2xl p-4 transition-all hover:border-brand-blue cursor-pointer shadow-sm relative flex gap-3.5 group hover:shadow-md ${
-          isMarbella
-            ? "border-[#2563eb]/45 bg-[#2563eb]/[0.02]"
-            : "border-brand-border"
-        }`}
-        onClick={() => {
-          if (showMap) {
-            setMapCenter(coupon.coords);
-            if (mapInstanceRef.current) {
-              mapInstanceRef.current.setView(coupon.coords, 16);
-            }
-          }
-        }}
+        style={s.card}
+        onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 24px rgba(37,99,235,0.13)"; e.currentTarget.style.borderColor = "#c7d7fd"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 6px rgba(0,0,0,0.07)"; e.currentTarget.style.borderColor = "#eaecf0"; e.currentTarget.style.transform = "none"; }}
+        onClick={() => { setMapCenter(coupon.coords); mapInstanceRef.current?.setView(coupon.coords, 16); }}
       >
-        {/* Merchant logo */}
-        <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm flex-shrink-0 overflow-hidden">
-          {coupon.merchantId?.logo ? (
-            <img
-              src={coupon.merchantId.logo}
-              alt={brandName}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-brand-navy text-white font-black flex items-center justify-center text-[15px]">
-              {brandName[0]}
-            </div>
-          )}
+        {/* Logo */}
+        <div style={s.logoBox}>
+          {coupon.merchantId?.logo
+            ? <img src={coupon.merchantId.logo} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            : <div style={s.logoText}>{name[0]?.toUpperCase()}</div>}
         </div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0 space-y-1.5 text-left">
-          <div className="flex justify-between items-center gap-1.5">
-            <h4 className="font-extrabold text-[10px] text-brand-navy uppercase tracking-wider truncate">
-              {brandName}
-            </h4>
-            <span className="text-[10px] font-black text-brand-blue bg-[#eff6ff] px-2 py-0.5 rounded-full whitespace-nowrap">
-              {coupon.distance} km away
-            </span>
+        {/* Body */}
+        <div style={s.cardBody}>
+          <div style={s.cardTop}>
+            <span style={s.brandName}>{name}</span>
+            <span style={s.distancePill}>{coupon.distance} km away</span>
           </div>
-
-          <div className="space-y-0.5">
-            <h3 className="font-black text-base text-brand-text group-hover:text-brand-blue transition-colors leading-snug">
-              {discountText}
-            </h3>
-            <p className="text-[11px] text-brand-subtext font-semibold leading-relaxed line-clamp-1">
-              {coupon.title}
-            </p>
+          <div style={s.discount}>{disc}</div>
+          <div style={s.dealTitle}>{coupon.title}</div>
+          <div style={s.addressRow}>
+            <IconPin />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{coupon.address}</span>
           </div>
-
-          <p className="text-[9px] text-slate-400 font-semibold truncate leading-none flex items-center gap-1 pt-0.5">
-            <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <span>{coupon.address}</span>
-          </p>
-
-          <div className="flex items-center justify-between pt-1 border-t border-slate-50">
-            <Badge className="bg-slate-100 text-slate-600 hover:bg-slate-100 border-0 shadow-none text-[8px] font-bold px-2 py-0.5 rounded uppercase">
-              {coupon.category}
-            </Badge>
-            <Link
-              href={`/deals/${coupon._id}`}
-              className="text-[11px] font-extrabold text-brand-blue hover:underline flex items-center gap-0.5 ml-auto"
-            >
-              Claim Offer <ChevronRight className="w-3.5 h-3.5" />
+          <div style={{ ...s.cardFooter, justifyContent: "flex-end" }}>
+            <Link href={`/deals/${coupon._id}`} style={s.claimBtn}>
+              Get Deal <IconArrow />
             </Link>
           </div>
         </div>
@@ -873,339 +471,246 @@ export default function NearbyOffers() {
     );
   };
 
-  const noCouponsFallback = (
-    <div className="py-16 text-center text-xs text-brand-subtext font-medium bg-white rounded-2xl border border-brand-border p-5 space-y-2 max-w-lg mx-auto">
-      <p>No coupons available in this segment matching your active filters.</p>
-      <button
-        type="button"
-        onClick={() => {
-          setCategoryFilter("all");
-          setDealTypeFilter("all");
-          setDistance("25");
-          setSortOrder("distance");
-          setSearchQuery("");
-        }}
-        className="text-brand-blue font-bold hover:underline cursor-pointer border-none bg-transparent"
-      >
-        Clear all filters
-      </button>
-    </div>
-  );
-
+  // ─── Location Modal ───────────────────────────────────────────────────────────
   const locationModal = (
-    <div className="fixed inset-0 bg-black/60 z-[250] flex items-center justify-center p-4 animate-fade-in-scale">
-      <form
-        onSubmit={handleManualSubmit}
-        className="bg-brand-bg border border-brand-border rounded-2xl max-w-sm w-full p-6 text-left space-y-4 shadow-2xl"
-      >
-        <div className="flex justify-between items-center border-b border-brand-border pb-3">
-          <h3 className="font-heading text-base font-black text-brand-navy flex items-center gap-1.5">
-            <MapPin className="w-4 h-4 text-[#2563eb]" />
-            <span>Select Manual Location</span>
-          </h3>
-          <button
-            type="button"
-            onClick={() => setShowLocationModal(false)}
-            className="text-slate-400 hover:text-brand-navy cursor-pointer bg-transparent border-none"
-          >
-            <X className="w-4 h-4" />
-          </button>
+    <div style={s.overlay} onClick={(e) => e.target === e.currentTarget && setShowLocationModal(false)}>
+      <form onSubmit={handleManualSubmit} style={s.modal}>
+        <div style={s.modalHeader}>
+          <div style={s.modalTitle}><IconPin /> Set Your Location</div>
+          <button type="button" style={s.iconBtn} onClick={() => setShowLocationModal(false)}><IconClose /></button>
         </div>
 
-        <div className="space-y-3.5 text-xs">
-          <div className="space-y-1">
-            <label className="font-bold text-brand-subtext">Country</label>
-            <Input
-              value="India"
-              disabled
-              className="bg-brand-surface/50 cursor-not-allowed border-brand-border text-brand-text h-9"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label className="font-bold text-brand-subtext">State *</label>
-            <Select
-              value={manualForm.state}
-              onValueChange={(val) =>
-                setManualForm({ ...manualForm, state: val })
-              }
-            >
-              <SelectTrigger className="h-9 border-brand-border bg-brand-surface text-brand-text cursor-pointer">
-                <SelectValue placeholder="Select State" />
-              </SelectTrigger>
-              <SelectContent className="bg-brand-bg border-brand-border text-brand-text">
-                <SelectItem value="Jharkhand">Jharkhand</SelectItem>
-                <SelectItem value="Bihar">Bihar</SelectItem>
-                <SelectItem value="Delhi">Delhi</SelectItem>
-                <SelectItem value="Maharashtra">Maharashtra</SelectItem>
-                <SelectItem value="Karnataka">Karnataka</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1">
-            <label className="font-bold text-brand-subtext">City *</label>
-            <Select
-              value={manualForm.city}
-              onValueChange={(val) =>
-                setManualForm({ ...manualForm, city: val })
-              }
-            >
-              <SelectTrigger className="h-9 border-brand-border bg-brand-surface text-brand-text cursor-pointer">
-                <SelectValue placeholder="Select City" />
-              </SelectTrigger>
-              <SelectContent className="bg-brand-bg border-brand-border text-brand-text">
-                <SelectItem value="Ranchi">Ranchi</SelectItem>
-                <SelectItem value="Jamshedpur">Jamshedpur</SelectItem>
-                <SelectItem value="Patna">Patna</SelectItem>
-                <SelectItem value="Arrah">Arrah</SelectItem>
-                <SelectItem value="Delhi">Delhi</SelectItem>
-                <SelectItem value="Mumbai">Mumbai</SelectItem>
-                <SelectItem value="Bangalore">Bangalore</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1">
-            <label className="font-bold text-brand-subtext">
-              Area / Pincode
-            </label>
-            <Input
-              placeholder="e.g. Lalpur or 834001"
-              value={manualForm.area}
-              onChange={(e) =>
-                setManualForm({ ...manualForm, area: e.target.value })
-              }
-              className="border-brand-border bg-brand-surface text-brand-text h-9"
-            />
-          </div>
+        <div style={s.modalField}>
+          <label style={s.modalLabel}>State</label>
+          <select style={s.modalSelect} value={manualForm.state} onChange={(e) => setManualForm({ ...manualForm, state: e.target.value })}>
+            <option value="Jharkhand">Jharkhand</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Karnataka">Karnataka</option>
+          </select>
         </div>
 
-        <Button
-          type="submit"
-          className="btn-primary w-full py-2.5 text-xs font-bold border-0 h-auto cursor-pointer shadow-none flex justify-center items-center gap-1.5"
-        >
-          <CheckCircle2 className="w-4 h-4" />
-          <span>Explore Deals Near Me</span>
-        </Button>
+        <div style={s.modalField}>
+          <label style={s.modalLabel}>City *</label>
+          <select style={s.modalSelect} value={manualForm.city} onChange={(e) => setManualForm({ ...manualForm, city: e.target.value })} required>
+            <option value="Ranchi">Ranchi</option>
+            <option value="Jamshedpur">Jamshedpur</option>
+            <option value="Patna">Patna</option>
+            <option value="Arrah">Arrah</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Bangalore">Bangalore</option>
+          </select>
+        </div>
+
+        <div style={s.modalField}>
+          <label style={s.modalLabel}>Area or Pincode <span style={{ fontWeight: 400, color: "#9ca3af" }}>(optional)</span></label>
+          <input
+            style={s.modalInput}
+            placeholder="e.g. Lalpur or 834001"
+            value={manualForm.area}
+            onChange={(e) => setManualForm({ ...manualForm, area: e.target.value })}
+          />
+        </div>
+
+        <button type="submit" style={s.modalSubmit}>Find Deals Near Me</button>
       </form>
     </div>
   );
 
-  return (
-    <div className="min-h-screen flex flex-col bg-brand-surface text-brand-text">
-      <Navbar />
-
-      {!showMap ? (
-        // ── FULL WIDTH LIST VIEW (INITIAL VIEW) ───────────────────────
-        <main className="max-w-7xl mx-auto px-4 py-8 w-full flex-grow space-y-6">
-          {/* Breadcrumb & Title Section */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-brand-border pb-4 text-left">
-            <div className="space-y-1 animate-fade-in-up">
-              <ul className="flex gap-2 list-none text-xs text-brand-subtext items-center p-0 m-0">
-                <li>
-                  <Link
-                    href="/"
-                    className="hover:text-brand-blue text-brand-subtext"
-                    style={{ textDecoration: "none" }}
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li style={{ color: "#9ca3af" }}>›</li>
-                <li className="font-bold text-brand-text">Nearby Offers</li>
-              </ul>
-              <h1 className="text-2xl font-black text-brand-navy flex items-center gap-1.5 mt-1 tracking-tight leading-tight">
-                <Compass
-                  className="w-6 h-6 text-brand-blue animate-spin"
-                  style={{ animationDuration: "16s" }}
-                />
-                <span>Nearby Offers & Deals</span>
-              </h1>
-              <p className="text-xs text-brand-subtext font-semibold">
-                Explore local deals and vouchers sorted by distance from your
-                location.
-              </p>
-            </div>
-
-            {/* Sync coordinates & change location bubble */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <div className="bg-white border border-brand-border px-3.5 py-2 rounded-xl text-xs flex items-center gap-4 shadow-sm justify-between">
-                <span className="font-bold text-brand-navy flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-[#2563eb] animate-bounce" />
-                  <span>
-                    {savedCity}, {savedState}{" "}
-                    {savedPincode ? `(${savedPincode})` : ""}
-                  </span>
-                </span>
-                <button
-                  onClick={openLocationModal}
-                  className="text-[10px] font-black text-brand-blue hover:underline bg-transparent border-none cursor-pointer"
-                >
-                  Change
-                </button>
-              </div>
-
-              <button
-                onClick={handleGPSDetect}
-                disabled={gpsDetecting}
-                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[#eff6ff] hover:bg-[#dbeafe] text-brand-blue border border-blue-200/50 rounded-xl text-xs font-black transition-all cursor-pointer disabled:opacity-50 h-9"
-              >
-                {gpsDetecting ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Locate className="w-4 h-4" />
-                )}
-                <span>Sync GPS Location</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Unified search & collapsible filter panel */}
-          {filterControlsRow}
-
-          {/* Group Tab navigation */}
-          {tabsRow}
-
-          {/* Coupons grid */}
-          {loading ? (
-            <div className="py-24 text-center space-y-2">
-              <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
-              <span className="text-xs text-brand-subtext font-bold">
-                Scanning local coordinates...
-              </span>
-            </div>
-          ) : activeCouponsList.length === 0 ? (
-            noCouponsFallback
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-fade-in-up">
-              {activeCouponsList.map(renderCouponCard)}
-            </div>
-          )}
-        </main>
-      ) : (
-        // ── SPLIT MAP VIEW ──────────────────────────────────────────
-        <div className="flex-1 flex flex-col lg:flex-row items-stretch select-none">
-          {/* Left Panel: Deal list (480px) */}
-          <section className="w-full lg:w-[480px] flex-shrink-0 flex flex-col bg-brand-bg border-r border-brand-border h-[calc(100vh-72px)] overflow-hidden">
-            {/* Header controls */}
-            <div className="p-4 border-b border-brand-border space-y-3 flex-shrink-0 text-left bg-white shadow-sm">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <h1 className="text-base font-black text-brand-navy flex items-center gap-1 leading-none">
-                    <Compass
-                      className="w-4 h-4 text-brand-blue animate-spin"
-                      style={{ animationDuration: "12s" }}
-                    />
-                    <span>Map savings</span>
-                  </h1>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={handleGPSDetect}
-                    disabled={gpsDetecting}
-                    className="flex items-center justify-center gap-1 px-2.5 py-1.5 bg-[#eff6ff] hover:bg-[#dbeafe] text-brand-blue border border-blue-200/50 rounded-xl text-[10px] font-black transition-all cursor-pointer h-7"
-                  >
-                    {gpsDetecting ? (
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                    ) : (
-                      <Locate className="w-3.5 h-3.5" />
-                    )}
-                    <span>Sync</span>
-                  </button>
-                  <Button
-                    onClick={() => setShowMap(false)}
-                    variant="outline"
-                    className="h-7 text-[10px] px-2.5 border-brand-border bg-white rounded-xl flex items-center gap-1 cursor-pointer shadow-none"
-                  >
-                    <SlidersHorizontal className="w-3.5 h-3.5" />
-                    <span>List View</span>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Active location Selector */}
-              <div className="flex items-center justify-between bg-brand-surface border border-brand-border px-3 py-1.5 rounded-xl text-xs">
-                <span className="text-brand-navy font-bold flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#2563eb]" />
-                  {savedCity}, {savedState}
-                </span>
-                <button
-                  onClick={openLocationModal}
-                  className="text-[10px] font-black text-brand-blue hover:underline bg-transparent border-none cursor-pointer"
-                >
-                  Change
-                </button>
-              </div>
-
-              {/* Search & filters row */}
-              {filterControlsRow}
-            </div>
-
-            {/* Tabs */}
-            {tabsRow}
-
-            {/* Scrollable list */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-left">
-              {loading ? (
-                <div className="py-24 text-center space-y-2">
-                  <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
-                </div>
-              ) : activeCouponsList.length === 0 ? (
-                noCouponsFallback
-              ) : (
-                activeCouponsList.map(renderCouponCard)
-              )}
-            </div>
-          </section>
-
-          {/* Right Panel: Leaflet Map */}
-          <section className="flex-grow bg-[#f1f3f9] relative h-[calc(100vh-72px)]">
-            <div ref={mapRef} className="w-full h-full z-10" />
-
-            {/* Sync GPS trigger float overlay */}
-            <div className="absolute top-4 left-4 z-20">
-              <Button
-                onClick={() => setShowMap(false)}
-                className="btn-primary py-2.5 px-4 text-xs font-bold border-0 h-auto cursor-pointer shadow-lg rounded-xl flex items-center gap-1.5"
-              >
-                <SlidersHorizontal className="w-4 h-4" />
-                <span>Back to Full List</span>
-              </Button>
-            </div>
-
-            {!leafletLoaded && (
-              <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm z-30 flex items-center justify-center text-white flex-col">
-                <Loader2 className="w-8 h-8 animate-spin" />
-              </div>
-            )}
-          </section>
-        </div>
-      )}
-
-      {/* Manual Location Dialog Modal */}
-      {showLocationModal && locationModal}
+  // ─── Filter panel ─────────────────────────────────────────────────────────────
+  const filterPanel = showFilters && (
+    <div style={{ ...s.filterPanel, marginBottom: "12px" }}>
+      <div style={s.filterGroup}>
+        <label style={s.filterLabel}>Distance</label>
+        <select style={s.filterSelect} value={distance} onChange={(e) => setDistance(e.target.value)}>
+          <option value="2">Within 2 km</option>
+          <option value="5">Within 5 km</option>
+          <option value="10">Within 10 km</option>
+          <option value="25">Within 25 km</option>
+        </select>
+      </div>
+      <div style={s.filterGroup}>
+        <label style={s.filterLabel}>Category</label>
+        <select style={s.filterSelect} value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+          {CATEGORY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      </div>
+      <div style={s.filterGroup}>
+        <label style={s.filterLabel}>Sort By</label>
+        <select style={s.filterSelect} value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+          <option value="distance">Nearest First</option>
+          <option value="discount">Highest Discount</option>
+        </select>
+      </div>
+      <div style={{ ...s.filterGroup, justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          style={s.resetBtn}
+          onClick={() => { setCategoryFilter("all"); setDistance("10"); setSortOrder("distance"); setSearchQuery(""); setShowFilters(false); }}
+        >
+          Reset all
+        </button>
+      </div>
     </div>
   );
-}
 
-// Custom Close Icon
-function X(props) {
+  // ─── Tabs ────────────────────────────────────────────────────────────────────
+  const tabsRow = (
+    <div style={s.tabsRow}>
+      {TABS.map((t) => (
+        <button key={t.key} style={s.tab(activeTab === t.key)} onClick={() => setActiveTab(t.key)}>
+          {t.label}
+          <span style={s.tabCount(activeTab === t.key)}>{grouped[t.key]?.length || 0}</span>
+        </button>
+      ))}
+    </div>
+  );
+
+  // ─── Content area ─────────────────────────────────────────────────────────────
+  const contentArea = loading ? (
+    <div style={s.loading}>
+      <IconLoader />
+      <span style={s.loadingText}>Looking for deals near you…</span>
+    </div>
+  ) : activeList.length === 0 ? (
+    <div style={s.empty}>
+      <div style={s.emptyTitle}>No deals found here</div>
+      <div style={s.emptyText}>Try widening your distance or removing category filters to see more offers.</div>
+      <button style={s.clearBtn} onClick={() => { setCategoryFilter("all"); setDistance("25"); setSortOrder("distance"); setSearchQuery(""); }}>
+        Show all nearby deals
+      </button>
+    </div>
+  ) : (
+    <div style={s.grid}>{activeList.map(renderCard)}</div>
+  );
+
+  // ─── Main render ──────────────────────────────────────────────────────────────
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
-    </svg>
+    <div style={s.page}>
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+        .nb-main { width: 100%; padding: 16px 24px 100px; box-sizing: border-box; flex: 1; min-height: 100vh; }
+        .nb-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #e5e7eb; }
+        .nb-header-left { min-width: 0; }
+        .nb-location-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .nb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .nb-search-row { display: flex; gap: 8px; align-items: stretch; margin-bottom: 10px; }
+        .nb-search-wrap { position: relative; flex: 1; min-width: 0; }
+        .nb-tabs { display: flex; gap: 3px; background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 4px; margin-bottom: 16px; overflow-x: auto; box-shadow: 0 1px 6px rgba(0,0,0,0.06); -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .nb-tabs::-webkit-scrollbar { display: none; }
+        /* Mobile: <= 640px */
+        @media (max-width: 640px) {
+          .nb-main { padding: 12px 12px 36px; }
+          .nb-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+          .nb-header-left h1 { font-size: 17px !important; }
+          .nb-header-left p { font-size: 12px !important; }
+          .nb-location-bar { width: 100%; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+          .nb-grid { grid-template-columns: 1fr; gap: 10px; }
+          .nb-search-row { flex-direction: row; }
+        }
+        /* Tablet: 641px – 1024px */
+        @media (min-width: 641px) and (max-width: 1024px) {
+          .nb-main { padding: 16px 20px 40px; }
+          .nb-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+          .nb-header { gap: 12px; }
+        }
+        /* Desktop: >= 1025px */
+        @media (min-width: 1025px) {
+          .nb-main { padding: 20px 32px 48px; }
+          .nb-grid { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+        }
+        /* Large screens */
+        @media (min-width: 1440px) {
+          .nb-main { padding: 20px 48px 48px; }
+          .nb-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        }
+      `}</style>
+      <Navbar />
+
+      {/* ── MAP VIEW ONLY ── */}
+      <>
+          <div style={s.mapLayout}>
+            {/* Sidebar — scrollable */}
+            <div style={s.mapSidebar}>
+              <div style={s.mapSidebarHeader}>
+                <div style={{ marginBottom: "10px" }}>
+                  <div style={{ fontWeight: 600, fontSize: "14px", color: "#111827" }}>Deals Near You</div>
+                  <div style={{ fontSize: "11px", color: "#9ca3af", marginTop: "2px" }}>Browse offers on the map</div>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#9ca3af" }}><IconSearch /></span>
+                  <input
+                    style={{ ...s.searchInput, paddingLeft: "34px" }}
+                    placeholder="Search stores or deals…"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div style={s.mapSidebarList}>
+                {loading ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+                  </div>
+                ) : grouped.all.length === 0 ? (
+                  <div style={{ padding: "24px", textAlign: "center", color: "#6b7280", fontSize: "13px" }}>No deals match your filters</div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>{grouped.all.map(renderCard)}</div>
+                )}
+              </div>
+            </div>
+
+            {/* Compact map panel — right side */}
+            <div style={s.mapPanel}>
+              <div ref={mapRef} style={{ width: "100%", height: "100%", borderRadius: "10px", border: "1px solid #e5e7eb", boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }} />
+              {!leafletLoaded && (
+                <div style={{ position: "absolute", top: "12px", left: "12px", right: "12px", bottom: "12px", borderRadius: "10px", overflow: "hidden", zIndex: 1000, background: "#e8ede9", border: "1px solid #e5e7eb", boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}>
+                  {/* SVG terrain skeleton */}
+                  <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style={{ position: "absolute", inset: 0 }}>
+                    <rect x="0" y="0" width="100%" height="100%" fill="#e8ede9"/>
+                    <rect x="0" y="0" width="38%" height="42%" fill="#dde8df" opacity="0.8"/>
+                    <rect x="55%" y="15%" width="45%" height="35%" fill="#d4e8d8" opacity="0.7"/>
+                    <rect x="10%" y="55%" width="40%" height="30%" fill="#dde4dd" opacity="0.6"/>
+                    <rect x="60%" y="60%" width="40%" height="40%" fill="#e2eddf" opacity="0.7"/>
+                    <ellipse cx="72%" cy="38%" rx="12%" ry="8%" fill="#c8dff0" opacity="0.65"/>
+                    <ellipse cx="25%" cy="75%" rx="8%" ry="5%" fill="#c8dff0" opacity="0.5"/>
+                    <rect x="0" y="48%" width="100%" height="2%" fill="#d1cfc8" opacity="0.9"/>
+                    <rect x="0" y="28%" width="60%" height="1.2%" fill="#d8d5ce" opacity="0.75"/>
+                    <rect x="40%" y="70%" width="60%" height="1.5%" fill="#d1cfc8" opacity="0.75"/>
+                    <rect x="33%" y="0" width="1.5%" height="100%" fill="#d1cfc8" opacity="0.85"/>
+                    <rect x="66%" y="0" width="1.2%" height="100%" fill="#d8d5ce" opacity="0.7"/>
+                    <line x1="0%" y1="100%" x2="50%" y2="0%" stroke="#ccc9c1" strokeWidth="6" opacity="0.5"/>
+                    <line x1="50%" y1="100%" x2="100%" y2="30%" stroke="#ccc9c1" strokeWidth="4" opacity="0.4"/>
+                    <rect x="36%" y="20%" width="10%" height="7%" rx="2" fill="#c8c5be" opacity="0.35"/>
+                    <rect x="50%" y="52%" width="12%" height="8%" rx="2" fill="#c8c5be" opacity="0.35"/>
+                    <rect x="18%" y="38%" width="8%" height="6%" rx="2" fill="#c8c5be" opacity="0.3"/>
+                    <rect x="72%" y="20%" width="9%" height="6%" rx="2" fill="#c8c5be" opacity="0.3"/>
+                  </svg>
+                  {/* Pulse shimmer overlay */}
+                  <div style={{ position: "absolute", inset: 0, animation: "pulse 1.8s infinite ease-in-out", background: "rgba(255,255,255,0.1)" }} />
+                  {/* Pin placeholders */}
+                  {[{ top: "42%", left: "32%", primary: true }, { top: "55%", left: "58%", primary: false }, { top: "25%", left: "65%", primary: false }, { top: "68%", left: "22%", primary: false }].map((pos, i) => (
+                    <div key={i} style={{ position: "absolute", top: pos.top, left: pos.left, width: "28px", height: "28px", borderRadius: "50%", background: pos.primary ? "#2563eb" : "#94a3b8", border: "3px solid white", boxShadow: "0 2px 8px rgba(0,0,0,0.18)", animation: `pulse ${1.4 + i * 0.2}s infinite ease-in-out`, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2 }}>
+                      {pos.primary && <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "white" }} />}
+                    </div>
+                  ))}
+                  {/* Loading label */}
+                  <div style={{ position: "absolute", bottom: "20px", left: "50%", transform: "translateX(-50%)", background: "white", borderRadius: "8px", padding: "8px 18px", fontSize: "12px", fontWeight: 500, color: "#6b7280", boxShadow: "0 2px 10px rgba(0,0,0,0.1)", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "7px", zIndex: 3 }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.5"><circle cx="12" cy="12" r="8"/><path d="M12 2a14.5 14.5 0 0 0 0 20"/><path d="M2 12h20"/></svg>
+                    Loading map…
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          <Footer />
+        </>
+
+      {/* Location Modal */}
+      {showLocationModal && locationModal}
+    </div>
   );
 }

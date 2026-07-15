@@ -19,8 +19,8 @@ const Testimonials = dynamicImport(() =>
 const FaqSection = dynamicImport(() =>
   import("../FAQSection").then((mod) => mod.FaqSection),
 );
-const PartnerBrands = dynamicImport(() =>
-  import("../PartnerBrands").then((mod) => mod.PartnerBrands),
+const LatestArticles = dynamicImport(() =>
+  import("../LatestArticles").then((mod) => mod.LatestArticles),
 );
 
 // Layout elements
@@ -274,15 +274,15 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
         {/* 12. Deals of the Day (Product retail grid) */}
         <DealsOfTheDay />
 
-        {/* 19. Subscribe Now newsletter card */}
-        <NewsletterSubscription />
-
-        {/* 20. Trending Partner Brands Grid */}
-        <PartnerBrands />
+        {/* 20. Latest Articles carousel */}
+        <LatestArticles />
 
         {/* 23. FAQ Section */}
         <FaqSection />
       </main>
+
+      {/* Subscribe Now — full width, flush to footer */}
+      <NewsletterSubscription />
 
       {/* 24. Footer */}
       <Footer />

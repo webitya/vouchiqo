@@ -1,5 +1,5 @@
 const LOGO = {
-  src: "/logo.jpg",
+  src: "/navbarlogovouchiqo.webp",
   alt: "Vouchiqo",
   href: "/",
 };

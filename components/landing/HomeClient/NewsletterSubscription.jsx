@@ -1,5 +1,5 @@
 export const NewsletterSubscription = () => (
-  <section className="bg-white rounded-md shadow-sm border border-brand-border p-6 flex flex-col md:flex-row items-center justify-between mb-8 w-full text-left">
+  <section className="bg-white border-t border-brand-border py-3 px-6 flex flex-col md:flex-row items-center justify-between w-full text-left">
     <div className="flex items-center gap-4 mb-4 md:mb-0">
       <div className="w-12 h-12 rounded-full bg-brand-surface flex items-center justify-center border border-brand-border font-black text-brand-blue text-xl">
         V

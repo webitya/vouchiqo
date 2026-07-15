@@ -9,51 +9,51 @@ import EmblaCarouselControls from "../shared/EmblaCarouselControls";
 
 const POPULAR_STORES_LIST = [
   {
-    name: "Amazon",
-    logo: "/brandlogos/10015.jpg",
-    href: "/brand/amazon",
+    name: "Lenskart",
+    logo: "/brandlogos/10012.jpg",
+    href: "/brand/lenskart",
     coupons: 25,
   },
   {
-    name: "Myntra",
-    logo: "/brandlogos/10021.jpg",
-    href: "/brand/myntra",
+    name: "Sonata",
+    logo: "/brandlogos/10035.jpg",
+    href: "/brand/sonata",
     coupons: 19,
   },
   {
-    name: "Air India",
-    logo: "/brandlogos/10022.jpg",
-    href: "/brand/air-india",
+    name: "Titan",
+    logo: "/brandlogos/10035.jpg",
+    href: "/brand/titan",
     coupons: 8,
   },
   {
-    name: "Dell",
+    name: "Dell Store",
     logo: "/brandlogos/10007.jpg",
     href: "/brand/dell",
     coupons: 12,
   },
   {
-    name: "AJIO",
-    logo: "/brandlogos/10014.jpg",
-    href: "/brand/ajio",
+    name: "Zara",
+    logo: "/brandlogos/10028.jpg",
+    href: "/brand/zara",
     coupons: 34,
   },
   {
-    name: "UBER",
-    logo: "/brandlogos/10018.jpg",
-    href: "/brand/uber",
+    name: "Dominos Pizza",
+    logo: "/brandlogos/10027.jpg",
+    href: "/brand/dominos",
     coupons: 9,
   },
   {
-    name: "MakeMyTrip",
-    logo: "/brandlogos/10023.jpg",
-    href: "/brand/makemytrip",
+    name: "Starbucks",
+    logo: "/brandlogos/10026.jpg",
+    href: "/brand/starbucks-coffee",
     coupons: 15,
   },
   {
-    name: "Udemy",
-    logo: "/brandlogos/10019.jpg",
-    href: "/brand/udemy",
+    name: "KFC",
+    logo: "/brandlogos/10030.jpg",
+    href: "/brand/kfc",
     coupons: 31,
   },
   {
@@ -63,93 +63,93 @@ const POPULAR_STORES_LIST = [
     coupons: 11,
   },
   {
-    name: "BigRock",
-    logo: "/brandlogos/10024.jpg",
-    href: "/brand/bigrock",
-    coupons: 6,
-  },
-  {
-    name: "Nykaa",
-    logo: "/brandlogos/10025.jpg",
-    href: "/brand/nykaa",
-    coupons: 18,
-  },
-  {
-    name: "HP Shopping",
-    logo: "/brandlogos/10009.jpg",
-    href: "/brand/hp-shopping",
-    coupons: 10,
-  },
-  {
-    name: "Starbucks",
-    logo: "/brandlogos/10026.jpg",
-    href: "/brand/starbucks-coffee",
-    coupons: 5,
-  },
-  {
-    name: "Dominos Pizza",
-    logo: "/brandlogos/10027.jpg",
-    href: "/brand/dominos",
-    coupons: 7,
-  },
-  {
-    name: "Adidas",
-    logo: "/brandlogos/10012.jpg",
-    href: "/brand/adidas",
-    coupons: 19,
-  },
-  {
-    name: "Zara",
-    logo: "/brandlogos/10028.jpg",
-    href: "/brand/zara",
-    coupons: 13,
-  },
-  {
-    name: "JioMart",
-    logo: "/brandlogos/10029.jpg",
-    href: "/brand/jiomart",
-    coupons: 16,
-  },
-  {
-    name: "KFC",
-    logo: "/brandlogos/10030.jpg",
-    href: "/brand/kfc",
-    coupons: 8,
-  },
-  {
     name: "Puma",
     logo: "/brandlogos/10011.jpg",
     href: "/brand/puma",
-    coupons: 17,
+    coupons: 6,
   },
   {
     name: "Nike",
     logo: "/brandlogos/10010.jpg",
     href: "/brand/nike",
+    coupons: 18,
+  },
+  {
+    name: "HP World",
+    logo: "/brandlogos/10009.jpg",
+    href: "/brand/hp-shopping",
+    coupons: 10,
+  },
+  {
+    name: "Biba",
+    logo: "/brandlogos/10021.jpg",
+    href: "/brand/biba",
+    coupons: 5,
+  },
+  {
+    name: "Westside",
+    logo: "/brandlogos/10021.jpg",
+    href: "/brand/westside",
+    coupons: 7,
+  },
+  {
+    name: "Shoppers Stop",
+    logo: "/brandlogos/10021.jpg",
+    href: "/brand/shoppers-stop",
+    coupons: 19,
+  },
+  {
+    name: "Decathlon",
+    logo: "/brandlogos/10012.jpg",
+    href: "/brand/decathlon",
+    coupons: 13,
+  },
+  {
+    name: "Fabindia",
+    logo: "/brandlogos/10028.jpg",
+    href: "/brand/fabindia",
+    coupons: 16,
+  },
+  {
+    name: "Bata",
+    logo: "/brandlogos/10036.jpg",
+    href: "/brand/bata",
+    coupons: 8,
+  },
+  {
+    name: "Pantaloons",
+    logo: "/brandlogos/10021.jpg",
+    href: "/brand/pantaloons",
+    coupons: 17,
+  },
+  {
+    name: "Max Fashion",
+    logo: "/brandlogos/10028.jpg",
+    href: "/brand/max-fashion",
     coupons: 22,
   },
   {
-    name: "Swiggy",
-    logo: "/brandlogos/10031.jpg",
-    href: "/brand/swiggy",
+    name: "Raymond",
+    logo: "/brandlogos/10028.jpg",
+    href: "/brand/raymond",
     coupons: 29,
   },
   {
-    name: "Zomato",
-    logo: "/brandlogos/10032.jpg",
-    href: "/brand/zomato",
+    name: "Peter England",
+    logo: "/brandlogos/10012.jpg",
+    href: "/brand/peter-england",
     coupons: 24,
   },
   {
-    name: "Pharmeasy",
-    logo: "/brandlogos/10033.jpg",
-    href: "/brand/pharmeasy",
+    name: "Croma",
+    logo: "/brandlogos/10008.jpg",
+    href: "/brand/croma",
     coupons: 15,
   },
   {
-    name: "Tata CLiQ",
-    logo: "/brandlogos/10034.jpg",
-    href: "/brand/tata-cliq",
+    name: "Lakme Salon",
+    logo: "/brandlogos/10025.jpg",
+    href: "/brand/lakme-salon",
     coupons: 12,
   },
 ];
@@ -159,7 +159,7 @@ export default function PopularStores() {
 
   const somBanner =
     "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop";
-  const somLogo = "/brandlogos/10015.jpg";
+  const somLogo = "/brandlogos/10005.jpg";
 
   // Group into pages of 12 stores (3 rows of 4 columns)
   const itemsPerPage = 12;
@@ -211,7 +211,7 @@ export default function PopularStores() {
         {/* ── Store of the Month Card ── */}
         <div className="lg:w-1/4">
           <Link
-            href="/brand/amazon"
+            href="/brand/samsung"
             className="gp-feat block relative no-underline cursor-pointer rounded-md"
           >
             {/* ── LAYER 1: Background photo — FIXED, does NOT move on hover ── */}

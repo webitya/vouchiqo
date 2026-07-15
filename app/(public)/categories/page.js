@@ -15,137 +15,68 @@ export const metadata = {
 
 // Category metadata with icons and SVG paths
 const CATEGORY_META = {
-  food: {
-    title: "Food & Dining",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409648578/food.svg",
-    coupons: 0,
-    offers: 0,
-    slug: "food",
-  },
   fashion: {
-    title: "Fashion",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409648143/fashion.svg",
-    coupons: 0,
-    offers: 0,
+    title: "Fashion & Clothing",
     slug: "fashion",
   },
+  food: {
+    title: "Food & Dining",
+    slug: "food",
+  },
   electronics: {
-    title: "Electronics",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409647250/electronics.svg",
-    coupons: 0,
-    offers: 0,
+    title: "Electronics & Gadgets",
     slug: "electronics",
   },
   beauty: {
-    title: "Beauty",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409643778/beauty.svg",
-    coupons: 0,
-    offers: 0,
+    title: "Beauty & Wellness",
     slug: "beauty",
   },
   travel: {
-    title: "Travel",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409656824/travel.svg",
-    coupons: 0,
-    offers: 0,
+    title: "Travel & Hospitality",
     slug: "travel",
   },
-  fitness: {
-    title: "Health & Fitness",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773792964436/fitness.svg",
-    coupons: 0,
-    offers: 0,
-    slug: "fitness",
-  },
   home: {
-    title: "Home & Kitchen",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409649785/home-and-kitchen.svg",
-    coupons: 0,
-    offers: 0,
+    title: "Home & Living",
     slug: "home",
-  },
-  entertainment: {
-    title: "Entertainment",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409647335/entertainment.svg",
-    coupons: 0,
-    offers: 0,
-    slug: "entertainment",
-  },
-  services: {
-    title: "Services",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409655353/services.svg",
-    coupons: 0,
-    offers: 0,
-    slug: "services",
   },
   "home-improvement": {
     title: "Home Improvement",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409655353/services.svg",
-    coupons: 0,
-    offers: 0,
     slug: "home-improvement",
   },
+  fitness: {
+    title: "Fitness & Healthcare",
+    slug: "fitness",
+  },
   education: {
-    title: "Education",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409656550/tickets.svg",
-    coupons: 0,
-    offers: 0,
+    title: "Education & Courses",
     slug: "education",
   },
-  finance: {
-    title: "Finance",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409656550/tickets.svg",
-    coupons: 0,
-    offers: 0,
-    slug: "finance",
-  },
-  gaming: {
-    title: "Gaming",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409647335/entertainment.svg",
-    coupons: 0,
-    offers: 0,
-    slug: "gaming",
-  },
-  automotive: {
-    title: "Automotive",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409655353/services.svg",
-    coupons: 0,
-    offers: 0,
-    slug: "automotive",
-  },
   "kids-baby": {
-    title: "Kids & Baby",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409648143/fashion.svg",
-    coupons: 0,
-    offers: 0,
+    title: "Kids & Baby Products",
     slug: "kids-baby",
   },
-  pets: {
-    title: "Pets",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409656550/tickets.svg",
-    coupons: 0,
-    offers: 0,
-    slug: "pets",
+  jewellery: {
+    title: "Jewellery & Accessories",
+    slug: "jewellery",
   },
-  organic: {
-    title: "Organic",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409643778/beauty.svg",
-    coupons: 0,
-    offers: 0,
-    slug: "organic",
+  automotive: {
+    title: "Automobile & Auto Services",
+    slug: "automotive",
+  },
+  entertainment: {
+    title: "Gaming & Entertainment",
+    slug: "entertainment",
   },
   grocery: {
-    title: "Grocery",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409648578/food.svg",
-    coupons: 0,
-    offers: 0,
+    title: "Grocery & Essentials",
     slug: "grocery",
+  },
+  finance: {
+    title: "Finance & Insurance",
+    slug: "finance",
   },
   other: {
     title: "Other Deals",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409656550/tickets.svg",
-    coupons: 0,
-    offers: 0,
     slug: "other",
   },
 };
@@ -187,7 +118,7 @@ export default async function CategoriesPage() {
   const totalCoupons = categoryCounts.reduce((a, c) => a + c.total, 0);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f5f6fa]">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <CategoriesClient
         categories={categories}
