@@ -73,7 +73,6 @@ export const UserMenu = () => {
           { icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin/dashboard" },
           { icon: Users, label: "Manage Users", href: "/admin/users" },
           { icon: Store, label: "Manage Merchants", href: "/admin/approvals/merchants" },
-          { icon: User, label: "My Profile", href: "/profile" },
         ];
       case "merchant":
         return [
