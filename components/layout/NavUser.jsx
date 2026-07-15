@@ -36,8 +36,17 @@ export function NavUser({ user, role = "admin" }) {
             : "flex-1 gap-3 rounded-lg px-2 py-2"
         }`}
       >
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-900 text-[11px] font-bold text-white shadow-sm">
-          {initials}
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-900 text-[11px] font-bold text-white shadow-sm overflow-hidden">
+          {user?.image ? (
+            <img
+              src={user.image}
+              alt={user.name || "User Avatar"}
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            initials
+          )}
         </div>
         {!isCollapsed && (
           <div className="flex flex-1 flex-col text-left leading-tight min-w-0">
@@ -61,9 +70,9 @@ export function NavUser({ user, role = "admin" }) {
             await logout();
           }}
           aria-label="Log out"
-          className="rounded-md p-1.5 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors border-0 bg-transparent cursor-pointer"
+          className="rounded-md p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-750 transition-colors border-0 bg-transparent cursor-pointer"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-4 w-4 text-red-500" />
         </button>
       )}
     </div>

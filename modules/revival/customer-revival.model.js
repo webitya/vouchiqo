@@ -106,7 +106,12 @@ const customerRevivalSchema = new Schema(
 
     outcomeStatus: {
       type: String,
-      enum: ["pending", "resolved_regenerated", "resolved_alternative", "declined"],
+      enum: [
+        "pending",
+        "resolved_regenerated",
+        "resolved_alternative",
+        "declined",
+      ],
       default: "pending",
       index: true,
     },
@@ -141,7 +146,7 @@ const customerRevivalSchema = new Schema(
   {
     timestamps: true,
     collection: "customer_revivals",
-  }
+  },
 );
 
 // Indexes for query speed & duplicate checking

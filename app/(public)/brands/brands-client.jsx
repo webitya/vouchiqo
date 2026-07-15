@@ -18,6 +18,14 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
 
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const query = params.get("search");
+      if (query) {
+        setSearchQuery(query);
+        setActiveLetter("all");
+      }
+    }
   }, []);
 
   // Combine database brands with mock brands
@@ -28,7 +36,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
         const mockMatch = MOCK_BRANDS_SEED.find(
           (m) =>
             m.slug === b.slug ||
-            m.businessName.toLowerCase() === b.businessName.toLowerCase()
+            m.businessName.toLowerCase() === b.businessName.toLowerCase(),
         );
         brandLogo = mockMatch ? mockMatch.logo : "";
       }
@@ -60,12 +68,12 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
     let list = allMergedBrands;
     if (activeLetter !== "all") {
       list = list.filter((b) =>
-        b.businessName.toUpperCase().startsWith(activeLetter)
+        b.businessName.toUpperCase().startsWith(activeLetter),
       );
     }
     if (searchQuery.trim()) {
       list = list.filter((b) =>
-        b.businessName.toLowerCase().includes(searchQuery.toLowerCase())
+        b.businessName.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
     return list;
@@ -74,7 +82,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
   // Available letters
   const availableLetters = useMemo(() => {
     const set = new Set(
-      allMergedBrands.map((b) => b.businessName[0].toUpperCase())
+      allMergedBrands.map((b) => b.businessName[0].toUpperCase()),
     );
     return set;
   }, [allMergedBrands]);
@@ -102,7 +110,10 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
 
   const headerStats = [
     { value: totalBrands + 24, label: "Brands" },
-    { value: `${(totalCoupons + 340).toLocaleString()}+`, label: "Coupons & Offers" },
+    {
+      value: `${(totalCoupons + 340).toLocaleString()}+`,
+      label: "Coupons & Offers",
+    },
   ];
 
   const headerIcon = (
@@ -123,7 +134,9 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
     "Brand loyalty doesn't have to mean paying full price. At Vouchiqo, we bring you the best discounts on the top names in fashion, electronics, and everything in between. Whether you are searching for premium tags or daily utility brands, discover active promo codes.";
 
   return (
-    <main style={{ background: "#f5f6fa", minHeight: "70vh", paddingBottom: 40 }}>
+    <main
+      style={{ background: "#f5f6fa", minHeight: "70vh", paddingBottom: 40 }}
+    >
       <Breadcrumb segments={breadcrumbSegments} />
       <PageHeader
         title="Brands"
@@ -210,7 +223,14 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                 gap: 10,
               }}
             >
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: 0 }}>
+              <h2
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "#111827",
+                  margin: 0,
+                }}
+              >
                 All Brands
               </h2>
               <GridToggle gridCols={gridCols} onGridChange={setGridCols} />

@@ -13,7 +13,10 @@ export async function resolve(specifier, context, nextResolve) {
     const rel = specifier.slice(2); // strip "@/"
     // Append .js if no file extension present
     const withExt =
-      rel.endsWith(".js") || rel.endsWith(".mjs") || rel.endsWith(".cjs") || rel.endsWith(".json")
+      rel.endsWith(".js") ||
+      rel.endsWith(".mjs") ||
+      rel.endsWith(".cjs") ||
+      rel.endsWith(".json")
         ? rel
         : rel + ".js";
     const resolved = new URL(withExt, rootUrl).href;

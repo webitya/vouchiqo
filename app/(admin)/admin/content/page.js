@@ -25,7 +25,7 @@ import {
   FolderOpen,
   Eye,
   Sliders,
-  DollarSign
+  DollarSign,
 } from "lucide-react";
 
 import { adminFetchSettings, adminUpdateSetting } from "@/lib/api-helpers";
@@ -41,7 +41,7 @@ export default function PlatformContentSettings() {
     totalRequests: 5240,
     thisMonthRequests: 142,
     recoveredAmount: 1250000,
-    successRate: 94.2
+    successRate: 94.2,
   });
 
   // Social Proof local states
@@ -51,14 +51,14 @@ export default function PlatformContentSettings() {
     brand: "",
     offer: "",
     date: "Just now",
-    text: ""
+    text: "",
   });
 
   // Categories local states
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState({
     name: "",
-    slug: ""
+    slug: "",
   });
 
   const fetchSettings = async () => {
@@ -66,7 +66,7 @@ export default function PlatformContentSettings() {
       setLoading(true);
       const data = await adminFetchSettings();
       setSettings(data);
-      
+
       if (data.revival_stats) setStatsForm(data.revival_stats);
       if (data.social_proof) setTestimonials(data.social_proof);
       if (data.categories) setCategories(data.categories);
@@ -114,7 +114,7 @@ export default function PlatformContentSettings() {
       brand: "",
       offer: "",
       date: "Just now",
-      text: ""
+      text: "",
     });
     handleSaveSetting("social_proof", updated);
   };
@@ -134,7 +134,7 @@ export default function PlatformContentSettings() {
       return;
     }
     const slug = newCategory.slug.trim().toLowerCase();
-    
+
     // Check if category slug already exists
     if (categories.some((c) => c.slug === slug)) {
       alert("Category slug already exists.");
@@ -147,8 +147,8 @@ export default function PlatformContentSettings() {
         id: slug,
         name: newCategory.name.trim(),
         slug,
-        active: true
-      }
+        active: true,
+      },
     ];
     setCategories(updated);
     setNewCategory({ name: "", slug: "" });
@@ -157,7 +157,7 @@ export default function PlatformContentSettings() {
 
   const handleToggleCategoryActive = (slug) => {
     const updated = categories.map((c) =>
-      c.slug === slug ? { ...c, active: !c.active } : c
+      c.slug === slug ? { ...c, active: !c.active } : c,
     );
     setCategories(updated);
     handleSaveSetting("categories", updated);
@@ -191,7 +191,6 @@ export default function PlatformContentSettings() {
       user={{ name: "Platform Admin", role: "admin" }}
     >
       <div className="space-y-6">
-        
         {/* Title */}
         <h2 className="text-base font-bold text-brand-navy font-heading uppercase tracking-wider border-b border-brand-border pb-3 flex items-center gap-2">
           <Sliders className="w-5 h-5 text-brand-blue" />
@@ -221,7 +220,6 @@ export default function PlatformContentSettings() {
             </Button>
           </CardHeader>
           <CardContent className="pt-4 grid grid-cols-1 sm:grid-cols-4 gap-4">
-            
             {/* Total requests */}
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
@@ -230,7 +228,12 @@ export default function PlatformContentSettings() {
               <Input
                 type="number"
                 value={statsForm.totalRequests}
-                onChange={(e) => setStatsForm({ ...statsForm, totalRequests: parseInt(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setStatsForm({
+                    ...statsForm,
+                    totalRequests: parseInt(e.target.value) || 0,
+                  })
+                }
                 className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9 shadow-none"
               />
             </div>
@@ -243,7 +246,12 @@ export default function PlatformContentSettings() {
               <Input
                 type="number"
                 value={statsForm.thisMonthRequests}
-                onChange={(e) => setStatsForm({ ...statsForm, thisMonthRequests: parseInt(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setStatsForm({
+                    ...statsForm,
+                    thisMonthRequests: parseInt(e.target.value) || 0,
+                  })
+                }
                 className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9 shadow-none"
               />
             </div>
@@ -256,7 +264,12 @@ export default function PlatformContentSettings() {
               <Input
                 type="number"
                 value={statsForm.recoveredAmount}
-                onChange={(e) => setStatsForm({ ...statsForm, recoveredAmount: parseInt(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setStatsForm({
+                    ...statsForm,
+                    recoveredAmount: parseInt(e.target.value) || 0,
+                  })
+                }
                 className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9 shadow-none"
               />
             </div>
@@ -270,7 +283,12 @@ export default function PlatformContentSettings() {
                 type="number"
                 step="0.1"
                 value={statsForm.successRate}
-                onChange={(e) => setStatsForm({ ...statsForm, successRate: parseFloat(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setStatsForm({
+                    ...statsForm,
+                    successRate: parseFloat(e.target.value) || 0,
+                  })
+                }
                 className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9 shadow-none"
               />
             </div>
@@ -286,25 +304,32 @@ export default function PlatformContentSettings() {
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4 space-y-4">
-            
             {/* Add new Category inline */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end bg-brand-surface p-3 rounded-lg border border-brand-border/40">
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Category Name</label>
+                <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                  Category Name
+                </label>
                 <Input
                   placeholder="e.g. Health & Pharmacy"
                   value={newCategory.name}
-                  onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewCategory({ ...newCategory, name: e.target.value })
+                  }
                   className="bg-white text-xs border-brand-border h-9 shadow-none"
                 />
               </div>
-              
+
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Category Slug (Unique)</label>
+                <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                  Category Slug (Unique)
+                </label>
                 <Input
                   placeholder="e.g. health-pharmacy"
                   value={newCategory.slug}
-                  onChange={(e) => setNewCategory({ ...newCategory, slug: e.target.value })}
+                  onChange={(e) =>
+                    setNewCategory({ ...newCategory, slug: e.target.value })
+                  }
                   className="bg-white text-xs border-brand-border h-9 shadow-none lowercase"
                 />
               </div>
@@ -339,15 +364,22 @@ export default function PlatformContentSettings() {
                 </TableHeader>
                 <TableBody className="divide-y divide-brand-border font-semibold text-brand-text">
                   {categories.map((cat) => (
-                    <TableRow key={cat.slug} className="hover:bg-brand-surface/20 transition-colors border-b border-brand-border last:border-b-0">
-                      <TableCell className="p-3 font-bold text-brand-navy h-auto">{cat.name}</TableCell>
-                      <TableCell className="p-3 font-mono text-brand-subtext">{cat.slug}</TableCell>
+                    <TableRow
+                      key={cat.slug}
+                      className="hover:bg-brand-surface/20 transition-colors border-b border-brand-border last:border-b-0"
+                    >
+                      <TableCell className="p-3 font-bold text-brand-navy h-auto">
+                        {cat.name}
+                      </TableCell>
+                      <TableCell className="p-3 font-mono text-brand-subtext">
+                        {cat.slug}
+                      </TableCell>
                       <TableCell className="p-3">
                         <Badge
                           variant={cat.active ? "success" : "secondary"}
                           className={`rounded px-1.5 py-0.5 text-[9px] font-bold border ${
-                            cat.active 
-                              ? "bg-brand-success/10 text-brand-success hover:bg-brand-success/10 border-0" 
+                            cat.active
+                              ? "bg-brand-success/10 text-brand-success hover:bg-brand-success/10 border-0"
                               : "bg-slate-500/10 text-slate-500 hover:bg-slate-500/10 border-0"
                           } shadow-none`}
                         >
@@ -391,7 +423,6 @@ export default function PlatformContentSettings() {
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4 space-y-4">
-            
             {/* Add new Testimonial Panel */}
             <div className="bg-brand-surface p-4 rounded-lg border border-brand-border/40 space-y-3">
               <h4 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
@@ -400,42 +431,70 @@ export default function PlatformContentSettings() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">User (Name & City)</label>
+                  <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                    User (Name & City)
+                  </label>
                   <Input
                     placeholder="e.g. Riya K. from Patna"
                     value={newTestimonial.user}
-                    onChange={(e) => setNewTestimonial({ ...newTestimonial, user: e.target.value })}
-                    className="bg-white text-xs border-brand-border h-9 shadow-none"
-                  />
-                </div>
-                
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Brand Name</label>
-                  <Input
-                    placeholder="e.g. Starbucks, Zomato"
-                    value={newTestimonial.brand}
-                    onChange={(e) => setNewTestimonial({ ...newTestimonial, brand: e.target.value })}
+                    onChange={(e) =>
+                      setNewTestimonial({
+                        ...newTestimonial,
+                        user: e.target.value,
+                      })
+                    }
                     className="bg-white text-xs border-brand-border h-9 shadow-none"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Savings Offer / Accomplishment</label>
+                  <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                    Brand Name
+                  </label>
+                  <Input
+                    placeholder="e.g. Starbucks, Zomato"
+                    value={newTestimonial.brand}
+                    onChange={(e) =>
+                      setNewTestimonial({
+                        ...newTestimonial,
+                        brand: e.target.value,
+                      })
+                    }
+                    className="bg-white text-xs border-brand-border h-9 shadow-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                    Savings Offer / Accomplishment
+                  </label>
                   <Input
                     placeholder="e.g. Saved ₹1,200 on corporate order"
                     value={newTestimonial.offer}
-                    onChange={(e) => setNewTestimonial({ ...newTestimonial, offer: e.target.value })}
+                    onChange={(e) =>
+                      setNewTestimonial({
+                        ...newTestimonial,
+                        offer: e.target.value,
+                      })
+                    }
                     className="bg-white text-xs border-brand-border h-9 shadow-none"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Testimonial Quote</label>
+                <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                  Testimonial Quote
+                </label>
                 <Textarea
                   placeholder="Tell the story of how they revived their coupon..."
                   value={newTestimonial.text}
-                  onChange={(e) => setNewTestimonial({ ...newTestimonial, text: e.target.value })}
+                  onChange={(e) =>
+                    setNewTestimonial({
+                      ...newTestimonial,
+                      text: e.target.value,
+                    })
+                  }
                   rows={2}
                   className="bg-white text-xs border-brand-border shadow-none"
                 />
@@ -453,10 +512,15 @@ export default function PlatformContentSettings() {
             {/* List */}
             <div className="space-y-2.5">
               {testimonials.map((t, idx) => (
-                <div key={idx} className="bg-white border border-brand-border rounded-lg p-3 flex justify-between gap-4 items-start text-xs shadow-sm hover:shadow-md transition-shadow">
+                <div
+                  key={idx}
+                  className="bg-white border border-brand-border rounded-lg p-3 flex justify-between gap-4 items-start text-xs shadow-sm hover:shadow-md transition-shadow"
+                >
                   <div className="space-y-1 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-black text-brand-navy">{t.brand}</span>
+                      <span className="font-black text-brand-navy">
+                        {t.brand}
+                      </span>
                       <span className="text-[10px] text-brand-success font-bold bg-brand-success/5 border border-brand-success/15 px-1.5 py-0.5 rounded">
                         {t.offer}
                       </span>
@@ -479,7 +543,6 @@ export default function PlatformContentSettings() {
                 </div>
               ))}
             </div>
-
           </CardContent>
         </Card>
       </div>

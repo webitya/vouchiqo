@@ -9,7 +9,9 @@ config(); // load .env
 const uri = process.env.MONGODB_URI;
 
 if (!uri || uri.includes("<")) {
-  console.error("❌ MONGODB_URI is not set or still contains placeholder values.");
+  console.error(
+    "❌ MONGODB_URI is not set or still contains placeholder values.",
+  );
   console.error("   Current value:", uri);
   console.error("\n   Please update MONGODB_URI in your .env file first.");
   process.exit(1);

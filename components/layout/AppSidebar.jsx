@@ -2,11 +2,17 @@
 
 import {
   AlertCircle,
+  Bookmark,
+  Building2,
   CheckSquare,
   CreditCard,
+  History,
   Home,
   LayoutDashboard,
+  MapPin,
+  PiggyBank,
   PlusCircle,
+  RotateCcw,
   Settings,
   Sparkles,
   Store,
@@ -15,8 +21,7 @@ import {
   TrendingUp,
   User,
   Users,
-  RotateCcw,
-  Building2,
+  Wallet,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NavMain } from "@/components/layout/NavMain";
@@ -52,11 +57,13 @@ export function AppSidebar({ ...props }) {
         name: authUser.name,
         email: authUser.email,
         avatar: authUser.image || `/avatars/${role}.jpg`,
+        image: authUser.image,
       }
     : {
         name: "Admin User",
         email: "admin@vouchiqo.com",
         avatar: `/avatars/${role}.jpg`,
+        image: null,
       };
 
   // Grouped Navigation Items matching Vouchiqo structure
@@ -194,24 +201,49 @@ export function AppSidebar({ ...props }) {
             title: "Navigation",
             items: [
               {
-                title: "Go to Homepage",
-                url: "/",
-                icon: Home,
-              },
-              {
                 title: "Dashboard",
                 url: "/customer/dashboard",
                 icon: LayoutDashboard,
               },
               {
-                title: "My Profile",
-                url: "/profile",
-                icon: User,
+                title: "My Savings",
+                url: "/profile?tab=savings",
+                icon: PiggyBank,
+              },
+              {
+                title: "Saved Deals",
+                url: "/profile?tab=saved",
+                icon: Bookmark,
+              },
+              {
+                title: "Cashback Wallet",
+                url: "/profile?tab=wallet",
+                icon: Wallet,
+              },
+              {
+                title: "My Activity",
+                url: "/profile?tab=activity",
+                icon: History,
+              },
+              {
+                title: "Nearby Offers",
+                url: "/profile?tab=nearby",
+                icon: MapPin,
               },
               {
                 title: "My Coupons",
                 url: "/customer/claimed",
                 icon: Ticket,
+              },
+              {
+                title: "Settings",
+                url: "/profile?tab=settings",
+                icon: Settings,
+              },
+              {
+                title: "Go to Homepage",
+                url: "/",
+                icon: Home,
               },
             ],
           },
@@ -235,7 +267,7 @@ export function AppSidebar({ ...props }) {
     >
       <SidebarHeader className="p-0 border-b border-sidebar-border">
         <div
-          className={`flex h-[72px] items-center gap-2.5 ${isCollapsed ? "justify-center px-0" : "px-3"}`}
+          className={`flex h-[60px] items-center gap-2 ${isCollapsed ? "justify-center px-0" : "px-3"}`}
         >
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#0f172a] text-white">
             <svg
@@ -255,10 +287,10 @@ export function AppSidebar({ ...props }) {
           </div>
           {!isCollapsed && (
             <div className="flex flex-col text-left leading-tight">
-              <span className="text-xs font-bold tracking-tight text-slate-800 truncate max-w-[170px]">
+              <span className="text-xs font-semibold tracking-tight text-slate-800 truncate max-w-[170px]">
                 {user.name || "Vouchiqo"}
               </span>
-              <span className="text-[9px] font-medium uppercase tracking-widest text-slate-400">
+              <span className="text-[9px] font-medium uppercase tracking-wider text-slate-400">
                 Dashboard
               </span>
             </div>

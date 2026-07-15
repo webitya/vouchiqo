@@ -39,7 +39,7 @@ export default function CampaignsClient() {
     }
     if (searchQuery.trim()) {
       list = list.filter((f) =>
-        f.title.toLowerCase().includes(searchQuery.toLowerCase())
+        f.title.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
     return list;
@@ -73,7 +73,9 @@ export default function CampaignsClient() {
     "India's got no shortage of festivals, and we're here for it. From Diwali lights to Christmas cheer, there's always a reason to celebrate and shop! Vouchiqo's got your back this season with epic deals to help you grab the best gifts and goodies without going over your budget. Whether you're treating yourself or spreading some festive joy, we've got the offers that make saving as fun as shopping.";
 
   return (
-    <main style={{ background: "#f5f6fa", minHeight: "70vh", paddingBottom: 40 }}>
+    <main
+      style={{ background: "#f5f6fa", minHeight: "70vh", paddingBottom: 40 }}
+    >
       <Breadcrumb segments={breadcrumbSegments} />
       <PageHeader
         title="Festival Offers"
@@ -161,10 +163,21 @@ export default function CampaignsClient() {
                 gap: 10,
               }}
             >
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: 0 }}>
+              <h2
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "#111827",
+                  margin: 0,
+                }}
+              >
                 All Festival Offers
               </h2>
-              <GridToggle gridCols={gridCols} onGridChange={setGridCols} options={[2, 3, 4, 5]} />
+              <GridToggle
+                gridCols={gridCols}
+                onGridChange={setGridCols}
+                options={[2, 3, 4, 5]}
+              />
             </div>
 
             <AlphaFilter

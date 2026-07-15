@@ -32,7 +32,7 @@ const customerRevivalSchema = new mongoose.Schema(
     needsFollowUp: { type: Boolean },
     createdAt: { type: Date },
   },
-  { strict: false, collection: "customer_revivals" }
+  { strict: false, collection: "customer_revivals" },
 );
 
 const CustomerRevival =
@@ -49,9 +49,11 @@ async function scheduleRepeatableJob() {
     {
       repeat: { cron: "0 * * * *" }, // Run every hour
       jobId: "revivals-sla-check-repeatable-job",
-    }
+    },
   );
-  console.log("[revivals-worker] SLA check repeatable job scheduled (every hour)");
+  console.log(
+    "[revivals-worker] SLA check repeatable job scheduled (every hour)",
+  );
 }
 
 scheduleRepeatableJob().catch((err) => {
@@ -66,7 +68,7 @@ const worker = new Worker(
 
     if (job.name === JOB_NAMES.CHECK_REVIVALS) {
       console.log("[revivals-worker] Running SLA compliance check...");
-      
+
       const fortyEightHoursAgo = new Date();
       fortyEightHoursAgo.setHours(fortyEightHoursAgo.getHours() - 48);
 
@@ -79,11 +81,11 @@ const worker = new Worker(
         },
         {
           $set: { needsFollowUp: true },
-        }
+        },
       );
 
       console.log(
-        `[revivals-worker] Flagged ${result.modifiedCount} Category A request(s) as non-responsive (passed 48h SLA).`
+        `[revivals-worker] Flagged ${result.modifiedCount} Category A request(s) as non-responsive (passed 48h SLA).`,
       );
     } else {
       console.warn(`[revivals-worker] Unknown job: ${job.name}`);
@@ -92,7 +94,7 @@ const worker = new Worker(
   {
     connection: redis,
     concurrency: 1,
-  }
+  },
 );
 
 worker.on("completed", (job) => {

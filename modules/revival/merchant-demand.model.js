@@ -41,10 +41,12 @@ const merchantDemandSchema = new Schema(
       index: true,
     },
 
-    sourcePlatforms: [{
-      type: String,
-      trim: true,
-    }],
+    sourcePlatforms: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
 
     firstSeen: {
       type: Date,
@@ -65,7 +67,13 @@ const merchantDemandSchema = new Schema(
 
     outreachStatus: {
       type: String,
-      enum: ["not_contacted", "contacted", "awaiting_response", "declined", "converted"],
+      enum: [
+        "not_contacted",
+        "contacted",
+        "awaiting_response",
+        "declined",
+        "converted",
+      ],
       default: "not_contacted",
       index: true,
     },
@@ -79,7 +87,7 @@ const merchantDemandSchema = new Schema(
   {
     timestamps: true,
     collection: "merchant_demands",
-  }
+  },
 );
 
 const MerchantDemand =

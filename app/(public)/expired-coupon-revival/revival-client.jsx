@@ -219,8 +219,9 @@ export default function ExpiredCouponRevival() {
           </h1>
 
           <p className="text-xs md:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed font-medium">
-            Submit your expired discount codes here. Vouchiqo contacts the merchant on your behalf
-            and requests a fresh verified offer — free, within 48 hours.
+            Submit your expired discount codes here. Vouchiqo contacts the
+            merchant on your behalf and requests a fresh verified offer — free,
+            within 48 hours.
           </p>
 
           <div className="flex items-center justify-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 max-w-md mx-auto">
@@ -259,8 +260,9 @@ export default function ExpiredCouponRevival() {
                   Submitted! We&apos;re on it.
                 </h3>
                 <p className="text-xs text-brand-subtext max-w-sm mx-auto leading-relaxed">
-                  We&apos;ve received your request and will contact the merchant on your behalf.
-                  You&apos;ll hear back within 48 hours — check your email and WhatsApp.
+                  We&apos;ve received your request and will contact the merchant
+                  on your behalf. You&apos;ll hear back within 48 hours — check
+                  your email and WhatsApp.
                 </p>
               </div>
               <Button
@@ -293,17 +295,28 @@ export default function ExpiredCouponRevival() {
               {/* Wizard progress header */}
               <div className="flex justify-between items-center border-b border-brand-border pb-3">
                 <h2 className="text-sm font-bold text-brand-navy font-heading uppercase tracking-wider flex items-center gap-2">
-                  {step === 1 && <Building2 className="w-4 h-4 text-brand-blue" />}
+                  {step === 1 && (
+                    <Building2 className="w-4 h-4 text-brand-blue" />
+                  )}
                   {step === 2 && <Tag className="w-4 h-4 text-brand-blue" />}
                   {step === 3 && <Phone className="w-4 h-4 text-brand-blue" />}
-                  {step === 4 && <CheckSquare className="w-4 h-4 text-brand-blue" />}
-                  <span>Step {step} of 4: {
-                    step === 1 ? "Merchant Details" :
-                    step === 2 ? "Offer Details" :
-                    step === 3 ? "Contact Information" : "Confirm Consent"
-                  }</span>
+                  {step === 4 && (
+                    <CheckSquare className="w-4 h-4 text-brand-blue" />
+                  )}
+                  <span>
+                    Step {step} of 4:{" "}
+                    {step === 1
+                      ? "Merchant Details"
+                      : step === 2
+                        ? "Offer Details"
+                        : step === 3
+                          ? "Contact Information"
+                          : "Confirm Consent"}
+                  </span>
                 </h2>
-                <span className="text-[11px] font-bold text-brand-subtext">{Math.round((step / 4) * 100)}% Complete</span>
+                <span className="text-[11px] font-bold text-brand-subtext">
+                  {Math.round((step / 4) * 100)}% Complete
+                </span>
               </div>
 
               {error && (
@@ -324,7 +337,9 @@ export default function ExpiredCouponRevival() {
                       required
                       placeholder="e.g. Marbella, Zomato, Starbucks"
                       value={form.brandName}
-                      onChange={(e) => setForm({ ...form, brandName: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, brandName: e.target.value })
+                      }
                       className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10"
                     />
                   </div>
@@ -336,7 +351,9 @@ export default function ExpiredCouponRevival() {
                     <Input
                       placeholder="e.g. @marbellaranchi or https://brand.com"
                       value={form.merchantWebsite}
-                      onChange={(e) => setForm({ ...form, merchantWebsite: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, merchantWebsite: e.target.value })
+                      }
                       className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10"
                     />
                   </div>
@@ -350,7 +367,9 @@ export default function ExpiredCouponRevival() {
                         required
                         placeholder="e.g. Ranchi"
                         value={form.merchantCity}
-                        onChange={(e) => setForm({ ...form, merchantCity: e.target.value })}
+                        onChange={(e) =>
+                          setForm({ ...form, merchantCity: e.target.value })
+                        }
                         className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10"
                       />
                     </div>
@@ -361,11 +380,18 @@ export default function ExpiredCouponRevival() {
                       </label>
                       <select
                         value={form.whereDidYouFindThisOffer}
-                        onChange={(e) => setForm({ ...form, whereDidYouFindThisOffer: e.target.value })}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            whereDidYouFindThisOffer: e.target.value,
+                          })
+                        }
                         className="w-full bg-brand-surface border border-brand-border rounded-lg text-xs h-10 px-2 focus:outline-none focus:ring-1 focus:ring-brand-blue"
                       >
                         {SOURCE_PLATFORMS.map((platform) => (
-                          <option key={platform} value={platform}>{platform}</option>
+                          <option key={platform} value={platform}>
+                            {platform}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -393,7 +419,12 @@ export default function ExpiredCouponRevival() {
                       <Input
                         placeholder="e.g. SAVE20, MARBELLA15"
                         value={form.code}
-                        onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            code: e.target.value.toUpperCase(),
+                          })
+                        }
                         className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10 uppercase"
                       />
                     </div>
@@ -404,26 +435,37 @@ export default function ExpiredCouponRevival() {
                       </label>
                       <select
                         value={form.discountType}
-                        onChange={(e) => setForm({ ...form, discountType: e.target.value })}
+                        onChange={(e) =>
+                          setForm({ ...form, discountType: e.target.value })
+                        }
                         className="w-full bg-brand-surface border border-brand-border rounded-lg text-xs h-10 px-2 focus:outline-none focus:ring-1 focus:ring-brand-blue"
                       >
                         {DISCOUNT_TYPES.map((type) => (
-                          <option key={type.value} value={type.value}>{type.label}</option>
+                          <option key={type.value} value={type.value}>
+                            {type.label}
+                          </option>
                         ))}
                       </select>
                     </div>
                   </div>
 
-                  {(form.discountType === "percentage" || form.discountType === "fixed") && (
+                  {(form.discountType === "percentage" ||
+                    form.discountType === "fixed") && (
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                         How much off? (Numerical Value only)
                       </label>
                       <Input
                         type="number"
-                        placeholder={form.discountType === "percentage" ? "e.g. 20 (for 20%)" : "e.g. 500 (for ₹500)"}
+                        placeholder={
+                          form.discountType === "percentage"
+                            ? "e.g. 20 (for 20%)"
+                            : "e.g. 500 (for ₹500)"
+                        }
                         value={form.discountValue}
-                        onChange={(e) => setForm({ ...form, discountValue: e.target.value })}
+                        onChange={(e) =>
+                          setForm({ ...form, discountValue: e.target.value })
+                        }
                         className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10"
                       />
                     </div>
@@ -436,7 +478,9 @@ export default function ExpiredCouponRevival() {
                     <Input
                       placeholder="e.g. 20% off all bathroom tiles, BOGO coffee"
                       value={form.description}
-                      onChange={(e) => setForm({ ...form, description: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, description: e.target.value })
+                      }
                       className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10"
                     />
                   </div>
@@ -449,7 +493,9 @@ export default function ExpiredCouponRevival() {
                       <Input
                         type="date"
                         value={form.whenSeen}
-                        onChange={(e) => setForm({ ...form, whenSeen: e.target.value })}
+                        onChange={(e) =>
+                          setForm({ ...form, whenSeen: e.target.value })
+                        }
                         max={new Date().toISOString().split("T")[0]}
                         className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10"
                       />
@@ -462,7 +508,9 @@ export default function ExpiredCouponRevival() {
                       <Input
                         placeholder="e.g. Espresso drinks, Tiles"
                         value={form.whatBuying}
-                        onChange={(e) => setForm({ ...form, whatBuying: e.target.value })}
+                        onChange={(e) =>
+                          setForm({ ...form, whatBuying: e.target.value })
+                        }
                         className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10"
                       />
                     </div>
@@ -501,7 +549,9 @@ export default function ExpiredCouponRevival() {
                       required
                       placeholder="e.g. you@example.com"
                       value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, email: e.target.value })
+                      }
                       className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10"
                     />
                   </div>
@@ -515,7 +565,9 @@ export default function ExpiredCouponRevival() {
                       required
                       placeholder="e.g. 9876543210"
                       value={form.mobileNumber}
-                      onChange={(e) => setForm({ ...form, mobileNumber: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, mobileNumber: e.target.value })
+                      }
                       className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-10"
                     />
                   </div>
@@ -553,14 +605,17 @@ export default function ExpiredCouponRevival() {
                         type="checkbox"
                         required
                         checked={form.consent}
-                        onChange={(e) => setForm({ ...form, consent: e.target.checked })}
+                        onChange={(e) =>
+                          setForm({ ...form, consent: e.target.checked })
+                        }
                         className="w-4 h-4 mt-0.5 border-brand-border text-brand-blue focus:ring-brand-blue rounded"
                       />
                       <span className="text-xs leading-relaxed text-slate-600 font-medium">
-                        I understand Vouchiqo will try to get this offer reactivated, but cannot
-                        guarantee a working code will be available. If this isn&apos;t possible, I&apos;ll
-                        be notified and may be offered a similar active offer from this brand or
-                        category instead.
+                        I understand Vouchiqo will try to get this offer
+                        reactivated, but cannot guarantee a working code will be
+                        available. If this isn&apos;t possible, I&apos;ll be
+                        notified and may be offered a similar active offer from
+                        this brand or category instead.
                       </span>
                     </label>
                   </div>
@@ -615,8 +670,8 @@ export default function ExpiredCouponRevival() {
                 <div>
                   <h4 className="font-bold text-brand-navy">Submit Details</h4>
                   <p className="text-brand-subtext leading-relaxed mt-0.5">
-                    Enter the expired code and brand name. Our system cross-references it with the
-                    verified brand database.
+                    Enter the expired code and brand name. Our system
+                    cross-references it with the verified brand database.
                   </p>
                 </div>
               </div>
@@ -626,10 +681,12 @@ export default function ExpiredCouponRevival() {
                   2
                 </div>
                 <div>
-                  <h4 className="font-bold text-brand-navy">Merchant Negotiation</h4>
+                  <h4 className="font-bold text-brand-navy">
+                    Merchant Negotiation
+                  </h4>
                   <p className="text-brand-subtext leading-relaxed mt-0.5">
-                    Vouchiqo aggregates coupon demand and presents conversion projections directly to the
-                    brand owner dashboard.
+                    Vouchiqo aggregates coupon demand and presents conversion
+                    projections directly to the brand owner dashboard.
                   </p>
                 </div>
               </div>
@@ -639,10 +696,12 @@ export default function ExpiredCouponRevival() {
                   3
                 </div>
                 <div>
-                  <h4 className="font-bold text-brand-navy">Approved Restorations</h4>
+                  <h4 className="font-bold text-brand-navy">
+                    Approved Restorations
+                  </h4>
                   <p className="text-brand-subtext leading-relaxed mt-0.5">
-                    Once the merchant approves, the coupon code is refreshed with a new expiry date,
-                    and you are notified.
+                    Once the merchant approves, the coupon code is refreshed
+                    with a new expiry date, and you are notified.
                   </p>
                 </div>
               </div>

@@ -29,15 +29,21 @@ export default function Breadcrumb({ segments = [] }) {
         {segments.map((seg, idx) => {
           const isLast = idx === segments.length - 1;
           return (
-            <li key={seg.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <li
+              key={seg.label}
+              style={{ display: "flex", alignItems: "center", gap: 8 }}
+            >
               {idx > 0 && <span style={{ color: "#9ca3af" }}>›</span>}
-              {isLast ? (
-                <span style={{ color: "#374151", fontWeight: 500 }}>{seg.label}</span>
-              ) : (
-                <Link href={seg.href} style={{ color: "#3b5bdb", textDecoration: "none" }}>
-                  {seg.label}
-                </Link>
-              )}
+              {isLast
+                ? <span style={{ color: "#374151", fontWeight: 500 }}>
+                    {seg.label}
+                  </span>
+                : <Link
+                    href={seg.href}
+                    style={{ color: "#3b5bdb", textDecoration: "none" }}
+                  >
+                    {seg.label}
+                  </Link>}
             </li>
           );
         })}

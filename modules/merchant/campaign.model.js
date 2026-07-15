@@ -2,51 +2,54 @@ import mongoose, { Schema } from "mongoose";
 
 const campaignSchema = new Schema(
   {
-    merchantId: { 
-      type: Schema.Types.ObjectId, 
-      ref: "Merchant", 
-      required: true, 
-      index: true 
+    merchantId: {
+      type: Schema.Types.ObjectId,
+      ref: "Merchant",
+      required: true,
+      index: true,
     },
-    name: { 
-      type: String, 
-      required: [true, "Campaign name is required"], 
-      trim: true 
+    name: {
+      type: String,
+      required: [true, "Campaign name is required"],
+      trim: true,
     },
-    type: { 
-      type: String, 
-      required: true 
+    type: {
+      type: String,
+      required: true,
     }, // e.g. "flash", "festival", "seasonal", "new-user", "clearance", "custom"
-    objective: { 
+    objective: {
       type: String,
-      trim: true
+      trim: true,
     },
-    description: { 
+    description: {
       type: String,
-      trim: true
+      trim: true,
     },
-    couponIds: [{ 
-      type: Schema.Types.ObjectId, 
-      ref: "Coupon" 
-    }],
+    couponIds: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Coupon",
+      },
+    ],
     settings: {
       homepageSlot: { type: Boolean, default: false },
       pushNotification: { type: Boolean, default: false },
       newsletter: { type: Boolean, default: false },
     },
-    status: { 
-      type: String, 
-      enum: ["draft", "scheduled", "live", "ended"], 
-      default: "draft" 
+    status: {
+      type: String,
+      enum: ["draft", "scheduled", "live", "ended"],
+      default: "draft",
     },
     startDate: { type: Date },
     endDate: { type: Date },
   },
-  { 
+  {
     timestamps: true,
-    collection: "campaigns"
-  }
+    collection: "campaigns",
+  },
 );
 
-const Campaign = mongoose.models.Campaign ?? mongoose.model("Campaign", campaignSchema);
+const Campaign =
+  mongoose.models.Campaign ?? mongoose.model("Campaign", campaignSchema);
 export default Campaign;

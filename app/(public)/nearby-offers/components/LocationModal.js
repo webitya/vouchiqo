@@ -14,10 +14,18 @@ import {
 /**
  * Manual location selection modal.
  */
-export default function LocationModal({ onClose, manualForm, setManualForm, onSubmit }) {
+export default function LocationModal({
+  onClose,
+  manualForm,
+  setManualForm,
+  onSubmit,
+}) {
   return (
     <div className="fixed inset-0 bg-black/60 z-[250] flex items-center justify-center p-4 animate-fade-in-scale">
-      <form onSubmit={onSubmit} className="bg-brand-bg border border-brand-border rounded-2xl max-w-sm w-full p-6 text-left space-y-4 shadow-2xl">
+      <form
+        onSubmit={onSubmit}
+        className="bg-brand-bg border border-brand-border rounded-2xl max-w-sm w-full p-6 text-left space-y-4 shadow-2xl"
+      >
         <div className="flex justify-between items-center border-b border-brand-border pb-3">
           <h3 className="font-heading text-base font-black text-brand-navy flex items-center gap-1.5">
             <MapPin className="w-4 h-4 text-[#2563eb]" />
@@ -35,40 +43,76 @@ export default function LocationModal({ onClose, manualForm, setManualForm, onSu
         <div className="space-y-3.5 text-xs">
           <div className="space-y-1">
             <label className="font-bold text-brand-subtext">Country</label>
-            <Input value="India" disabled className="bg-brand-surface/50 cursor-not-allowed border-brand-border text-brand-text h-9" />
+            <Input
+              value="India"
+              disabled
+              className="bg-brand-surface/50 cursor-not-allowed border-brand-border text-brand-text h-9"
+            />
           </div>
           <div className="space-y-1">
             <label className="font-bold text-brand-subtext">State *</label>
-            <Select value={manualForm.state} onValueChange={(val) => setManualForm({ ...manualForm, state: val })}>
+            <Select
+              value={manualForm.state}
+              onValueChange={(val) =>
+                setManualForm({ ...manualForm, state: val })
+              }
+            >
               <SelectTrigger className="h-9 border-brand-border bg-brand-surface text-brand-text cursor-pointer">
                 <SelectValue placeholder="Select State" />
               </SelectTrigger>
               <SelectContent className="bg-brand-bg border-brand-border text-brand-text">
-                {["Jharkhand", "Bihar", "Delhi", "Maharashtra", "Karnataka"].map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                {[
+                  "Jharkhand",
+                  "Bihar",
+                  "Delhi",
+                  "Maharashtra",
+                  "Karnataka",
+                ].map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1">
             <label className="font-bold text-brand-subtext">City *</label>
-            <Select value={manualForm.city} onValueChange={(val) => setManualForm({ ...manualForm, city: val })}>
+            <Select
+              value={manualForm.city}
+              onValueChange={(val) =>
+                setManualForm({ ...manualForm, city: val })
+              }
+            >
               <SelectTrigger className="h-9 border-brand-border bg-brand-surface text-brand-text cursor-pointer">
                 <SelectValue placeholder="Select City" />
               </SelectTrigger>
               <SelectContent className="bg-brand-bg border-brand-border text-brand-text">
-                {["Ranchi", "Jamshedpur", "Patna", "Arrah", "Delhi", "Mumbai", "Bangalore"].map((c) => (
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                {[
+                  "Ranchi",
+                  "Jamshedpur",
+                  "Patna",
+                  "Arrah",
+                  "Delhi",
+                  "Mumbai",
+                  "Bangalore",
+                ].map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1">
-            <label className="font-bold text-brand-subtext">Area / Pincode</label>
+            <label className="font-bold text-brand-subtext">
+              Area / Pincode
+            </label>
             <Input
               placeholder="e.g. Lalpur or 834001"
               value={manualForm.area}
-              onChange={(e) => setManualForm({ ...manualForm, area: e.target.value })}
+              onChange={(e) =>
+                setManualForm({ ...manualForm, area: e.target.value })
+              }
               className="border-brand-border bg-brand-surface text-brand-text h-9"
             />
           </div>

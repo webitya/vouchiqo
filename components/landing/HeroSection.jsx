@@ -267,9 +267,7 @@ export function HeroSection() {
       {/* Upper Banners Row */}
       <section className="flex flex-col md:flex-row gap-4 select-none w-full text-left">
         {/* Left Column: Banners Carousel (75% Width) */}
-        <div
-          className="md:w-3/4 rounded-md overflow-hidden shadow-sm relative w-full group border border-brand-border bg-slate-900 h-[200px] sm:h-[300px] md:h-[430px]"
-        >
+        <div className="md:w-3/4 rounded-md overflow-hidden shadow-sm relative w-full group border border-brand-border bg-slate-900 h-[200px] sm:h-[300px] md:h-[430px]">
           {/* Viewport for horizontal sliding */}
           <div className="w-full h-full overflow-hidden">
             <div
@@ -310,9 +308,7 @@ export function HeroSection() {
         </div>
 
         {/* Right Column: Banners Carousel (25% Width) */}
-        <div
-          className="md:w-1/4 rounded-md overflow-hidden shadow-sm relative w-full border border-brand-border bg-slate-900 h-[200px] sm:h-[300px] md:h-[430px]"
-        >
+        <div className="md:w-1/4 rounded-md overflow-hidden shadow-sm relative w-full border border-brand-border bg-slate-900 h-[200px] sm:h-[300px] md:h-[430px]">
           {/* Viewport for horizontal sliding */}
           <div className="w-full h-full overflow-hidden">
             <div

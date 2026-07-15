@@ -36,7 +36,9 @@ async function seed() {
 
   try {
     // 1. Clean existing admin if present to avoid unique/duplicate key conflicts
-    const existingAdmin = await db.collection("user").findOne({ email: adminEmail });
+    const existingAdmin = await db
+      .collection("user")
+      .findOne({ email: adminEmail });
     if (existingAdmin) {
       const adminId = existingAdmin.id || existingAdmin._id.toString();
       await db.collection("user").deleteOne({ _id: existingAdmin._id });
@@ -56,7 +58,9 @@ async function seed() {
     console.log(`👤 Created admin account: ${adminEmail}`);
 
     // 3. Elevate role to admin
-    const adminUser = await db.collection("user").findOne({ email: adminEmail });
+    const adminUser = await db
+      .collection("user")
+      .findOne({ email: adminEmail });
     if (adminUser) {
       await db
         .collection("user")

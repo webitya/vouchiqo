@@ -45,7 +45,7 @@ export async function updateProfile(authId, data) {
       userUpdate.phone = phone;
       userUpdate.phoneNumber = phone;
     }
-    
+
     const query = { $or: [{ id: authId }, { _id: authId }] };
     try {
       if (mongoose.Types.ObjectId.isValid(authId)) {
@@ -53,7 +53,9 @@ export async function updateProfile(authId, data) {
       }
     } catch (e) {}
 
-    await mongoose.connection.db.collection("user").updateOne(query, { $set: userUpdate });
+    await mongoose.connection.db
+      .collection("user")
+      .updateOne(query, { $set: userUpdate });
   }
 
   const profile = await UserProfile.findOneAndUpdate(

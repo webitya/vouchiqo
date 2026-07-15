@@ -36,7 +36,13 @@ export const POST = asyncHandler(async (request) => {
   await requireRole(request, ROLES.ADMIN);
 
   const body = await request.json();
-  const { revivalId, outcomeStatus, declineReason, alternativeOfferId, includeInPublicFeed } = body;
+  const {
+    revivalId,
+    outcomeStatus,
+    declineReason,
+    alternativeOfferId,
+    includeInPublicFeed,
+  } = body;
 
   const result = await resolveCustomerRevival(revivalId, {
     outcomeStatus,

@@ -8,10 +8,18 @@ import {
   PiggyBank,
   Search,
   Share2,
-  Sparkles,
   TrendingUp,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 import KPICard from "@/components/shared/KPICard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,9 +52,6 @@ export default function SavingsTab({
 }) {
   // Chart range & toggles
   const [timelineRange, setTimelineRange] = useState("12");
-  const [hoveredChartIdx, setHoveredChartIdx] = useState(null);
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
-  const chartSvgRef = useRef(null);
 
   // Table search/pagination/sorting
   const [searchTerm, setSearchTerm] = useState("");
@@ -112,85 +117,12 @@ export default function SavingsTab({
   else if (timelineRange === "6") activeTimeline = activeTimeline.slice(-6);
   else if (timelineRange === "12") activeTimeline = activeTimeline.slice(-12);
 
-  const maxSaved = Math.max(...activeTimeline.map((t) => t.saved), 10);
-  const maxSpent = Math.max(...activeTimeline.map((t) => t.spent), 10);
-  const svgWidth = 500;
-  const svgHeight = 220;
-  const paddingX = 55;
-  const paddingY = 30;
-  const graphWidth = svgWidth - paddingX - 25;
-  const graphHeight = svgHeight - paddingY - 15;
-  const nPoints = activeTimeline.length;
-
-  const pointsSaved = activeTimeline.map((t, idx) => {
-    const x =
-      paddingX +
-      (nPoints > 1 ? (idx / (nPoints - 1)) * graphWidth : graphWidth / 2);
-    const y = svgHeight - paddingY - (t.saved / maxSaved) * graphHeight;
-    return {
-      x,
-      y,
-      saved: t.saved,
-      spent: t.spent,
-      label: t.label,
-      count: t.count,
-    };
-  });
-
-  const pointsSpent = activeTimeline.map((t, idx) => {
-    const x =
-      paddingX +
-      (nPoints > 1 ? (idx / (nPoints - 1)) * graphWidth : graphWidth / 2);
-    const y = svgHeight - paddingY - (t.spent / maxSpent) * graphHeight;
-    return { x, y };
-  });
-
-  const lineSavedPath = pointsSaved
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
-    .join(" ");
-  const areaSavedPath =
-    pointsSaved.length > 0
-      ? `${lineSavedPath} L ${
-          pointsSaved[pointsSaved.length - 1].x
-        } ${svgHeight - paddingY} L ${pointsSaved[0].x} ${
-          svgHeight - paddingY
-        } Z`
-      : "";
-
-  const lineSpentPath = pointsSpent
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
-    .join(" ");
-  const areaSpentPath =
-    pointsSpent.length > 0
-      ? `${lineSpentPath} L ${
-          pointsSpent[pointsSpent.length - 1].x
-        } ${svgHeight - paddingY} L ${pointsSpent[0].x} ${
-          svgHeight - paddingY
-        } Z`
-      : "";
-
-  const handleSvgMouseMove = (e) => {
-    if (!chartSvgRef.current || pointsSaved.length === 0) return;
-    const rect = chartSvgRef.current.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const relativeX = (mouseX / rect.width) * svgWidth;
-
-    let closestIdx = 0;
-    let minDiff = Infinity;
-    pointsSaved.forEach((p, idx) => {
-      const diff = Math.abs(p.x - relativeX);
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestIdx = idx;
-      }
-    });
-
-    setHoveredChartIdx(closestIdx);
-    setTooltipPos({
-      x: (pointsSaved[closestIdx].x / svgWidth) * rect.width,
-      y: (pointsSaved[closestIdx].y / svgHeight) * rect.height - 70,
-    });
-  };
+  const chartData = activeTimeline.map((t) => ({
+    name: t.label.split(" ")[0],
+    savings: t.saved,
+    spending: t.spent,
+    fullLabel: t.label,
+  }));
 
   // Donut slices
   const totalSavedVal =
@@ -226,7 +158,7 @@ export default function SavingsTab({
         <KPICard
           title="Saved This Month"
           value={`₹${savingsData.kpis.totalSavedMonth.toLocaleString("en-IN")}`}
-          change={14.8}
+          change={savingsData.kpis.savingsRate || 12.5}
           icon={PiggyBank}
         />
         <KPICard
@@ -266,8 +198,7 @@ export default function SavingsTab({
 
       {/* Achievements row */}
       <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm space-y-4">
-        <h3 className="font-heading text-xs font-bold text-brand-navy uppercase tracking-wider flex items-center gap-1.5">
-          <Sparkles className="w-4 h-4 text-brand-warning fill-brand-warning/10" />
+        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
           <span>Savings Milestone Badges</span>
         </h3>
 
@@ -314,230 +245,163 @@ export default function SavingsTab({
         </div>
       </div>
 
-      {/* Timeline chart & share card */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 bg-brand-bg border border-brand-border rounded-[16px] p-5 shadow-sm flex flex-col justify-between space-y-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-brand-border pb-3">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Left Side: Recharts Spline Timeline Chart */}
+        <div className="lg:col-span-8 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-md p-4 shadow-sm flex flex-col justify-between space-y-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 dark:border-zinc-850 pb-3">
             <div>
-              <h3 className="font-heading text-xs font-bold text-brand-navy tracking-wider uppercase">
+              <h3 className="text-xs font-semibold text-slate-550 uppercase tracking-wider">
                 Savings vs. Spending Timeline
               </h3>
             </div>
-            <div className="flex items-center border border-brand-border rounded-lg p-0.5 bg-brand-surface shrink-0 select-none">
+            <div className="flex items-center border border-slate-200 dark:border-zinc-800 rounded-md p-0.5 bg-slate-50 dark:bg-zinc-900 shrink-0 select-none">
               {["3", "6", "12", "all"].map((r) => (
                 <button
                   key={r}
                   type="button"
                   onClick={() => {
                     setTimelineRange(r);
-                    setHoveredChartIdx(null);
                   }}
-                  className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all uppercase cursor-pointer ${
+                  className={`text-[10px] font-semibold px-2.5 py-1 rounded-sm transition-all uppercase cursor-pointer border-0 ${
                     timelineRange === r
-                      ? "bg-brand-navy text-white shadow-sm"
-                      : "text-brand-subtext hover:text-brand-navy"
+                      ? "bg-slate-950 dark:bg-zinc-800 text-white shadow-sm"
+                      : "text-slate-400 hover:text-slate-800 dark:hover:text-white bg-transparent"
                   }`}
                 >
-                  {r === "all" ? "All Time" : `${r}M`}
+                  {r === "all" ? "All" : `${r}M`}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="relative flex-1 min-h-[200px]">
-            <svg
-              ref={chartSvgRef}
-              viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-              className="w-full h-full cursor-crosshair"
-              onMouseMove={handleSvgMouseMove}
-              onMouseLeave={() => setHoveredChartIdx(null)}
-            >
-              {/* Gradients */}
-              <defs>
-                <linearGradient id="savings-grad2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#2563eb" stopOpacity="0.12" />
-                  <stop offset="100%" stopColor="#2563eb" stopOpacity="0.0" />
-                </linearGradient>
-                <linearGradient id="spent-grad2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1E4FAF" stopOpacity="0.10" />
-                  <stop offset="100%" stopColor="#1E4FAF" stopOpacity="0.0" />
-                </linearGradient>
-              </defs>
-
-              {/* Gridlines */}
-              {Array.from({ length: 5 }).map((_, i) => (
-                <line
-                  key={i}
-                  x1={paddingX}
-                  y1={paddingY + (i / 4) * graphHeight}
-                  x2={svgWidth - 25}
-                  y2={paddingY + (i / 4) * graphHeight}
-                  stroke="#e2e8f0"
-                  strokeWidth="0.5"
-                  strokeDasharray="4 4"
-                />
-              ))}
-
-              {pointsSpent.length > 1 && (
-                <>
-                  <path d={areaSpentPath} fill="url(#spent-grad2)" />
-                  <path
-                    d={lineSpentPath}
-                    fill="none"
-                    stroke="#1E4FAF"
-                    strokeWidth="2"
-                  />
-                </>
-              )}
-              {pointsSaved.length > 1 && (
-                <>
-                  <path d={areaSavedPath} fill="url(#savings-grad2)" />
-                  <path
-                    d={lineSavedPath}
-                    fill="none"
-                    stroke="#2563eb"
-                    strokeWidth="2.5"
-                  />
-                </>
-              )}
-
-              {/* Nodes */}
-              {pointsSaved.map((p, i) => (
-                <circle
-                  key={i}
-                  cx={p.x}
-                  cy={p.y}
-                  r="3"
-                  fill="#ffffff"
-                  stroke="#2563eb"
-                  strokeWidth="1.5"
-                />
-              ))}
-
-              {/* Left Y Axis */}
-              <text
-                x={10}
-                y={paddingY + 3}
-                className="text-[9px] font-bold fill-brand-subtext"
+          <div className="relative flex-1 min-h-[220px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={chartData}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               >
-                ₹{Math.round(maxSaved)}
-              </text>
-              <text
-                x={10}
-                y={svgHeight - paddingY + 3}
-                className="text-[9px] font-bold fill-brand-subtext"
-              >
-                ₹0
-              </text>
-
-              {/* Right Y Axis */}
-              <text
-                x={svgWidth - 20}
-                y={paddingY + 3}
-                className="text-[9px] font-bold fill-brand-subtext text-right"
-              >
-                ₹{Math.round(maxSpent)}
-              </text>
-              <text
-                x={svgWidth - 20}
-                y={svgHeight - paddingY + 3}
-                className="text-[9px] font-bold fill-brand-subtext text-right"
-              >
-                ₹0
-              </text>
-
-              {/* X Axis */}
-              {activeTimeline.map((t, i) => {
-                const x =
-                  paddingX +
-                  (nPoints > 1
-                    ? (i / (nPoints - 1)) * graphWidth
-                    : graphWidth / 2);
-                if (nPoints > 7 && i % 2 !== 0) return null;
-                return (
-                  <text
-                    key={i}
-                    x={x}
-                    y={svgHeight - paddingY + 14}
-                    textAnchor="middle"
-                    className="text-[9px] font-bold fill-brand-subtext"
+                <defs>
+                  <linearGradient id="colorSavings" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.12} />
+                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
+                  </linearGradient>
+                  <linearGradient
+                    id="colorSpending"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
                   >
-                    {t.label.split(" ")[0]}
-                  </text>
-                );
-              })}
-            </svg>
-
-            {/* Tooltip */}
-            {hoveredChartIdx !== null && pointsSaved[hoveredChartIdx] && (
-              <div
-                className="absolute z-20 bg-brand-navy text-white text-[10px] font-semibold p-2.5 rounded-lg shadow-xl w-44 pointer-events-none text-left"
-                style={{
-                  left: `${tooltipPos.x}px`,
-                  top: `${tooltipPos.y}px`,
-                  transform: "translateX(-50%)",
-                }}
-              >
-                <div className="font-black border-b border-white/10 pb-1 mb-1 text-[10px] text-brand-warning uppercase">
-                  {pointsSaved[hoveredChartIdx].label}
-                </div>
-                <div className="flex justify-between">
-                  <span>Saved:</span>
-                  <span className="font-bold text-blue-400">
-                    ₹
-                    {pointsSaved[hoveredChartIdx].saved.toLocaleString("en-IN")}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Spent:</span>
-                  <span className="font-bold text-blue-300">
-                    ₹
-                    {pointsSaved[hoveredChartIdx].spent.toLocaleString("en-IN")}
-                  </span>
-                </div>
-              </div>
-            )}
+                    <stop offset="5%" stopColor="#64748b" stopOpacity={0.08} />
+                    <stop offset="95%" stopColor="#64748b" stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="#e2e8f0"
+                />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 9, fill: "#94a3b8", fontWeight: 500 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 9, fill: "#94a3b8", fontWeight: 500 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="bg-slate-950 dark:bg-zinc-900 border border-slate-800 text-white text-[10px] p-2.5 rounded shadow-lg min-w-[130px] text-left">
+                          <div className="font-semibold text-slate-400 border-b border-white/10 pb-1 mb-1 text-[9px] uppercase">
+                            {data.fullLabel}
+                          </div>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-slate-350 font-light">
+                              Saved:
+                            </span>
+                            <span className="font-semibold text-blue-400">
+                              ₹{data.savings.toLocaleString("en-IN")}
+                            </span>
+                          </div>
+                          <div className="flex justify-between gap-4 mt-0.5">
+                            <span className="text-slate-355 font-light">
+                              Spent:
+                            </span>
+                            <span className="font-semibold text-slate-400">
+                              ₹{data.spending.toLocaleString("en-IN")}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="savings"
+                  stroke="#2563eb"
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill="url(#colorSavings)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="spending"
+                  stroke="#64748b"
+                  strokeWidth={1.5}
+                  fillOpacity={1}
+                  fill="url(#colorSpending)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
 
-          <div className="flex justify-center gap-6 text-[9px] font-bold text-brand-subtext pt-2 border-t border-brand-border/40 select-none">
-            <div className="flex items-center gap-1">
-              <span className="w-2.5 h-1.5 rounded-full bg-blue-600"></span>
+          <div className="flex justify-center gap-6 text-[9px] font-medium text-slate-400 pt-2 border-t border-slate-100 dark:border-zinc-850 select-none">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-sm bg-blue-600"></span>
               <span>Savings</span>
             </div>
-            <div className="flex items-center gap-1">
-              <span className="w-2.5 h-1.5 rounded-full bg-blue-600"></span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-sm bg-slate-500"></span>
               <span>Spending</span>
             </div>
           </div>
         </div>
 
-        {/* Share card Widget */}
-        <div className="lg:col-span-4 bg-brand-navy border border-white/10 text-white rounded-[16px] p-5 shadow-sm flex flex-col justify-between space-y-4">
-          <div className="space-y-1.5">
-            <span className="text-[10px] text-brand-warning font-bold uppercase tracking-wider font-heading">
+        {/* Right Side: Highlight Card (Compact, Less Rounding, Simple Fonts) */}
+        <div className="lg:col-span-4 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-md p-4 shadow-sm flex flex-col justify-between space-y-4">
+          <div className="space-y-1">
+            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
               Highlight Card
             </span>
-            <h3 className="font-heading text-sm font-bold">
+            <h3 className="text-sm font-semibold text-slate-800 dark:text-zinc-200">
               Personalized Savings Card
             </h3>
-            <p className="text-[10px] text-slate-300 leading-normal">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal font-light">
               Generate an image card displaying your tracked savings on Vouchiqo
               to share on WhatsApp or Twitter!
             </p>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center space-y-3">
-            <span className="text-[8px] uppercase tracking-wider text-slate-400 font-bold block">
+          <div className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800/80 rounded-md p-3.5 text-center space-y-3">
+            <span className="text-[8px] uppercase tracking-wider text-slate-400 font-semibold block">
               Monthly savings certificate
             </span>
             <div className="space-y-0.5">
-              <span className="text-[9px] text-slate-300 block font-semibold">
+              <span className="text-[9px] text-slate-500 dark:text-slate-400 block font-normal">
                 I SAVED THIS MONTH
               </span>
-              <span className="text-2xl font-black text-brand-gradient tracking-tight block">
+              <span className="text-2xl font-semibold text-brand-blue tracking-tight block">
                 ₹{savingsData.kpis.totalSavedMonth.toLocaleString("en-IN")}
               </span>
-              <span className="text-[8px] text-slate-400 block font-medium">
+              <span className="text-[8px] text-slate-400 block font-light">
                 with verified discount vouchers
               </span>
             </div>
@@ -545,12 +409,12 @@ export default function SavingsTab({
 
           <Button
             onClick={handleShareSavings}
-            className="btn-primary w-full py-2.5 text-xs font-bold border-0 h-auto cursor-pointer flex justify-center items-center gap-1 text-white shadow-none"
+            className="w-full py-2 rounded-sm text-xs font-semibold text-white bg-brand-blue hover:bg-blue-600 border-0 h-auto cursor-pointer flex justify-center items-center gap-1.5 shadow-none transition-all"
           >
             {copiedShareCard ? (
-              <Check className="w-4 h-4" />
+              <Check className="w-3.5 h-3.5" />
             ) : (
-              <Share2 className="w-4 h-4" />
+              <Share2 className="w-3.5 h-3.5" />
             )}
             <span>
               {copiedShareCard ? "Copied Share Text!" : "Copy Savings Link"}

@@ -71,10 +71,8 @@ export default function AlphaFilter({
               height: 28,
               borderRadius: 6,
               border: "1px solid",
-              borderColor:
-                activeLetter === letter ? "#3b5bdb" : "#e8eaf0",
-              background:
-                activeLetter === letter ? "#3b5bdb" : "transparent",
+              borderColor: activeLetter === letter ? "#3b5bdb" : "#e8eaf0",
+              background: activeLetter === letter ? "#3b5bdb" : "transparent",
               color: activeLetter === letter ? "#fff" : "#374151",
               fontSize: 12,
               fontWeight: 600,

@@ -6,9 +6,14 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
 import { COUPON_CATEGORIES } from "@/utils/constants";
 import { useMerchantProfile } from "@/hooks/use-merchant";
-import { useCoupon, useUpdateCoupon, validateExpiryDate } from "@/hooks/use-coupons";
+import {
+  useCoupon,
+  useUpdateCoupon,
+  validateExpiryDate,
+} from "@/hooks/use-coupons";
 import CouponForm from "../components/CouponForm";
 
 export default function EditCouponPage() {
@@ -125,9 +130,7 @@ export default function EditCouponPage() {
   if (isLoading) {
     return (
       <DashboardLayout title="Edit Offer Listing" user={{ role: "merchant" }}>
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-subtext" />
-        </div>
+        <DashboardSkeleton mode="form" />
       </DashboardLayout>
     );
   }

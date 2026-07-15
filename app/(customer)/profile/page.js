@@ -8,7 +8,8 @@ import {
   PiggyBank,
   Wallet,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 // Layout & Global Components
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -22,6 +23,7 @@ import SavedDealsTab from "./components/SavedDealsTab";
 import SavingsTab from "./components/SavingsTab";
 import SettingsTab from "./components/SettingsTab";
 import WalletTab from "./components/WalletTab";
+import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
 
 const DONUT_COLORS = [
   "#2563eb",
@@ -68,7 +70,7 @@ function ConfettiOverlay({ active }) {
   );
 }
 
-export default function ProfileHub() {
+function ProfileContent() {
   const { user: authUser } = useUser();
   const [activeTab, setActiveTab] = useState("savings");
   const [loading, setLoading] = useState(true);
@@ -95,24 +97,23 @@ export default function ProfileHub() {
   // Selected Saved coupon modal state
   const [selectedSavedCoupon, setSelectedSavedCoupon] = useState(null);
 
-  // Load Tab from URL Parameter
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+
+  // Load Tab from URL Parameter dynamically
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const tabParam = params.get("tab");
-      const validTabs = [
-        "savings",
-        "saved",
-        "wallet",
-        "activity",
-        "nearby",
-        "settings",
-      ];
-      if (tabParam && validTabs.includes(tabParam)) {
-        setActiveTab(tabParam);
-      }
+    const validTabs = [
+      "savings",
+      "saved",
+      "wallet",
+      "activity",
+      "nearby",
+      "settings",
+    ];
+    if (tabParam && validTabs.includes(tabParam)) {
+      setActiveTab(tabParam);
     }
-  }, []);
+  }, [tabParam]);
 
   // Sync activeTab to URL search params
   const handleTabChange = (tabName) => {
@@ -355,12 +356,7 @@ export default function ProfileHub() {
         title={`${profileUsername} Profile`}
         user={authUser || { name: "User", role: "customer" }}
       >
-        <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-          <div className="w-10 h-10 border-4 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-xs font-bold text-brand-subtext uppercase tracking-wider">
-            Syncing profile data...
-          </p>
-        </div>
+        <DashboardSkeleton mode="profile" />
       </DashboardLayout>
     );
   }
@@ -377,34 +373,7 @@ export default function ProfileHub() {
     >
       <ConfettiOverlay active={triggerConfetti} />
 
-      {/* Tabs Header Navigation */}
-      <div className="flex border-b border-brand-border bg-brand-surface p-1 rounded-lg gap-1 max-w-fit overflow-x-auto select-none">
-        {[
-          { id: "savings", label: "My Savings", icon: PiggyBank },
-          { id: "saved", label: "Saved Deals", icon: Bookmark },
-          { id: "wallet", label: "Cashback Wallet", icon: Wallet },
-          { id: "activity", label: "My Activity", icon: History },
-          { id: "nearby", label: "Nearby Offers", icon: MapPin },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => handleTabChange(tab.id)}
-              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer whitespace-nowrap border-0 ${
-                isActive
-                  ? "bg-brand-navy text-white shadow-sm"
-                  : "text-brand-subtext bg-transparent hover:text-brand-navy hover:bg-brand-border/30"
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      {/* Tabs removed to use Sidebar Navigation instead */}
 
       {/* TAB CONTENT PANEL */}
       <div className="space-y-6 pt-2">
@@ -492,5 +461,13 @@ export default function ProfileHub() {
         </div>
       )}
     </DashboardLayout>
+  );
+}
+
+export default function ProfileHub() {
+  return (
+    <Suspense fallback={<DashboardSkeleton mode="profile" />}>
+      <ProfileContent />
+    </Suspense>
   );
 }

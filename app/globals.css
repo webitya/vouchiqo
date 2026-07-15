@@ -10,16 +10,16 @@
   --font-heading: var(--font-geist-sans), sans-serif;
 
   /* Brand Colors - Light Mode Defaults (Derived from Vouchiqo Logo & professional UI/UX laws) */
-  --brand-navy: #08214D;
-  --brand-blue: #3E80DD;
+  --brand-navy: #08214d;
+  --brand-blue: #3e80dd;
   --brand-success: #2563eb;
-  --brand-warning: #F59E0B;
-  --brand-error: #EF4444;
+  --brand-warning: #f59e0b;
+  --brand-error: #ef4444;
   --brand-bg: #ffffff;
-  --brand-surface: #F8FAFC;
-  --brand-border: #E2E8F0;
-  --brand-text: #08214D;
-  --brand-subtext: #64748B;
+  --brand-surface: #f8fafc;
+  --brand-border: #e2e8f0;
+  --brand-text: #08214d;
+  --brand-subtext: #64748b;
   --background: var(--brand-bg);
   --foreground: var(--brand-text);
   --card: var(--brand-bg);
@@ -43,7 +43,7 @@
   --chart-3: oklch(0.442 0.017 285.786);
   --chart-4: oklch(0.37 0.013 285.805);
   --chart-5: oklch(0.274 0.006 286.033);
-  --radius: 6px;
+  --radius: 4px;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.21 0.006 285.885);
@@ -55,34 +55,38 @@
 
   /* ─── GrabOn Design System Variables ───────────────────────────────────── */
   /* Colors */
-  --_g-default-bg: #F7F7F8;
+  --_g-default-bg: #f7f7f8;
   --_base-white: #fff;
-  --_base-white-2: #F4F6FD;
-  --_default-color: #08214D;
-  --_default-color-2: #64748B;
-  --_default-border-color: #E2E8F0;
-  --_default-border-color-2: #E2E8F0;
-  --_default-border-color-3: #E3EDFC;
-  --_text-thik-color: #08214D;
+  --_base-white-2: #f4f6fd;
+  --_default-color: #08214d;
+  --_default-color-2: #64748b;
+  --_default-border-color: #e2e8f0;
+  --_default-border-color-2: #e2e8f0;
+  --_default-border-color-3: #e3edfc;
+  --_text-thik-color: #08214d;
   --_grid-color: #d5d8dc;
   --_grid-active-color: #515962;
-  --_default-boxshadow-color-1: #CBCBDD;
-  --_new-active-color-2: #3E80DD;
-  --_new-active-color-3: #3F65A9;
-  --_new-green-color: #D1DE31;
-  --_new-green-color-2: #58A374;
+  --_default-boxshadow-color-1: #cbcbdd;
+  --_new-active-color-2: #3e80dd;
+  --_new-active-color-3: #3f65a9;
+  --_new-green-color: #d1de31;
+  --_new-green-color-2: #58a374;
   --_light-blue-color: #2563eb;
-  --_default-linear-color: #DFE7F6;
+  --_default-linear-color: #dfe7f6;
   --_icon-new-hover-color: #e9f0de;
   --_cpn-review-no: #e2e8f0;
   --_cpn-review-yes: var(--_new-green-color);
-  --_cpn-review-hover-color: #4685E8;
-  --_default-secondary-text-color: #9FA3AC;
-  --_cookies-para-color: #8790A3;
-  --_gmtab-container-bg: #F5F5F5;
-  --_gmtab-container-border: #D6D6D6;
-  --_linear-1: linear-gradient(160deg, var(--_base-white) 0%, var(--_default-linear-color) 96.78%);
-  --_gmtab-active-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.10);
+  --_cpn-review-hover-color: #4685e8;
+  --_default-secondary-text-color: #9fa3ac;
+  --_cookies-para-color: #8790a3;
+  --_gmtab-container-bg: #f5f5f5;
+  --_gmtab-container-border: #d6d6d6;
+  --_linear-1: linear-gradient(
+    160deg,
+    var(--_base-white) 0%,
+    var(--_default-linear-color) 96.78%
+  );
+  --_gmtab-active-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
 
   /* Typography */
   --_default-font-family: "Nunito Sans", sans-serif;
@@ -108,18 +112,20 @@
   --_footer-hashtag-line-height: 150%;
 
   /* Animation */
-  --_anim-duration: .5s;
-  --_anim-duration-v2: .6s;
-  --_anim-duration-slow: .35s;
-  --_anim-duration-transition: .8s;
+  --_anim-duration: 0.5s;
+  --_anim-duration-v2: 0.6s;
+  --_anim-duration-slow: 0.35s;
+  --_anim-duration-transition: 0.8s;
   --_anim-timing-function-transition: ease;
   --_anim-timing-function: cubic-bezier(0.4, 0, 1, 1);
-  --_anim-timing-function-v2: cubic-bezier(0.390, 0.575, 0.565, 1.000);
-  --_anim-timing-function-v3: cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  --_anim-timing-function-v2: cubic-bezier(0.39, 0.575, 0.565, 1);
+  --_anim-timing-function-v3: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --_anim-timing-function-v4: cubic-bezier(0.12, 0.74, 0.26, 1.07);
   --_anim-transition-page:
-    opacity var(--_anim-duration-transition) var(--_anim-timing-function-transition) var(--_self-anim-v8-td, 0s),
-    transform var(--_anim-duration-transition) var(--_anim-timing-function-transition) var(--_self-anim-v8-td, 0s);
+    opacity var(--_anim-duration-transition)
+    var(--_anim-timing-function-transition) var(--_self-anim-v8-td, 0s),
+    transform var(--_anim-duration-transition)
+    var(--_anim-timing-function-transition) var(--_self-anim-v8-td, 0s);
 
   /* Display helpers */
   --_d-flex: flex;
@@ -146,16 +152,16 @@
 /* Support .dark and [data-theme="dark"] class switches - styled with Vouchiqo Brand Dark Navy Palette */
 .dark,
 [data-theme="dark"] {
-  --brand-navy: #F8FAFC;
-  --brand-blue: #3B82F6;
+  --brand-navy: #f8fafc;
+  --brand-blue: #3b82f6;
   --brand-success: #2563eb;
-  --brand-warning: #F59E0B;
-  --brand-error: #EF4444;
+  --brand-warning: #f59e0b;
+  --brand-error: #ef4444;
   --brand-bg: #091932; /* Deep Navy Card backgrounds */
   --brand-surface: #061327; /* Darker Navy Page backgrounds */
-  --brand-border: #1E293B;
-  --brand-text: #F8FAFC;
-  --brand-subtext: #94A3B8;
+  --brand-border: #1e293b;
+  --brand-text: #f8fafc;
+  --brand-subtext: #94a3b8;
 }
 
 .dark .text-brand-navy,
@@ -233,13 +239,13 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(89, 171, 2, 0.15);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
   position: relative;
   overflow: hidden;
 }
 
 .btn-primary::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -50%;
@@ -258,8 +264,8 @@ body {
 
 .btn-primary:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 16px rgba(89, 171, 2, 0.35);
-  background-color: #4da500;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+  background-color: var(--secondary);
 }
 
 .btn-primary:hover::after {
@@ -270,7 +276,7 @@ body {
 
 .btn-primary:active {
   transform: translateY(0) scale(0.96);
-  box-shadow: 0 2px 4px rgba(89, 171, 2, 0.2);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
 }
 
 .btn-secondary {
@@ -441,13 +447,13 @@ body {
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 16px;
-  --radius-2xl: 20px;
-  --radius-3xl: 24px;
-  --radius-4xl: 28px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-3xl: 14px;
+  --radius-4xl: 16px;
 }
 
 .dark {
@@ -741,7 +747,9 @@ body {
 }
 
 .card-hover:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transform: translateY(-2px);
 }
 
@@ -918,7 +926,9 @@ body {
   font-size: 16px;
   color: #0f172a;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   background: #f8fafc;
 }
 
@@ -970,7 +980,10 @@ body {
   background-repeat: no-repeat;
   background-position: center 20px;
   background-size: auto 36px;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
 }
 
 [data-type="search-item-grid"]:hover {
@@ -1017,7 +1030,9 @@ body {
   background: #fff;
   padding: 10px 12px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   text-align: left;
 }
 
@@ -1095,7 +1110,8 @@ body {
 }
 
 /* ─── Flag & Notification Dropdowns ─────────────────── */
-#countryflag, #countryflagmobile {
+#countryflag,
+#countryflagmobile {
   position: relative;
   background: transparent;
   border: none;
@@ -1111,7 +1127,8 @@ body {
   gap: 6px;
 }
 
-#countryflag img, #countryflagmobile img {
+#countryflag img,
+#countryflagmobile img {
   width: 18px;
   height: 13px;
   object-fit: cover;
@@ -1119,7 +1136,8 @@ body {
   border: 1px solid #e2e8f0;
 }
 
-#countryflag p, #countryflagmobile p {
+#countryflag p,
+#countryflagmobile p {
   font-size: 12px;
   font-weight: 700;
   color: #334155;
@@ -1291,7 +1309,8 @@ body {
   gap: 12px;
 }
 
-#gMNotify, #gDNotify {
+#gMNotify,
+#gDNotify {
   position: relative;
   cursor: pointer;
   display: inline-flex;
@@ -1372,7 +1391,8 @@ body {
   height: 44px;
 }
 
-.g-nav-m-left, .g-nav-m-right {
+.g-nav-m-left,
+.g-nav-m-right {
   display: flex;
   align-items: center;
   gap: 20px;
@@ -1403,7 +1423,7 @@ body {
   bottom: 0;
   width: 290px;
   background: #fff;
-  box-shadow: 10px 0 30px rgba(0,0,0,0.15);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
   z-index: 1001;
   display: flex;
   flex-direction: column;
@@ -1526,7 +1546,9 @@ body {
   font-size: 12px;
   font-weight: 600;
   text-align: center;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .g-page-m:hover {
@@ -1579,4 +1601,3 @@ body {
   min-width: 100%;
   width: 100%;
 }
-

@@ -46,7 +46,7 @@ const worker = new Worker(
   {
     connection: redis,
     concurrency: 5,
-  }
+  },
 );
 
 worker.on("completed", (job) => {

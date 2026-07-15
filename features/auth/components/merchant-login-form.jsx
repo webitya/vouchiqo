@@ -37,7 +37,7 @@ export function MerchantLoginForm() {
     },
     onError: (err) => {
       toast.error(err?.message ?? "Something went wrong. Try again.");
-    }
+    },
   });
 
   const isPending = loginMutation.isPending;
@@ -61,7 +61,7 @@ export function MerchantLoginForm() {
             </InputGroupAddon>
             <InputGroupInput
               type="email"
-              placeholder="merchant@company.com"
+              placeholder="rahulsharma@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="text-base md:text-sm placeholder-brand-subtext h-full"
@@ -77,7 +77,7 @@ export function MerchantLoginForm() {
               Password
             </Label>
             <Link
-              href="/auth/forgot-password"
+              href="/forgot-password"
               className="text-xs md:text-sm text-brand-blue font-semibold hover:underline"
             >
               Forgot Password?

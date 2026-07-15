@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -136,9 +137,7 @@ export default function MerchantCampaigns() {
   if (loadingProfile || (loadingCampaigns && merchant?.plan !== "starter")) {
     return (
       <DashboardLayout title="Campaign Manager" user={{ role: "merchant" }}>
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-subtext" />
-        </div>
+        <DashboardSkeleton mode="dashboard" />
       </DashboardLayout>
     );
   }

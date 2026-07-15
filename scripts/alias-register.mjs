@@ -10,6 +10,11 @@ import { resolve as resolvePath } from "node:path";
 
 const __filename = fileURLToPath(import.meta.url);
 const projectRoot = resolvePath(__filename, "../../");
-const loaderUrl = pathToFileURL(resolvePath(projectRoot, "scripts", "alias-loader.mjs")).href;
+const loaderUrl = pathToFileURL(
+  resolvePath(projectRoot, "scripts", "alias-loader.mjs"),
+).href;
 
-register(loaderUrl, { parentURL: import.meta.url, data: { rootUrl: pathToFileURL(projectRoot + "/").href } });
+register(loaderUrl, {
+  parentURL: import.meta.url,
+  data: { rootUrl: pathToFileURL(projectRoot + "/").href },
+});

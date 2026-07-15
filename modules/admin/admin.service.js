@@ -17,7 +17,7 @@ import { buildMeta, parsePagination } from "@/utils/pagination";
  */
 export async function listUsers(searchParams) {
   const isExport = searchParams.get("export") === "true";
-  
+
   if (isExport) {
     // Return all customers who have emailNotifications: true (or not false)
     const pipeline = [
@@ -116,10 +116,9 @@ export async function setUserActiveStatus(authId, isActive) {
       { $set: { isActive } },
       { new: true },
     ),
-    mongoose.connection.db.collection("user").updateOne(
-      { _id: authId },
-      { $set: { isActive } }
-    ),
+    mongoose.connection.db
+      .collection("user")
+      .updateOne({ _id: authId }, { $set: { isActive } }),
   ]);
 
   if (!profile) throw new NotFoundError("User");
@@ -193,7 +192,7 @@ export async function updateCouponModerationState(couponId, update) {
   const coupon = await Coupon.findByIdAndUpdate(
     couponId,
     { $set: update },
-    { new: true }
+    { new: true },
   );
 
   if (!coupon) throw new NotFoundError("Coupon");

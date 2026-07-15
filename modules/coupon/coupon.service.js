@@ -117,11 +117,15 @@ export async function listCoupons(searchParams) {
   if (search) filter.$text = { $search: search };
 
   if (pincode) {
-    const merchants = await Merchant.find({ "location.pincode": pincode }).select("_id").lean();
+    const merchants = await Merchant.find({ "location.pincode": pincode })
+      .select("_id")
+      .lean();
     const merchantIds = merchants.map((m) => m._id);
     if (filter.merchantId) {
       const singleId = filter.merchantId.toString();
-      filter.merchantId = merchantIds.map(m => m.toString()).includes(singleId)
+      filter.merchantId = merchantIds
+        .map((m) => m.toString())
+        .includes(singleId)
         ? singleId
         : null;
     } else {

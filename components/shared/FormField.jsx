@@ -13,7 +13,12 @@ import { Label } from "@/components/ui/label";
  * @param {string} hint - small grey clarification shown in parentheses
  * @param {string} className - extra classes (e.g. "mb-2" for image uploader)
  */
-export default function FormField({ icon: Icon, children, hint, className = "mb-1.5" }) {
+export default function FormField({
+  icon: Icon,
+  children,
+  hint,
+  className = "mb-1.5",
+}) {
   return (
     <Label
       className={`text-xs font-bold text-brand-text uppercase flex items-center gap-1.5 ${className} text-left`}

@@ -38,7 +38,7 @@ export default function DashboardChart({
 
   if (!data || data.length === 0 || !series || series.length === 0) {
     return (
-      <div 
+      <div
         className="flex items-center justify-center text-xs text-slate-400 font-semibold"
         style={{ height: `${height}px` }}
       >

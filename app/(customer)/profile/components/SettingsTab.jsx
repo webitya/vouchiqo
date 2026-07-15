@@ -33,12 +33,9 @@ export default function SettingsTab({
   handleInterestToggle,
 }) {
   return (
-    <form
-      onSubmit={handleSaveSettings}
-      className="space-y-6 max-w-4xl text-left"
-    >
+    <form onSubmit={handleSaveSettings} className="space-y-6 w-full text-left">
       {/* Personal Details */}
-      <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm space-y-4">
+      <div className="bg-brand-bg border border-brand-border rounded-md p-5 shadow-sm space-y-4">
         <h3 className="font-heading text-xs font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3 flex items-center gap-1.5">
           <User className="w-4 h-4 text-brand-blue" />
           <span>Personal Information</span>
@@ -122,7 +119,7 @@ export default function SettingsTab({
       </div>
 
       {/* Interest categories selection */}
-      <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm space-y-4">
+      <div className="bg-brand-bg border border-brand-border rounded-md p-5 shadow-sm space-y-4">
         <h3 className="font-heading text-xs font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3 flex items-center gap-1.5">
           <Heart className="w-4 h-4 text-brand-blue" />
           <span>Trending Categories</span>
@@ -153,7 +150,7 @@ export default function SettingsTab({
       </div>
 
       {/* Notification settings */}
-      <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm space-y-4">
+      <div className="bg-brand-bg border border-brand-border rounded-md p-5 shadow-sm space-y-4">
         <h3 className="font-heading text-xs font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3 flex items-center gap-1.5">
           <Bell className="w-4 h-4 text-brand-blue" />
           <span>Notification Settings</span>
@@ -216,7 +213,7 @@ export default function SettingsTab({
       </div>
 
       {/* Account deletion warning */}
-      <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <div className="bg-brand-bg border border-brand-border rounded-md p-5 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
           <span className="text-xs font-bold text-brand-text block font-heading">
             Delete Account

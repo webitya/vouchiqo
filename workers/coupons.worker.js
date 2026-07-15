@@ -29,7 +29,7 @@ const couponSchema = new mongoose.Schema(
     status: { type: String },
     expiresAt: { type: Date },
   },
-  { strict: false, collection: "coupons" }
+  { strict: false, collection: "coupons" },
 );
 
 const Coupon = mongoose.models.Coupon ?? mongoose.model("Coupon", couponSchema);
@@ -44,9 +44,11 @@ async function scheduleRepeatableJob() {
     {
       repeat: { cron: "*/15 * * * *" }, // Run every 15 minutes
       jobId: "auto-expire-coupons-repeatable-job",
-    }
+    },
   );
-  console.log("[coupons-worker] Auto-expiry repeatable job scheduled (every 15 minutes)");
+  console.log(
+    "[coupons-worker] Auto-expiry repeatable job scheduled (every 15 minutes)",
+  );
 }
 
 scheduleRepeatableJob().catch((err) => {
@@ -61,7 +63,7 @@ const worker = new Worker(
 
     if (job.name === JOB_NAMES.EXPIRE_COUPON) {
       console.log("[coupons-worker] Running auto-expiry check...");
-      
+
       const result = await Coupon.updateMany(
         {
           status: "active",
@@ -69,10 +71,12 @@ const worker = new Worker(
         },
         {
           $set: { status: "expired" },
-        }
+        },
       );
 
-      console.log(`[coupons-worker] Expired ${result.modifiedCount} active coupon(s).`);
+      console.log(
+        `[coupons-worker] Expired ${result.modifiedCount} active coupon(s).`,
+      );
     } else {
       console.warn(`[coupons-worker] Unknown job: ${job.name}`);
     }
@@ -80,7 +84,7 @@ const worker = new Worker(
   {
     connection: redis,
     concurrency: 1,
-  }
+  },
 );
 
 worker.on("completed", (job) => {

@@ -42,7 +42,7 @@ export function MerchantRegisterForm() {
             </InputGroupAddon>
             <InputGroupInput
               type="text"
-              placeholder="e.g. Starbucks"
+              placeholder="e.g. FabIndia"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="text-base md:text-sm placeholder-brand-subtext h-full"
@@ -62,7 +62,7 @@ export function MerchantRegisterForm() {
             </InputGroupAddon>
             <InputGroupInput
               type="email"
-              placeholder="partner@starbucks.com"
+              placeholder="rahulsharma@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="text-base md:text-sm placeholder-brand-subtext h-full"
@@ -123,7 +123,9 @@ export function MerchantRegisterForm() {
           disabled={isPending}
           className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-semibold flex items-center justify-center gap-1 border-0 h-auto cursor-pointer shadow-none transition-all"
         >
-          <span>{isPending ? "Creating account..." : "Register Merchant Account"}</span>
+          <span>
+            {isPending ? "Creating account..." : "Register Merchant Account"}
+          </span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Button>
       </form>

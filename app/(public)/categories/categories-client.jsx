@@ -12,10 +12,7 @@ import { POPULAR_CATEGORIES } from "@/lib/mock/mock-data";
 
 function CategoryCard({ cat }) {
   return (
-    <Link
-      href={`/category/${cat.slug}`}
-      style={{ textDecoration: "none" }}
-    >
+    <Link href={`/category/${cat.slug}`} style={{ textDecoration: "none" }}>
       <div
         style={{
           border: "1px solid #e8eaf0",
@@ -108,7 +105,7 @@ export default function CategoriesClient({
     }
     if (searchQuery.trim()) {
       list = list.filter((c) =>
-        c.title.toLowerCase().includes(searchQuery.toLowerCase())
+        c.title.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
     return list;
@@ -156,7 +153,9 @@ export default function CategoriesClient({
     "If there's a deal out there, we've already found it for you. Vouchiqo is your #1 coupon destination, bringing you the best deals on fashion, food, gadgets, travel, entertainment, and more. With thousands of verified offers from top brands, we make saving as easy as spending.";
 
   return (
-    <main style={{ background: "#f5f6fa", minHeight: "70vh", paddingBottom: 40 }}>
+    <main
+      style={{ background: "#f5f6fa", minHeight: "70vh", paddingBottom: 40 }}
+    >
       <Breadcrumb segments={breadcrumbSegments} />
       <PageHeader
         title="Categories"
@@ -309,7 +308,14 @@ export default function CategoriesClient({
                 gap: 10,
               }}
             >
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: 0 }}>
+              <h2
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "#111827",
+                  margin: 0,
+                }}
+              >
                 All Categories
               </h2>
               <GridToggle gridCols={gridCols} onGridChange={setGridCols} />

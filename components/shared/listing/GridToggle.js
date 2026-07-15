@@ -7,7 +7,11 @@
  * @param {Function} onGridChange - Callback when column count changes
  * @param {number[]} options - Array of column count options (e.g. [2, 3, 4])
  */
-export default function GridToggle({ gridCols, onGridChange, options = [2, 3, 4] }) {
+export default function GridToggle({
+  gridCols,
+  onGridChange,
+  options = [2, 3, 4],
+}) {
   return (
     <div style={{ display: "flex", gap: 4 }}>
       {options.map((cols) => (

@@ -23,7 +23,9 @@ const createCustomerRevivalSchema = z.object({
   description: z.string().max(200).optional().nullable(),
   whenSeen: z.string().optional().nullable(),
   whatBuying: z.string().max(200).optional().nullable(),
-  mobileNumber: z.string().regex(/^\d{10}$/, "WhatsApp mobile must be exactly 10 digits"),
+  mobileNumber: z
+    .string()
+    .regex(/^\d{10}$/, "WhatsApp mobile must be exactly 10 digits"),
   consent: z.boolean(),
 });
 

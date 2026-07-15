@@ -68,6 +68,21 @@ const nextConfig = {
         destination: "/admin-login",
         permanent: true,
       },
+      {
+        source: "/explore-offers",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/explore",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/explore%20offers",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
 };

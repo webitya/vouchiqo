@@ -130,7 +130,9 @@ export async function createCustomerRevival(data) {
   let priority = "low";
 
   // Fetch configs from database setting if exists
-  const settingsObj = await PlatformSetting.findOne({ key: "revival_priority_config" }).lean();
+  const settingsObj = await PlatformSetting.findOne({
+    key: "revival_priority_config",
+  }).lean();
   const priorityCities = settingsObj?.value?.priorityCities || ["Ranchi"];
   const priorityCategories = settingsObj?.value?.priorityCategories || [
     "Home Improvement",
@@ -153,8 +155,12 @@ export async function createCustomerRevival(data) {
   } else if (
     category === "B" ||
     (category === "C" &&
-      priorityCities.some((c) => new RegExp(`^${escapeRegex(c)}$`, "i").test(data.merchantCity)) &&
-      priorityCategories.some((cat) => new RegExp(`^${escapeRegex(cat)}$`, "i").test(data.discountType)))
+      priorityCities.some((c) =>
+        new RegExp(`^${escapeRegex(c)}$`, "i").test(data.merchantCity),
+      ) &&
+      priorityCategories.some((cat) =>
+        new RegExp(`^${escapeRegex(cat)}$`, "i").test(data.discountType),
+      ))
   ) {
     priority = "medium";
   }
@@ -183,7 +189,10 @@ export async function createCustomerRevival(data) {
 
   // 5. Upsert to Merchant Demand Intelligence Database (Category B & C only)
   if (category === "B" || category === "C") {
-    const normalizedName = data.brandName.trim().toLowerCase().replace(/\s+/g, " ");
+    const normalizedName = data.brandName
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
 
     const existingDemand = await MerchantDemand.findOne({
       businessName: new RegExp(`^${escapeRegex(normalizedName)}$`, "i"),
@@ -209,7 +218,10 @@ export async function createCustomerRevival(data) {
         existingDemand.submissionCount += 1;
       }
       existingDemand.lastSeen = new Date();
-      if (sourcePlatform && !existingDemand.sourcePlatforms.includes(sourcePlatform)) {
+      if (
+        sourcePlatform &&
+        !existingDemand.sourcePlatforms.includes(sourcePlatform)
+      ) {
         existingDemand.sourcePlatforms.push(sourcePlatform);
       }
       existingDemand.sampleOffers.push(sampleOffer);
@@ -239,7 +251,7 @@ export async function updateCustomerRevivalStatus(revivalId, status) {
   const revival = await CustomerRevival.findByIdAndUpdate(
     revivalId,
     { $set: { status } },
-    { new: true }
+    { new: true },
   );
 
   if (!revival) throw new Error("Customer revival request not found");
@@ -250,7 +262,12 @@ export async function updateCustomerRevivalStatus(revivalId, status) {
  * Resolves a customer revival request with specific outcome status.
  */
 export async function resolveCustomerRevival(revivalId, data) {
-  const { outcomeStatus, declineReason, alternativeOfferId, includeInPublicFeed } = data;
+  const {
+    outcomeStatus,
+    declineReason,
+    alternativeOfferId,
+    includeInPublicFeed,
+  } = data;
 
   const updateFields = { outcomeStatus };
 
@@ -261,7 +278,10 @@ export async function resolveCustomerRevival(revivalId, data) {
   }
 
   // Adjust status based on resolved state
-  if (outcomeStatus === "resolved_regenerated" || outcomeStatus === "resolved_alternative") {
+  if (
+    outcomeStatus === "resolved_regenerated" ||
+    outcomeStatus === "resolved_alternative"
+  ) {
     updateFields.status = "approved";
   } else if (outcomeStatus === "declined") {
     updateFields.status = "rejected";
@@ -270,7 +290,7 @@ export async function resolveCustomerRevival(revivalId, data) {
   const revival = await CustomerRevival.findByIdAndUpdate(
     revivalId,
     { $set: updateFields },
-    { new: true }
+    { new: true },
   );
 
   if (!revival) throw new Error("Customer revival request not found");
@@ -394,7 +414,7 @@ export async function updateMerchantDemandOutreach(demandId, data) {
   const demand = await MerchantDemand.findByIdAndUpdate(
     demandId,
     { $set: update },
-    { new: true }
+    { new: true },
   );
 
   if (!demand) throw new Error("Merchant demand record not found");

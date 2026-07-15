@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { SIDEBAR_NAV, POPULAR_MERCHANTS_SIDEBAR } from "@/utils/shared-navigation";
+import {
+  SIDEBAR_NAV,
+  POPULAR_MERCHANTS_SIDEBAR,
+} from "@/utils/shared-navigation";
 
 /**
  * Shared sidebar used by Brands, Categories, Merchants, Campaigns listing pages.
@@ -12,7 +15,11 @@ import { SIDEBAR_NAV, POPULAR_MERCHANTS_SIDEBAR } from "@/utils/shared-navigatio
  * @param {string} aboutTitle - Title for the "About" section
  * @param {string} aboutText - Description text for the "About" section
  */
-export default function Sidebar({ activeNavKey, aboutTitle = "About", aboutText = "" }) {
+export default function Sidebar({
+  activeNavKey,
+  aboutTitle = "About",
+  aboutText = "",
+}) {
   const [showAllMerchants, setShowAllMerchants] = useState(false);
   const [showMoreAbout, setShowMoreAbout] = useState(false);
 

@@ -23,9 +23,7 @@ export function useImageUpload(field, onUploaded) {
     try {
       const url = await uploadFile(file, field);
       onUploaded?.(url);
-      toast.success(
-        `${field === "logo" ? "Logo" : "Cover banner"} uploaded!`,
-      );
+      toast.success(`${field === "logo" ? "Logo" : "Cover banner"} uploaded!`);
     } catch (err) {
       toast.error(err.message || "Failed to upload image.");
     } finally {

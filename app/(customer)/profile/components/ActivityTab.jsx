@@ -2,7 +2,7 @@
 
 export default function ActivityTab() {
   return (
-    <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm space-y-5 max-w-2xl text-left">
+    <div className="bg-brand-bg border border-brand-border rounded-md p-5 shadow-sm space-y-5 w-full text-left">
       <h3 className="font-heading text-xs font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3">
         Your Chronological Activity
       </h3>

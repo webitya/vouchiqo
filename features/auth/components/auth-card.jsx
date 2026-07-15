@@ -1,40 +1,98 @@
+"use client";
+
 import { Loader2 } from "lucide-react";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/Footer";
 
 /**
- * Shared auth page shell — brand header + card.
- * Pass `loading` to show a spinner while session is resolving
- * (prevents flash of form for already-logged-in users).
+ * Shared auth page shell — split-panel design with blue/white theme,
+ * including global header and footer, compact layout, and reduced border radius.
  */
 export function AuthCard({ title, loading = false, children }) {
+  const getSubtitles = (title) => {
+    switch (title) {
+      case "Log In":
+        return "Sign in to access your Vouchiqo account";
+      case "Create your free account":
+        return "Join Vouchiqo to start saving and tracking analytics";
+      case "Recover your password":
+        return "Enter your email to receive recovery instructions";
+      case "Set a new password":
+        return "Create a strong new password for your account";
+      case "Enter Verification Code":
+        return "Verify your identity using the code sent to your email";
+      case "Merchant Partner Log In":
+        return "Log in to manage your coupon campaigns and analytics";
+      case "Merchant Partner Registration":
+        return "Partner with Vouchiqo to boost your brand visibility";
+      default:
+        return "Please fill out the form below to continue";
+    }
+  };
+
+  const getDisplayTitle = (title) => {
+    switch (title) {
+      case "Log In":
+        return "Welcome Back";
+      case "Create your free account":
+        return "Create Account";
+      case "Recover your password":
+        return "Recover Password";
+      case "Set a new password":
+        return "Set New Password";
+      case "Enter Verification Code":
+        return "Verify OTP";
+      case "Merchant Partner Log In":
+        return "Merchant Login";
+      case "Merchant Partner Registration":
+        return "Merchant Register";
+      default:
+        return title;
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-brand-surface text-brand-text">
-      {/* Sticky Navbar */}
+    <div className="min-h-screen flex flex-col bg-brand-surface text-brand-text font-sans antialiased">
+      {/* Sticky Top Navbar */}
       <Navbar />
 
-      {/* Main page content centered */}
-      <main className="flex-1 flex flex-col justify-center items-center min-h-[calc(100vh-76px)] py-12 px-3 sm:px-6 lg:px-8">
-        <div className="w-full sm:mx-auto sm:max-w-md text-center space-y-1 mb-4">
-          <h2 className="text-2xl font-bold text-brand-text tracking-tight">
-            {title}
-          </h2>
-        </div>
+      {/* Centered main content area with dynamic min-height to push footer just below the viewport fold */}
+      <main className="flex-1 flex flex-col justify-start items-center pt-9 pb-12 px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-30px)]">
+        {/* Compact split-card container with less border radius (rounded-2xl) */}
+        <div className="w-full max-w-4xl bg-white dark:bg-zinc-950 border border-brand-border dark:border-zinc-800 rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px] md:h-[500px]">
+          {/* Left Visual Panel: Blue & White theme, clean with NO text overlays */}
+          <div
+            className="hidden md:flex md:col-span-5 relative overflow-hidden bg-cover bg-center select-none"
+            style={{ backgroundImage: "url('/auth-blue-bg.png')" }}
+          />
 
-        <div className="w-full sm:mx-auto sm:max-w-md">
-          <div className="bg-brand-bg py-6 px-6 sm:px-10 border border-brand-border rounded-md shadow-sm space-y-4">
-            {loading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin text-brand-subtext" />
-              </div>
-            ) : (
-              children
-            )}
+          {/* Right Form Panel: Compact, clean sans typography */}
+          <div className="col-span-1 md:col-span-7 bg-white dark:bg-zinc-950 p-6 md:p-8 flex flex-col">
+            {/* Header: Title and subtitle with normal/simple fonts */}
+            <div>
+              <h2 className="text-2xl font-semibold text-slate-800 dark:text-white tracking-tight leading-none">
+                {getDisplayTitle(title)}
+              </h2>
+              <p className="text-xs text-slate-450 dark:text-slate-400 mt-2 font-normal">
+                {getSubtitles(title)}
+              </p>
+            </div>
+
+            {/* Form children wrapper (compact layout) */}
+            <div className="flex-1 flex flex-col justify-center mt-6">
+              {loading ? (
+                <div className="flex justify-center items-center py-8">
+                  <Loader2 className="w-5 h-5 animate-spin text-brand-blue" />
+                </div>
+              ) : (
+                children
+              )}
+            </div>
           </div>
         </div>
       </main>
 
-      {/* Full Homepage Footer */}
+      {/* Bottom Footer */}
       <Footer />
     </div>
   );

@@ -23,7 +23,8 @@ export async function GET() {
     return Response.json(
       {
         status: "error",
-        message: "ADMIN_PASSWORD environment variable is required to run the seed.",
+        message:
+          "ADMIN_PASSWORD environment variable is required to run the seed.",
       },
       { status: 400 },
     );
@@ -31,7 +32,9 @@ export async function GET() {
 
   try {
     // 1. Clean existing admin if present to avoid unique/duplicate key conflicts
-    const existingAdmin = await db.collection("user").findOne({ email: adminEmail });
+    const existingAdmin = await db
+      .collection("user")
+      .findOne({ email: adminEmail });
     if (existingAdmin) {
       const adminId = existingAdmin.id || existingAdmin._id.toString();
       await db.collection("user").deleteOne({ _id: existingAdmin._id });
@@ -50,12 +53,16 @@ export async function GET() {
     });
 
     // 3. Elevate role to admin
-    const adminUser = await db.collection("user").findOne({ email: adminEmail });
+    const adminUser = await db
+      .collection("user")
+      .findOne({ email: adminEmail });
     if (adminUser) {
       await db
         .collection("user")
         .updateOne({ _id: adminUser._id }, { $set: { role: ROLES.ADMIN } });
-      console.log(`[Seed Route] Admin role elevated successfully for ${adminEmail}`);
+      console.log(
+        `[Seed Route] Admin role elevated successfully for ${adminEmail}`,
+      );
     }
 
     return Response.json({

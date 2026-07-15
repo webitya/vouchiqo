@@ -83,7 +83,12 @@ export async function getUserClaims(userId, searchParams) {
           as: "couponId.merchantId",
         },
       },
-      { $unwind: { path: "$couponId.merchantId", preserveNullAndEmptyArrays: true } },
+      {
+        $unwind: {
+          path: "$couponId.merchantId",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       {
         $project: {
           _id: 1,

@@ -81,14 +81,22 @@ export default function FilterControls({
       {showFilters && (
         <div className="bg-brand-surface border border-brand-border rounded-xl p-3.5 text-left animate-fade-in-up space-y-3.5 shadow-sm">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-            <FilterSelect label="Radius Distance" value={distance} onChange={setDistance}>
+            <FilterSelect
+              label="Radius Distance"
+              value={distance}
+              onChange={setDistance}
+            >
               <SelectItem value="2">Within 2 km</SelectItem>
               <SelectItem value="5">Within 5 km</SelectItem>
               <SelectItem value="10">Within 10 km (Default)</SelectItem>
               <SelectItem value="25">Within 25 km</SelectItem>
             </FilterSelect>
 
-            <FilterSelect label="Category" value={categoryFilter} onChange={setCategoryFilter}>
+            <FilterSelect
+              label="Category"
+              value={categoryFilter}
+              onChange={setCategoryFilter}
+            >
               <SelectItem value="all">All Categories</SelectItem>
               <SelectItem value="food">Dining &amp; Food</SelectItem>
               <SelectItem value="fashion">Fashion &amp; Apparel</SelectItem>
@@ -96,13 +104,21 @@ export default function FilterControls({
               <SelectItem value="travel">Travel &amp; Hotels</SelectItem>
             </FilterSelect>
 
-            <FilterSelect label="Coupon Type" value={dealTypeFilter} onChange={setDealTypeFilter}>
+            <FilterSelect
+              label="Coupon Type"
+              value={dealTypeFilter}
+              onChange={setDealTypeFilter}
+            >
               <SelectItem value="all">All Coupon Types</SelectItem>
               <SelectItem value="coupon">Promo Codes Only</SelectItem>
               <SelectItem value="offer">Direct Offers Only</SelectItem>
             </FilterSelect>
 
-            <FilterSelect label="Sort Results" value={sortOrder} onChange={setSortOrder}>
+            <FilterSelect
+              label="Sort Results"
+              value={sortOrder}
+              onChange={setSortOrder}
+            >
               <SelectItem value="distance">Nearest First</SelectItem>
               <SelectItem value="discount">Highest Discount</SelectItem>
             </FilterSelect>
@@ -126,7 +142,9 @@ export default function FilterControls({
 function FilterSelect({ label, value, onChange, children }) {
   return (
     <div className="space-y-1">
-      <label className="text-[10px] font-bold text-brand-subtext uppercase tracking-wide">{label}</label>
+      <label className="text-[10px] font-bold text-brand-subtext uppercase tracking-wide">
+        {label}
+      </label>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className="text-[10px] h-8 bg-white border-brand-border cursor-pointer">
           <SelectValue />

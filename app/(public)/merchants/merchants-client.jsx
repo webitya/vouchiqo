@@ -42,7 +42,7 @@ export default function MerchantsClient({
         const mockMatch = MOCK_MERCHANTS_SEED.find(
           (mock) =>
             mock.slug === m.slug ||
-            mock.businessName.toLowerCase() === m.businessName.toLowerCase()
+            mock.businessName.toLowerCase() === m.businessName.toLowerCase(),
         );
         storeLogo = mockMatch ? mockMatch.logo : "";
       }
@@ -74,12 +74,12 @@ export default function MerchantsClient({
     let list = allMergedMerchants;
     if (activeLetter !== "all") {
       list = list.filter((m) =>
-        m.businessName.toUpperCase().startsWith(activeLetter)
+        m.businessName.toUpperCase().startsWith(activeLetter),
       );
     }
     if (searchQuery.trim()) {
       list = list.filter((m) =>
-        m.businessName.toLowerCase().includes(searchQuery.toLowerCase())
+        m.businessName.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
     return list;
@@ -88,7 +88,7 @@ export default function MerchantsClient({
   // Which letters are available for the merchants
   const availableLetters = useMemo(() => {
     const set = new Set(
-      allMergedMerchants.map((m) => m.businessName[0].toUpperCase())
+      allMergedMerchants.map((m) => m.businessName[0].toUpperCase()),
     );
     return set;
   }, [allMergedMerchants]);
@@ -106,7 +106,10 @@ export default function MerchantsClient({
 
   const headerStats = [
     { value: totalMerchants + 120, label: "Stores" },
-    { value: `${(totalCoupons + 450).toLocaleString()}+`, label: "Coupons & Offers" },
+    {
+      value: `${(totalCoupons + 450).toLocaleString()}+`,
+      label: "Coupons & Offers",
+    },
   ];
 
   const headerIcon = (
@@ -128,7 +131,9 @@ export default function MerchantsClient({
     "Who doesn't love a great deal? Vouchiqo brings you the best discounts from top stores like Amazon, Flipkart, Myntra, Nykaa, Swiggy, Domino's and more. From fashion shopping to food delivery, find active coupons.";
 
   return (
-    <main style={{ background: "#f5f6fa", minHeight: "70vh", paddingBottom: 40 }}>
+    <main
+      style={{ background: "#f5f6fa", minHeight: "70vh", paddingBottom: 40 }}
+    >
       <Breadcrumb segments={breadcrumbSegments} />
       <PageHeader
         title="Stores"
@@ -215,7 +220,14 @@ export default function MerchantsClient({
                 gap: 10,
               }}
             >
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: 0 }}>
+              <h2
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "#111827",
+                  margin: 0,
+                }}
+              >
                 All Merchants
               </h2>
               <GridToggle gridCols={gridCols} onGridChange={setGridCols} />

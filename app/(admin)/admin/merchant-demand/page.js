@@ -52,7 +52,9 @@ export default function MerchantDemandReport() {
       if (outreachStatus) params.set("outreachStatus", outreachStatus);
       if (doNotContact !== "all") params.set("doNotContact", doNotContact);
 
-      const res = await apiFetch(`/api/admin/merchant-demand?${params.toString()}`);
+      const res = await apiFetch(
+        `/api/admin/merchant-demand?${params.toString()}`,
+      );
       return res.data;
     },
   });
@@ -91,9 +93,10 @@ export default function MerchantDemandReport() {
   const openOutreachModal = (lead) => {
     setSelectedLead(lead);
     const count = lead.submissionCount || 1;
-    const template = lead.status === "previously_listed" 
-      ? `Hi ${lead.businessName || "Partner"}, we've received ${count} customer request(s) requesting your expired offers on Vouchiqo. We'd love to win you back! Let's reactivate your listing.`
-      : `Hi ${lead.businessName || "Merchant"}, we've noticed high customer demand for your brand in ${lead.city || "Ranchi"} with ${count} requests for expired offers. Let's get you listed on Vouchiqo!`;
+    const template =
+      lead.status === "previously_listed"
+        ? `Hi ${lead.businessName || "Partner"}, we've received ${count} customer request(s) requesting your expired offers on Vouchiqo. We'd love to win you back! Let's reactivate your listing.`
+        : `Hi ${lead.businessName || "Merchant"}, we've noticed high customer demand for your brand in ${lead.city || "Ranchi"} with ${count} requests for expired offers. Let's get you listed on Vouchiqo!`;
     setMessageText(template);
     setOutreachModalOpen(true);
   };
@@ -113,14 +116,14 @@ export default function MerchantDemandReport() {
       user={{ name: "Platform Admin", role: "admin" }}
     >
       <div className="flex flex-col gap-6">
-        
         {/* Description Header */}
         <div className="bg-brand-surface border border-brand-border/60 rounded-xl p-5 space-y-2">
           <h3 className="font-heading text-sm font-bold text-brand-navy uppercase tracking-wider">
             Merchant Demand Report & Intelligence
           </h3>
           <p className="text-xs text-brand-subtext leading-relaxed font-semibold">
-            This dashboard aggregates customer coupon revival requests for unlisted (Category C) and churned/inactive (Category B) merchants.
+            This dashboard aggregates customer coupon revival requests for
+            unlisted (Category C) and churned/inactive (Category B) merchants.
             Use this data as your high-intent cold outreach lead pipeline.
           </p>
         </div>
@@ -188,130 +191,149 @@ export default function MerchantDemandReport() {
         </div>
 
         {/* Data Table */}
-        {isLoading ? (
-          <div className="bg-brand-bg border border-brand-border rounded-xl p-8 text-center text-brand-subtext font-semibold shadow-sm">
-            <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-brand-blue" />
-            <span>Loading demand leads database...</span>
-          </div>
-        ) : leads.length > 0 ? (
-          <div className="bg-brand-bg border border-brand-border rounded-xl shadow-sm overflow-hidden flex flex-col justify-between">
-            <div className="overflow-x-auto flex-1">
-              <Table className="w-full text-xs">
-                <TableHeader className="bg-brand-surface border-b border-brand-border hover:bg-transparent">
-                  <TableRow className="hover:bg-transparent border-b border-brand-border">
-                    <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
-                      Merchant / Brand
-                    </TableHead>
-                    <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto text-center">
-                      Demand Count
-                    </TableHead>
-                    <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
-                      Category
-                    </TableHead>
-                    <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
-                      City
-                    </TableHead>
-                    <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
-                      Source Platforms
-                    </TableHead>
-                    <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
-                      Outreach Status
-                    </TableHead>
-                    <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto text-center">
-                      DNC Suppressed
-                    </TableHead>
-                    <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider text-right h-auto">
-                      Actions
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody className="divide-y divide-brand-border font-semibold text-brand-text">
-                  {leads.map((lead) => (
-                    <TableRow
-                      key={lead._id}
-                      className={`hover:bg-brand-surface/40 transition-colors border-b border-brand-border last:border-b-0 ${
-                        lead.doNotContact ? "opacity-60 bg-red-500/5" : ""
-                      }`}
-                    >
-                      <TableCell className="p-4 font-bold text-brand-navy h-auto">
-                        <div className="flex items-center gap-2">
-                          <Building2 className="w-3.5 h-3.5 text-brand-subtext" />
-                          <span>{lead.businessName}</span>
-                          {lead.status === "previously_listed" ? (
-                            <Badge className="bg-amber-500/10 text-amber-600 border-0 rounded px-1.5 py-0.5 text-[8px] font-bold">Churned</Badge>
-                          ) : (
-                            <Badge className="bg-brand-blue/10 text-brand-blue border-0 rounded px-1.5 py-0.5 text-[8px] font-bold">New Lead</Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="p-4 text-center h-auto">
-                        <span className="bg-brand-surface border border-brand-border/40 rounded px-2.5 py-0.5 font-bold text-brand-navy text-[11px]">
-                          {lead.submissionCount || 1}
-                        </span>
-                      </TableCell>
-                      <TableCell className="p-4 uppercase tracking-wider text-[10px] text-slate-500">
-                        {lead.category || "—"}
-                      </TableCell>
-                      <TableCell className="p-4">
-                        {lead.city || "Ranchi"}
-                      </TableCell>
-                      <TableCell className="p-4 text-brand-subtext">
-                        <div className="flex flex-wrap gap-1">
-                          {lead.sourcePlatforms?.map((plat) => (
-                            <span key={plat} className="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-semibold">{plat}</span>
-                          )) || "—"}
-                        </div>
-                      </TableCell>
-                      <TableCell className="p-4 h-auto">
-                        <select
-                          value={lead.outreachStatus || "not_contacted"}
-                          onChange={(e) => handleUpdateOutreachStatus(lead._id, e.target.value)}
-                          className="bg-brand-surface border border-brand-border rounded text-[11px] h-7 px-1.5 focus:outline-none"
-                        >
-                          <option value="not_contacted">Not Contacted</option>
-                          <option value="contacted">Contacted</option>
-                          <option value="awaiting_response">Awaiting Response</option>
-                          <option value="declined">Declined</option>
-                          <option value="converted">Converted</option>
-                        </select>
-                      </TableCell>
-                      <TableCell className="p-4 text-center h-auto">
-                        <button
-                          type="button"
-                          onClick={() => handleToggleDNC(lead._id, lead.doNotContact)}
-                          className={`w-10 h-5 rounded-full p-0.5 transition-colors border-0 cursor-pointer ${
-                            lead.doNotContact ? "bg-red-500 text-right" : "bg-slate-200 text-left"
+        {isLoading
+          ? <div className="bg-brand-bg border border-brand-border rounded-xl p-8 text-center text-brand-subtext font-semibold shadow-sm">
+              <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-brand-blue" />
+              <span>Loading demand leads database...</span>
+            </div>
+          : leads.length > 0
+            ? <div className="bg-brand-bg border border-brand-border rounded-xl shadow-sm overflow-hidden flex flex-col justify-between">
+                <div className="overflow-x-auto flex-1">
+                  <Table className="w-full text-xs">
+                    <TableHeader className="bg-brand-surface border-b border-brand-border hover:bg-transparent">
+                      <TableRow className="hover:bg-transparent border-b border-brand-border">
+                        <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                          Merchant / Brand
+                        </TableHead>
+                        <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto text-center">
+                          Demand Count
+                        </TableHead>
+                        <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                          Category
+                        </TableHead>
+                        <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                          City
+                        </TableHead>
+                        <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                          Source Platforms
+                        </TableHead>
+                        <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
+                          Outreach Status
+                        </TableHead>
+                        <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto text-center">
+                          DNC Suppressed
+                        </TableHead>
+                        <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider text-right h-auto">
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className="divide-y divide-brand-border font-semibold text-brand-text">
+                      {leads.map((lead) => (
+                        <TableRow
+                          key={lead._id}
+                          className={`hover:bg-brand-surface/40 transition-colors border-b border-brand-border last:border-b-0 ${
+                            lead.doNotContact ? "opacity-60 bg-red-500/5" : ""
                           }`}
                         >
-                          <span className="block w-4 h-4 bg-white rounded-full shadow-sm" />
-                        </button>
-                      </TableCell>
-                      <TableCell className="p-4 text-right">
-                        <Button
-                          size="sm"
-                          disabled={lead.doNotContact}
-                          onClick={() => openOutreachModal(lead)}
-                          className="bg-brand-blue/10 text-brand-blue hover:bg-brand-blue hover:text-white border-0 py-1 px-2.5 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer h-7 shadow-none disabled:opacity-40"
-                        >
-                          <PhoneCall className="w-3.5 h-3.5" />
-                          <span>Outreach</span>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-        ) : (
-          <div className="bg-brand-bg border border-brand-border rounded-xl p-12 text-center text-brand-subtext font-semibold shadow-sm">
-            <Filter className="w-6 h-6 mx-auto mb-2 text-slate-300" />
-            <h4 className="text-brand-navy">No demand leads found</h4>
-            <p className="text-xs text-brand-subtext leading-relaxed max-w-xs mx-auto mt-1 font-semibold">
-              There are currently no Category B or C revival requests in the database matching these filters.
-            </p>
-          </div>
-        )}
+                          <TableCell className="p-4 font-bold text-brand-navy h-auto">
+                            <div className="flex items-center gap-2">
+                              <Building2 className="w-3.5 h-3.5 text-brand-subtext" />
+                              <span>{lead.businessName}</span>
+                              {lead.status === "previously_listed"
+                                ? <Badge className="bg-amber-500/10 text-amber-600 border-0 rounded px-1.5 py-0.5 text-[8px] font-bold">
+                                    Churned
+                                  </Badge>
+                                : <Badge className="bg-brand-blue/10 text-brand-blue border-0 rounded px-1.5 py-0.5 text-[8px] font-bold">
+                                    New Lead
+                                  </Badge>}
+                            </div>
+                          </TableCell>
+                          <TableCell className="p-4 text-center h-auto">
+                            <span className="bg-brand-surface border border-brand-border/40 rounded px-2.5 py-0.5 font-bold text-brand-navy text-[11px]">
+                              {lead.submissionCount || 1}
+                            </span>
+                          </TableCell>
+                          <TableCell className="p-4 uppercase tracking-wider text-[10px] text-slate-500">
+                            {lead.category || "—"}
+                          </TableCell>
+                          <TableCell className="p-4">
+                            {lead.city || "Ranchi"}
+                          </TableCell>
+                          <TableCell className="p-4 text-brand-subtext">
+                            <div className="flex flex-wrap gap-1">
+                              {lead.sourcePlatforms?.map((plat) => (
+                                <span
+                                  key={plat}
+                                  className="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-semibold"
+                                >
+                                  {plat}
+                                </span>
+                              )) || "—"}
+                            </div>
+                          </TableCell>
+                          <TableCell className="p-4 h-auto">
+                            <select
+                              value={lead.outreachStatus || "not_contacted"}
+                              onChange={(e) =>
+                                handleUpdateOutreachStatus(
+                                  lead._id,
+                                  e.target.value,
+                                )
+                              }
+                              className="bg-brand-surface border border-brand-border rounded text-[11px] h-7 px-1.5 focus:outline-none"
+                            >
+                              <option value="not_contacted">
+                                Not Contacted
+                              </option>
+                              <option value="contacted">Contacted</option>
+                              <option value="awaiting_response">
+                                Awaiting Response
+                              </option>
+                              <option value="declined">Declined</option>
+                              <option value="converted">Converted</option>
+                            </select>
+                          </TableCell>
+                          <TableCell className="p-4 text-center h-auto">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleToggleDNC(lead._id, lead.doNotContact)
+                              }
+                              className={`w-10 h-5 rounded-full p-0.5 transition-colors border-0 cursor-pointer ${
+                                lead.doNotContact
+                                  ? "bg-red-500 text-right"
+                                  : "bg-slate-200 text-left"
+                              }`}
+                            >
+                              <span className="block w-4 h-4 bg-white rounded-full shadow-sm" />
+                            </button>
+                          </TableCell>
+                          <TableCell className="p-4 text-right">
+                            <Button
+                              size="sm"
+                              disabled={lead.doNotContact}
+                              onClick={() => openOutreachModal(lead)}
+                              className="bg-brand-blue/10 text-brand-blue hover:bg-brand-blue hover:text-white border-0 py-1 px-2.5 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer h-7 shadow-none disabled:opacity-40"
+                            >
+                              <PhoneCall className="w-3.5 h-3.5" />
+                              <span>Outreach</span>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            : <div className="bg-brand-bg border border-brand-border rounded-xl p-12 text-center text-brand-subtext font-semibold shadow-sm">
+                <Filter className="w-6 h-6 mx-auto mb-2 text-slate-300" />
+                <h4 className="text-brand-navy">No demand leads found</h4>
+                <p className="text-xs text-brand-subtext leading-relaxed max-w-xs mx-auto mt-1 font-semibold">
+                  There are currently no Category B or C revival requests in the
+                  database matching these filters.
+                </p>
+              </div>}
 
         {/* Outreach Script Modal */}
         {outreachModalOpen && selectedLead && (
@@ -324,11 +346,17 @@ export default function MerchantDemandReport() {
 
               <div className="space-y-3 text-xs">
                 <div>
-                  <span className="block font-bold text-slate-700">Target Business:</span>
-                  <span className="text-brand-navy font-semibold text-[13px]">{selectedLead.businessName}</span>
+                  <span className="block font-bold text-slate-700">
+                    Target Business:
+                  </span>
+                  <span className="text-brand-navy font-semibold text-[13px]">
+                    {selectedLead.businessName}
+                  </span>
                 </div>
                 <div>
-                  <span className="block font-bold text-slate-700">Outreach Message Content:</span>
+                  <span className="block font-bold text-slate-700">
+                    Outreach Message Content:
+                  </span>
                   <Textarea
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
@@ -355,7 +383,6 @@ export default function MerchantDemandReport() {
             </div>
           </div>
         )}
-
       </div>
     </DashboardLayout>
   );

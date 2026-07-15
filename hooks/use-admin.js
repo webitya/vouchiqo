@@ -86,7 +86,10 @@ export function useUpdatePayoutStatus() {
 
   return useMutation({
     mutationFn: async ({ payoutId, status }) =>
-      apiFetch("/api/admin/revenue", { method: "PUT", body: { payoutId, status } }),
+      apiFetch("/api/admin/revenue", {
+        method: "PUT",
+        body: { payoutId, status },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-revenue"] });
     },
@@ -149,7 +152,10 @@ export function useReviewCustomerRevival() {
 
   return useMutation({
     mutationFn: async ({ revivalId, status }) =>
-      apiFetch("/api/revivals/customer", { method: "PUT", body: { revivalId, status } }),
+      apiFetch("/api/revivals/customer", {
+        method: "PUT",
+        body: { revivalId, status },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-customer-revivals"] });
     },
@@ -221,7 +227,10 @@ export function useToggleUserStatus() {
 
   return useMutation({
     mutationFn: async ({ authId, isActive }) =>
-      apiFetch("/api/admin/users", { method: "PUT", body: { authId, isActive: !isActive } }),
+      apiFetch("/api/admin/users", {
+        method: "PUT",
+        body: { authId, isActive: !isActive },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
     },

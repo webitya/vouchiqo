@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { signUp } from "@/lib/auth-client";
 
 export function useRegister() {
-
   return useMutation({
     mutationFn: ({ email, password, name, role }) =>
       signUp.email({ email, password, name, role }),
@@ -16,10 +15,11 @@ export function useRegister() {
         return;
       }
       toast.success("Account created! Welcome to Vouchiqo 🎉");
-      const dest = variables.role === "merchant"
-        ? "/merchant/dashboard"
-        : "/customer/dashboard";
-      
+      const dest =
+        variables.role === "merchant"
+          ? "/merchant/dashboard"
+          : "/customer/dashboard";
+
       window.location.href = dest;
     },
 

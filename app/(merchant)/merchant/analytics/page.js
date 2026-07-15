@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
 import AnalyticsCard from "@/components/shared/AnalyticsCard";
 import KPICard from "@/components/shared/KPICard";
 import { Button } from "@/components/ui/button";
@@ -53,9 +54,7 @@ export default function MerchantAnalytics() {
   if (loadingProfile || loadingAnalytics) {
     return (
       <DashboardLayout title="Store Analytics" user={{ role: "merchant" }}>
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-subtext" />
-        </div>
+        <DashboardSkeleton mode="dashboard" />
       </DashboardLayout>
     );
   }

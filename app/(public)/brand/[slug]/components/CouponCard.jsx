@@ -58,15 +58,27 @@ export default function CouponCard({
         >
           {discountText ? (
             <>
-              <span className="text-[10px] font-black uppercase tracking-wider opacity-90">Discount</span>
-              <span className="text-xl sm:text-2xl font-black leading-none my-1">{discountText}</span>
-              <span className="text-[10px] font-black uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded">OFF</span>
+              <span className="text-[10px] font-black uppercase tracking-wider opacity-90">
+                Discount
+              </span>
+              <span className="text-xl sm:text-2xl font-black leading-none my-1">
+                {discountText}
+              </span>
+              <span className="text-[10px] font-black uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded">
+                OFF
+              </span>
             </>
           ) : (
             <>
-              <span className="text-[10px] font-black uppercase tracking-wider opacity-90">Exclusive</span>
-              <span className="text-lg font-black leading-none my-1">{hasCode ? "CODE" : "DEAL"}</span>
-              <span className="text-[9px] font-black uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded">ACTIVE</span>
+              <span className="text-[10px] font-black uppercase tracking-wider opacity-90">
+                Exclusive
+              </span>
+              <span className="text-lg font-black leading-none my-1">
+                {hasCode ? "CODE" : "DEAL"}
+              </span>
+              <span className="text-[9px] font-black uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded">
+                ACTIVE
+              </span>
             </>
           )}
         </div>
@@ -84,8 +96,12 @@ export default function CouponCard({
                 <span>3 Uses Today</span>
               </span>
             </div>
-            <h3 className="font-extrabold text-base text-[#191f2e] leading-snug">{coupon.title}</h3>
-            <p className="text-[12px] text-[#6b7280] leading-relaxed line-clamp-2">{coupon.description}</p>
+            <h3 className="font-extrabold text-base text-[#191f2e] leading-snug">
+              {coupon.title}
+            </h3>
+            <p className="text-[12px] text-[#6b7280] leading-relaxed line-clamp-2">
+              {coupon.description}
+            </p>
           </div>
 
           <div className="flex justify-between items-center pt-2 border-t border-[#f1f5f9]">
@@ -95,7 +111,11 @@ export default function CouponCard({
               className="text-[12px] font-black text-[#6b7280] hover:text-[#3e80dd] transition-colors flex items-center gap-1 border-0 bg-transparent cursor-pointer p-0"
             >
               <span>Show Details</span>
-              {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+              {isExpanded ? (
+                <ChevronUp className="w-3.5 h-3.5" />
+              ) : (
+                <ChevronDown className="w-3.5 h-3.5" />
+              )}
             </button>
 
             {hasCode ? (
@@ -129,7 +149,12 @@ export default function CouponCard({
               </div>
             ) : (
               <button
-                onClick={() => window.open(merchant.website || "https://google.com", "_blank")}
+                onClick={() =>
+                  window.open(
+                    merchant.website || "https://google.com",
+                    "_blank",
+                  )
+                }
                 type="button"
                 style={{
                   background: "#2563eb",
@@ -160,10 +185,21 @@ export default function CouponCard({
             Offer Details &amp; Terms
           </p>
           <ul className="list-disc pl-4 space-y-1 text-[#6b7280] font-medium">
-            <li>Applicable only on verified purchases via official partner channels.</li>
-            <li>Discount applies to base order value; taxes, fees, and surcharges excluded.</li>
-            <li>Cannot be combined with other ongoing merchant promotions or wallet cashbacks.</li>
-            <li>Offer valid for a limited time period. Valid until stock lasts.</li>
+            <li>
+              Applicable only on verified purchases via official partner
+              channels.
+            </li>
+            <li>
+              Discount applies to base order value; taxes, fees, and surcharges
+              excluded.
+            </li>
+            <li>
+              Cannot be combined with other ongoing merchant promotions or
+              wallet cashbacks.
+            </li>
+            <li>
+              Offer valid for a limited time period. Valid until stock lasts.
+            </li>
           </ul>
           {hasCode && (
             <div className="flex items-center gap-2 pt-2">

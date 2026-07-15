@@ -52,7 +52,9 @@ export default function FeaturedDeals() {
       });
       if (res.ok) {
         setCoupons((prev) =>
-          prev.map((c) => (c._id === couponId ? { ...c, isFeatured: !isFeatured } : c))
+          prev.map((c) =>
+            c._id === couponId ? { ...c, isFeatured: !isFeatured } : c,
+          ),
         );
       }
     } catch (err) {
@@ -110,67 +112,76 @@ export default function FeaturedDeals() {
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-brand-border font-semibold text-brand-text">
-              {loading ? (
-                <TableRow className="hover:bg-transparent">
-                  <TableCell colSpan={4} className="p-8 text-center text-brand-subtext font-semibold h-auto">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-brand-blue" />
-                    <span>Loading coupon listings...</span>
-                  </TableCell>
-                </TableRow>
-              ) : filteredCoupons.length === 0 ? (
-                <TableRow className="hover:bg-transparent">
-                  <TableCell colSpan={4} className="p-8 text-center text-brand-subtext font-semibold h-auto">
-                    No coupons found matching your search.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredCoupons.map((coupon) => (
-                  <TableRow
-                    key={coupon._id}
-                    className="hover:bg-brand-surface/40 transition-colors border-b border-brand-border last:border-b-0"
-                  >
-                    <TableCell className="p-4 font-bold text-brand-navy h-auto">
-                      {coupon.merchantId?.businessName || "Unknown Brand"}
-                    </TableCell>
-                    <TableCell className="p-4">{coupon.title}</TableCell>
-                    <TableCell className="p-4">
-                      <Badge
-                        variant={coupon.isFeatured ? "warning" : "secondary"}
-                        className={`rounded-full text-[10px] font-bold py-0.5 px-2.5 border-0 shadow-none ${
-                          coupon.isFeatured
-                            ? "bg-brand-warning/10 text-brand-warning hover:bg-brand-warning/10"
-                            : "bg-brand-subtext/15 text-brand-subtext hover:bg-brand-subtext/15"
-                        }`}
-                      >
-                        {coupon.isFeatured
-                          ? "Homepage Featured"
-                          : "Regular Listing"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="p-4 text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleToggleFeatured(coupon._id, coupon.isFeatured)}
-                        className={`text-xs py-1.5 px-4 font-bold flex items-center gap-1.5 justify-center ml-auto h-auto cursor-pointer shadow-none ${
-                          coupon.isFeatured
-                            ? "border-brand-warning/30 text-brand-warning hover:bg-brand-warning/5 hover:text-brand-warning"
-                            : "border-brand-blue/30 text-brand-blue hover:bg-brand-blue/5 hover:text-brand-blue"
-                        }`}
-                      >
-                        {coupon.isFeatured ? (
-                          <StarOff className="w-3.5 h-3.5" />
-                        ) : (
-                          <Star className="w-3.5 h-3.5 fill-current" />
-                        )}
-                        <span>
-                          {coupon.isFeatured ? "Unfeature" : "Feature Deal"}
-                        </span>
-                      </Button>
+              {loading
+                ? <TableRow className="hover:bg-transparent">
+                    <TableCell
+                      colSpan={4}
+                      className="p-8 text-center text-brand-subtext font-semibold h-auto"
+                    >
+                      <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-brand-blue" />
+                      <span>Loading coupon listings...</span>
                     </TableCell>
                   </TableRow>
-                ))
-              )}
+                : filteredCoupons.length === 0
+                  ? <TableRow className="hover:bg-transparent">
+                      <TableCell
+                        colSpan={4}
+                        className="p-8 text-center text-brand-subtext font-semibold h-auto"
+                      >
+                        No coupons found matching your search.
+                      </TableCell>
+                    </TableRow>
+                  : filteredCoupons.map((coupon) => (
+                      <TableRow
+                        key={coupon._id}
+                        className="hover:bg-brand-surface/40 transition-colors border-b border-brand-border last:border-b-0"
+                      >
+                        <TableCell className="p-4 font-bold text-brand-navy h-auto">
+                          {coupon.merchantId?.businessName || "Unknown Brand"}
+                        </TableCell>
+                        <TableCell className="p-4">{coupon.title}</TableCell>
+                        <TableCell className="p-4">
+                          <Badge
+                            variant={
+                              coupon.isFeatured ? "warning" : "secondary"
+                            }
+                            className={`rounded-full text-[10px] font-bold py-0.5 px-2.5 border-0 shadow-none ${
+                              coupon.isFeatured
+                                ? "bg-brand-warning/10 text-brand-warning hover:bg-brand-warning/10"
+                                : "bg-brand-subtext/15 text-brand-subtext hover:bg-brand-subtext/15"
+                            }`}
+                          >
+                            {coupon.isFeatured
+                              ? "Homepage Featured"
+                              : "Regular Listing"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="p-4 text-right">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              handleToggleFeatured(
+                                coupon._id,
+                                coupon.isFeatured,
+                              )
+                            }
+                            className={`text-xs py-1.5 px-4 font-bold flex items-center gap-1.5 justify-center ml-auto h-auto cursor-pointer shadow-none ${
+                              coupon.isFeatured
+                                ? "border-brand-warning/30 text-brand-warning hover:bg-brand-warning/5 hover:text-brand-warning"
+                                : "border-brand-blue/30 text-brand-blue hover:bg-brand-blue/5 hover:text-brand-blue"
+                            }`}
+                          >
+                            {coupon.isFeatured
+                              ? <StarOff className="w-3.5 h-3.5" />
+                              : <Star className="w-3.5 h-3.5 fill-current" />}
+                            <span>
+                              {coupon.isFeatured ? "Unfeature" : "Feature Deal"}
+                            </span>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
             </TableBody>
           </Table>
         </div>

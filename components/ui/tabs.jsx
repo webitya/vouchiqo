@@ -49,10 +49,7 @@ function TabsContent({ className, ...props }) {
   return (
     <TabsPrimitive.Content
       data-slot="tabs-content"
-      className={cn(
-        "w-full mt-2 focus-visible:outline-none",
-        className,
-      )}
+      className={cn("w-full mt-2 focus-visible:outline-none", className)}
       {...props}
     />
   );

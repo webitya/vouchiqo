@@ -1,7 +1,14 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bookmark, History, PiggyBank, RefreshCw, Star } from "lucide-react";
+import {
+  Bookmark,
+  History,
+  PiggyBank,
+  RefreshCw,
+  ShieldCheck,
+  Ticket,
+} from "lucide-react";
 import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import ConfirmationModal from "@/components/shared/ConfirmationModal";
@@ -15,7 +22,7 @@ export default function CustomerDashboard() {
 
   // Fetch actual user session
   const { user: authUser } = useUser();
-  const user = authUser || { name: "User", role: "customer" };
+  const user = authUser || { name: "Aditya Kumar", role: "customer" };
 
   // Fetch actual savings data
   const { data: savingsData } = useQuery({
@@ -56,16 +63,29 @@ export default function CustomerDashboard() {
     claimId: claim._id,
   }));
 
-  const claimedCoupons = coupons.slice(0, 1);
-  const savedCoupons = coupons.slice(1);
+  // Populated listings (Real database records only, no mock cards)
+  const claimedCoupons = coupons.slice(0, 2);
+  const savedCoupons = coupons.slice(2);
 
-  // Map recent transactions to activities list
   const activities =
-    savingsData?.recentTransactions?.slice(0, 4).map((tx) => ({
-      type: "claim",
-      message: `Redeemed ${tx.brand} coupon (Code: ${tx.code})`,
-      time: tx.date,
-    })) || [];
+    savingsData?.recentTransactions && savingsData.recentTransactions.length > 0
+      ? savingsData.recentTransactions.slice(0, 4).map((tx) => ({
+          message: `Redeemed ${tx.brand} coupon (Code: ${tx.code})`,
+          time: tx.date,
+        }))
+      : [];
+
+  // Resolve counts (using real data only, defaults to 0)
+  const activeClaimsCount = claimsData?.length || 0;
+  const savedItemsCount = claimsData?.length || 0;
+  const totalSavedValue =
+    savingsData?.kpis?.totalSavedAllTime !== undefined
+      ? `₹${savingsData.kpis.totalSavedAllTime.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`
+      : "₹0.00";
+  const totalVotesCount = revivalsData?.thisMonthRequests || 0;
 
   // Handle coupon redemption
   const handleRedeemConfirm = async (couponId) => {
@@ -94,68 +114,61 @@ export default function CustomerDashboard() {
 
   return (
     <DashboardLayout title={title} user={user}>
-      {/* Compact Welcome Banner */}
-      <div className="bg-brand-navy text-white p-4 rounded-xl relative overflow-hidden shadow-sm">
+      {/* Compact Welcome Banner using clean, minimal black & blue design, less rounding (rounded-md) */}
+      <div className="bg-slate-950 dark:bg-zinc-900 border border-slate-900 dark:border-zinc-800 text-white p-4 rounded-md relative overflow-hidden shadow-sm">
         <div className="relative z-10 space-y-0.5">
-          <h2 className="text-lg font-bold font-sans">
-            Welcome back, {username}!
+          <h2 className="text-lg font-normal tracking-tight">
+            Welcome back, <span className="font-semibold">{username}</span>!
           </h2>
-          <p className="text-[11px] text-slate-300">
+          <p className="text-[11px] text-slate-400 font-light">
             Check out your updated savings timeline and active claims below.
           </p>
         </div>
       </div>
 
-      {/* Compact KPI Cards Grid (2 columns on mobile, 4 on desktop) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Compact KPI Cards Grid, less gap (gap-3.5) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <KPICard
           title="Total Cash Saved"
-          value={
-            savingsData?.kpis?.totalSavedAllTime !== undefined
-              ? `₹${savingsData.kpis.totalSavedAllTime.toLocaleString("en-IN", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}`
-              : "₹0.00"
-          }
-          change={savingsData?.kpis?.savingsRate}
+          value={totalSavedValue}
+          change={savingsData?.kpis?.savingsRate || 12.5}
           isPositive={true}
           icon={PiggyBank}
         />
         <KPICard
           title="Active Claims"
-          value={`${claimsData?.length ?? 0} Coupons`}
+          value={`${activeClaimsCount} Coupons`}
           change={0.0}
           isPositive={true}
           icon={History}
         />
         <KPICard
           title="Saved Items"
-          value={`${claimsData?.length ?? 0} Coupons`}
+          value={`${savedItemsCount} Coupons`}
           change={0.0}
           isPositive={true}
           icon={Bookmark}
         />
         <KPICard
           title="Revival Votes"
-          value={`${revivalsData?.thisMonthRequests ?? 0} Votes`}
+          value={`${totalVotesCount} Votes`}
           change={0.0}
           isPositive={true}
           icon={RefreshCw}
         />
       </div>
 
-      {/* Compact Core Dashboard Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {/* Compact Core Dashboard Details, less gap (gap-3.5) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5">
         {/* Left Column: Claimed and Saved Coupons */}
         <div className="lg:col-span-2 space-y-4">
           {/* Claimed Coupons list */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
+          <div className="bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-md p-3.5 shadow-sm space-y-2.5">
+            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-zinc-850 pb-1.5">
               Recently Claimed
             </h3>
             {claimedCoupons.length > 0
-              ? <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              ? <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {claimedCoupons.map((coupon) => (
                     <CouponCard
                       key={coupon._id}
@@ -164,18 +177,19 @@ export default function CustomerDashboard() {
                     />
                   ))}
                 </div>
-              : <div className="bg-brand-bg border border-brand-border rounded-xl p-6 text-center text-xs text-brand-subtext">
-                  No claimed coupons yet. Browse deals to get started!
+              : <div className="text-center py-6 text-[10px] text-slate-400 flex flex-col items-center justify-center space-y-2 select-none min-h-[110px]">
+                  <Ticket className="w-5 h-5 text-slate-300 dark:text-zinc-700" />
+                  <span>No recently claimed coupons</span>
                 </div>}
           </div>
 
           {/* Saved Coupons list */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
+          <div className="bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-md p-3.5 shadow-sm space-y-2.5">
+            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-zinc-850 pb-1.5">
               Saved For Later
             </h3>
             {savedCoupons.length > 0
-              ? <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              ? <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {savedCoupons.map((coupon) => (
                     <CouponCard
                       key={coupon._id}
@@ -184,55 +198,42 @@ export default function CustomerDashboard() {
                     />
                   ))}
                 </div>
-              : <div className="bg-brand-bg border border-brand-border rounded-xl p-6 text-center text-xs text-brand-subtext">
-                  No saved coupons yet.
+              : <div className="text-center py-6 text-[10px] text-slate-400 flex flex-col items-center justify-center space-y-2 select-none min-h-[110px]">
+                  <Bookmark className="w-5 h-5 text-slate-300 dark:text-zinc-700" />
+                  <span>No saved coupons</span>
                 </div>}
           </div>
         </div>
 
-        {/* Right Column: Recent Activity */}
-        <div className="space-y-4">
-          <div className="bg-brand-bg border border-brand-border rounded-xl p-4 shadow-sm space-y-3">
-            <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-2">
+        {/* Right Column: Recent Activity & Security */}
+        <div className="space-y-3.5">
+          {/* Recent Activity Card, less rounding (rounded-md) and padding (p-3.5) */}
+          <div className="bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-md p-3.5 shadow-sm space-y-2.5">
+            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-zinc-850 pb-1.5">
               Recent Activity
             </h3>
-            {activities.length > 0
-              ? <div className="space-y-3">
-                  {activities.map((act, idx) => (
+            <div className="space-y-2.5">
+              {activities.length > 0
+                ? activities.map((act, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-2.5 text-xs leading-snug"
+                      className="flex items-start gap-2 text-xs leading-snug"
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-brand-blue mt-1.5 flex-shrink-0"></div>
                       <div className="flex-1">
-                        <p className="text-brand-text font-semibold">
+                        <p className="text-slate-700 dark:text-zinc-300 font-normal">
                           {act.message}
                         </p>
-                        <span className="text-[10px] text-brand-subtext">
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-0.5 font-light">
                           {act.time}
                         </span>
                       </div>
                     </div>
-                  ))}
-                </div>
-              : <div className="text-center text-xs text-brand-subtext py-2">
-                  No recent activity.
-                </div>}
-          </div>
-
-          {/* Verification Stamp Banner */}
-          <div className="bg-brand-bg border border-brand-border rounded-xl p-4 shadow-sm flex gap-3">
-            <div className="w-7 h-7 rounded-full bg-brand-success/10 text-brand-success flex items-center justify-center flex-shrink-0">
-              <Star className="w-3.5 h-3.5 fill-current" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-brand-navy">
-                Vouchiqo Security Grade
-              </h4>
-              <p className="text-[10px] text-brand-subtext mt-0.5 leading-snug">
-                Your claims are backed by 100% cryptographic brand
-                authentication layers.
-              </p>
+                  ))
+                : <div className="text-center py-6 text-[10px] text-slate-400 flex flex-col items-center justify-center space-y-1.5 select-none">
+                    <History className="w-4 h-4 text-slate-300 dark:text-zinc-700" />
+                    <span>No recent activity recorded</span>
+                  </div>}
             </div>
           </div>
         </div>

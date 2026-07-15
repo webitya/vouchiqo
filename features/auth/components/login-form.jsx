@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   InputGroup,
   InputGroupAddon,
@@ -32,7 +33,9 @@ export function LoginForm() {
           callbackURL: "/auth/callback",
         });
       } else {
-        toast.error("Google sign-in is not available. Please use email and password.");
+        toast.error(
+          "Google sign-in is not available. Please use email and password.",
+        );
       }
     } catch (err) {
       toast.error(err?.message ?? "Google authentication failed.");
@@ -46,22 +49,19 @@ export function LoginForm() {
           e.preventDefault();
           login({ email, password });
         }}
-        className="space-y-4"
+        className="space-y-3.5"
       >
         <div className="space-y-1.5">
-          <Label className="text-sm font-medium text-brand-text">
-            Email Address
-          </Label>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
+          <InputGroup className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-250/70 dark:border-zinc-800 rounded-md h-10 px-2 transition-all has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-brand-blue/60">
             <InputGroupAddon>
-              <Mail className="w-4 h-4 text-brand-subtext" />
+              <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500" />
             </InputGroupAddon>
             <InputGroupInput
               type="email"
-              placeholder="name@company.com"
+              placeholder="aaravsharma@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="text-base md:text-sm placeholder-brand-subtext h-full"
+              className="text-base md:text-sm placeholder:font-light placeholder:text-slate-400 dark:placeholder:text-slate-655 h-full font-normal"
               required
               autoFocus
             />
@@ -69,60 +69,71 @@ export function LoginForm() {
         </div>
 
         <div className="space-y-1.5">
-          <div className="flex justify-between items-center">
-            <Label className="text-sm font-medium text-brand-text">
-              Password
-            </Label>
-            <Link
-              href="/auth/forgot-password"
-              className="text-xs md:text-sm text-brand-blue font-semibold hover:underline"
-            >
-              Forgot Password?
-            </Link>
-          </div>
-          <InputGroup className="bg-brand-surface border border-brand-border rounded-md h-10 px-1">
+          <InputGroup className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-250/70 dark:border-zinc-800 rounded-md h-10 px-2 transition-all has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-brand-blue/60">
             <InputGroupAddon>
-              <Lock className="w-4 h-4 text-brand-subtext" />
+              <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />
             </InputGroupAddon>
             <InputGroupInput
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="text-base md:text-sm placeholder-brand-subtext h-full"
+              className="text-base md:text-sm placeholder:font-light placeholder:text-slate-400 dark:placeholder:text-slate-655 h-full font-normal"
               required
             />
-            <InputGroupAddon align="inline-end" className="pr-1.5">
+            <InputGroupAddon align="inline-end" className="pr-0.5">
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-brand-subtext hover:text-brand-text p-1 focus:outline-none cursor-pointer border-0 bg-transparent"
+                className="text-slate-400 dark:text-slate-500 hover:text-slate-500 dark:hover:text-slate-450 p-1 focus:outline-none cursor-pointer border-0 bg-transparent"
               >
                 {showPassword ? (
-                  <EyeOff className="w-4.5 h-4.5" />
+                  <EyeOff className="w-4 h-4" />
                 ) : (
-                  <Eye className="w-4.5 h-4.5" />
+                  <Eye className="w-4 h-4" />
                 )}
               </button>
             </InputGroupAddon>
           </InputGroup>
         </div>
 
+        {/* Remember me & Forgot Password */}
+        <div className="flex items-center justify-between pt-0.5">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="remember"
+              className="border-slate-300 dark:border-zinc-700 text-brand-blue focus:ring-brand-blue/20 rounded-sm w-3.5 h-3.5 cursor-pointer data-open:bg-brand-blue data-open:border-brand-blue"
+            />
+            <Label
+              htmlFor="remember"
+              className="text-xs md:text-sm font-normal text-slate-500 dark:text-slate-400 cursor-pointer select-none"
+            >
+              Remember me
+            </Label>
+          </div>
+          <Link
+            href="/forgot-password"
+            className="text-xs md:text-sm text-brand-blue dark:text-brand-blue font-normal transition-colors"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+
         <Button
           type="submit"
           disabled={isPending}
-          className="btn-primary w-full py-2.5 rounded-md text-sm font-semibold flex items-center justify-center gap-1 border-0 h-auto cursor-pointer shadow-none"
+          className="w-full bg-brand-blue hover:bg-blue-600 active:scale-[0.98] text-white rounded-md py-2 text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 border-0 h-auto cursor-pointer shadow-none disabled:opacity-50 disabled:pointer-events-none mt-1"
         >
-          <span>{isPending ? "Logging in..." : "Log In"}</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <span>{isPending ? "Signing In..." : "Sign In"}</span>
+          {!isPending && <ArrowRight className="w-4 h-4" />}
         </Button>
       </form>
 
       {/* Divider */}
       <div className="relative my-4 flex items-center justify-center">
-        <hr className="border-t border-brand-border w-full" />
-        <span className="absolute bg-brand-bg px-3 text-[11px] font-medium text-brand-subtext">
-          or log in with
+        <hr className="border-t border-slate-100 dark:border-zinc-900 w-full" />
+        <span className="absolute bg-white dark:bg-zinc-950 px-2.5 text-[9px] font-normal text-slate-400 dark:text-slate-500 tracking-wider uppercase">
+          Or Continue With
         </span>
       </div>
 
@@ -130,7 +141,7 @@ export function LoginForm() {
       <Button
         type="button"
         onClick={handleGoogleSignIn}
-        className="w-full h-10 border border-brand-border bg-brand-surface hover:bg-brand-bg text-brand-text hover:text-brand-navy flex items-center justify-center gap-2.5 rounded-md text-sm font-semibold transition-all shadow-none cursor-pointer"
+        className="w-full h-10 border border-slate-200 dark:border-zinc-800 bg-white hover:bg-slate-50 dark:bg-zinc-900 dark:hover:bg-zinc-800/80 text-slate-600 dark:text-slate-350 flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-all shadow-none cursor-pointer"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path
@@ -150,16 +161,16 @@ export function LoginForm() {
             d="M23.52 12.273c0-.818-.073-1.609-.208-2.373H12v4.582h6.473c-.273 1.455-1.09 2.69-2.318 3.518l3.864 3c2.255-2.082 3.5-5.155 3.5-8.727Z"
           />
         </svg>
-        <span>Google Account</span>
+        <span>Google</span>
       </Button>
 
-      <p className="text-center text-sm font-medium text-brand-subtext mt-4">
+      <p className="text-center text-xs font-normal text-slate-400 dark:text-slate-500 mt-4">
         Don't have an account?{" "}
         <Link
           href="/register"
-          className="text-brand-blue font-bold hover:underline"
+          className="text-brand-blue hover:text-blue-700 font-semibold transition-colors ml-0.5"
         >
-          Create one free
+          Sign up
         </Link>
       </p>
     </AuthCard>

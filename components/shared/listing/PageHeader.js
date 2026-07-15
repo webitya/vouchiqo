@@ -9,7 +9,12 @@
  * @param {Array} stats - [{ value, label }] stat blocks
  * @param {string} verifiedDate - Verified on date string
  */
-export default function PageHeader({ title, icon, stats = [], verifiedDate = "" }) {
+export default function PageHeader({
+  title,
+  icon,
+  stats = [],
+  verifiedDate = "",
+}) {
   return (
     <section
       style={{

@@ -5,7 +5,11 @@ import { CheckCircle2, Loader2, RotateCcw } from "lucide-react";
 /**
  * Expired coupons section with revival button for brand detail page.
  */
-export default function ExpiredCoupons({ expiredCoupons, revivalStatus, onRevive }) {
+export default function ExpiredCoupons({
+  expiredCoupons,
+  revivalStatus,
+  onRevive,
+}) {
   if (expiredCoupons.length === 0) return null;
 
   return (
@@ -34,8 +38,12 @@ export default function ExpiredCoupons({ expiredCoupons, revivalStatus, onRevive
                     Expired
                   </span>
                 </div>
-                <h4 className="text-sm font-bold text-slate-700">{coupon.title}</h4>
-                <p className="text-[11px] text-[#6b7280] leading-snug">{coupon.description}</p>
+                <h4 className="text-sm font-bold text-slate-700">
+                  {coupon.title}
+                </h4>
+                <p className="text-[11px] text-[#6b7280] leading-snug">
+                  {coupon.description}
+                </p>
               </div>
 
               <div className="flex-shrink-0 self-stretch sm:self-auto flex items-center justify-end">

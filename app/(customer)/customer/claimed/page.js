@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useUser } from "@/hooks/use-user";
+import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
 
 export default function ClaimedCoupons() {
   const { user: authUser } = useUser();
@@ -62,9 +63,7 @@ export default function ClaimedCoupons() {
       </div>
 
       {loading
-        ? <div className="flex justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-brand-subtext" />
-          </div>
+        ? <DashboardSkeleton mode="table" />
         : redemptions.length > 0
           ? <div className="bg-brand-bg border border-brand-border rounded-xl shadow-sm overflow-hidden">
               <div className="overflow-x-auto">

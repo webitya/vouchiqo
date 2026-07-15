@@ -42,7 +42,9 @@ export default function BrandSidebar({ merchant, copiedLink, onShare }) {
           About {merchant.businessName}
         </h3>
         <p className="text-[13px] text-[#6b7280] leading-relaxed">
-          {merchant.longDescription || merchant.description || "No description provided for this brand storefront."}
+          {merchant.longDescription ||
+            merchant.description ||
+            "No description provided for this brand storefront."}
         </p>
         {merchant.website && (
           <a
@@ -76,7 +78,8 @@ export default function BrandSidebar({ merchant, copiedLink, onShare }) {
                 <>
                   {merchant.location.city},{" "}
                   {merchant.location.state || "Jharkhand"}
-                  {merchant.location?.pincode && `, ${merchant.location.pincode}`}
+                  {merchant.location?.pincode &&
+                    `, ${merchant.location.pincode}`}
                 </>
               ) : (
                 "Ranchi, Jharkhand, India"
@@ -140,7 +143,10 @@ function FaqAccordion({ faqs }) {
         {faqs.map((faq, idx) => {
           const isExpanded = expandedFaq === idx;
           return (
-            <div key={idx} className="border-b border-[#f1f5f9] last:border-0 pb-3 last:pb-0">
+            <div
+              key={idx}
+              className="border-b border-[#f1f5f9] last:border-0 pb-3 last:pb-0"
+            >
               <button
                 onClick={() => setExpandedFaq(isExpanded ? null : idx)}
                 type="button"
@@ -154,7 +160,9 @@ function FaqAccordion({ faqs }) {
                 )}
               </button>
               {isExpanded && (
-                <p className="text-xs text-[#6b7280] leading-relaxed mt-2 pl-1 font-medium">{faq.a}</p>
+                <p className="text-xs text-[#6b7280] leading-relaxed mt-2 pl-1 font-medium">
+                  {faq.a}
+                </p>
               )}
             </div>
           );

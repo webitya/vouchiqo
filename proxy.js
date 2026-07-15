@@ -42,7 +42,9 @@ export async function proxy(request) {
       const session = await response.json();
       if (session?.user) {
         const { role } = session.user;
-        console.log(`[Middleware] Path: "${pathname}", User: "${session.user.email}", Role: "${role}"`);
+        console.log(
+          `[Middleware] Path: "${pathname}", User: "${session.user.email}", Role: "${role}"`,
+        );
 
         // Redirect logged-in users away from auth forms (e.g. login, register)
         const isAuthForm =
@@ -58,14 +60,18 @@ export async function proxy(request) {
 
         if (isAuthForm) {
           const dest = getRedirectForRole(role);
-          console.log(`[Middleware] Redirecting logged-in user away from auth form to: "${dest}"`);
+          console.log(
+            `[Middleware] Redirecting logged-in user away from auth form to: "${dest}"`,
+          );
           return NextResponse.redirect(new URL(dest, request.url));
         }
 
         // Enforce centralized authorization rules on protected path folders
         if (!isAuthorizedForRoute(pathname, role)) {
           const dest = getRedirectForRole(role);
-          console.log(`[Middleware] Unauthorized access attempt for "${pathname}". Redirecting to: "${dest}"`);
+          console.log(
+            `[Middleware] Unauthorized access attempt for "${pathname}". Redirecting to: "${dest}"`,
+          );
           return NextResponse.redirect(new URL(dest, request.url));
         }
 
