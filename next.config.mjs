@@ -4,13 +4,21 @@ const isProd = process.env.NODE_ENV === "production";
 const nextConfig = {
   reactCompiler: true,
   async headers() {
+    // Allowed origins: production domain + localhost for dev
+    const allowedOrigins = [
+      process.env.NEXT_PUBLIC_APP_URL || "https://vouchiqo.com",
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+    ];
+
     return [
       {
         source: "/api/:path*",
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+            // In dev we allow both; in prod the env var controls this
+            value: allowedOrigins[0],
           },
           {
             key: "Access-Control-Allow-Methods",

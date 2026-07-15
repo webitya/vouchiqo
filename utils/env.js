@@ -9,7 +9,7 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
-  NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
+  NEXT_PUBLIC_APP_URL: z.string().url("NEXT_PUBLIC_APP_URL must be a valid URL"),
 
   // Database
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
@@ -43,6 +43,9 @@ const envToValidate = { ...process.env };
 
 if (isBuild) {
   // Inject valid dummy variables during build phase to prevent construction/evaluation crashes
+  if (!envToValidate.NEXT_PUBLIC_APP_URL) {
+    envToValidate.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
+  }
   if (!envToValidate.MONGODB_URI) {
     envToValidate.MONGODB_URI = "mongodb://localhost:27017/build_db";
   }

@@ -43,7 +43,7 @@ export function MerchantLoginForm() {
         return;
       }
       toast.success("Welcome back, Merchant Partner!");
-      window.location.href = "/merchant/dashboard";
+      router.replace("/merchant/dashboard");
     },
     onError: (err) => {
       toast.error(err?.message ?? "Something went wrong. Try again.");

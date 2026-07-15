@@ -1,28 +1,36 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { signIn } from "@/lib/auth-client";
 
 export function useLogin() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({ email, password }) => signIn.email({ email, password }),
 
-    onSuccess: ({ data, error }) => {
+    onSuccess: async ({ data, error }) => {
       if (error) {
         toast.error(error.message ?? "Invalid credentials");
         return;
       }
+
       toast.success("Welcome back!");
       const role = data?.user?.role ?? "customer";
-      const dest =
-        role === "admin"
-          ? "/admin/dashboard"
-          : role === "merchant"
-            ? "/merchant/dashboard"
-            : "/";
 
-      window.location.href = dest;
+      // Invalidate session cache so dashboard reads fresh data
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+
+      if (role === "admin") {
+        router.replace("/admin/dashboard");
+      } else if (role === "merchant") {
+        router.replace("/merchant/dashboard");
+      } else {
+        router.replace("/");
+      }
     },
 
     onError: (err) =>

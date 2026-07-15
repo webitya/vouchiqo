@@ -17,11 +17,13 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 
 export default function Sidebar({ role = "customer" }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const getLinks = () => {
     switch (role) {
@@ -155,9 +157,9 @@ export default function Sidebar({ role = "customer" }) {
       {/* Footer / Sign Out */}
       <div className="p-4 border-t border-white/10">
         <Button
-          onClick={() => {
-            // better-auth sign out handler
-            window.location.href = "/login";
+          onClick={async () => {
+            await signOut();
+            router.replace("/login");
           }}
           variant="ghost"
           className="flex items-center justify-start gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-white/5 hover:text-white transition-all cursor-pointer h-auto border-0 bg-transparent shadow-none"
