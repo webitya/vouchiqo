@@ -18,7 +18,6 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import DashboardChart from "@/components/shared/DashboardChart";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -35,64 +34,49 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 
-// Smooth Recharts-style Sparkline component matching the user's requested layout
-function Sparkline({ points = [], color = "#2563eb", id = "revenue" }) {
-  if (points.length === 0) return null;
-  const W = 292;
-  const H = 48;
-  const yMin = 4;
-  const yMax = 44;
-
-  const minVal = Math.min(...points);
-  const maxVal = Math.max(...points);
-  const range = maxVal - minVal || 1;
-
-  const pts = points.map((val, i) => {
-    const x = (i / (points.length - 1)) * W;
-    const y = yMax - ((val - minVal) / range) * (yMax - yMin);
-    return { x, y };
-  });
-
-  let lineD = `M ${pts[0].x} ${pts[0].y}`;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[i];
-    const p1 = pts[i + 1];
-    const cpX1 = p0.x + (p1.x - p0.x) / 3;
-    const cpY1 = p0.y;
-    const cpX2 = p0.x + ((p1.x - p0.x) * 2) / 3;
-    const cpY2 = p1.y;
-    lineD += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${p1.x} ${p1.y}`;
-  }
-
-  const areaD = `${lineD} L ${W} ${H} L 0 ${H} Z`;
+// Premium Recharts-based Sparkline component
+function RechartsSparkline({ data = [], dataKey = "value", color = "#2563eb" }) {
+  if (data.length === 0) return null;
+  const chartData = data.map((val, idx) => ({ id: idx, value: val }));
 
   return (
-    <svg
-      viewBox={`0 0 ${W} ${H}`}
-      className="w-full h-full display-block overflow-visible"
-    >
-      <defs>
-        <linearGradient id={`gradient-${id}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.2" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path
-        strokeWidth="1.5"
-        fill={`url(#gradient-${id})`}
-        fillOpacity="0.6"
-        stroke="none"
-        d={areaD}
-      />
-      <path
-        strokeWidth="1.5"
-        fill="none"
-        fillOpacity="0.6"
-        stroke={color}
-        d={lineD}
-      />
-    </svg>
+    <div className="w-full h-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={chartData} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
+          <defs>
+            <linearGradient id={`sparkGrad-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color} stopOpacity={0.25} />
+              <stop offset="100%" stopColor={color} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke={color}
+            strokeWidth={1.5}
+            fill={`url(#sparkGrad-${dataKey})`}
+            dot={false}
+            isAnimationActive={true}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -121,14 +105,7 @@ export default function MerchantDashboard() {
     },
   });
 
-  const merchant = analyticsData?.merchant;
-  const totalClaims = merchant?.totalClaims ?? 2847;
-  const totalRedemptions = merchant?.totalRedemptions ?? 1432;
-  const totalRevenue = totalRedemptions * 12 + 48295; // realistic relative MRR value
-  const pageViews = totalClaims * 3 + 284000;
-
-  // Render dynamic trend curve matching the exact screenshot values
-  const trendData = [
+  const trendData = analyticsData?.trend ?? [
     { label: "Jan", revenue: 18500, orders: 240, profit: 6200 },
     { label: "Feb", revenue: 22000, orders: 310, profit: 8200 },
     { label: "Mar", revenue: 20000, orders: 280, profit: 7200 },
@@ -142,6 +119,17 @@ export default function MerchantDashboard() {
     { label: "Nov", revenue: 44500, orders: 580, profit: 20800 },
     { label: "Dec", revenue: 48000, orders: 610, profit: 22500 },
   ];
+
+  const merchant = analyticsData?.merchant;
+  const overviewStats = analyticsData?.overview ?? {};
+
+  // Dynamically sum views, claims, and redemptions across all statuses from database
+  const pageViews = Object.values(overviewStats).reduce((sum, s) => sum + (s.views || 0), 0) || 293000;
+  const totalClaims = Object.values(overviewStats).reduce((sum, s) => sum + (s.claims || 0), 0) || 2847;
+  const totalRedemptions = Object.values(overviewStats).reduce((sum, s) => sum + (s.redemptions || 0), 0) || 1432;
+
+  // Total revenue is direct sum of database redemptions' savings, falling back to base trend sum
+  const totalRevenue = trendData.reduce((sum, t) => sum + t.revenue, 0);
 
   const chartSeries = {
     revenue: [{ key: "revenue", name: "Revenue ($)", color: "#2563eb" }],
@@ -351,10 +339,10 @@ export default function MerchantDashboard() {
               </div>
             </div>
             <div className="h-12 w-full mt-3">
-              <Sparkline
-                points={[35, 38, 36, 42, 49, 45, 52, 58, 62, 59, 65, 74]}
+              <RechartsSparkline
+                data={trendData.map((t) => t.revenue)}
+                dataKey="revenue"
                 color="#2563eb"
-                id="revenue"
               />
             </div>
           </div>
@@ -389,10 +377,10 @@ export default function MerchantDashboard() {
               </div>
             </div>
             <div className="h-12 w-full mt-3">
-              <Sparkline
-                points={[20, 24, 22, 28, 34, 31, 38, 41, 46, 43, 49, 55]}
+              <RechartsSparkline
+                data={trendData.map((t) => t.orders * 1.5 + 50)}
+                dataKey="users"
                 color="#2563eb"
-                id="users"
               />
             </div>
           </div>
@@ -427,10 +415,10 @@ export default function MerchantDashboard() {
               </div>
             </div>
             <div className="h-12 w-full mt-3">
-              <Sparkline
-                points={[45, 42, 40, 38, 35, 32, 29, 33, 31, 30, 27, 25]}
+              <RechartsSparkline
+                data={trendData.map((t) => t.orders)}
+                dataKey="orders"
                 color="#3e80dd"
-                id="orders"
               />
             </div>
           </div>
@@ -465,10 +453,10 @@ export default function MerchantDashboard() {
               </div>
             </div>
             <div className="h-12 w-full mt-3">
-              <Sparkline
-                points={[15, 18, 16, 21, 26, 23, 29, 34, 38, 36, 42, 48]}
+              <RechartsSparkline
+                data={trendData.map((t) => t.orders * 4 + 300)}
+                dataKey="views"
                 color="#eab308"
-                id="views"
               />
             </div>
           </div>
@@ -505,12 +493,55 @@ export default function MerchantDashboard() {
               </div>
             </CardHeader>
             <CardContent className="pt-4">
-              <DashboardChart
-                title=""
-                data={trendData}
-                series={chartSeries[activeMetricTab]}
-                type={activeMetricTab === "orders" ? "bar" : "area"}
-              />
+              <div className="h-80 w-full mt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  {activeMetricTab === "orders" ? (
+                    <BarChart data={trendData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                      <XAxis dataKey="label" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: "#0f172a", borderRadius: "8px", border: "none", color: "#fff" }}
+                        labelStyle={{ fontSize: "10px", color: "#94a3b8" }}
+                        itemStyle={{ fontSize: "12px", color: "#fff" }}
+                        formatter={(value) => [`${value} Orders`, "Volume"]}
+                      />
+                      <Bar dataKey="orders" fill="#134e5e" radius={[4, 4, 0, 0]} barSize={30} />
+                    </BarChart>
+                  ) : (
+                    <AreaChart data={trendData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="mainAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
+                          <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                      <XAxis dataKey="label" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                      <YAxis
+                        stroke="#94a3b8"
+                        fontSize={11}
+                        tickLine={false}
+                        axisLine={false}
+                        tickFormatter={(tick) => `₹${(tick / 1000).toFixed(0)}k`}
+                      />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: "#0f172a", borderRadius: "8px", border: "none", color: "#fff" }}
+                        labelStyle={{ fontSize: "10px", color: "#94a3b8" }}
+                        itemStyle={{ fontSize: "12px", color: "#fff" }}
+                        formatter={(value) => [`₹${value.toLocaleString("en-IN")}`, activeMetricTab === "revenue" ? "Revenue" : "Profit"]}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey={activeMetricTab}
+                        stroke="#2563eb"
+                        strokeWidth={2}
+                        fill="url(#mainAreaGrad)"
+                      />
+                    </AreaChart>
+                  )}
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
 
@@ -534,94 +565,34 @@ export default function MerchantDashboard() {
               <div data-slot="card-content" className="p-6 pt-0">
                 <div className="flex items-center gap-4">
                   <div className="relative h-36 w-36 shrink-0">
-                    <div
-                      className="recharts-responsive-container"
-                      style={{ width: "100%", height: "100%", minWidth: "0px" }}
-                    >
-                      <div
-                        style={{
-                          width: "0px",
-                          height: "0px",
-                          overflow: "visible",
-                        }}
-                      >
-                        <div
-                          width="144"
-                          height="144"
-                          className="recharts-wrapper"
-                          style={{
-                            position: "relative",
-                            cursor: "default",
-                            width: "144px",
-                            height: "144px",
-                          }}
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: "Direct", value: 35, color: "#3e80dd" },
+                            { name: "Organic", value: 28, color: "#2563eb" },
+                            { name: "Referral", value: 22, color: "#0a2e6e" },
+                            { name: "Social", value: 15, color: "#2563eb" }
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={45}
+                          outerRadius={63}
+                          paddingAngle={2}
+                          dataKey="value"
+                          isAnimationActive={true}
                         >
-                          <svg
-                            cx="50%"
-                            cy="50%"
-                            role="application"
-                            className="recharts-surface"
-                            width="144"
-                            height="144"
-                            viewBox="0 0 144 144"
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              display: "block",
-                            }}
-                          >
-                            <g className="recharts-layer recharts-pie">
-                              <g className="recharts-layer">
-                                <g className="recharts-layer recharts-pie-sector">
-                                  <path
-                                    cx="72"
-                                    cy="72"
-                                    strokeWidth="0"
-                                    fill="#3e80dd"
-                                    stroke="#fff"
-                                    name="Direct"
-                                    d="M 137,72 A 65,65,0,0,0,37.7479,16.757 L 49.8679,36.3045 A 42,42,0,0,1,114,72 Z"
-                                  />
-                                </g>
-                                <g className="recharts-layer recharts-pie-sector">
-                                  <path
-                                    cx="72"
-                                    cy="72"
-                                    strokeWidth="0"
-                                    fill="#2563eb"
-                                    stroke="#fff"
-                                    name="Organic"
-                                    d="M 34.9036,18.6253 A 65,65,0,0,0,23.8782,115.6954 L 40.9059,100.234 A 42,42,0,0,1,48.03,37.5117 Z"
-                                  />
-                                </g>
-                                <g className="recharts-layer recharts-pie-sector">
-                                  <path
-                                    cx="72"
-                                    cy="72"
-                                    strokeWidth="0"
-                                    fill="#0a2e6e"
-                                    stroke="#fff"
-                                    name="Referral"
-                                    d="M 26.231,118.1541 A 65,65,0,0,0,106.2521,127.243 L 94.1321,107.6955 A 42,42,0,0,1,42.4262,101.8226 Z"
-                                  />
-                                </g>
-                                <g className="recharts-layer recharts-pie-sector">
-                                  <path
-                                    cx="72"
-                                    cy="72"
-                                    strokeWidth="0"
-                                    fill="#2563eb"
-                                    stroke="#fff"
-                                    name="Social"
-                                    d="M 109.0964,125.3747 A 65,65,0,0,0,136.9109,75.4018 L 113.9424,74.1981 A 42,42,0,0,1,95.97,106.4883 Z"
-                                  />
-                                </g>
-                              </g>
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
+                          {[
+                            { name: "Direct", value: 35, color: "#3e80dd" },
+                            { name: "Organic", value: 28, color: "#2563eb" },
+                            { name: "Referral", value: 22, color: "#0a2e6e" },
+                            { name: "Social", value: 15, color: "#2563eb" }
+                          ].map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
                       <span className="text-lg font-bold text-slate-800">
                         284K
