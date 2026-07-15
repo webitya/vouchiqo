@@ -97,6 +97,31 @@ export async function getPlatformSettings() {
     };
   });
 
+  const recentRevivals = await CustomerRevival.find({
+    status: { $in: ["code_regenerated", "alternative_provided"] },
+    includeInPublicFeed: true,
+  })
+    .sort({ updatedAt: -1 })
+    .limit(5)
+    .lean();
+
+  const liveRevivalStories = recentRevivals.map((rev) => {
+    const brand = rev.brandName || "Partner Store";
+    const dateText = rev.updatedAt ? getRelativeTime(rev.updatedAt) : "Recently";
+    const valText = rev.discountValue
+      ? rev.discountType === "percentage"
+        ? `${rev.discountValue}% OFF`
+        : `₹${rev.discountValue} OFF`
+      : "Verified Offer";
+    return {
+      user: `User from ${rev.city || "Ranchi"}`,
+      brand,
+      offer: `Revived ${valText}`,
+      date: dateText,
+      text: `Requested revival of expired coupon at ${brand}. Vouchiqo worked with the brand to regenerate the deal for local shoppers!`,
+    };
+  });
+
   const baseSocialProof = settingsMap.social_proof || [
     {
       user: "Anish S. from Ranchi",
@@ -121,7 +146,7 @@ export async function getPlatformSettings() {
     },
   ];
 
-  settingsMap.social_proof = [...liveSocialProofs, ...baseSocialProof].slice(
+  settingsMap.social_proof = [...liveRevivalStories, ...liveSocialProofs, ...baseSocialProof].slice(
     0,
     5,
   );

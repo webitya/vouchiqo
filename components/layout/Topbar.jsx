@@ -1,7 +1,11 @@
 "use client";
 
+<<<<<<< HEAD
 import { Bell, ChevronDown, Search, User, LogOut } from "lucide-react";
 import Link from "next/link";
+=======
+import { Bell, Search, User, ChevronDown } from "lucide-react";
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -274,6 +278,7 @@ export default function Topbar({ title = "Dashboard", user: propUser = null }) {
               <ChevronDown className="w-3.5 h-3.5 text-brand-subtext group-hover:text-brand-blue transition-colors ml-0.5" />
             </div>
           </div>
+<<<<<<< HEAD
 
           {dropdownOpen && (
             <>
@@ -312,6 +317,9 @@ export default function Topbar({ title = "Dashboard", user: propUser = null }) {
               </div>
             </>
           )}
+=======
+          <ChevronDown className="w-3.5 h-3.5 text-brand-subtext group-hover:text-brand-text transition-colors" />
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
         </div>
       </div>
     </header>

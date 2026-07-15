@@ -28,7 +28,7 @@ const CATEGORY_META = {
   food: {
     title: "Food & Dining",
     emoji: "🍔",
-    banner: "bg-gradient-to-r from-amber-500 to-blue-600",
+    banner: "bg-gradient-to-r from-amber-500 to-orange-500",
     subs: ["Fast Food", "Fine Dining", "Bakeries", "Beverages"],
   },
   fashion: {
@@ -52,19 +52,19 @@ const CATEGORY_META = {
   travel: {
     title: "Travel & Hotels",
     emoji: "✈️",
-    banner: "bg-gradient-to-r from-blue-500 to-teal-500",
+    banner: "bg-gradient-to-r from-emerald-500 to-teal-500",
     subs: ["Hotels", "Flights", "Cabs", "Luggage"],
   },
   fitness: {
     title: "Health & Fitness",
     emoji: "💪",
-    banner: "bg-gradient-to-r from-red-500 to-blue-600",
+    banner: "bg-gradient-to-r from-red-500 to-orange-500",
     subs: ["Gyms", "Supplements", "Equipment", "Wearables"],
   },
   home: {
     title: "Home & Décor",
     emoji: "🏠",
-    banner: "bg-gradient-to-r from-teal-500 to-blue-600",
+    banner: "bg-gradient-to-r from-teal-500 to-emerald-600",
     subs: ["Furniture", "Sanitary Ware", "Tiles", "Lighting"],
   },
   entertainment: {

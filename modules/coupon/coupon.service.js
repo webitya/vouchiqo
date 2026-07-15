@@ -143,7 +143,18 @@ export async function listCoupons(searchParams) {
     Coupon.countDocuments(filter),
   ]);
 
-  return { coupons, meta: buildMeta(total, page, limit) };
+  let sortedCoupons = coupons;
+  if (city && city.toLowerCase() === "ranchi") {
+    sortedCoupons = [...coupons].sort((a, b) => {
+      const aIsHomeImp = a.category === "home-improvement";
+      const bIsHomeImp = b.category === "home-improvement";
+      if (aIsHomeImp && !bIsHomeImp) return -1;
+      if (!aIsHomeImp && bIsHomeImp) return 1;
+      return 0;
+    });
+  }
+
+  return { coupons: sortedCoupons, meta: buildMeta(total, page, limit) };
 }
 
 /**

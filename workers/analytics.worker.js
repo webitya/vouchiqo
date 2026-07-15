@@ -11,6 +11,8 @@
  * In production, use PM2 or a Dockerfile CMD to keep this running.
  */
 
+import "../utils/dns-bypass.mjs";
+
 import { Worker } from "bullmq";
 import mongoose from "mongoose";
 import { redis } from "../lib/redis.js";

@@ -9,15 +9,80 @@ import mongoose, { Schema } from "mongoose";
  */
 const customerRevivalSchema = new Schema(
   {
+<<<<<<< HEAD
     code: {
       type: String,
       uppercase: true,
       trim: true,
     },
 
+=======
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
     brandName: {
       type: String,
       required: [true, "Brand/store name is required"],
+      trim: true,
+    },
+
+    category: {
+      type: String,
+      required: [true, "Category is required"],
+      trim: true,
+    },
+
+    foundWhere: {
+      type: String,
+      required: [true, "Where you found this is required"],
+      trim: true,
+    },
+
+    foundWhereOther: {
+      type: String,
+      trim: true,
+    },
+
+    merchantWebsite: {
+      type: String,
+      trim: true,
+    },
+
+    city: {
+      type: String,
+      required: [true, "City is required"],
+      trim: true,
+    },
+
+    code: {
+      type: String,
+      trim: true,
+      uppercase: true,
+    },
+
+    discountType: {
+      type: String,
+      required: [true, "Discount type is required"],
+      enum: ["percentage", "fixed", "bogo", "freebie", "other"],
+    },
+
+    discountValue: {
+      type: Number,
+    },
+
+    description: {
+      type: String,
+      required: [true, "Description is required"],
+      maxlength: 100,
+      trim: true,
+    },
+
+    foundAtDate: {
+      type: Date,
+      required: [true, "Date found is required"],
+    },
+
+    buyingIntent: {
+      type: String,
+      maxlength: 150,
       trim: true,
     },
 
@@ -28,6 +93,7 @@ const customerRevivalSchema = new Schema(
       trim: true,
     },
 
+<<<<<<< HEAD
     whereDidYouFindThisOffer: {
       type: String,
       trim: true,
@@ -87,19 +153,36 @@ const customerRevivalSchema = new Schema(
     category: {
       type: String,
       enum: ["A", "B", "C"],
+=======
+    mobile: {
+      type: String,
+      required: [true, "Mobile number is required"],
+      trim: true,
+    },
+
+    routingCategory: {
+      type: String,
+      enum: ["A", "B", "C"],
+      default: "C",
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
       index: true,
     },
 
     priority: {
       type: String,
+<<<<<<< HEAD
       enum: ["high", "medium", "low"],
       default: "low",
+=======
+      enum: ["HIGH", "MEDIUM", "LOW"],
+      default: "LOW",
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
       index: true,
     },
 
     status: {
       type: String,
-      enum: ["pending", "contacted", "approved", "rejected"],
+      enum: ["pending", "code_regenerated", "alternative_provided", "declined", "contacted"],
       default: "pending",
       index: true,
     },
@@ -141,6 +224,21 @@ const customerRevivalSchema = new Schema(
     votes: {
       type: Number,
       default: 1,
+    },
+
+    isPossibleDuplicate: {
+      type: Boolean,
+      default: false,
+    },
+
+    includeInPublicFeed: {
+      type: Boolean,
+      default: false,
+    },
+
+    declineReason: {
+      type: String,
+      trim: true,
     },
   },
   {

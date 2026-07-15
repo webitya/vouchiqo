@@ -193,7 +193,7 @@ const RIGHT_BRANDS = [
       "Flat 50% OFF First 3 Uber Rides — Up to ₹100 Per Ride. Valid for new users.",
     image: "/herobanners/Offer%2520Code.jpg.jpeg",
     logo: "/brandlogos/10018.jpg",
-    buttonText: "GRAB NOW",
+    buttonText: "GET OFFER",
     link: "/brand/uber",
   },
   {
@@ -206,7 +206,7 @@ const RIGHT_BRANDS = [
       "Grab Up To 97% OFF Best-Selling Online Courses in programming and business.",
     image: "/herobanners/Coupon%2520Codes.jpg.jpeg",
     logo: "/brandlogos/10019.jpg",
-    buttonText: "GRAB NOW",
+    buttonText: "GET OFFER",
     link: "/brand/udemy",
   },
   {
@@ -219,7 +219,7 @@ const RIGHT_BRANDS = [
       "Start your free Google Workspace trial today and boost your productivity with Gemini AI.",
     image: "/herobanners/Discount%2520Codes.jpg.jpeg",
     logo: "/brandlogos/10020.jpg",
-    buttonText: "GRAB NOW",
+    buttonText: "GET OFFER",
     link: "/brand/google",
   },
 ];

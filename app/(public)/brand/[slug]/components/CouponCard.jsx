@@ -44,7 +44,7 @@ export default function CouponCard({
           style={{
             background: hasCode
               ? "linear-gradient(135deg, #3e80dd, #1e40af)"
-              : "linear-gradient(135deg, #2563eb, #047857)",
+              : "linear-gradient(135deg, #10b981, #047857)",
             color: "#ffffff",
             display: "flex",
             flexDirection: "column",
@@ -157,7 +157,7 @@ export default function CouponCard({
                 }
                 type="button"
                 style={{
-                  background: "#2563eb",
+                  background: "#10b981",
                   color: "#ffffff",
                   border: "none",
                   borderRadius: 8,

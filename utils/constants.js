@@ -38,12 +38,11 @@ export const COUPON_CATEGORIES = [
   "finance",
   "gaming",
   "automotive",
-  "automobile",
   "kids-baby",
-  "jewellery",
   "pets",
   "organic",
   "grocery",
+  "real-estate",
   "other",
 ];
 

@@ -46,6 +46,16 @@ export const createMerchantSchema = z.object({
   operatingHours: z.record(z.any()).optional(),
   logo: z.string().optional(),
   banner: z.string().optional(),
+  autoApproveRevivals: z.boolean().optional(),
+  legalEntityType: z.enum(["Proprietorship", "Partnership", "LLP", "Pvt Ltd"]).optional(),
+  pan: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN format").or(z.string().max(0)).optional(),
+  gstin: z.string().regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, "Invalid GSTIN format").or(z.string().max(0)).optional(),
+  bankDetails: z.object({
+    accountName: z.string().optional(),
+    accountNumber: z.string().optional(),
+    ifsc: z.string().optional(),
+    bankName: z.string().optional(),
+  }).optional(),
 });
 
 export const updateMerchantSchema = createMerchantSchema.partial();

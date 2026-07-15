@@ -36,8 +36,8 @@ export function HotDealsTicker() {
     );
   }
 
-  if (coupons.length === 0) {
-    return null; // Gracefully hide if no active coupons are found
+  if (coupons.length < 3) {
+    return null; // Gracefully hide if fewer than 3 active coupons are found (per spec)
   }
 
   // Duplicate items to ensure a seamless infinite loop animation
@@ -47,9 +47,9 @@ export function HotDealsTicker() {
     <div className="bg-[#1A3C5E] text-white overflow-hidden h-10 md:h-11 z-40 sticky top-[64px] border-b border-white/10 flex items-center select-none w-full">
       {/* Fixed Left Badge */}
       <div className="absolute left-0 top-0 bottom-0 flex items-center bg-[#1A3C5E] pl-3 pr-2 md:pl-4 md:pr-4 z-50 shadow-[10px_0_15px_-3px_rgba(26,60,94,0.9)]">
-        <span className="bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-[10px] md:text-xs font-black px-2 py-0.5 md:px-2.5 md:py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+        <span className="bg-gradient-to-r from-[#FF7A18] to-[#FF3D77] text-white text-[10px] md:text-xs font-black px-2 py-0.5 md:px-2.5 md:py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
           <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-          HOT DEALS
+          🔥 TODAY'S DEALS
         </span>
       </div>
 
@@ -99,7 +99,7 @@ export function HotDealsTicker() {
                   <span className="text-slate-300 text-xs">{coupon.title}</span>
 
                   {/* Orange Discount Pill */}
-                  <span className="bg-[#2563eb]/20 border border-[#2563eb]/50 text-[#2563eb] text-[10px] px-2 py-0.5 rounded-full font-bold">
+                  <span className="bg-[#FF7A18]/20 border border-[#FF7A18]/50 text-[#FF7A18] text-[10px] px-2 py-0.5 rounded-full font-bold">
                     {discountText}
                   </span>
 
@@ -110,7 +110,7 @@ export function HotDealsTicker() {
                 </Link>
 
                 {/* Orange Divider */}
-                <span className="h-4 w-[1px] bg-[#2563eb]/40 self-center" />
+                <span className="h-4 w-[1px] bg-[#FF7A18]/40 self-center" />
               </div>
             );
           })}

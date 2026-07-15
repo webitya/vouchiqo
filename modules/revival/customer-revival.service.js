@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import CustomerRevival from "@/modules/revival/customer-revival.model";
 import MerchantDemand from "@/modules/revival/merchant-demand.model";
 import Merchant from "@/modules/merchant/merchant.model";
@@ -88,6 +89,7 @@ export async function listAllCustomerRevivals(searchParams) {
 }
 
 /**
+<<<<<<< HEAD
  * Submits a new customer revival request, running the 3-Way Routing and priority logic.
  *
  * @param {object} data - Form data fields
@@ -124,6 +126,89 @@ export async function createCustomerRevival(data) {
       merchantId = matchedMerchant._id;
       merchantStatus = "previously_listed";
     }
+=======
+ * Submits a new customer revival request.
+ * Classifies under Category A/B/C routing and calculates priority dynamically.
+ *
+ * @param {object} data - Full verified request fields
+ */
+export async function createCustomerRevival(data) {
+  // 1. Rate Limiting: max 5 requests per 30-day period
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const monthlyCount = await CustomerRevival.countDocuments({
+    email: data.email.trim().toLowerCase(),
+    createdAt: { $gte: thirtyDaysAgo },
+  });
+  if (monthlyCount >= 5) {
+    throw new Error(
+      "You've reached your monthly submission limit. Need help sooner? Contact support."
+    );
+  }
+
+  // 2. Duplicate Detection: flag duplicate if same email + brand within 7 days
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const duplicateCheck = await CustomerRevival.findOne({
+    email: data.email.trim().toLowerCase(),
+    brandName: new RegExp(`^${escapeRegex(data.brandName.trim())}$`, "i"),
+    createdAt: { $gte: sevenDaysAgo },
+  });
+  const isPossibleDuplicate = !!duplicateCheck;
+
+  // 3. Three-Way Category Routing: A (active), B (churned), C (unlisted)
+  const Merchant = mongoose.models.Merchant || mongoose.model("Merchant");
+  const merchant = await Merchant.findOne({
+    businessName: new RegExp(`^${escapeRegex(data.brandName.trim())}$`, "i"),
+  });
+
+  let routingCategory = "C";
+  if (merchant) {
+    routingCategory = merchant.status === "approved" ? "A" : "B";
+  }
+
+  // 4. Dynamic Priority Assignment (HIGH / MEDIUM / LOW)
+  const PlatformSetting =
+    mongoose.models.PlatformSetting || mongoose.model("PlatformSetting");
+  const priorityCitiesSetting = await PlatformSetting.findOne({
+    key: "revival_priority_cities",
+  });
+  const priorityCategoriesSetting = await PlatformSetting.findOne({
+    key: "revival_priority_categories",
+  });
+
+  const priorityCities = priorityCitiesSetting?.value || [
+    "ranchi",
+    "jamshedpur",
+    "dhanbad",
+    "bokaro",
+  ];
+  const priorityCategories = priorityCategoriesSetting?.value || [
+    "home-improvement",
+    "fashion",
+    "beauty",
+  ];
+
+  let priority = "LOW";
+  const now = new Date();
+  const diffTime = Math.abs(now - new Date(data.foundAtDate));
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  const priorSuccess = await CustomerRevival.findOne({
+    email: data.email.trim().toLowerCase(),
+    status: { $in: ["code_regenerated", "alternative_provided"] },
+  });
+
+  if (routingCategory === "A" || diffDays <= 14 || !!priorSuccess) {
+    priority = "HIGH";
+  } else if (
+    routingCategory === "B" ||
+    (routingCategory === "C" &&
+      priorityCities.includes(data.city.trim().toLowerCase()) &&
+      priorityCategories.includes(data.category.trim().toLowerCase()))
+  ) {
+    priority = "MEDIUM";
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
   }
 
   // 3. Priority Logic Calculation
@@ -167,9 +252,24 @@ export async function createCustomerRevival(data) {
 
   // 4. Create the CustomerRevival record
   const revival = await CustomerRevival.create({
+<<<<<<< HEAD
     code: data.code?.trim().toUpperCase() || "",
+=======
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
     brandName: data.brandName.trim(),
+    category: data.category.trim(),
+    foundWhere: data.foundWhere.trim(),
+    foundWhereOther: data.foundWhereOther?.trim() || undefined,
+    merchantWebsite: data.merchantWebsite?.trim() || undefined,
+    city: data.city.trim(),
+    code: data.code?.trim().toUpperCase() || undefined,
+    discountType: data.discountType,
+    discountValue: data.discountValue || undefined,
+    description: data.description.trim(),
+    foundAtDate: data.foundAtDate,
+    buyingIntent: data.buyingIntent?.trim() || undefined,
     email: data.email.trim().toLowerCase(),
+<<<<<<< HEAD
     whereDidYouFindThisOffer: data.whereDidYouFindThisOffer,
     merchantWebsite: data.merchantWebsite,
     merchantCity: data.merchantCity,
@@ -183,6 +283,12 @@ export async function createCustomerRevival(data) {
     possibleDuplicate,
     category,
     priority,
+=======
+    mobile: data.mobile.trim(),
+    routingCategory,
+    priority,
+    isPossibleDuplicate,
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
     status: "pending",
     outcomeStatus: "pending",
   });
@@ -246,12 +352,32 @@ export async function createCustomerRevival(data) {
 
 /**
  * Updates a customer revival request status.
+<<<<<<< HEAD
+=======
+ *
+ * @param {string} revivalId
+ * @param {string} status
+ * @param {object} details - { declineReason, alternativeOfferId }
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
  */
-export async function updateCustomerRevivalStatus(revivalId, status) {
+export async function updateCustomerRevivalStatus(revivalId, status, details = {}) {
+  const updateData = { status };
+  if (details.declineReason) {
+    updateData.declineReason = details.declineReason;
+  }
+  if (details.alternativeOfferId) {
+    updateData.adminAlternativeOffers = [details.alternativeOfferId];
+  }
+
   const revival = await CustomerRevival.findByIdAndUpdate(
     revivalId,
+<<<<<<< HEAD
     { $set: { status } },
     { new: true },
+=======
+    { $set: updateData },
+    { new: true }
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
   );
 
   if (!revival) throw new Error("Customer revival request not found");

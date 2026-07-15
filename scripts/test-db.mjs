@@ -1,10 +1,13 @@
 // Quick MongoDB connection test
 // Run with: node scripts/test-db.mjs
 
-import { config } from "dotenv";
-import { MongoClient } from "mongodb";
+import "../utils/dns-bypass.mjs";
 
-config(); // load .env
+import envPkg from "@next/env";
+const { loadEnvConfig } = envPkg;
+loadEnvConfig(process.cwd());
+
+import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
 

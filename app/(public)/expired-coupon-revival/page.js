@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ExpiredCouponRevival from "./revival-client";
 
 export const metadata = {
@@ -13,5 +14,9 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <ExpiredCouponRevival />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-brand-surface flex items-center justify-center text-xs font-semibold text-brand-text">Loading...</div>}>
+      <ExpiredCouponRevival />
+    </Suspense>
+  );
 }

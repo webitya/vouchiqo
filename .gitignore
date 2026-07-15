@@ -46,9 +46,18 @@ Vouchiqo_Developer_Implementation_Prompt.md
 Vouchiqo_Security_Prompt.md
 Vouchiqo_UIUX_Prompt.md
 
+<<<<<<< HEAD
 # AI Agent Configuration & Brain Files
 .gemini/
 .agents/
 /project-brain/
 /projects_docs/
 
+=======
+# Agent directories and docs
+.agents
+.gemini
+brain
+projects_docs
+temp-clone
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6

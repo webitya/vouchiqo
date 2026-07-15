@@ -77,7 +77,7 @@ export const HOME_CATEGORIES = [
   {
     name: "Travel & Hotels",
     icon: Plane,
-    color: "text-blue-500 bg-blue-50",
+    color: "text-emerald-500 bg-emerald-50",
   },
   { name: "Health & Care", icon: Heart, color: "text-rose-500 bg-rose-50" },
 ];

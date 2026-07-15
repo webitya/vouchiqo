@@ -8,7 +8,11 @@ import {
   PiggyBank,
   Wallet,
 } from "lucide-react";
+<<<<<<< HEAD
 import { Suspense, useEffect, useState } from "react";
+=======
+import { useEffect, useState, Suspense } from "react";
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 // Layout & Global Components
@@ -26,9 +30,9 @@ import WalletTab from "./components/WalletTab";
 import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
 
 const DONUT_COLORS = [
-  "#2563eb",
+  "#FF7A18",
   "#1E4FAF",
-  "#2563eb",
+  "#00B67A",
   "#FFB020",
   "#A855F7",
   "#3B82F6",
@@ -70,7 +74,11 @@ function ConfettiOverlay({ active }) {
   );
 }
 
+<<<<<<< HEAD
 function ProfileContent() {
+=======
+function ProfileHubContent() {
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
   const { user: authUser } = useUser();
   const [activeTab, setActiveTab] = useState("savings");
   const [loading, setLoading] = useState(true);
@@ -99,6 +107,7 @@ function ProfileContent() {
 
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
+<<<<<<< HEAD
 
   // Load Tab from URL Parameter dynamically
   useEffect(() => {
@@ -114,16 +123,23 @@ function ProfileContent() {
       setActiveTab(tabParam);
     }
   }, [tabParam]);
+=======
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
 
-  // Sync activeTab to URL search params
-  const handleTabChange = (tabName) => {
-    setActiveTab(tabName);
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location);
-      url.searchParams.set("tab", tabName);
-      window.history.pushState({}, "", url);
+  // Load Tab from URL Parameter dynamically
+  useEffect(() => {
+    const validTabs = [
+      "savings",
+      "saved",
+      "wallet",
+      "activity",
+      "nearby",
+      "settings",
+    ];
+    if (tabParam && validTabs.includes(tabParam)) {
+      setActiveTab(tabParam);
     }
-  };
+  }, [tabParam]);
 
   // Main data load
   const loadData = async () => {
@@ -373,7 +389,11 @@ function ProfileContent() {
     >
       <ConfettiOverlay active={triggerConfetti} />
 
+<<<<<<< HEAD
       {/* Tabs removed to use Sidebar Navigation instead */}
+=======
+
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
 
       {/* TAB CONTENT PANEL */}
       <div className="space-y-6 pt-2">
@@ -466,8 +486,25 @@ function ProfileContent() {
 
 export default function ProfileHub() {
   return (
+<<<<<<< HEAD
     <Suspense fallback={<DashboardSkeleton mode="profile" />}>
       <ProfileContent />
+=======
+    <Suspense fallback={
+      <DashboardLayout
+        title="Customer Profile"
+        user={{ name: "User", role: "customer" }}
+      >
+        <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+          <div className="w-10 h-10 border-4 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-xs font-bold text-brand-subtext uppercase tracking-wider">
+            Loading profile...
+          </p>
+        </div>
+      </DashboardLayout>
+    }>
+      <ProfileHubContent />
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
     </Suspense>
   );
 }

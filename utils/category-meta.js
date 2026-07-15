@@ -103,7 +103,7 @@ export const CATEGORY_DETAIL_META = {
   food: {
     title: "Food & Dining",
     emoji: "🍔",
-    banner: "bg-gradient-to-r from-amber-500 to-blue-600",
+    banner: "bg-gradient-to-r from-amber-500 to-orange-500",
     subs: ["Fast Food", "Fine Dining", "Bakeries", "Beverages"],
   },
   fashion: {
@@ -127,19 +127,19 @@ export const CATEGORY_DETAIL_META = {
   travel: {
     title: "Travel & Hotels",
     emoji: "✈️",
-    banner: "bg-gradient-to-r from-blue-500 to-teal-500",
+    banner: "bg-gradient-to-r from-emerald-500 to-teal-500",
     subs: ["Hotels", "Flights", "Cabs", "Luggage"],
   },
   fitness: {
     title: "Health & Fitness",
     emoji: "💪",
-    banner: "bg-gradient-to-r from-red-500 to-blue-600",
+    banner: "bg-gradient-to-r from-red-500 to-orange-500",
     subs: ["Gyms", "Supplements", "Equipment", "Wearables"],
   },
   home: {
     title: "Home & Décor",
     emoji: "🏠",
-    banner: "bg-gradient-to-r from-teal-500 to-blue-600",
+    banner: "bg-gradient-to-r from-teal-500 to-emerald-600",
     subs: ["Furniture", "Sanitary Ware", "Tiles", "Lighting"],
   },
   entertainment: {
@@ -157,7 +157,7 @@ export const CATEGORY_DETAIL_META = {
   "home-improvement": {
     title: "Home Improvement",
     emoji: "🏗️",
-    banner: "bg-gradient-to-r from-amber-500 to-blue-600",
+    banner: "bg-gradient-to-r from-amber-500 to-orange-600",
     subs: [
       "Tiles & Sanitary",
       "Granite & Marble",
@@ -180,7 +180,7 @@ export const CATEGORY_DETAIL_META = {
   finance: {
     title: "Finance & Insurance",
     emoji: "💵",
-    banner: "bg-gradient-to-r from-blue-500 to-green-600",
+    banner: "bg-gradient-to-r from-emerald-500 to-green-600",
     subs: ["Credit Cards", "Loans", "Insurance", "Investments"],
   },
   gaming: {
@@ -198,7 +198,7 @@ export const CATEGORY_DETAIL_META = {
   "kids-baby": {
     title: "Kids & Baby",
     emoji: "👶",
-    banner: "bg-gradient-to-r from-pink-400 to-blue-400",
+    banner: "bg-gradient-to-r from-pink-400 to-orange-400",
     subs: ["Baby Clothing", "Toys", "Baby Care", "Diapers"],
   },
   pets: {
@@ -210,13 +210,13 @@ export const CATEGORY_DETAIL_META = {
   organic: {
     title: "Organic & Wellness",
     emoji: "🌿",
-    banner: "bg-gradient-to-r from-green-400 to-blue-500",
+    banner: "bg-gradient-to-r from-green-400 to-emerald-500",
     subs: ["Organic Food", "Herbal Beauty", "Health Supplements"],
   },
   grocery: {
     title: "Groceries & Supermarket",
     emoji: "🛒",
-    banner: "bg-gradient-to-r from-blue-400 to-lime-500",
+    banner: "bg-gradient-to-r from-emerald-400 to-lime-500",
     subs: ["Fresh Vegetables", "Beverages", "Snacks", "Household Items"],
   },
   other: {

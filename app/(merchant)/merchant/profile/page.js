@@ -70,6 +70,7 @@ export default function MerchantBusinessProfile() {
     },
     logo: "",
     banner: "",
+    autoApproveRevivals: false,
   });
 
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -122,6 +123,7 @@ export default function MerchantBusinessProfile() {
         },
         logo: merchant.logo ?? "",
         banner: merchant.banner ?? "",
+        autoApproveRevivals: merchant.autoApproveRevivals ?? false,
       });
     }
   }, [merchant]);
@@ -750,6 +752,39 @@ export default function MerchantBusinessProfile() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Revival Requests Settings Card */}
+          <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm space-y-4">
+            <h3 className="font-heading text-sm font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3 flex items-center gap-2">
+              <RotateCcw className="w-4 h-4 text-brand-blue" />
+              <span>Revival Requests Settings</span>
+            </h3>
+            <div className="flex gap-3 items-start">
+              <input
+                type="checkbox"
+                id="auto-approve-revivals"
+                checked={formData.autoApproveRevivals}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    autoApproveRevivals: e.target.checked,
+                  })
+                }
+                className="w-4 h-4 text-brand-blue cursor-pointer mt-0.5"
+              />
+              <div className="space-y-1">
+                <label
+                  htmlFor="auto-approve-revivals"
+                  className="text-xs font-bold text-brand-navy cursor-pointer select-none"
+                >
+                  Auto-approve revival requests
+                </label>
+                <p className="text-[11px] text-brand-subtext leading-relaxed">
+                  Automatically approve customer requests to revive expired coupon offers if they are submitted within 30 days of the original expiry date, under the same discount terms.
+                </p>
+              </div>
             </div>
           </div>
 

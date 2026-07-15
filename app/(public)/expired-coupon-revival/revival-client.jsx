@@ -3,6 +3,8 @@
 import {
   AlertTriangle,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Loader2,
   RotateCcw,
   Send,
@@ -14,12 +16,49 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { useSession } from "@/lib/auth-client";
+import { INDIAN_CITIES } from "@/utils/cities";
+import HowItWorks from "./components/HowItWorks";
+import SuccessStories from "./components/SuccessStories";
+import Step1Merchant from "./components/Step1Merchant";
+import Step2Offer from "./components/Step2Offer";
+import Step3Contact from "./components/Step3Contact";
+import Step4Review from "./components/Step4Review";
+
+// 15 Vouchiqo standard categories
+const VOUCHIQO_CATEGORIES = [
+  "Food & Dining",
+  "Fashion & Apparel",
+  "Beauty & Wellness",
+  "Electronics & Gadgets",
+  "Home Improvement",
+  "Health & Fitness",
+  "Entertainment & Leisure",
+  "Travel & Tourism",
+  "Education & Learning",
+  "Automotive",
+  "Financial Services",
+  "Pets",
+  "Real Estate",
+  "Professional Services",
+  "Groceries & Essentials",
+];
+
+const FOUND_SOURCES = [
+  "Vouchiqo",
+  "Instagram",
+  "WhatsApp Forward",
+  "Google Search",
+  "Another Coupon Website",
+  "Physical Store or Flyer",
+  "Friend or Family",
+  "Other",
+];
 
 const SOURCE_PLATFORMS = [
   "Vouchiqo",
@@ -59,6 +98,7 @@ const CATEGORIES = [
 ];
 
 export default function ExpiredCouponRevival() {
+<<<<<<< HEAD
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     brandName: "",
@@ -76,10 +116,43 @@ export default function ExpiredCouponRevival() {
     consent: false,
   });
 
+=======
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
+
+  const [step, setStep] = useState(1);
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
+<<<<<<< HEAD
+=======
+  // Auto-complete suggestions state
+  const [brandSuggestions, setBrandSuggestions] = useState([]);
+  const [citySuggestions, setCitySuggestions] = useState([]);
+  const [isCategoryLocked, setIsCategoryLocked] = useState(false);
+  const [isExpedited, setIsExpedited] = useState(false);
+
+  const [form, setForm] = useState({
+    brandName: "",
+    category: "",
+    foundWhere: "Vouchiqo",
+    foundWhereOther: "",
+    merchantWebsite: "",
+    city: "",
+    code: "",
+    discountType: "percentage",
+    discountValue: "",
+    description: "",
+    foundAtDate: new Date().toISOString().split("T")[0],
+    buyingIntent: "",
+    email: "",
+    mobile: "+91",
+    consent: false,
+  });
+
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
   const [stats, setStats] = useState({
     totalRequests: 5240,
     thisMonthRequests: 142,
@@ -109,27 +182,88 @@ export default function ExpiredCouponRevival() {
     },
   ]);
 
+  // Pre-fill parameters if arriving from an expired offer card
   useEffect(() => {
-    async function fetchPlatformSettings() {
+    const brand = searchParams.get("brand");
+    const category = searchParams.get("category");
+    const code = searchParams.get("code");
+    const discountType = searchParams.get("discountType");
+    const discountValue = searchParams.get("discountValue");
+    const description = searchParams.get("description");
+    const isCategoryAMerchant = searchParams.get("activeMerchant") === "true";
+
+    if (brand) {
+      setForm((prev) => ({
+        ...prev,
+        brandName: brand,
+        category: category || "",
+        code: code || "",
+        discountType: discountType || "percentage",
+        discountValue: discountValue || "",
+        description: description || "",
+      }));
+
+      if (category) {
+        setIsCategoryLocked(true);
+      }
+
+      if (isCategoryAMerchant) {
+        setIsExpedited(true);
+        // Expedited flow bypasses steps 1 & 2 directly to step 3/4
+        setStep(3);
+      }
+    }
+  }, [searchParams]);
+
+  // Set email when logged in
+  useEffect(() => {
+    if (session?.user?.email) {
+      setForm((prev) => ({ ...prev, email: session.user.email }));
+    }
+  }, [session]);
+
+  // Fetch stats & social-proof successes
+  useEffect(() => {
+    async function loadData() {
       try {
+<<<<<<< HEAD
         const res = await fetch("/api/admin/settings?public=true");
         if (res.ok) {
           const json = await res.json();
           if (json.status === "success" && json.data?.settings) {
             const s = json.data.settings;
             if (s.revival_stats) setStats(s.revival_stats);
+=======
+        const [statsRes, settingsRes] = await Promise.all([
+          fetch("/api/revivals/customer"),
+          fetch("/api/admin/settings?public=true"),
+        ]);
+
+        if (statsRes.ok) {
+          const statsJson = await statsRes.json();
+          if (statsJson.status === "success") {
+            setStats(statsJson.data);
+          }
+        }
+
+        if (settingsRes.ok) {
+          const settingsJson = await settingsRes.json();
+          if (settingsJson.status === "success" && settingsJson.data?.settings) {
+            const s = settingsJson.data.settings;
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
             if (s.social_proof && s.social_proof.length > 0) {
               setSuccessStories(s.social_proof);
             }
           }
         }
       } catch (err) {
-        console.error("Failed to fetch revival stats/stories:", err);
+        console.error("Failed to load revival client statistics:", err);
       }
     }
-    fetchPlatformSettings();
+    loadData();
   }, []);
 
+<<<<<<< HEAD
   const nextStep = () => {
     if (step === 1) {
       if (!form.brandName || !form.merchantCity) {
@@ -151,48 +285,192 @@ export default function ExpiredCouponRevival() {
         return;
       }
     }
+=======
+  // Handle autocomplete query for brands
+  const handleBrandChange = async (val) => {
+    setForm((prev) => ({ ...prev, brandName: val }));
+    if (val.trim().length > 1) {
+      try {
+        const res = await fetch(`/api/brands/autocomplete?query=${encodeURIComponent(val)}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success) {
+            setBrandSuggestions(json.brands);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching brand suggestions:", err);
+      }
+    } else {
+      setBrandSuggestions([]);
+    }
+  };
+
+  // Select brand suggestion
+  const selectBrand = (b) => {
+    setForm((prev) => ({
+      ...prev,
+      brandName: b.name,
+      category: b.category || prev.category,
+      city: b.city || prev.city,
+    }));
+    if (b.category) {
+      setIsCategoryLocked(true);
+    }
+    setBrandSuggestions([]);
+  };
+
+  // Perform backend check on blur to see if category should lock
+  const checkBrandOnBlur = async () => {
+    if (!form.brandName.trim()) return;
+    try {
+      const res = await fetch(`/api/brands/autocomplete?query=${encodeURIComponent(form.brandName)}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.brands.length > 0) {
+          const matched = json.brands.find(
+            (b) => b.name.toLowerCase() === form.brandName.trim().toLowerCase()
+          );
+          if (matched && matched.category) {
+            setForm((prev) => ({ ...prev, category: matched.category, city: matched.city || prev.city }));
+            setIsCategoryLocked(true);
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // City autocomplete filtering
+  const handleCityChange = (val) => {
+    setForm((prev) => ({ ...prev, city: val }));
+    if (val.trim().length > 0) {
+      const filtered = INDIAN_CITIES.filter((c) =>
+        c.toLowerCase().includes(val.toLowerCase())
+      ).slice(0, 5);
+      setCitySuggestions(filtered);
+    } else {
+      setCitySuggestions([]);
+    }
+  };
+
+  const selectCity = (c) => {
+    setForm((prev) => ({ ...prev, city: c }));
+    setCitySuggestions([]);
+  };
+
+  const nextStep = () => {
+    // Validate Step 1
+    if (step === 1) {
+      if (!form.brandName.trim() || !form.category || !form.foundWhere || !form.city.trim()) {
+        setError("Please fill out all required merchant details.");
+        return;
+      }
+      if ((form.foundWhere === "Other" || form.foundWhere === "Another Coupon Website") && !form.foundWhereOther?.trim()) {
+        setError("Please specify where you found this offer.");
+        return;
+      }
+    }
+    // Validate Step 2
+    if (step === 2) {
+      if (!form.discountType || !form.description.trim() || !form.foundAtDate) {
+        setError("Please complete all required offer details.");
+        return;
+      }
+      if ((form.discountType === "percentage" || form.discountType === "fixed") && !form.discountValue) {
+        setError("Please enter the discount value.");
+        return;
+      }
+    }
+    // Validate Step 3
+    if (step === 3) {
+      const mobileClean = form.mobile.replace(/\D/g, "");
+      if (!form.email.trim() || !form.mobile.trim()) {
+        setError("Contact details are required.");
+        return;
+      }
+      if (mobileClean.length < 10) {
+        setError("Please enter a valid 10-digit mobile number.");
+        return;
+      }
+    }
+
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
     setError("");
     setStep((prev) => prev + 1);
   };
 
   const prevStep = () => {
     setError("");
+<<<<<<< HEAD
     setStep((prev) => prev - 1);
+=======
+    if (isExpedited && step === 3) {
+      // If expedited, going back drops you out of expedited view to step 1
+      setIsExpedited(false);
+      setStep(1);
+    } else {
+      setStep((prev) => prev - 1);
+    }
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.consent) {
+<<<<<<< HEAD
       setError("You must check the expectation consent checkbox to proceed.");
+=======
+      setError("You must check the consent box to proceed.");
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
       return;
     }
+
     setLoading(true);
     setError("");
 
     try {
+      const payload = {
+        ...form,
+        discountValue: form.discountValue ? Number(form.discountValue) : null,
+      };
+
       const res = await fetch("/api/revivals/customer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+<<<<<<< HEAD
         body: JSON.stringify({
           ...form,
           discountValue: form.discountValue ? Number(form.discountValue) : null,
         }),
+=======
+        body: JSON.stringify(payload),
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
       });
+
+      const data = await res.json();
 
       if (res.ok) {
         setSubmitted(true);
+<<<<<<< HEAD
+=======
+        // Optimistically increment stats counters
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
         setStats((prev) => ({
-          ...prev,
-          totalRequests: (prev.totalRequests || 0) + 1,
-          thisMonthRequests: (prev.thisMonthRequests || 0) + 1,
+          totalRequests: prev.totalRequests + 1,
+          thisMonthRequests: prev.thisMonthRequests + 1,
         }));
       } else {
-        const data = await res.json();
         setError(data.message || "Failed to submit revival request.");
       }
     } catch (err) {
       console.error(err);
+<<<<<<< HEAD
       setError("Failed to submit request. Please try again.");
+=======
+      setError("An unexpected error occurred. Please try again.");
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
     } finally {
       setLoading(false);
     }
@@ -202,21 +480,23 @@ export default function ExpiredCouponRevival() {
     <div className="min-h-screen flex flex-col bg-brand-surface text-brand-text">
       <Navbar />
 
+<<<<<<< HEAD
       {/* Hero Banner */}
       <section className="bg-gradient-to-br from-[#0c1a2c] via-[#11243b] to-[#0c1a2c] text-white py-16 px-4 text-center border-b border-white/5 relative">
+=======
+      {/* Hero Header */}
+      <section className="bg-gradient-to-br from-[#0c1a2c] via-[#11243b] to-[#0c1a2c] text-white py-14 px-4 text-center border-b border-white/5 relative">
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff04_1px,transparent_1px)] [background-size:20px_20px] opacity-40"></div>
-
-        <div className="max-w-4xl mx-auto space-y-6 relative z-10">
-          <Badge className="bg-blue-600/15 text-[#2563eb] hover:bg-blue-600/20 border border-[#2563eb]/20 rounded-full px-3.5 py-1 font-bold text-xs shadow-none gap-1.5 w-fit mx-auto animate-float">
+        <div className="max-w-4xl mx-auto space-y-5 relative z-10">
+          <Badge className="bg-orange-500/15 text-[#FF7A18] hover:bg-orange-500/20 border border-[#FF7A18]/20 rounded-full px-3.5 py-1 font-bold text-xs shadow-none gap-1.5 w-fit mx-auto">
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Tested Before It Reaches You</span>
           </Badge>
-
-          <h1 className="text-4xl md:text-5xl font-black font-heading tracking-tight leading-tight max-w-2xl mx-auto text-white">
-            Have an Expired Offer?
-            <br />
-            <span className="text-brand-gradient">Don&apos;t Give Up.</span>
+          <h1 className="text-3xl md:text-4xl font-black font-heading tracking-tight text-white leading-tight">
+            Expired Offer Revival
           </h1>
+<<<<<<< HEAD
 
           <p className="text-xs md:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed font-medium">
             Submit your expired discount codes here. Vouchiqo contacts the
@@ -225,37 +505,44 @@ export default function ExpiredCouponRevival() {
           </p>
 
           <div className="flex items-center justify-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 max-w-md mx-auto">
+=======
+          <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
+            Missed a discount? Submit the expired details. We will negotiate with the brand to get a new code issued for you.
+          </p>
+
+          <div className="flex items-center justify-center gap-4 bg-white/5 border border-white/10 rounded-xl p-3 max-w-sm mx-auto">
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
             <div className="text-center flex-1">
-              <span className="block text-2xl font-black text-[#FFB020]">
-                {stats.thisMonthRequests}
-              </span>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                Processed This Month
-              </span>
+              <span className="block text-xl font-black text-[#FFB020]">{stats.thisMonthRequests}</span>
+              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">This Month</span>
             </div>
-            <div className="w-[1px] h-10 bg-white/10" />
+            <div className="w-[1px] h-8 bg-white/10" />
             <div className="text-center flex-1">
-              <span className="block text-2xl font-black text-[#2563eb]">
-                {stats.totalRequests}
-              </span>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                Total Claims Revived
-              </span>
+              <span className="block text-xl font-black text-[#00B67A]">{stats.totalRequests}</span>
+              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Total Claims</span>
             </div>
           </div>
         </div>
       </section>
 
+<<<<<<< HEAD
       {/* Main split layout */}
       <main className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 w-full flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         {/* Left Side: Revival Form (7 Cols) */}
         <section className="lg:col-span-7 bg-brand-bg border border-brand-border rounded-xl p-6 md:p-8 shadow-sm">
+=======
+      {/* Main split sections */}
+      <main className="max-w-6xl mx-auto px-4 py-10 w-full flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left: 4-Step Form */}
+        <section className="lg:col-span-7 bg-brand-bg border border-brand-border rounded-xl p-5 md:p-7 shadow-sm">
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
           {submitted ? (
-            <div className="text-center py-12 space-y-6">
-              <div className="w-16 h-16 rounded-full bg-brand-success/20 text-brand-success flex items-center justify-center mx-auto border border-brand-success/30">
-                <CheckCircle2 className="w-8 h-8 fill-brand-success/10" />
+            <div className="text-center py-10 space-y-5">
+              <div className="w-14 h-14 rounded-full bg-brand-success/20 text-brand-success flex items-center justify-center mx-auto border border-brand-success/30">
+                <CheckCircle2 className="w-7 h-7 fill-brand-success/10" />
               </div>
               <div className="space-y-2">
+<<<<<<< HEAD
                 <h3 className="font-heading text-xl font-bold text-brand-navy">
                   Submitted! We&apos;re on it.
                 </h3>
@@ -263,21 +550,38 @@ export default function ExpiredCouponRevival() {
                   We&apos;ve received your request and will contact the merchant
                   on your behalf. You&apos;ll hear back within 48 hours — check
                   your email and WhatsApp.
+=======
+                <h3 className="font-heading text-lg font-bold text-brand-navy">Request Received!</h3>
+                <p className="text-xs text-brand-subtext max-w-sm mx-auto leading-relaxed">
+                  We've successfully logged your revival request. We will contact the merchant and notify you at <strong>{form.email}</strong> once a resolution (new code or alternative) is available.
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
                 </p>
               </div>
               <Button
                 onClick={() => {
                   setSubmitted(false);
                   setStep(1);
+<<<<<<< HEAD
                   setForm({
                     brandName: "",
                     merchantWebsite: "",
                     merchantCity: "Ranchi",
                     whereDidYouFindThisOffer: "Google Search",
+=======
+                  setIsExpedited(false);
+                  setForm({
+                    brandName: "",
+                    category: "",
+                    foundWhere: "Vouchiqo",
+                    foundWhereOther: "",
+                    merchantWebsite: "",
+                    city: "",
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
                     code: "",
                     discountType: "percentage",
                     discountValue: "",
                     description: "",
+<<<<<<< HEAD
                     whenSeen: new Date().toISOString().split("T")[0],
                     whatBuying: "",
                     email: "",
@@ -288,10 +592,23 @@ export default function ExpiredCouponRevival() {
                 className="bg-brand-navy hover:bg-slate-800 text-white py-2.5 px-8 text-xs font-bold border-0 h-auto cursor-pointer shadow-none rounded-lg"
               >
                 Submit Another Offer
+=======
+                    foundAtDate: new Date().toISOString().split("T")[0],
+                    buyingIntent: "",
+                    email: session?.user?.email || "",
+                    mobile: "+91",
+                    consent: false,
+                  });
+                }}
+                className="btn-primary py-2 px-6 text-xs font-bold border-0 h-auto cursor-pointer"
+              >
+                Submit Another Request
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
               </Button>
             </div>
           ) : (
             <div className="space-y-6">
+<<<<<<< HEAD
               {/* Wizard progress header */}
               <div className="flex justify-between items-center border-b border-brand-border pb-3">
                 <h2 className="text-sm font-bold text-brand-navy font-heading uppercase tracking-wider flex items-center gap-2">
@@ -317,6 +634,25 @@ export default function ExpiredCouponRevival() {
                 <span className="text-[11px] font-bold text-brand-subtext">
                   {Math.round((step / 4) * 100)}% Complete
                 </span>
+=======
+              {/* Progress Indicator */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <span>{isExpedited ? "Expedited Review" : `Step ${step} of 4`}</span>
+                  <span>
+                    {step === 1 && "Merchant details"}
+                    {step === 2 && "Offer specifications"}
+                    {step === 3 && "Contact info"}
+                    {step === 4 && "Consent & Submit"}
+                  </span>
+                </div>
+                <div className="w-full bg-brand-surface h-1.5 rounded-full overflow-hidden border border-brand-border">
+                  <div
+                    className="bg-brand-blue h-full transition-all duration-300"
+                    style={{ width: isExpedited ? "75%" : `${(step / 4) * 100}%` }}
+                  />
+                </div>
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
               </div>
 
               {error && (
@@ -326,6 +662,7 @@ export default function ExpiredCouponRevival() {
                 </div>
               )}
 
+<<<<<<< HEAD
               {/* Step 1: Merchant Details */}
               {step === 1 && (
                 <div className="space-y-4">
@@ -650,12 +987,102 @@ export default function ExpiredCouponRevival() {
                   </div>
                 </form>
               )}
+=======
+              {/* STEP 1: MERCHANT DETAILS */}
+              {step === 1 && (
+                <Step1Merchant
+                  form={form}
+                  setForm={setForm}
+                  brandSuggestions={brandSuggestions}
+                  handleBrandChange={handleBrandChange}
+                  checkBrandOnBlur={checkBrandOnBlur}
+                  selectBrand={selectBrand}
+                  isCategoryLocked={isCategoryLocked}
+                  VOUCHIQO_CATEGORIES={VOUCHIQO_CATEGORIES}
+                  citySuggestions={citySuggestions}
+                  handleCityChange={handleCityChange}
+                  selectCity={selectCity}
+                  FOUND_SOURCES={FOUND_SOURCES}
+                />
+              )}
+
+              {/* STEP 2: OFFER DETAILS */}
+              {step === 2 && (
+                <Step2Offer
+                  form={form}
+                  setForm={setForm}
+                />
+              )}
+
+              {/* STEP 3: CUSTOMER CONTACT */}
+              {step === 3 && (
+                <Step3Contact
+                  form={form}
+                  setForm={setForm}
+                  isExpedited={isExpedited}
+                  session={session}
+                />
+              )}
+
+              {/* STEP 4: CONSENT & SUBMIT */}
+              {step === 4 && (
+                <Step4Review
+                  form={form}
+                  setForm={setForm}
+                />
+              )}
+
+              {/* BUTTONS NAVIGATION */}
+              <div className="flex justify-between items-center gap-3 pt-3 border-t border-brand-border">
+                {step > 1 && (
+                  <Button
+                    type="button"
+                    onClick={prevStep}
+                    className="bg-brand-surface text-slate-600 border border-brand-border hover:bg-slate-50 text-xs font-bold py-2 px-4 h-9 cursor-pointer flex items-center gap-1.5"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Back</span>
+                  </Button>
+                )}
+
+                {step < 4 ? (
+                  <Button
+                    type="button"
+                    onClick={nextStep}
+                    className="bg-brand-blue text-white hover:bg-brand-blue/90 text-xs font-bold py-2 px-4 h-9 cursor-pointer ml-auto flex items-center gap-1.5"
+                  >
+                    <span>Next Step</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    disabled={loading}
+                    onClick={handleSubmit}
+                    className="bg-brand-success text-white hover:bg-brand-success/90 text-xs font-bold py-2 px-6 h-9 cursor-pointer ml-auto flex items-center gap-1.5"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                        <span>Submitting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Submit Revival Request</span>
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
             </div>
           )}
         </section>
 
-        {/* Right Side: Process Guide & Success Stories (5 Cols) */}
+        {/* Right: Success Stories */}
         <section className="lg:col-span-5 space-y-6">
+<<<<<<< HEAD
           {/* How it works visual */}
           <div className="bg-brand-bg border border-brand-border rounded-xl p-6 shadow-sm space-y-5">
             <h3 className="font-heading text-sm font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3">
@@ -743,6 +1170,10 @@ export default function ExpiredCouponRevival() {
               ))}
             </div>
           </div>
+=======
+          <HowItWorks />
+          <SuccessStories successStories={successStories} />
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
         </section>
       </main>
 

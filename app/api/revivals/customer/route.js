@@ -12,6 +12,7 @@ import { asyncHandler } from "@/utils/async-handler";
 import { ROLES } from "@/utils/constants";
 
 const createCustomerRevivalSchema = z.object({
+<<<<<<< HEAD
   code: z.string().toUpperCase().optional().nullable(),
   brandName: z.string().min(2).max(100),
   email: z.string().email(),
@@ -27,6 +28,22 @@ const createCustomerRevivalSchema = z.object({
     .string()
     .regex(/^\d{10}$/, "WhatsApp mobile must be exactly 10 digits"),
   consent: z.boolean(),
+=======
+  brandName: z.string().min(1, "Brand name is required"),
+  category: z.string().optional().default("other"),
+  foundWhere: z.string().optional().default("Vouchiqo"),
+  foundWhereOther: z.string().optional().nullable(),
+  merchantWebsite: z.string().optional().nullable(),
+  city: z.string().optional().default("Ranchi"),
+  code: z.string().optional().nullable(),
+  discountType: z.enum(["percentage", "fixed", "bogo", "freebie", "other"]).optional().default("other"),
+  discountValue: z.number().optional().nullable(),
+  description: z.string().optional().default("Expired offer revival request"),
+  foundAtDate: z.coerce.date().optional().default(() => new Date()),
+  buyingIntent: z.string().max(150).optional().nullable(),
+  email: z.string().email("Invalid email address"),
+  mobile: z.string().optional().default("+91-0000000000"),
+>>>>>>> c074429ee4c2e20fc11ce347bcbd31c26b1ad1f6
 });
 
 /**
@@ -72,7 +89,10 @@ export const PUT = asyncHandler(async (request) => {
   await connectDB();
   await requireRole(request, ROLES.ADMIN);
 
-  const { revivalId, status } = await request.json();
-  const revival = await updateCustomerRevivalStatus(revivalId, status);
+  const { revivalId, status, declineReason, alternativeOfferId } = await request.json();
+  const revival = await updateCustomerRevivalStatus(revivalId, status, {
+    declineReason,
+    alternativeOfferId,
+  });
   return ok(revival, `Customer revival request status updated to ${status}`);
 });

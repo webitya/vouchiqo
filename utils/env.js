@@ -1,4 +1,6 @@
 import { z } from "zod";
+import "@/utils/dns-bypass.mjs";
+
 
 /**
  * Validates all required environment variables at startup.

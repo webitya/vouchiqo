@@ -67,7 +67,7 @@ export default function BrandClient({
     const hours = merchant.operatingHours[dayName];
     if (!hours || hours.closed)
       return { label: "Closed Today", color: "text-red-500" };
-    return { label: "Open Now", color: "text-blue-500" };
+    return { label: "Open Now", color: "text-emerald-500" };
   };
   const openStatus = getOpenStatus();
 
@@ -522,7 +522,7 @@ export default function BrandClient({
                       style={{
                         background: hasCode
                           ? "linear-gradient(135deg, #3e80dd, #1e40af)"
-                          : "linear-gradient(135deg, #2563eb, #047857)",
+                          : "linear-gradient(135deg, #10b981, #047857)",
                         color: "#ffffff",
                         display: "flex",
                         flexDirection: "column",
@@ -638,7 +638,7 @@ export default function BrandClient({
                             }
                             type="button"
                             style={{
-                              background: "#2563eb",
+                              background: "#10b981",
                               color: "#ffffff",
                               border: "none",
                               borderRadius: 8,

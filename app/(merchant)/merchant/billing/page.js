@@ -218,8 +218,15 @@ export default function MerchantSubscription() {
       : selectedPlan.priceMonthly
     : selectedAddOn?.price || 0;
 
-  const gst = parseFloat((basePrice * 0.18).toFixed(2));
-  const totalPrice = basePrice + gst;
+  const isIntrastate =
+    merchant?.location?.state?.toLowerCase() === "jharkhand" ||
+    (merchant?.gstin && merchant.gstin.startsWith("20"));
+
+  const gstTotal = parseFloat((basePrice * 0.18).toFixed(2));
+  const cgst = isIntrastate ? parseFloat((gstTotal / 2).toFixed(2)) : 0;
+  const sgst = isIntrastate ? parseFloat((gstTotal / 2).toFixed(2)) : 0;
+  const igst = !isIntrastate ? gstTotal : 0;
+  const totalPrice = basePrice + gstTotal;
 
   return (
     <DashboardLayout
@@ -504,12 +511,29 @@ export default function MerchantSubscription() {
                       ₹{basePrice.toLocaleString()}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-brand-subtext">GST (18%):</span>
-                    <span className="font-bold text-brand-text">
-                      ₹{gst.toLocaleString()}
-                    </span>
-                  </div>
+                  {isIntrastate ? (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-brand-subtext">CGST (9%):</span>
+                        <span className="font-bold text-brand-text">
+                          ₹{cgst.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-brand-subtext">SGST (9%):</span>
+                        <span className="font-bold text-brand-text">
+                          ₹{sgst.toLocaleString()}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex justify-between">
+                      <span className="text-brand-subtext">IGST (18%):</span>
+                      <span className="font-bold text-brand-text">
+                        ₹{igst.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
                   <div className="border-t border-slate-200 pt-2.5 flex justify-between font-black text-brand-navy">
                     <span>Total Amount:</span>
                     <span>₹{totalPrice.toLocaleString()}</span>

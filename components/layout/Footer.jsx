@@ -4,11 +4,11 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="bg-[#191F2E] text-slate-300 pt-16 pb-8 border-t border-slate-800 mt-auto select-none text-left font-sans">
-      <div className="w-full px-4 md:px-8">
+      <div className="max-w-7xl mx-auto px-4">
         {/* 6-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
-          {/* Brand Info Block */}
-          <div className="space-y-5">
+          {/* Brand Info Block (spans 2 columns on desktop) */}
+          <div className="lg:col-span-2 space-y-5">
             <Link href="/" className="inline-block bg-white p-2 rounded-lg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -17,7 +17,7 @@ export default function Footer() {
                 className="h-10 w-auto object-contain"
               />
             </Link>
-            <p className="text-xs text-slate-400 leading-relaxed font-normal">
+            <p className="text-xs text-slate-400 leading-relaxed max-w-sm font-medium">
               Striving towards making the world a better place to shop with
               great savings! We help you turn verified promotional offers into
               instant value.
@@ -96,12 +96,12 @@ export default function Footer() {
                 </svg>
               </a>
             </div>
-            <p className="text-[10px] text-slate-500 leading-normal max-w-xs font-normal">
+            <p className="text-[10px] text-slate-500 leading-normal max-w-xs font-semibold">
               We may earn a commission if you buy through links on Vouchiqo. For
               more details refer to our{" "}
               <Link
                 href="/terms"
-                className="text-slate-400 hover:text-white underline font-medium"
+                className="text-slate-400 hover:text-white underline font-bold"
               >
                 terms of use
               </Link>
@@ -109,75 +109,38 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Col 2: Speciality Pages */}
+          {/* Col 3: Quick Links */}
           <div>
             <h4 className="text-white font-semibold mb-4 flex items-center relative text-sm uppercase tracking-wider">
-              Speciality Pages
+              <span className="relative z-10 bg-[#191F2E] pr-2">
+                Quick Links
+              </span>
+              <span className="absolute left-0 bottom-0 w-8 h-[2px] bg-brand-success -mb-[2px]" />
             </h4>
-            <ul className="space-y-2 text-xs font-normal text-slate-400">
+            <ul className="space-y-2 text-xs font-bold text-slate-400">
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/expired-coupon-revival"
-                >
-                  Coupon Revival
+                <Link className="hover:text-white transition-colors" href="/expired-coupon-revival">
+                  Expired Coupon Revival
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/nearby-offers"
-                >
+                <Link className="hover:text-white transition-colors" href="/deals">
+                  Verified Offers
+                </Link>
+              </li>
+              <li>
+                <Link className="hover:text-white transition-colors" href="/nearby-offers">
                   Nearby Offers
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/submit"
-                >
-                  Submit a Deal
+                <Link className="hover:text-white transition-colors" href="/brands">
+                  All Brands
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/faq"
-                >
-                  Help & FAQs
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 3: Offers */}
-          <div>
-            <h4 className="text-white font-semibold mb-4 flex items-center relative text-sm uppercase tracking-wider">
-              Offers
-            </h4>
-            <ul className="space-y-2 text-xs font-normal text-slate-400">
-              <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/categories"
-                >
-                  Browse Categories
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/brands"
-                >
-                  Partner Brands
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/contact"
-                >
-                  Contact Support
+                <Link className="hover:text-white transition-colors" href="/categories">
+                  All Categories
                 </Link>
               </li>
             </ul>
@@ -186,46 +149,32 @@ export default function Footer() {
           {/* Col 4: Portals & Accounts */}
           <div>
             <h4 className="text-white font-semibold mb-4 flex items-center relative text-sm uppercase tracking-wider">
-              My Account
+              <span className="relative z-10 bg-[#191F2E] pr-2">Portals &amp; Accounts</span>
+              <span className="absolute left-0 bottom-0 w-8 h-[2px] bg-brand-success -mb-[2px]" />
             </h4>
-            <ul className="space-y-2 text-xs font-normal text-slate-400">
+            <ul className="space-y-2 text-xs font-bold text-slate-400">
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/login"
-                >
+                <Link className="hover:text-white transition-colors" href="/login">
                   Customer Login
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/register"
-                >
+                <Link className="hover:text-white transition-colors" href="/register">
                   Customer Register
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/merchant-login"
-                >
+                <Link className="hover:text-white transition-colors" href="/merchant-login">
                   Merchant Login
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/merchant-register"
-                >
+                <Link className="hover:text-white transition-colors" href="/merchant-register">
                   Merchant Register
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/admin-login"
-                >
+                <Link className="hover:text-white transition-colors" href="/admin-login">
                   Admin Portal
                 </Link>
               </li>
@@ -235,49 +184,56 @@ export default function Footer() {
           {/* Col 5: Company */}
           <div>
             <h4 className="text-white font-semibold mb-4 flex items-center relative text-sm uppercase tracking-wider">
-              Company
+              <span className="relative z-10 bg-[#191F2E] pr-2">Company</span>
+              <span className="absolute left-0 bottom-0 w-8 h-[2px] bg-brand-success -mb-[2px]" />
             </h4>
-            <ul className="space-y-2 text-xs font-normal text-slate-400">
+            <ul className="space-y-2 text-xs font-bold text-slate-400">
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/terms"
-                >
-                  Terms of Use
+                <Link className="hover:text-white transition-colors" href="/about">
+                  About Vouchiqo
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/privacy"
-                >
+                <Link className="hover:text-white transition-colors" href="/blog">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link className="hover:text-white transition-colors" href="/privacy">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-white transition-colors"
-                  href="/contact"
-                >
+                <Link className="hover:text-white transition-colors" href="/terms">
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link className="hover:text-white transition-colors" href="/contact">
                   Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link className="hover:text-white transition-colors" href="/sitemap.xml">
+                  Sitemap
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 6: Contact Us */}
+          {/* Col 6: Contact */}
           <div>
             <h4 className="text-white font-semibold mb-4 flex items-center relative text-sm uppercase tracking-wider">
-              Contact Us
+              <span className="relative z-10 bg-[#191F2E] pr-2">
+                Contact
+              </span>
+              <span className="absolute left-0 bottom-0 w-8 h-[2px] bg-brand-success -mb-[2px]" />
             </h4>
-            <ul className="space-y-3.5 text-xs font-normal text-slate-400">
+            <ul className="space-y-3.5 text-xs font-bold text-slate-400">
               <li className="flex items-start">
                 <Mail className="w-4 h-4 mr-2.5 text-slate-500 mt-0.5" />
-                <a
-                  className="hover:text-white transition-colors"
-                  href="mailto:contact@vouchiqo.com"
-                >
-                  contact@vouchiqo.com
+                <a className="hover:text-white transition-colors" href="mailto:support@vouchiqo.com">
+                  support@vouchiqo.com
                 </a>
               </li>
               <li className="flex items-start">
@@ -287,17 +243,17 @@ export default function Footer() {
               <li className="flex items-start">
                 <MapPin className="w-4 h-4 mr-2.5 text-slate-500 mt-0.5 flex-shrink-0" />
                 <span className="text-[11px] leading-normal">
-                  Vouchiqo Corp,
+                  Vouchiqo,
                   <br />
-                  Inspirelabs Solutions Ltd,
+                  Ranchi, Jharkhand,
                   <br />
-                  Ranchi Jharkhand 834002
+                  India
                 </span>
               </li>
               <li className="pt-2">
                 <Link
                   href="/contact"
-                  className="bg-brand-blue hover:bg-brand-blue/90 text-white px-4 py-2 rounded text-[10px] uppercase tracking-wider font-semibold transition-all flex items-center gap-1.5 w-fit cursor-pointer shadow-sm"
+                  className="bg-brand-blue hover:bg-brand-blue/90 text-white px-4 py-2 rounded text-[10px] uppercase tracking-wider font-extrabold transition-all flex items-center gap-1.5 w-fit cursor-pointer shadow-sm"
                 >
                   <Headphones className="w-3.5 h-3.5" />
                   <span>Support Center</span>
@@ -309,9 +265,8 @@ export default function Footer() {
 
         {/* Footer Bottom Block */}
         <div className="text-center pt-8 border-t border-slate-800 flex flex-col items-center select-none">
-          <p className="text-[10px] text-slate-500 font-medium leading-normal">
-            &copy; {new Date().getFullYear()} Vouchiqo is Registered Trademark
-            Of Inspirelabs Solutions Ltd. - All Rights Reserved.
+          <p className="text-[10px] text-slate-500 font-bold leading-normal">
+            &copy; {new Date().getFullYear()} Vouchiqo is Registered Trademark Of Inspirelabs Solutions Ltd. - All Rights Reserved.
           </p>
         </div>
       </div>

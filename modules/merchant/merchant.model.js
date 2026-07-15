@@ -117,7 +117,30 @@ const merchantSchema = new Schema(
     followerCount: { type: Number, default: 0 },
 
     isVerified: { type: Boolean, default: false },
+    autoApproveRevivals: { type: Boolean, default: false },
     rejectionReason: { type: String },
+    
+    // Statutory KYC Details
+    legalEntityType: {
+      type: String,
+      enum: ["Proprietorship", "Partnership", "LLP", "Pvt Ltd"],
+    },
+    pan: {
+      type: String,
+      uppercase: true,
+      trim: true,
+    },
+    gstin: {
+      type: String,
+      uppercase: true,
+      trim: true,
+    },
+    bankDetails: {
+      accountName: { type: String, trim: true },
+      accountNumber: { type: String, trim: true },
+      ifsc: { type: String, uppercase: true, trim: true },
+      bankName: { type: String, trim: true },
+    },
   },
   {
     timestamps: true,
