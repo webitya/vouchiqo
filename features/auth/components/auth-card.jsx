@@ -25,6 +25,8 @@ export function AuthCard({ title, loading = false, children }) {
         return "Log in to manage your coupon campaigns and analytics";
       case "Merchant Partner Registration":
         return "Partner with Vouchiqo to boost your brand visibility";
+      case "Admin Log In":
+        return "Secure access to the administration dashboard";
       default:
         return "Please fill out the form below to continue";
     }
@@ -46,6 +48,8 @@ export function AuthCard({ title, loading = false, children }) {
         return "Merchant Login";
       case "Merchant Partner Registration":
         return "Merchant Register";
+      case "Admin Log In":
+        return "Admin Portal";
       default:
         return title;
     }
