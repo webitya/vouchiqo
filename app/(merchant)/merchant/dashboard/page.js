@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight,
   CreditCard,
-  DollarSign,
   Eye,
+  IndianRupee,
   MessageSquare,
   Plus,
   ShoppingCart,
@@ -105,103 +105,39 @@ export default function MerchantDashboard() {
     },
   });
 
-  const trendData = analyticsData?.trend ?? [
-    { label: "Jan", revenue: 18500, orders: 240, profit: 6200 },
-    { label: "Feb", revenue: 22000, orders: 310, profit: 8200 },
-    { label: "Mar", revenue: 20000, orders: 280, profit: 7200 },
-    { label: "Apr", revenue: 28500, orders: 390, profit: 12000 },
-    { label: "May", revenue: 32000, orders: 420, profit: 13200 },
-    { label: "Jun", revenue: 29500, orders: 380, profit: 11800 },
-    { label: "Jul", revenue: 36000, orders: 470, profit: 16000 },
-    { label: "Aug", revenue: 38000, orders: 500, profit: 17000 },
-    { label: "Sep", revenue: 41500, orders: 530, profit: 18200 },
-    { label: "Oct", revenue: 40000, orders: 510, profit: 17500 },
-    { label: "Nov", revenue: 44500, orders: 580, profit: 20800 },
-    { label: "Dec", revenue: 48000, orders: 610, profit: 22500 },
-  ];
+  // Only use real DB trend data — no fake fallback numbers
+  const trendData = analyticsData?.trend ?? [];
 
   const merchant = analyticsData?.merchant;
   const overviewStats = analyticsData?.overview ?? {};
 
-  // Dynamically sum views, claims, and redemptions across all statuses from database
-  const pageViews = Object.values(overviewStats).reduce((sum, s) => sum + (s.views || 0), 0) || 293000;
-  const totalClaims = Object.values(overviewStats).reduce((sum, s) => sum + (s.claims || 0), 0) || 2847;
-  const totalRedemptions = Object.values(overviewStats).reduce((sum, s) => sum + (s.redemptions || 0), 0) || 1432;
+  // Sum real counts from database — show 0 if no data yet (no fake fallbacks)
+  const pageViews = Object.values(overviewStats).reduce((sum, s) => sum + (s.views || 0), 0);
+  const totalClaims = Object.values(overviewStats).reduce((sum, s) => sum + (s.claims || 0), 0);
+  const totalRedemptions = Object.values(overviewStats).reduce((sum, s) => sum + (s.redemptions || 0), 0);
 
-  // Total revenue is direct sum of database redemptions' savings, falling back to base trend sum
+  // Total revenue is direct sum of database redemptions' savings
   const totalRevenue = trendData.reduce((sum, t) => sum + t.revenue, 0);
 
+  // Compute real month-over-month percentage change from trendData
+  function momChange(key) {
+    if (trendData.length < 2) return null;
+    const last = trendData[trendData.length - 1]?.[key] ?? 0;
+    const prev = trendData[trendData.length - 2]?.[key] ?? 0;
+    if (prev === 0) return null;
+    return Math.round(((last - prev) / prev) * 100);
+  }
+  const revenueMoM = momChange("revenue");
+  const ordersMoM = momChange("orders");
+
   const chartSeries = {
-    revenue: [{ key: "revenue", name: "Revenue ($)", color: "#2563eb" }],
+    revenue: [{ key: "revenue", name: "Revenue (₹)", color: "#2563eb" }],
     orders: [{ key: "orders", name: "Orders", color: "#134e5e" }],
-    profit: [{ key: "profit", name: "Profit ($)", color: "#2563eb" }],
+    profit: [{ key: "profit", name: "Profit (₹)", color: "#2563eb" }],
   };
 
-  // Mock list of transactions exactly matching the Vouchiqo image
-  const defaultTransactions = [
-    {
-      initials: "EW",
-      bg: "bg-[#2563eb]",
-      name: "Emma Wilson",
-      email: "emma@example.com",
-      id: "ORD-7891",
-      product: "Pro Dashboard License",
-      status: "Completed",
-      amount: "$299.00",
-    },
-    {
-      initials: "JC",
-      bg: "bg-[#2563eb]",
-      name: "James Chen",
-      email: "james@company.io",
-      id: "ORD-7890",
-      product: "Team Plan Upgrade",
-      status: "Processing",
-      amount: "$599.00",
-    },
-    {
-      initials: "SG",
-      bg: "bg-[#0a2e6e]",
-      name: "Sofia Garcia",
-      email: "sofia@startup.co",
-      id: "ORD-7889",
-      product: "Enterprise License",
-      status: "Completed",
-      amount: "$1,499.00",
-    },
-    {
-      initials: "AT",
-      bg: "bg-amber-500",
-      name: "Alex Thompson",
-      email: "alex@dev.com",
-      id: "ORD-7888",
-      product: "Single License",
-      status: "Pending",
-      amount: "$79.00",
-    },
-    {
-      initials: "MS",
-      bg: "bg-pink-500",
-      name: "Maria Santos",
-      email: "maria@agency.co",
-      id: "ORD-7887",
-      product: "Pro Dashboard License",
-      status: "Completed",
-      amount: "$299.00",
-    },
-    {
-      initials: "DK",
-      bg: "bg-red-500",
-      name: "David Kim",
-      email: "david@tech.io",
-      id: "ORD-7886",
-      product: "Team Plan Upgrade",
-      status: "Cancelled",
-      amount: "$599.00",
-    },
-  ];
-
-  // Map real redemptions to table rows if present
+  // Map real redemptions from DB to table rows.
+  // No fallback to mock transactions — we show empty list if there's no data.
   const recentRedemptions =
     redemptionsData?.redemptions?.length > 0
       ? redemptionsData.redemptions.map((r) => {
@@ -221,65 +157,33 @@ export default function MerchantDashboard() {
             id: r._id.toString().slice(-8).toUpperCase(),
             product: r.couponId?.title || "Special Deal Offer",
             status: "Completed",
-            amount:
-              r.discountType === "percentage"
-                ? `${r.discountValue}% OFF`
-                : `₹${r.discountValue} OFF`,
+            amount: `₹${r.savingsAmount || 0}`,
           };
         })
-      : defaultTransactions;
+      : [];
 
-  // Mock list of activities exactly matching the Vouchiqo image
-  const defaultActivities = [
-    {
-      icon: ShoppingCart,
-      color: "text-[#2563eb]",
-      bg: "bg-[#2563eb]/10",
-      title: "New order placed",
-      desc: "Emma Wilson purchased Pro Dashboard License",
-      time: "2 min ago",
-    },
-    {
-      icon: UserCheck,
-      color: "text-[#2563eb]",
-      bg: "bg-[#2563eb]/10",
-      title: "New customer registered",
-      desc: "James Chen created an account",
-      time: "15 min ago",
-    },
-    {
-      icon: Star,
-      color: "text-amber-500",
-      bg: "bg-amber-500/10",
-      title: "5-star review received",
-      desc: '"Amazing template, exactly what I needed!"',
-      time: "1 hour ago",
-    },
-    {
-      icon: CreditCard,
-      color: "text-[#0a2e6e]",
-      bg: "bg-[#0a2e6e]/10",
-      title: "Payment received",
-      desc: "$1,499 from Sofia Garcia",
-      time: "2 hours ago",
-    },
-    {
-      icon: MessageSquare,
-      color: "text-[#3e80dd]",
-      bg: "bg-[#3e80dd]/10",
-      title: "Support ticket resolved",
-      desc: "Ticket #4521 marked as resolved",
-      time: "3 hours ago",
-    },
-    {
-      icon: ShoppingCart,
-      color: "text-[#2563eb]",
-      bg: "bg-[#2563eb]/10",
-      title: "New order placed",
-      desc: "Alex Thompson purchased Single License",
-      time: "5 hours ago",
-    },
-  ];
+  // Generate activities dynamically from real database redemptions history
+  const recentActivities =
+    redemptionsData?.redemptions?.length > 0
+      ? redemptionsData.redemptions.map((r) => {
+          const name = r.userId?.name || "Customer User";
+          const date = new Date(r.createdAt);
+          const timeLabel = date.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          return {
+            icon: ShoppingCart,
+            color: "text-[#2563eb]",
+            bg: "bg-[#2563eb]/10",
+            title: "Coupon Redeemed",
+            desc: `${name} redeemed "${r.couponId?.title || "Coupon"}" (Saved ₹${r.savingsAmount || 0})`,
+            time: timeLabel,
+          };
+        })
+      : [];
 
   return (
     <DashboardLayout
@@ -324,17 +228,25 @@ export default function MerchantDashboard() {
                     ₹{totalRevenue.toLocaleString("en-IN")}
                   </p>
                   <div className="flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
-                    <span className="text-xs font-semibold text-blue-600">
-                      +12.5%
-                    </span>
+                    {revenueMoM !== null ? (
+                      revenueMoM >= 0 ? (
+                        <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
+                      ) : (
+                        <TrendingDown className="h-3.5 w-3.5 text-rose-600" />
+                      )
+                    ) : null}
+                    {revenueMoM !== null && (
+                      <span className={`text-xs font-semibold ${revenueMoM >= 0 ? "text-blue-600" : "text-rose-600"}`}>
+                        {revenueMoM >= 0 ? "+" : ""}{revenueMoM}%
+                      </span>
+                    )}
                     <span className="text-xs text-muted-foreground">
-                      vs last month
+                      {revenueMoM !== null ? "vs last month" : "No trend data"}
                     </span>
                   </div>
                 </div>
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#2563eb]/10">
-                  <DollarSign className="h-5 w-5 text-[#2563eb]" />
+                  <IndianRupee className="h-5 w-5 text-[#2563eb]" />
                 </div>
               </div>
             </div>
@@ -362,13 +274,7 @@ export default function MerchantDashboard() {
                     {totalClaims.toLocaleString()}
                   </p>
                   <div className="flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
-                    <span className="text-xs font-semibold text-blue-600">
-                      +8.2%
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      vs last month
-                    </span>
+                    <span className="text-xs text-muted-foreground">Coupon claims this period</span>
                   </div>
                 </div>
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#2563eb]/10">
@@ -400,12 +306,20 @@ export default function MerchantDashboard() {
                     {totalRedemptions.toLocaleString()}
                   </p>
                   <div className="flex items-center gap-1.5">
-                    <TrendingDown className="h-3.5 w-3.5 text-rose-600" />
-                    <span className="text-xs font-semibold text-rose-600">
-                      -3.1%
-                    </span>
+                    {ordersMoM !== null ? (
+                      ordersMoM >= 0 ? (
+                        <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
+                      ) : (
+                        <TrendingDown className="h-3.5 w-3.5 text-rose-600" />
+                      )
+                    ) : null}
+                    {ordersMoM !== null && (
+                      <span className={`text-xs font-semibold ${ordersMoM >= 0 ? "text-blue-600" : "text-rose-600"}`}>
+                        {ordersMoM >= 0 ? "+" : ""}{ordersMoM}%
+                      </span>
+                    )}
                     <span className="text-xs text-muted-foreground">
-                      vs last month
+                      {ordersMoM !== null ? "vs last month" : "No trend data"}
                     </span>
                   </div>
                 </div>
@@ -435,16 +349,10 @@ export default function MerchantDashboard() {
                     Page Views
                   </p>
                   <p className="text-2xl font-bold tracking-tight">
-                    {(pageViews / 1000).toFixed(0)}K
+                    {pageViews > 0 ? `${(pageViews / 1000).toFixed(1)}K` : "—"}
                   </p>
                   <div className="flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
-                    <span className="text-xs font-semibold text-blue-600">
-                      +24.7%
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      vs last month
-                    </span>
+                    <span className="text-xs text-muted-foreground">Coupon page visits</span>
                   </div>
                 </div>
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#eab308]/10">
@@ -595,7 +503,7 @@ export default function MerchantDashboard() {
                     </ResponsiveContainer>
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
                       <span className="text-lg font-bold text-slate-800">
-                        284K
+                        {pageViews > 0 ? `${(pageViews / 1000).toFixed(0)}K` : "—"}
                       </span>
                       <span className="text-[10px] text-muted-foreground">
                         Visits
@@ -667,60 +575,69 @@ export default function MerchantDashboard() {
                 </p>
               </div>
               <div data-slot="card-content" className="p-6 pt-0 space-y-5">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-foreground">
-                      Monthly Revenue
-                    </span>
-                    <span className="text-muted-foreground">88%</span>
-                  </div>
-                  <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
-                    <div
-                      className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
-                      style={{ width: "88%" }}
-                    ></div>
-                  </div>
-                  <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                    <span>48,295</span>
-                    <span>Target: 55,000</span>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-foreground">
-                      New Customers
-                    </span>
-                    <span className="text-muted-foreground">85%</span>
-                  </div>
-                  <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
-                    <div
-                      className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
-                      style={{ width: "85%" }}
-                    ></div>
-                  </div>
-                  <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                    <span>847</span>
-                    <span>Target: 1,000</span>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-foreground">
-                      Conversion Rate
-                    </span>
-                    <span className="text-muted-foreground">76%</span>
-                  </div>
-                  <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
-                    <div
-                      className="h-full rounded-full transition-all duration-500 ease-out bg-[#3e80dd]"
-                      style={{ width: "76%" }}
-                    ></div>
-                  </div>
-                  <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                    <span>3.8</span>
-                    <span>Target: 5</span>
-                  </div>
-                </div>
+                {(() => {
+                  const revenueGoal = analyticsData?.goals?.revenueTarget ?? 0;
+                  const revenueActual = totalRevenue;
+                  const revenuePct = revenueGoal > 0 ? Math.min(100, Math.round((revenueActual / revenueGoal) * 100)) : 0;
+
+                  const claimsGoal = analyticsData?.goals?.claimsTarget ?? 0;
+                  const claimsPct = claimsGoal > 0 ? Math.min(100, Math.round((totalClaims / claimsGoal) * 100)) : 0;
+
+                  const redemptionPct = totalClaims > 0 ? Math.min(100, Math.round((totalRedemptions / totalClaims) * 100)) : 0;
+
+                  return (
+                    <>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-medium text-foreground">Monthly Revenue</span>
+                          <span className="text-muted-foreground">{revenueGoal > 0 ? `${revenuePct}%` : "—"}</span>
+                        </div>
+                        <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
+                          <div
+                            className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
+                            style={{ width: revenueGoal > 0 ? `${revenuePct}%` : "0%" }}
+                          ></div>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                          <span>₹{revenueActual.toLocaleString("en-IN")}</span>
+                          <span>{revenueGoal > 0 ? `Target: ₹${revenueGoal.toLocaleString("en-IN")}` : "No target set"}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-medium text-foreground">Coupon Claims</span>
+                          <span className="text-muted-foreground">{claimsGoal > 0 ? `${claimsPct}%` : "—"}</span>
+                        </div>
+                        <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
+                          <div
+                            className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
+                            style={{ width: claimsGoal > 0 ? `${claimsPct}%` : "0%" }}
+                          ></div>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                          <span>{totalClaims.toLocaleString()}</span>
+                          <span>{claimsGoal > 0 ? `Target: ${claimsGoal.toLocaleString()}` : "No target set"}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-medium text-foreground">Conversion Rate</span>
+                          <span className="text-muted-foreground">{totalClaims > 0 ? `${redemptionPct}%` : "—"}</span>
+                        </div>
+                        <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
+                          <div
+                            className="h-full rounded-full transition-all duration-500 ease-out bg-[#3e80dd]"
+                            style={{ width: `${redemptionPct}%` }}
+                          ></div>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                          <span>{totalRedemptions} redeemed</span>
+                          <span>of {totalClaims} claimed</span>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -770,52 +687,60 @@ export default function MerchantDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody className="divide-y divide-brand-border font-semibold text-slate-700">
-                    {recentRedemptions.map((tx, idx) => (
-                      <TableRow
-                        key={idx}
-                        className="hover:bg-[#f8fafc]/50 transition-colors border-b border-[#f1f5f9] last:border-b-0"
-                      >
-                        <TableCell className="p-4 flex items-center gap-3">
-                          <div
-                            className={`w-8 h-8 rounded-full ${tx.bg} text-white flex items-center justify-center font-bold text-[10px] shadow-sm`}
-                          >
-                            {tx.initials}
-                          </div>
-                          <div className="flex flex-col text-left">
-                            <span className="font-bold text-slate-800">
-                              {tx.name}
-                            </span>
-                            <span className="text-[9px] text-slate-400 font-semibold">
-                              {tx.email}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="p-4 font-mono text-[10px] text-slate-500">
-                          {tx.id}
-                        </TableCell>
-                        <TableCell className="p-4 text-slate-600 font-bold">
-                          {tx.product}
-                        </TableCell>
-                        <TableCell className="p-4">
-                          <Badge
-                            className={`rounded px-2.5 py-0.5 border-0 text-[9px] font-bold shadow-none ${
-                              tx.status === "Completed"
-                                ? "bg-blue-100 text-blue-800"
-                                : tx.status === "Processing"
-                                  ? "bg-slate-900 text-white"
-                                  : tx.status === "Pending"
-                                    ? "bg-amber-100 text-amber-800"
-                                    : "bg-rose-100 text-rose-800"
-                            }`}
-                          >
-                            {tx.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="p-4 text-right text-slate-900 font-bold">
-                          {tx.amount}
+                    {recentRedemptions.length > 0 ? (
+                      recentRedemptions.map((tx, idx) => (
+                        <TableRow
+                          key={idx}
+                          className="hover:bg-[#f8fafc]/50 transition-colors border-b border-[#f1f5f9] last:border-b-0"
+                        >
+                          <TableCell className="p-4 flex items-center gap-3">
+                            <div
+                              className={`w-8 h-8 rounded-full ${tx.bg} text-white flex items-center justify-center font-bold text-[10px] shadow-sm`}
+                            >
+                              {tx.initials}
+                            </div>
+                            <div className="flex flex-col text-left">
+                              <span className="font-bold text-slate-800">
+                                {tx.name}
+                              </span>
+                              <span className="text-[9px] text-slate-400 font-semibold">
+                                {tx.email}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="p-4 font-mono text-[10px] text-slate-500">
+                            {tx.id}
+                          </TableCell>
+                          <TableCell className="p-4 text-slate-600 font-bold">
+                            {tx.product}
+                          </TableCell>
+                          <TableCell className="p-4">
+                            <Badge
+                              className={`rounded px-2.5 py-0.5 border-0 text-[9px] font-bold shadow-none ${
+                                tx.status === "Completed"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : tx.status === "Processing"
+                                    ? "bg-slate-900 text-white"
+                                    : tx.status === "Pending"
+                                      ? "bg-amber-100 text-amber-800"
+                                      : "bg-rose-100 text-rose-800"
+                              }`}
+                            >
+                              {tx.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="p-4 text-right text-slate-900 font-bold">
+                            {tx.amount}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center p-8 text-slate-400 font-medium">
+                          No recent coupon redemptions found.
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )}
                   </TableBody>
                 </Table>
               </div>
@@ -843,31 +768,37 @@ export default function MerchantDashboard() {
             </CardHeader>
             <CardContent className="pt-4 px-5">
               <div className="space-y-5">
-                {defaultActivities.map((act, idx) => {
-                  const Icon = act.icon;
-                  return (
-                    <div key={idx} className="flex items-start gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full ${act.bg} ${act.color} flex items-center justify-center shrink-0`}
-                      >
-                        <Icon className="w-4 h-4 stroke-[2]" />
-                      </div>
-                      <div className="flex-grow space-y-0.5 text-xs text-left">
-                        <div className="flex justify-between items-baseline gap-2">
-                          <span className="font-bold text-slate-800">
-                            {act.title}
-                          </span>
-                          <span className="text-[9px] text-slate-400 font-medium whitespace-nowrap">
-                            {act.time}
-                          </span>
+                {recentActivities.length > 0 ? (
+                  recentActivities.map((act, idx) => {
+                    const Icon = act.icon;
+                    return (
+                      <div key={idx} className="flex items-start gap-3">
+                        <div
+                          className={`w-8 h-8 rounded-full ${act.bg} ${act.color} flex items-center justify-center shrink-0`}
+                        >
+                          <Icon className="w-4 h-4 stroke-[2]" />
                         </div>
-                        <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
-                          {act.desc}
-                        </p>
+                        <div className="flex-grow space-y-0.5 text-xs text-left">
+                          <div className="flex justify-between items-baseline gap-2">
+                            <span className="font-bold text-slate-800">
+                              {act.title}
+                            </span>
+                            <span className="text-[9px] text-slate-400 font-medium whitespace-nowrap">
+                              {act.time}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
+                            {act.desc}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-12 text-slate-400 text-xs font-semibold">
+                    No recent store activities recorded.
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

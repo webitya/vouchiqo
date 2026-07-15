@@ -166,6 +166,70 @@ export async function getUserRedemptions(userId, searchParams) {
 }
 
 /**
+ * Get a merchant's redemption history (coupons redeemed at this merchant).
+ *
+ * @param {string} merchantId - MongoDB Merchant ID
+ * @param {URLSearchParams} searchParams
+ */
+export async function getMerchantRedemptions(merchantId, searchParams) {
+  const { page, limit, skip } = parsePagination(searchParams);
+
+  const [redemptions, total] = await Promise.all([
+    Redemption.aggregate([
+      { $match: { merchantId } },
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "coupons",
+          localField: "couponId",
+          foreignField: "_id",
+          as: "couponId",
+        },
+      },
+      { $unwind: { path: "$couponId", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "user",
+          let: { userIdStr: "$userId" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_id", "$$userIdStr"] } } }
+          ],
+          as: "userProfile",
+        },
+      },
+      { $unwind: { path: "$userProfile", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          userId: {
+            _id: "$userProfile._id",
+            name: "$userProfile.name",
+            email: "$userProfile.email",
+            image: "$userProfile.image",
+          },
+          couponCode: 1,
+          discountType: 1,
+          discountValue: 1,
+          originalPrice: 1,
+          savingsAmount: 1,
+          createdAt: 1,
+          couponId: {
+            _id: "$couponId._id",
+            title: "$couponId.title",
+            image: "$couponId.image",
+          }
+        },
+      },
+    ]),
+    Redemption.countDocuments({ merchantId }),
+  ]);
+
+  return { redemptions, meta: buildMeta(total, page, limit) };
+}
+
+/**
  * Get a single redemption by ID. Only the owner can view it.
  *
  * @param {string} redemptionId
