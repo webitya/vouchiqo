@@ -3,6 +3,10 @@ const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig = {
   reactCompiler: true,
+  experimental: {
+    // Required for middleware.js to use Node.js runtime (auth.api.getSession needs MongoDB)
+    nodeMiddleware: true,
+  },
   async headers() {
     // Allowed origins: production domain + localhost for dev
     const allowedOrigins = [

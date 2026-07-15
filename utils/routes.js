@@ -142,30 +142,34 @@ export function getRedirectForRole(role) {
 }
 
 /**
- * Determines if a given pathname belongs to a protected directory.
+ * Determines if a given pathname is a public auth-form route.
+ * Auth pages are accessible without a session (login, register, etc.)
  *
  * @param {string} pathname - The route pathname to check.
- * @returns {boolean} True if the route is protected.
+ * @returns {boolean} True if the route requires authentication.
  */
 export function isProtectedRoute(pathname) {
-  if (
-    pathname === "/admin-login" ||
-    pathname === "/merchant-login" ||
-    pathname === "/merchant-register" ||
-    pathname === "/login" ||
-    pathname === "/register" ||
-    pathname === "/forgot-password" ||
-    pathname === "/reset-password" ||
-    pathname === "/verify-otp"
-  ) {
-    return false;
-  }
+  // These are explicitly public — never require auth
+  const publicAuthPages = [
+    "/login",
+    "/register",
+    "/admin-login",
+    "/merchant-login",
+    "/merchant-register",
+    "/forgot-password",
+    "/reset-password",
+    "/verify-otp",
+  ];
+
+  if (publicAuthPages.includes(pathname)) return false;
+
+  // These namespaces always require authentication
   return (
     pathname.startsWith("/admin") ||
     pathname.startsWith("/merchant") ||
     pathname.startsWith("/customer") ||
-    pathname === ROUTES.CUSTOMER.PROFILE ||
-    pathname.startsWith(`${ROUTES.CUSTOMER.PROFILE}/`)
+    pathname === "/profile" ||
+    pathname.startsWith("/profile/")
   );
 }
 

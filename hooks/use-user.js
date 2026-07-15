@@ -6,7 +6,7 @@ import { useSession, signOut } from "@/lib/auth-client";
 const ROLE_HOME = {
   admin: "/admin/dashboard",
   merchant: "/merchant/dashboard",
-  customer: "/customer/dashboard",
+  customer: "/", // customers land on the homepage
 };
 
 /**
@@ -38,6 +38,6 @@ export function useUser() {
     isLoaded: !isPending,
     isLoggedIn: !!user,
     logout,
-    homeRoute: ROLE_HOME[role] ?? "/customer/dashboard",
+    homeRoute: ROLE_HOME[role] ?? "/",
   };
 }
