@@ -6,6 +6,25 @@ import {
   ROUTES,
 } from "./utils/routes";
 
+// Define auth forms for quick lookup
+const AUTH_ROUTES = new Set([
+  ROUTES.AUTH.LOGIN,
+  ROUTES.AUTH.REGISTER,
+  ROUTES.AUTH.FORGOT_PASSWORD,
+  ROUTES.AUTH.RESET_PASSWORD,
+  ROUTES.AUTH.VERIFY_OTP,
+  "/merchant-login",
+  "/merchant-register",
+  "/admin-login",
+]);
+
+const isAuthFormRoute = (pathname) =>
+  AUTH_ROUTES.has(pathname) ||
+  (pathname.startsWith("/auth") && pathname !== ROUTES.AUTH.CALLBACK);
+
+const redirectTo = (path, request) =>
+  NextResponse.redirect(new URL(path, request.url));
+
 /**
  * Next.js Middleware/Proxy for authentication redirects and route protection.
  * Utilizes centralized routing and role-based redirect rules from utils/routes.js.
@@ -19,55 +38,50 @@ export async function proxy(request) {
     request.cookies.has("__secure-better-auth.session_token");
 
   if (!hasSession) {
-    if (isProtectedRoute(pathname)) {
-      return NextResponse.redirect(new URL(ROUTES.AUTH.LOGIN, request.url));
-    }
-    return NextResponse.next();
+    return isProtectedRoute(pathname)
+      ? redirectTo(ROUTES.AUTH.LOGIN, request)
+      : NextResponse.next();
   }
 
   // 2. Cookie is present. Fetch session validation via the centralized API endpoint.
   try {
     const fetchUrl = new URL(ROUTES.API.GET_SESSION, request.url);
-    // Force local loopback address and port to avoid DNS or SSL validation loopback errors
-    fetchUrl.hostname = "127.0.0.1";
-    fetchUrl.port = process.env.PORT || "3000";
-    fetchUrl.protocol = "http:";
 
-    const response = await fetch(fetchUrl, {
+    // In local development: override to loopback to avoid DNS/SSL self-referencing issues.
+    // In production (Vercel/VPS): use the real public URL derived from `request.url` — NEVER
+    // override to 127.0.0.1 here because serverless functions cannot reach loopback addresses.
+    if (process.env.NODE_ENV !== "production") {
+      fetchUrl.hostname = "127.0.0.1";
+      fetchUrl.port = process.env.PORT ?? "3000";
+      fetchUrl.protocol = "http:";
+    }
+
+    const response = await fetch(fetchUrl.toString(), {
       headers: {
-        cookie: request.headers.get("cookie") || "",
-        host: request.headers.get("host") || "",
-        "x-forwarded-host": request.headers.get("host") || "",
-        "x-forwarded-proto": request.headers.get("x-forwarded-proto") || (request.nextUrl.protocol === "https:" ? "https" : "http"),
+        cookie: request.headers.get("cookie") ?? "",
+        host: request.headers.get("host") ?? "",
+        "x-forwarded-host": request.headers.get("host") ?? "",
+        "x-forwarded-proto":
+          request.headers.get("x-forwarded-proto") ??
+          (request.nextUrl.protocol === "https:" ? "https" : "http"),
       },
     });
 
     if (response.ok) {
       const session = await response.json();
       if (session?.user) {
-        const { role } = session.user;
+        const { role, email } = session.user;
         console.log(
-          `[Middleware] Path: "${pathname}", User: "${session.user.email}", Role: "${role}"`,
+          `[Middleware] Path: "${pathname}", User: "${email}", Role: "${role}"`,
         );
 
         // Redirect logged-in users away from auth forms (e.g. login, register)
-        const isAuthForm =
-          pathname === ROUTES.AUTH.LOGIN ||
-          pathname === ROUTES.AUTH.REGISTER ||
-          pathname === ROUTES.AUTH.FORGOT_PASSWORD ||
-          pathname === ROUTES.AUTH.RESET_PASSWORD ||
-          pathname === ROUTES.AUTH.VERIFY_OTP ||
-          pathname === "/merchant-login" ||
-          pathname === "/merchant-register" ||
-          pathname === "/admin-login" ||
-          (pathname.startsWith("/auth") && pathname !== ROUTES.AUTH.CALLBACK);
-
-        if (isAuthForm) {
+        if (isAuthFormRoute(pathname)) {
           const dest = getRedirectForRole(role);
           console.log(
             `[Middleware] Redirecting logged-in user away from auth form to: "${dest}"`,
           );
-          return NextResponse.redirect(new URL(dest, request.url));
+          return redirectTo(dest, request);
         }
 
         // Enforce centralized authorization rules on protected path folders
@@ -76,7 +90,7 @@ export async function proxy(request) {
           console.log(
             `[Middleware] Unauthorized access attempt for "${pathname}". Redirecting to: "${dest}"`,
           );
-          return NextResponse.redirect(new URL(dest, request.url));
+          return redirectTo(dest, request);
         }
 
         return NextResponse.next();
@@ -87,11 +101,9 @@ export async function proxy(request) {
   }
 
   // Fallback: If verification failed/expired, redirect from protected routes to login
-  if (isProtectedRoute(pathname)) {
-    return NextResponse.redirect(new URL(ROUTES.AUTH.LOGIN, request.url));
-  }
-
-  return NextResponse.next();
+  return isProtectedRoute(pathname)
+    ? redirectTo(ROUTES.AUTH.LOGIN, request)
+    : NextResponse.next();
 }
 
 export const middleware = proxy;
