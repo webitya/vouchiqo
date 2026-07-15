@@ -31,6 +31,9 @@ export const ROUTES = {
   AUTH: {
     LOGIN: "/login",
     REGISTER: "/register",
+    ADMIN_LOGIN: "/admin-login",
+    MERCHANT_LOGIN: "/merchant-login",
+    MERCHANT_REGISTER: "/merchant-register",
     FORGOT_PASSWORD: "/forgot-password",
     RESET_PASSWORD: "/reset-password",
     VERIFY_OTP: "/verify-otp",
@@ -133,7 +136,8 @@ export function getRedirectForRole(role) {
     case ROLES.MERCHANT:
       return ROUTES.MERCHANT.DASHBOARD;
     default:
-      return ROUTES.CUSTOMER.DASHBOARD;
+      // Customers land on the public homepage, not the stub /customer/dashboard
+      return ROUTES.HOME;
   }
 }
 
@@ -167,14 +171,24 @@ export function isProtectedRoute(pathname) {
 
 /**
  * Validates if the user role is authorized to access the given path layout.
+ * Admin is superadmin and can access all routes.
  *
  * @param {string} pathname - The route pathname.
  * @param {string} role - The user's authenticated role.
  * @returns {boolean} True if the user is authorized for the route.
  */
 export function isAuthorizedForRoute(pathname, role) {
+  // Admin is superadmin — can access everything
+  if (role === ROLES.ADMIN) return true;
+
+  // Block merchants from admin routes
   if (pathname.startsWith("/admin") && role !== ROLES.ADMIN) return false;
+
+  // Block customers from merchant routes
   if (pathname.startsWith("/merchant") && role !== ROLES.MERCHANT) return false;
-  if (pathname.startsWith("/customer") && role !== ROLES.CUSTOMER) return false;
+
+  // Block merchants from customer-specific routes
+  if (pathname.startsWith("/customer") && role === ROLES.MERCHANT) return false;
+
   return true;
 }

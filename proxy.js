@@ -28,10 +28,21 @@ export async function proxy(request) {
   // 2. Cookie is present. Fetch session validation via the centralized API endpoint.
   try {
     const fetchUrl = new URL(ROUTES.API.GET_SESSION, request.url);
-    // Force local loopback address and port to avoid DNS or SSL validation loopback errors
-    fetchUrl.hostname = "127.0.0.1";
-    fetchUrl.port = process.env.PORT || "3000";
-    fetchUrl.protocol = "http:";
+
+    // On Vercel/production there is no localhost port. Use the actual deployment URL.
+    // NEXT_PUBLIC_APP_URL is set to https://vouchiqo.com in production.
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (appUrl) {
+      const base = new URL(appUrl);
+      fetchUrl.hostname = base.hostname;
+      fetchUrl.port = base.port || "";
+      fetchUrl.protocol = base.protocol;
+    } else {
+      // Fallback: local dev loopback
+      fetchUrl.hostname = "127.0.0.1";
+      fetchUrl.port = process.env.PORT || "3000";
+      fetchUrl.protocol = "http:";
+    }
 
     const response = await fetch(fetchUrl, {
       headers: {
@@ -57,9 +68,9 @@ export async function proxy(request) {
           pathname === ROUTES.AUTH.FORGOT_PASSWORD ||
           pathname === ROUTES.AUTH.RESET_PASSWORD ||
           pathname === ROUTES.AUTH.VERIFY_OTP ||
-          pathname === "/merchant-login" ||
-          pathname === "/merchant-register" ||
-          pathname === "/admin-login" ||
+          pathname === ROUTES.AUTH.MERCHANT_LOGIN ||
+          pathname === ROUTES.AUTH.MERCHANT_REGISTER ||
+          pathname === ROUTES.AUTH.ADMIN_LOGIN ||
           (pathname.startsWith("/auth") && pathname !== ROUTES.AUTH.CALLBACK);
 
         if (isAuthForm) {
