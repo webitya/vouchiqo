@@ -27,10 +27,11 @@ export async function proxy(request) {
 
   // 2. Cookie is present. Fetch session validation via the centralized API endpoint.
   try {
-    let fetchUrl = new URL(ROUTES.API.GET_SESSION, request.url);
-    if (fetchUrl.hostname === "localhost") {
-      fetchUrl.hostname = "127.0.0.1";
-    }
+    const fetchUrl = new URL(ROUTES.API.GET_SESSION, request.url);
+    // Force local loopback address and port to avoid DNS or SSL validation loopback errors
+    fetchUrl.hostname = "127.0.0.1";
+    fetchUrl.port = process.env.PORT || "3000";
+    fetchUrl.protocol = "http:";
 
     const response = await fetch(fetchUrl, {
       headers: {
