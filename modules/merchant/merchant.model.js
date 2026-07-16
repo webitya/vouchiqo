@@ -116,6 +116,7 @@ const merchantSchema = new Schema(
     totalClaims: { type: Number, default: 0 },
     followerCount: { type: Number, default: 0 },
 
+    autoApproveRevival: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
     rejectionReason: { type: String },
   },

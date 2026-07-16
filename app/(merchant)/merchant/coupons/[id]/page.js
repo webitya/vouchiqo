@@ -92,21 +92,30 @@ export default function EditCouponPage() {
 
     if (!validateExpiryDate(formData.expiresAt)) return;
 
+    const parsedMaxClaims = parseInt(formData.maxClaims, 10);
+    const parsedDiscount = parseFloat(formData.discountValue);
+
     const payload = {
       title: formData.title,
       description: formData.description || undefined,
       category: formData.category,
-      expiresAt: new Date(formData.expiresAt).toISOString(),
-      maxClaims: formData.maxClaims ? parseInt(formData.maxClaims, 10) : null,
-      image: formData.image || undefined,
-      status: formData.status,
-      isFeatured: formData.isFeatured,
       code: formData.code.trim().toUpperCase(),
+      expiresAt: new Date(formData.expiresAt).toISOString(),
       discountType: formData.discountType,
+      // Only send discountValue if it is a valid positive number
       discountValue:
-        formData.discountType !== "freebie"
-          ? parseFloat(formData.discountValue) || 0
-          : 0,
+        formData.discountType !== "freebie" &&
+        !Number.isNaN(parsedDiscount) &&
+        parsedDiscount > 0
+          ? parsedDiscount
+          : undefined,
+      // Only send maxClaims if it is a valid positive integer
+      maxClaims:
+        !Number.isNaN(parsedMaxClaims) && parsedMaxClaims > 0
+          ? parsedMaxClaims
+          : undefined,
+      image: formData.image || undefined,
+      isFeatured: formData.isFeatured,
       originalPrice:
         formData.discountType === "fixed" && formData.originalPrice
           ? parseFloat(formData.originalPrice)
@@ -122,9 +131,20 @@ export default function EditCouponPage() {
   };
 
   // Navigate on success
+  useEffect(() => {
+    if (updateMutation.isSuccess) {
+      router.push("/merchant/coupons");
+    }
+  }, [updateMutation.isSuccess, router]);
+
   if (updateMutation.isSuccess) {
-    router.push("/merchant/coupons");
-    return null;
+    return (
+      <DashboardLayout title="Saving Changes..." user={{ role: "merchant" }}>
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-brand-blue" />
+        </div>
+      </DashboardLayout>
+    );
   }
 
   if (isLoading) {

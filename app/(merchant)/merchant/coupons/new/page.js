@@ -136,37 +136,52 @@ export default function CreateCoupon() {
     }
 
     // Prepare payload depending on Listing Type
+    const parsedMaxClaims = parseInt(formData.usageLimit, 10);
     let payload = {
       title: formData.title,
-      description: formData.description,
+      description: formData.description || undefined,
       category: formData.category,
       expiresAt: expiresDate.toISOString(),
-      maxClaims: formData.usageLimit
-        ? parseInt(formData.usageLimit, 10)
-        : undefined,
+      // Only include maxClaims if it is a valid positive integer
+      maxClaims:
+        !Number.isNaN(parsedMaxClaims) && parsedMaxClaims > 0
+          ? parsedMaxClaims
+          : undefined,
       image: formData.image || undefined,
       isFeatured: isProOrEnterprise ? formData.isFeatured : false,
     };
 
     if (listingType === "coupon") {
+      const parsedDiscount = parseFloat(formData.discountValue);
       payload = {
         ...payload,
         code:
           formData.code.toUpperCase() ||
           `SAVE-${Math.floor(1000 + Math.random() * 9000)}`,
         discountType: formData.discountType,
-        discountValue: parseFloat(formData.discountValue) || 0,
+        // Only send discountValue if positive — Zod rejects 0
+        discountValue:
+          !Number.isNaN(parsedDiscount) && parsedDiscount > 0
+            ? parsedDiscount
+            : undefined,
       };
     } else if (listingType === "deal") {
+      const origPrice = parseFloat(formData.originalPrice);
+      const salePrice = parseFloat(formData.salePrice);
+      const computedDiscount =
+        !Number.isNaN(origPrice) && !Number.isNaN(salePrice)
+          ? origPrice - salePrice
+          : undefined;
       payload = {
         ...payload,
         code: `DEAL-${Math.floor(1000 + Math.random() * 9000)}`,
         discountType: "fixed",
         discountValue:
-          (parseFloat(formData.originalPrice) || 0) -
-          (parseFloat(formData.salePrice) || 0),
-        originalPrice: parseFloat(formData.originalPrice) || 0,
-        salePrice: parseFloat(formData.salePrice) || 0,
+          computedDiscount !== undefined && computedDiscount > 0
+            ? computedDiscount
+            : undefined,
+        originalPrice: !Number.isNaN(origPrice) ? origPrice : undefined,
+        salePrice: !Number.isNaN(salePrice) ? salePrice : undefined,
         dealUrl: formData.dealUrl || undefined,
       };
     } else if (listingType === "special") {
@@ -174,7 +189,7 @@ export default function CreateCoupon() {
         ...payload,
         code: `GIFT-${Math.floor(1000 + Math.random() * 9000)}`,
         discountType: "freebie",
-        discountValue: 0,
+        // Freebie — omit discountValue; schema accepts optional
         tags: [formData.specialOfferType, formData.redemptionMethod],
       };
     }

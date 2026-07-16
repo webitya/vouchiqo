@@ -153,16 +153,28 @@ export async function getFeaturedCoupons() {
   const cached = await redis.get(REDIS_KEYS.FEATURED_DEALS);
   if (cached) return JSON.parse(cached);
 
-  const coupons = await Coupon.find({
+  let coupons = await Coupon.find({
     isFeatured: true,
     isVerified: true,
     status: COUPON_STATUS.ACTIVE,
     expiresAt: { $gt: new Date() },
   })
-    .populate("merchantId", "businessName slug logo")
+    .populate("merchantId", "businessName slug logo banner")
     .sort({ createdAt: -1 })
     .limit(12)
     .lean();
+
+  if (!coupons || coupons.length === 0) {
+    coupons = await Coupon.find({
+      isVerified: true,
+      status: COUPON_STATUS.ACTIVE,
+      expiresAt: { $gt: new Date() },
+    })
+      .populate("merchantId", "businessName slug logo banner")
+      .sort({ createdAt: -1 })
+      .limit(12)
+      .lean();
+  }
 
   await redis.setex(
     REDIS_KEYS.FEATURED_DEALS,

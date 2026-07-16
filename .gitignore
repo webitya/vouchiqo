@@ -45,3 +45,11 @@ Vouchiqo_Code_Rules.md
 Vouchiqo_Developer_Implementation_Prompt.md
 Vouchiqo_Security_Prompt.md
 Vouchiqo_UIUX_Prompt.md
+
+# AI Agent Configuration & Brain Files
+.gemini/
+.agents/
+/brain/
+/project-brain/
+/projects_docs/
+/temp-clone/

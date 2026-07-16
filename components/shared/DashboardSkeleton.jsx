@@ -26,13 +26,16 @@ export default function DashboardSkeleton({ mode = "dashboard" }) {
               <div className="h-5 bg-slate-100 dark:bg-zinc-900 rounded-sm w-20"></div>
             </div>
             <div className="flex-1 flex items-end justify-between h-[180px] pt-4 px-2">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-slate-100 dark:bg-zinc-900 rounded-sm w-5"
-                  style={{ height: `${20 + Math.random() * 70}%` }}
-                ></div>
-              ))}
+              {Array.from({ length: 12 }).map((_, i) => {
+                const heights = [45, 60, 35, 75, 50, 65, 40, 80, 55, 70, 45, 60];
+                return (
+                  <div
+                    key={i}
+                    className="bg-slate-100 dark:bg-zinc-900 rounded-sm w-5"
+                    style={{ height: `${heights[i % heights.length]}%` }}
+                  ></div>
+                );
+              })}
             </div>
           </div>
 

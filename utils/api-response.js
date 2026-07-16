@@ -64,8 +64,10 @@ export function handleError(err) {
   }
 
   // Zod parse errors
-  if (err.name === "ZodError") {
-    const first = err.errors?.[0];
+  if (err.name === "ZodError" || err.issues) {
+    console.error("Zod Validation Failed:", JSON.stringify(err.issues || err.errors || err, null, 2));
+    const issues = err.issues || err.errors || [];
+    const first = issues[0];
     const message = first
       ? `${first.path.join(".")}: ${first.message}`
       : "Invalid input";

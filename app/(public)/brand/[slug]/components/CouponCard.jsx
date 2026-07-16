@@ -1,30 +1,21 @@
 "use client";
 
-import {
-  CheckCircle2,
-  ChevronDown,
-  ChevronUp,
-  Copy,
-  Users,
-} from "lucide-react";
+import { CheckCircle2, ChevronDown, ChevronUp, Users } from "lucide-react";
 
-/**
- * Single coupon card for the brand detail page.
- */
 export default function CouponCard({
   coupon,
-  merchant,
   isExpanded,
-  onToggle,
+  toggleDetails,
   copiedCouponId,
-  onCopyCode,
+  handleCopyCode,
+  merchant,
 }) {
   const hasCode = coupon.code && coupon.code.trim() !== "";
   const discountText =
-    coupon.discountAmount && coupon.discountType
+    coupon.discountValue && coupon.discountType
       ? coupon.discountType === "percentage"
-        ? `${coupon.discountAmount}%`
-        : `₹${coupon.discountAmount}`
+        ? `${coupon.discountValue}%`
+        : `₹${coupon.discountValue}`
       : null;
 
   return (
@@ -38,6 +29,7 @@ export default function CouponCard({
       }}
       className="transition-all hover:shadow-md"
     >
+      {/* Top card block */}
       <div className="flex flex-col sm:flex-row items-stretch min-h-[110px]">
         {/* Left discount badge */}
         <div
@@ -83,7 +75,7 @@ export default function CouponCard({
           )}
         </div>
 
-        {/* Right content */}
+        {/* Right content box */}
         <div className="flex-1 p-5 flex flex-col justify-between text-left gap-4">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -104,9 +96,10 @@ export default function CouponCard({
             </p>
           </div>
 
+          {/* Bottom row: Details trigger and CTA button */}
           <div className="flex justify-between items-center pt-2 border-t border-[#f1f5f9]">
             <button
-              onClick={() => onToggle(coupon._id)}
+              onClick={toggleDetails}
               type="button"
               className="text-[12px] font-black text-[#6b7280] hover:text-[#3e80dd] transition-colors flex items-center gap-1 border-0 bg-transparent cursor-pointer p-0"
             >
@@ -126,7 +119,7 @@ export default function CouponCard({
                   </span>
                 ) : (
                   <button
-                    onClick={() => onCopyCode(coupon.code, coupon._id)}
+                    onClick={() => handleCopyCode(coupon.code, coupon._id)}
                     type="button"
                     style={{
                       background: "#3e80dd",
@@ -178,7 +171,7 @@ export default function CouponCard({
         </div>
       </div>
 
-      {/* Expanded details */}
+      {/* Expanded detail drawer */}
       {isExpanded && (
         <div className="bg-[#fafbfc] border-t border-[#e2e8f0] p-5 text-left text-xs text-[#4b5563] space-y-3">
           <p className="font-bold uppercase tracking-wider text-[#191f2e] text-[10px]">
@@ -186,20 +179,17 @@ export default function CouponCard({
           </p>
           <ul className="list-disc pl-4 space-y-1 text-[#6b7280] font-medium">
             <li>
-              Applicable only on verified purchases via official partner
-              channels.
+              Applicable only on verified purchases via official partner channels.
             </li>
             <li>
               Discount applies to base order value; taxes, fees, and surcharges
               excluded.
             </li>
             <li>
-              Cannot be combined with other ongoing merchant promotions or
-              wallet cashbacks.
+              Cannot be combined with other ongoing merchant promotions or wallet
+              cashbacks.
             </li>
-            <li>
-              Offer valid for a limited time period. Valid until stock lasts.
-            </li>
+            <li>Offer valid for a limited time period. Valid until stock lasts.</li>
           </ul>
           {hasCode && (
             <div className="flex items-center gap-2 pt-2">

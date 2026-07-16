@@ -46,6 +46,7 @@ export const createMerchantSchema = z.object({
   operatingHours: z.record(z.any()).optional(),
   logo: z.string().optional(),
   banner: z.string().optional(),
+  autoApproveRevival: z.boolean().optional(),
 });
 
 export const updateMerchantSchema = createMerchantSchema.partial();

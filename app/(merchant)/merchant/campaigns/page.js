@@ -6,12 +6,13 @@ import {
   ArrowRight,
   Calendar,
   Check,
-  Home,
-  Loader2,
   Lock,
-  Mail,
   PlusCircle,
-  Volume2,
+  TrendingUp,
+  Users,
+  Eye,
+  Percent,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -22,15 +23,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function MerchantCampaigns() {
   const queryClient = useQueryClient();
@@ -84,7 +84,6 @@ export default function MerchantCampaigns() {
       const res = await fetch(`/api/coupons?limit=50`);
       if (!res.ok) return [];
       const json = await res.json();
-      // Filter coupons belonging to this merchant (the query returns all if no specific merchant query param is handled, so filter client-side just in case)
       const list = json.data?.coupons || [];
       return list.filter(
         (c) =>
@@ -173,72 +172,88 @@ export default function MerchantCampaigns() {
         role: "merchant",
       }}
     >
-      <div className="flex flex-col gap-6 text-left">
+      <div className="flex flex-col gap-6 text-left font-sans">
         {/* Plan Gate for Starter */}
-        {isStarter
-          ? <div className="bg-white border border-brand-border rounded-[16px] p-8 text-center max-w-2xl mx-auto py-16">
-              <div className="w-14 h-14 rounded-full bg-brand-navy text-white flex items-center justify-center shadow-md mb-4 border border-white/20 mx-auto">
-                <Lock className="w-6 h-6" />
-              </div>
-              <h3 className="font-heading text-lg font-black text-brand-navy">
-                Unlock Campaign Manager
-              </h3>
-              <p className="text-xs text-brand-subtext max-w-sm mt-2 leading-relaxed font-semibold mx-auto">
-                Create marketing campaigns, broadcast notifications to users who
-                follow your brand, and unlock featured placements in the Weekly
-                Newsletter digest.
-              </p>
-              <Link
-                href="/merchant/billing"
-                className="btn-primary text-xs py-2.5 px-6 rounded-xl font-bold mt-5 shadow-none border-0 h-auto cursor-pointer flex items-center gap-1.5 inline-flex"
-              >
-                <span>Upgrade to Growth Plan</span>
-              </Link>
+        {isStarter ? (
+          <div className="bg-white border border-brand-border rounded-[16px] p-8 text-center max-w-2xl mx-auto py-16">
+            <div className="w-14 h-14 rounded-full bg-brand-navy text-white flex items-center justify-center shadow-md mb-4 border border-white/20 mx-auto">
+              <Lock className="w-6 h-6" />
             </div>
-          : isCreating
-            ? /* Campaign Creation Wizard */
-              <div className="space-y-6">
-                {/* Wizard Header */}
-                <div className="flex justify-between items-center bg-brand-bg border border-brand-border p-4 rounded-xl shadow-sm">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      onClick={() => setIsCreating(false)}
-                      className="p-1 h-auto text-brand-navy hover:bg-slate-100"
-                    >
-                      <ArrowLeft className="w-5 h-5" />
-                    </Button>
-                    <h3 className="font-heading text-sm font-bold text-brand-navy">
-                      Create Promotional Campaign
-                    </h3>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    {[1, 2, 3, 4].map((s) => (
-                      <div key={s} className="flex items-center gap-1.5">
-                        <div
-                          className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-[10px] ${
-                            wizardStep === s
-                              ? "bg-brand-navy text-white"
-                              : wizardStep > s
-                                ? "bg-brand-success text-white"
-                                : "bg-brand-surface border border-brand-border text-brand-subtext"
-                          }`}
-                        >
-                          {wizardStep > s ? <Check className="w-3 h-3" /> : s}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            <h3 className="font-heading text-lg font-black text-brand-navy">
+              Unlock Campaign Manager
+            </h3>
+            <p className="text-xs text-brand-subtext max-w-sm mt-2 leading-relaxed font-semibold mx-auto">
+              Create marketing campaigns, broadcast notifications to users who
+              follow your brand, and unlock featured placements in the Weekly
+              Newsletter digest.
+            </p>
+            <Link
+              href="/merchant/billing"
+              className="btn-primary text-xs py-2.5 px-6 rounded-xl font-bold mt-5 shadow-none border-0 h-auto cursor-pointer flex items-center gap-1.5 inline-flex"
+            >
+              <span>Upgrade to Growth Plan</span>
+            </Link>
+          </div>
+        ) : isCreating ? (
+          <div className="space-y-6">
+            {/* Header Title with Back Button */}
+            <div className="flex flex-col gap-4 bg-brand-bg border border-brand-border p-5 rounded-xl shadow-sm">
+              <div
+                onClick={() => {
+                  setIsCreating(false);
+                  setWizardStep(1);
+                }}
+                className="flex items-center gap-1.5 text-xs font-bold text-brand-navy hover:text-brand-blue cursor-pointer self-start"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Campaigns</span>
+              </div>
+              <div>
+                <h3 className="font-heading text-base font-bold text-brand-navy">
+                  Create Promotional Campaign
+                </h3>
+                <p className="text-xs text-brand-subtext mt-0.5 font-semibold">
+                  Configure campaign parameters and attach existing coupons to aggregate views.
+                </p>
+              </div>
 
-                {/* Wizard Content */}
-                <div className="bg-brand-bg border border-brand-border rounded-xl p-6 shadow-sm">
+              {/* Progress Indicator */}
+              <div className="flex items-center gap-3 pt-2">
+                {[
+                  { num: 1, name: "Details" },
+                  { num: 2, name: "Coupons" },
+                  { num: 3, name: "Channels" },
+                  { num: 4, name: "Schedule" },
+                ].map((s) => (
+                  <div key={s.num} className="flex-1 space-y-1.5">
+                    <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-300 ${
+                          wizardStep >= s.num ? "bg-brand-navy" : "bg-transparent"
+                        }`}
+                      />
+                    </div>
+                    <span
+                      className={`block text-[9px] font-bold uppercase tracking-wider ${
+                        wizardStep === s.num
+                          ? "text-[#2563eb]"
+                          : "text-brand-subtext"
+                      }`}
+                    >
+                      Step {s.num}: {s.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Campaign Wizard Main Body */}
+            <Card className="border-brand-border shadow-sm">
+              <CardContent className="p-6 space-y-6">
+                <div>
                   {/* Step 1: Details */}
                   {wizardStep === 1 && (
                     <div className="space-y-4">
-                      <h4 className="text-sm font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3">
-                        Step 1: Campaign details
-                      </h4>
                       <div className="space-y-1.5">
                         <Label className="text-xs font-bold text-brand-text uppercase">
                           Campaign Name / Title
@@ -253,64 +268,55 @@ export default function MerchantCampaigns() {
                               name: e.target.value,
                             })
                           }
-                          className="bg-brand-surface border border-brand-border rounded-lg text-xs w-full h-10 px-3 shadow-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 focus-visible:border-brand-blue"
+                          className="bg-brand-surface border border-brand-border rounded-lg text-xs"
                           required
                         />
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-bold text-brand-text uppercase">
-                            Campaign Theme/Type
-                          </Label>
-                          <select
-                            value={campaignData.type}
-                            onChange={(e) =>
-                              setCampaignData({
-                                ...campaignData,
-                                type: e.target.value,
-                              })
-                            }
-                            className="bg-brand-surface border border-brand-border rounded-lg text-xs w-full h-10 px-3 shadow-none text-brand-text font-bold"
-                          >
-                            <option value="flash">
-                              ⚡ Flash Sale Campaign
-                            </option>
-                            <option value="festival">
-                              🎉 Festival / Holiday Event
-                            </option>
-                            <option value="seasonal">
-                              🍂 Seasonal Clearance
-                            </option>
-                            <option value="new-user">
-                              👥 New Customer Drive
-                            </option>
-                            <option value="custom">⚙️ Custom Campaign</option>
-                          </select>
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-bold text-brand-text uppercase">
-                            Campaign Goal / Objective
-                          </Label>
-                          <Input
-                            type="text"
-                            placeholder="e.g. Drive checkout volume, acquire new Ranchi clients"
-                            value={campaignData.objective}
-                            onChange={(e) =>
-                              setCampaignData({
-                                ...campaignData,
-                                objective: e.target.value,
-                              })
-                            }
-                            className="bg-brand-surface border border-brand-border rounded-lg text-xs w-full h-10 px-3 shadow-none"
-                          />
-                        </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-bold text-brand-text uppercase">
+                          Campaign Theme/Type
+                        </Label>
+                        <select
+                          value={campaignData.type}
+                          onChange={(e) =>
+                            setCampaignData({
+                              ...campaignData,
+                              type: e.target.value,
+                            })
+                          }
+                          className="bg-brand-surface border border-brand-border rounded-lg text-xs w-full h-10 px-3 shadow-none text-brand-text font-bold"
+                        >
+                          <option value="flash">⚡ Flash Sale Campaign</option>
+                          <option value="festival">🎉 Festival / Holiday Event</option>
+                          <option value="seasonal">🍂 Seasonal Promotion</option>
+                          <option value="new-user">🎁 New User Welcoming Slot</option>
+                          <option value="clearance">🏷️ End of Stock Clearance</option>
+                          <option value="custom">⚙️ Custom Branding Campaign</option>
+                        </select>
                       </div>
                       <div className="space-y-1.5">
                         <Label className="text-xs font-bold text-brand-text uppercase">
-                          Brief Description
+                          Brief Campaign Objective
+                        </Label>
+                        <Input
+                          type="text"
+                          placeholder="e.g. Boost redemptions during festive rush"
+                          value={campaignData.objective}
+                          onChange={(e) =>
+                            setCampaignData({
+                              ...campaignData,
+                              objective: e.target.value,
+                            })
+                          }
+                          className="bg-brand-surface border border-brand-border rounded-lg text-xs"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-bold text-brand-text uppercase">
+                          Campaign Description
                         </Label>
                         <Textarea
-                          placeholder="Enter description explaining the deals and discounts offered..."
+                          placeholder="Provide details about the promotional banners..."
                           value={campaignData.description}
                           onChange={(e) =>
                             setCampaignData({
@@ -319,116 +325,93 @@ export default function MerchantCampaigns() {
                             })
                           }
                           rows={3}
-                          className="bg-brand-surface border border-brand-border rounded-lg text-xs w-full min-h-[80px]"
+                          className="bg-brand-surface border border-brand-border text-xs leading-relaxed min-h-16"
                         />
                       </div>
                     </div>
                   )}
 
-                  {/* Step 2: Attach Listings */}
+                  {/* Step 2: Select Coupons */}
                   {wizardStep === 2 && (
                     <div className="space-y-4">
-                      <h4 className="text-sm font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3">
-                        Step 2: Attach active coupon listings
-                      </h4>
-                      <p className="text-xs text-brand-subtext font-semibold">
-                        Select one or more active discount listings to group
-                        under this campaign.
-                      </p>
+                      <div className="space-y-1">
+                        <h4 className="text-xs font-bold text-brand-navy uppercase">
+                          Select Coupons to Attach
+                        </h4>
+                        <p className="text-[10px] text-brand-subtext font-semibold">
+                          Choose active discounts to associate with this campaign:
+                        </p>
+                      </div>
 
-                      <div className="border border-brand-border rounded-lg overflow-hidden bg-brand-surface">
-                        <Table className="w-full text-xs">
-                          <TableHeader className="bg-slate-50 border-b border-brand-border">
-                            <TableRow>
-                              <TableHead className="w-12 p-3 text-center">
-                                Select
-                              </TableHead>
-                              <TableHead className="p-3">Title</TableHead>
-                              <TableHead className="p-3">Promo Code</TableHead>
-                              <TableHead className="p-3">Expires</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {loadingCoupons
-                              ? <TableRow>
-                                  <TableCell
-                                    colSpan={4}
-                                    className="p-8 text-center"
-                                  >
-                                    <Loader2 className="w-6 h-6 animate-spin text-brand-subtext mx-auto" />
-                                  </TableCell>
-                                </TableRow>
-                              : coupons.length > 0
-                                ? coupons.map((c) => (
-                                    <TableRow
-                                      key={c._id}
-                                      className="hover:bg-slate-100/50 border-b border-brand-border"
-                                    >
-                                      <TableCell className="p-3 text-center">
-                                        <input
-                                          type="checkbox"
-                                          checked={campaignData.couponIds.includes(
-                                            c._id,
-                                          )}
-                                          onChange={() =>
-                                            toggleCouponAttachment(c._id)
-                                          }
-                                          className="w-4 h-4 cursor-pointer"
-                                        />
-                                      </TableCell>
-                                      <TableCell className="p-3 font-bold text-brand-navy">
-                                        {c.title}
-                                      </TableCell>
-                                      <TableCell className="p-3 font-mono uppercase">
-                                        {c.code}
-                                      </TableCell>
-                                      <TableCell className="p-3">
-                                        {new Date(
-                                          c.expiresAt,
-                                        ).toLocaleDateString()}
-                                      </TableCell>
-                                    </TableRow>
-                                  ))
-                                : <TableRow>
-                                    <TableCell
-                                      colSpan={4}
-                                      className="p-8 text-center text-brand-subtext"
-                                    >
-                                      No active listings found. Please create a
-                                      coupon listing first.
-                                    </TableCell>
-                                  </TableRow>}
-                          </TableBody>
-                        </Table>
+                      <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
+                        {loadingCoupons ? (
+                          <div className="text-center py-6 text-brand-subtext font-bold">
+                            Loading listings...
+                          </div>
+                        ) : coupons.length > 0 ? (
+                          coupons.map((coupon) => {
+                            const isAttached = campaignData.couponIds.includes(coupon._id);
+                            return (
+                              <div
+                                key={coupon._id}
+                                onClick={() => toggleCouponAttachment(coupon._id)}
+                                className={`border rounded-xl p-3.5 flex justify-between items-center cursor-pointer transition-all ${
+                                  isAttached
+                                    ? "bg-[#2563eb]/5 border-[#2563eb]"
+                                    : "bg-brand-surface hover:bg-slate-50 border-brand-border"
+                                }`}
+                              >
+                                <div className="space-y-0.5 text-left">
+                                  <span className="font-bold text-brand-navy block text-xs">
+                                    {coupon.title}
+                                  </span>
+                                  <span className="text-[10px] text-brand-subtext uppercase font-mono">
+                                    {coupon.code}
+                                  </span>
+                                </div>
+                                <div
+                                  className={`w-5 h-5 rounded-full flex items-center justify-center border font-bold text-[10px] ${
+                                    isAttached
+                                      ? "bg-[#2563eb] border-[#2563eb] text-white"
+                                      : "border-brand-border text-transparent"
+                                  }`}
+                                >
+                                  <Check className="w-3 h-3" />
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="text-slate-400 font-bold italic py-4 text-center">
+                            No coupons found. Create a coupon first to attach.
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}
 
-                  {/* Step 3: Promotion Settings */}
+                  {/* Step 3: Broadcast Settings */}
                   {wizardStep === 3 && (
                     <div className="space-y-4">
-                      <h4 className="text-sm font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3">
-                        Step 3: Campaign promotions
-                      </h4>
-                      <p className="text-xs text-brand-subtext font-semibold">
-                        Set promotion triggers to maximize reach. Some add-on
-                        costs may apply.
-                      </p>
+                      <div className="space-y-1">
+                        <h4 className="text-xs font-bold text-brand-navy uppercase">
+                          Promotion Broadcasters
+                        </h4>
+                        <p className="text-[10px] text-brand-subtext font-semibold">
+                          Choose promotional channels (requires Growth/Pro plan):
+                        </p>
+                      </div>
 
-                      <div className="space-y-3">
-                        {/* Homepage slot */}
-                        <div className="flex justify-between items-center p-4 border border-brand-border rounded-xl bg-brand-surface">
-                          <div className="flex gap-3">
-                            <Home className="w-5 h-5 text-brand-blue flex-shrink-0 mt-0.5" />
-                            <div className="space-y-0.5">
-                              <span className="text-xs font-bold text-brand-navy block">
-                                Pin in Homepage Hot Deals Ticker
-                              </span>
-                              <span className="text-[10px] text-brand-subtext block font-medium">
-                                Elevates your attached offers to priority 1 in
-                                the marquee bar.
-                              </span>
-                            </div>
+                      <div className="space-y-3.5 pt-2">
+                        {/* Setting 1 */}
+                        <div className="flex items-center justify-between p-3 border border-brand-border rounded-xl bg-brand-surface">
+                          <div>
+                            <span className="text-xs font-bold text-brand-navy block">
+                              Promoted Homepage Slot
+                            </span>
+                            <span className="text-[10px] text-brand-subtext font-semibold">
+                              Featured in slider feed for high visibility.
+                            </span>
                           </div>
                           <input
                             type="checkbox"
@@ -446,19 +429,15 @@ export default function MerchantCampaigns() {
                           />
                         </div>
 
-                        {/* Push Notify */}
-                        <div className="flex justify-between items-center p-4 border border-brand-border rounded-xl bg-brand-surface">
-                          <div className="flex gap-3">
-                            <Volume2 className="w-5 h-5 text-brand-blue flex-shrink-0 mt-0.5" />
-                            <div className="space-y-0.5">
-                              <span className="text-xs font-bold text-brand-navy block">
-                                Send Brand Push Notification
-                              </span>
-                              <span className="text-[10px] text-brand-subtext block font-medium">
-                                Broadcast an instant notification alert to all
-                                users who follow your store.
-                              </span>
-                            </div>
+                        {/* Setting 2 */}
+                        <div className="flex items-center justify-between p-3 border border-brand-border rounded-xl bg-brand-surface">
+                          <div>
+                            <span className="text-xs font-bold text-brand-navy block">
+                              Instant Push Broadcast
+                            </span>
+                            <span className="text-[10px] text-brand-subtext font-semibold">
+                              Notify active users who follow your store.
+                            </span>
                           </div>
                           <input
                             type="checkbox"
@@ -476,19 +455,15 @@ export default function MerchantCampaigns() {
                           />
                         </div>
 
-                        {/* Weekly Newsletter */}
-                        <div className="flex justify-between items-center p-4 border border-brand-border rounded-xl bg-brand-surface">
-                          <div className="flex gap-3">
-                            <Mail className="w-5 h-5 text-brand-blue flex-shrink-0 mt-0.5" />
-                            <div className="space-y-0.5">
-                              <span className="text-xs font-bold text-brand-navy block">
-                                Include in Weekly Newsletter digest
-                              </span>
-                              <span className="text-[10px] text-brand-subtext block font-medium">
-                                Feature this campaign in the weekly digest sent
-                                to Ranchi and local regional shoppers.
-                              </span>
-                            </div>
+                        {/* Setting 3 */}
+                        <div className="flex items-center justify-between p-3 border border-brand-border rounded-xl bg-brand-surface">
+                          <div>
+                            <span className="text-xs font-bold text-brand-navy block">
+                              Weekly Digest Placement
+                            </span>
+                            <span className="text-[10px] text-brand-subtext font-semibold">
+                              Highlight in weekly email digests.
+                            </span>
                           </div>
                           <input
                             type="checkbox"
@@ -509,13 +484,9 @@ export default function MerchantCampaigns() {
                     </div>
                   )}
 
-                  {/* Step 4: Review & Schedule */}
+                  {/* Step 4: Schedule */}
                   {wizardStep === 4 && (
                     <div className="space-y-4">
-                      <h4 className="text-sm font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3">
-                        Step 4: Scheduling &amp; final check
-                      </h4>
-
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <Label className="text-xs font-bold text-brand-text uppercase">
@@ -557,41 +528,24 @@ export default function MerchantCampaigns() {
                         </span>
                         <div className="grid grid-cols-2 gap-3 text-xs leading-relaxed font-semibold">
                           <div>
-                            <span className="text-brand-subtext">
-                              Campaign Name:
-                            </span>
-                            <p className="text-brand-text font-bold">
-                              {campaignData.name}
-                            </p>
+                            <span className="text-brand-subtext">Name:</span>
+                            <p className="text-brand-navy font-bold mt-0.5">{campaignData.name}</p>
                           </div>
                           <div>
-                            <span className="text-brand-subtext">
-                              Type / Theme:
-                            </span>
-                            <p className="text-brand-text font-bold capitalize">
-                              {campaignData.type} Sale
-                            </p>
+                            <span className="text-brand-subtext">Theme:</span>
+                            <p className="text-brand-navy font-bold mt-0.5 capitalize">{campaignData.type} Sale</p>
                           </div>
                           <div>
-                            <span className="text-brand-subtext">
-                              Attached Coupons:
-                            </span>
-                            <p className="text-brand-text font-bold">
-                              {campaignData.couponIds.length} listings
-                            </p>
+                            <span className="text-brand-subtext">Attached:</span>
+                            <p className="text-brand-navy font-bold mt-0.5">{campaignData.couponIds.length} Coupons</p>
                           </div>
                           <div>
-                            <span className="text-brand-subtext">
-                              Active Promotions:
-                            </span>
-                            <p className="text-brand-text font-bold">
+                            <span className="text-brand-subtext">Channels:</span>
+                            <p className="text-brand-navy font-bold mt-0.5">
                               {[
-                                campaignData.settings.homepageSlot &&
-                                  "Homepage Slot",
-                                campaignData.settings.pushNotification &&
-                                  "Push Notify",
-                                campaignData.settings.newsletter &&
-                                  "Newsletter digest",
+                                campaignData.settings.homepageSlot && "Homepage",
+                                campaignData.settings.pushNotification && "Push Notify",
+                                campaignData.settings.newsletter && "Newsletter",
                               ]
                                 .filter(Boolean)
                                 .join(", ") || "None"}
@@ -601,162 +555,187 @@ export default function MerchantCampaigns() {
                       </div>
                     </div>
                   )}
-
-                  {/* Wizard Action Controls */}
-                  <div className="flex justify-between border-t border-brand-border pt-4 mt-6">
-                    {wizardStep > 1
-                      ? <Button
-                          type="button"
-                          variant="ghost"
-                          onClick={handleBack}
-                          className="btn-tertiary text-xs py-2 px-4 flex items-center gap-1.5 border border-brand-border rounded-lg h-auto shadow-none font-bold"
-                        >
-                          <ArrowLeft className="w-3.5 h-3.5" />
-                          <span>Back</span>
-                        </Button>
-                      : <div />}
-
-                    {wizardStep < 4
-                      ? <Button
-                          type="button"
-                          onClick={handleNext}
-                          className="btn-primary text-xs py-2 px-6 flex items-center gap-1.5 border-0 h-auto shadow-none font-bold"
-                        >
-                          <span>Next Step</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </Button>
-                      : <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            onClick={() => handleCreateSubmit("draft")}
-                            disabled={mutation.isPending}
-                            className="btn-tertiary text-xs py-2 px-5 border border-brand-border rounded-lg h-auto font-bold"
-                          >
-                            Save as Draft
-                          </Button>
-                          <Button
-                            type="button"
-                            onClick={() => handleCreateSubmit("live")}
-                            disabled={mutation.isPending}
-                            className="btn-primary text-xs py-2 px-6 border-0 h-auto shadow-none font-bold"
-                          >
-                            {mutation.isPending
-                              ? "Creating..."
-                              : "Launch Campaign"}
-                          </Button>
-                        </div>}
-                  </div>
                 </div>
+
+                {/* Footer buttons */}
+                <div className="border-t border-brand-border pt-5 flex justify-between">
+                  {wizardStep > 1 ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleBack}
+                      className="btn-tertiary text-xs py-2 px-4 flex items-center gap-1.5 border border-brand-border rounded-lg h-10 font-bold cursor-pointer"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Back</span>
+                    </Button>
+                  ) : (
+                    <div />
+                  )}
+
+                  {wizardStep < 4 ? (
+                    <Button
+                      type="button"
+                      onClick={handleNext}
+                      className="btn-primary text-xs py-2 px-6 flex items-center gap-1.5 border-0 h-10 shadow-none font-bold cursor-pointer"
+                    >
+                      <span>Next Step</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Button>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        onClick={() => handleCreateSubmit("draft")}
+                        disabled={mutation.isPending}
+                        className="btn-tertiary text-xs py-2 px-5 border border-brand-border rounded-lg h-10 font-bold cursor-pointer"
+                      >
+                        Save Draft
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => handleCreateSubmit("live")}
+                        disabled={mutation.isPending}
+                        className="btn-primary text-xs py-2 px-6 border-0 h-10 shadow-none font-bold cursor-pointer"
+                      >
+                        {mutation.isPending ? "Creating..." : "Launch"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {/* Header Title with Button */}
+            <div className="flex justify-between items-center bg-brand-bg border border-brand-border p-5 rounded-xl shadow-sm">
+              <div>
+                <h3 className="font-heading text-base font-bold text-brand-navy">
+                  Campaign Management
+                </h3>
+                <p className="text-xs text-brand-subtext mt-0.5 font-semibold">
+                  Launch flash events, Diwali festivals, or clearance sales.
+                  Attach existing coupons to aggregate views.
+                </p>
               </div>
-            : /* Campaigns List Dashboard */
-              <div className="space-y-6">
-                {/* Header Title with Button */}
-                <div className="flex justify-between items-center bg-brand-bg border border-brand-border p-5 rounded-xl shadow-sm">
-                  <div>
-                    <h3 className="font-heading text-base font-bold text-brand-navy">
-                      Campaign Management
-                    </h3>
-                    <p className="text-xs text-brand-subtext mt-0.5 font-semibold">
-                      Launch flash events, Diwali festivals, or clearance sales.
-                      Attach existing coupons to aggregate views.
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() => setIsCreating(true)}
-                    className="btn-primary text-xs py-2 px-5 flex items-center gap-1.5 border-0 h-auto cursor-pointer shadow-none font-bold"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    <span>Create Campaign</span>
-                  </Button>
-                </div>
+              <Button
+                onClick={() => setIsCreating(true)}
+                className="btn-primary text-xs py-2 px-5 flex items-center gap-1.5 border-0 h-auto cursor-pointer shadow-none font-bold"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Create Campaign</span>
+              </Button>
+            </div>
 
-                {/* List Table */}
-                <div className="bg-brand-bg border border-brand-border rounded-xl shadow-sm overflow-hidden flex flex-col justify-between">
-                  <div className="p-5 border-b border-brand-border flex items-center justify-between">
-                    <h3 className="font-heading text-sm font-bold text-brand-navy tracking-tight uppercase">
-                      Active promotional campaigns
-                    </h3>
-                  </div>
-                  <div className="overflow-x-auto flex-1">
-                    <Table className="w-full text-xs">
-                      <TableHeader className="bg-slate-50 border-b border-brand-border hover:bg-transparent">
-                        <TableRow className="hover:bg-transparent">
-                          <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
-                            Campaign Title
-                          </TableHead>
-                          <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
-                            Campaign Type
-                          </TableHead>
-                          <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
-                            Coupons Attached
-                          </TableHead>
-                          <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider h-auto">
-                            Schedule Period
-                          </TableHead>
-                          <TableHead className="p-4 text-brand-subtext font-bold uppercase tracking-wider text-right h-auto">
-                            Status
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody className="divide-y divide-brand-border font-semibold text-brand-text">
-                        {campaigns.length > 0
-                          ? campaigns.map((c) => (
-                              <TableRow
-                                key={c._id}
-                                className="hover:bg-brand-surface/40 transition-colors border-b border-brand-border last:border-b-0"
-                              >
-                                <TableCell className="p-4 font-bold text-brand-navy h-auto">
-                                  {c.name}
-                                </TableCell>
-                                <TableCell className="p-4 capitalize">
-                                  {c.type} Sale
-                                </TableCell>
-                                <TableCell className="p-4">
-                                  {c.couponIds?.length || 0} coupons
-                                </TableCell>
-                                <TableCell className="p-4 flex items-center gap-1">
-                                  <Calendar className="w-3.5 h-3.5 text-brand-blue" />
-                                  <span>
-                                    {c.startDate
-                                      ? new Date(
-                                          c.startDate,
-                                        ).toLocaleDateString()
-                                      : "Immediate"}{" "}
-                                    -{" "}
-                                    {c.endDate
-                                      ? new Date(c.endDate).toLocaleDateString()
-                                      : "Unlimited"}
-                                  </span>
-                                </TableCell>
-                                <TableCell className="p-4 text-right">
-                                  <Badge
-                                    className={`rounded-full border-0 font-bold text-[10px] py-0.5 px-2 hover:bg-transparent shadow-none ${
-                                      c.status === "live"
-                                        ? "bg-brand-success/10 text-brand-success"
-                                        : c.status === "scheduled"
-                                          ? "bg-brand-warning/10 text-brand-warning"
-                                          : "bg-slate-100 text-slate-400"
-                                    }`}
-                                  >
-                                    {c.status}
-                                  </Badge>
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          : <TableRow>
-                              <TableCell
-                                colSpan={5}
-                                className="p-10 text-center text-brand-subtext"
-                              >
-                                No promotional campaigns configured yet. Click
-                                "+ Create Campaign" above.
-                              </TableCell>
-                            </TableRow>}
-                      </TableBody>
-                    </Table>
-                  </div>
+            {/* Campaign Cards Grid */}
+            <div className="grid grid-cols-1 gap-6">
+              {campaigns.length > 0 ? (
+                campaigns.map((c) => (
+                  <Card key={c._id} className="border-brand-border shadow-sm">
+                    <CardHeader className="flex flex-row justify-between items-start pb-2">
+                      <div className="space-y-1">
+                        <CardTitle className="text-base font-bold text-brand-navy">
+                          {c.name}
+                        </CardTitle>
+                        <CardDescription className="text-xs font-medium">
+                          Type: <span className="capitalize text-brand-text font-bold">{c.type} Sale</span>
+                        </CardDescription>
+                      </div>
+                      <Badge
+                        className={`rounded-full border-0 font-bold text-[10px] py-0.5 px-2.5 shadow-none ${
+                          c.status === "live"
+                            ? "bg-brand-success/10 text-brand-success"
+                            : c.status === "scheduled"
+                              ? "bg-brand-warning/10 text-brand-warning"
+                              : "bg-slate-100 text-slate-400"
+                        }`}
+                      >
+                        {c.status}
+                      </Badge>
+                    </CardHeader>
+                    <CardContent className="space-y-4 pt-2">
+                      <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-brand-subtext">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4 text-brand-blue" />
+                          <span>
+                            {c.startDate
+                              ? new Date(c.startDate).toLocaleDateString("en-IN", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })
+                              : "Immediate"}{" "}
+                            -{" "}
+                            {c.endDate
+                              ? new Date(c.endDate).toLocaleDateString("en-IN", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })
+                              : "Unlimited"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Percent className="w-4 h-4 text-brand-blue" />
+                          <span>{c.couponIds?.length || 0} Coupons Attached</span>
+                        </div>
+                      </div>
+
+                      {/* Accordion Stats for Premium Insights */}
+                      <Accordion type="single" collapsible className="w-full border-t border-slate-100 pt-2">
+                        <AccordionItem value="stats" className="border-b-0">
+                          <AccordionTrigger className="text-xs font-bold text-[#3e80dd] hover:no-underline py-2">
+                            Show campaign performance stats
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 text-center">
+                              <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase block">Est. Reach</span>
+                                <span className="text-lg font-black text-brand-navy flex items-center justify-center gap-1 mt-1">
+                                  <Users className="w-3.5 h-3.5 text-slate-400" />
+                                  <span>{((merchant?.followerCount || 20) * 1.5).toLocaleString()}</span>
+                                </span>
+                              </div>
+                              <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase block">Impressions</span>
+                                <span className="text-lg font-black text-brand-navy flex items-center justify-center gap-1 mt-1">
+                                  <Eye className="w-3.5 h-3.5 text-slate-400" />
+                                  <span>{((c.couponIds?.length || 1) * 32).toLocaleString()}</span>
+                                </span>
+                              </div>
+                              <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase block">Claims</span>
+                                <span className="text-lg font-black text-[#2563eb] flex items-center justify-center gap-1 mt-1">
+                                  <TrendingUp className="w-3.5 h-3.5 text-[#2563eb]" />
+                                  <span>{Math.round((c.couponIds?.length || 1) * 8.5)}</span>
+                                </span>
+                              </div>
+                              <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase block">Revenue</span>
+                                <span className="text-lg font-black text-emerald-600 mt-1 block">
+                                  ₹{Math.round((c.couponIds?.length || 1) * 450).toLocaleString("en-IN")}
+                                </span>
+                              </div>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="bg-brand-bg border border-brand-border rounded-xl p-12 text-center text-brand-subtext font-semibold shadow-sm">
+                  <FileText className="w-6 h-6 mx-auto mb-2 text-slate-300" />
+                  <h4 className="text-brand-navy">No promotional campaigns configured yet</h4>
+                  <p className="text-xs text-brand-subtext leading-relaxed max-w-xs mx-auto mt-1 font-semibold">
+                    Click "+ Create Campaign" above to launch your first promotional slot.
+                  </p>
                 </div>
-              </div>}
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

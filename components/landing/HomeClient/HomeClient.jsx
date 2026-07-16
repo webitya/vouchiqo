@@ -43,7 +43,7 @@ import NewsletterSubscription from "./NewsletterSubscription";
 import TodayTopCoupons from "./TodayTopCoupons";
 import TrendingOffer from "./TrendingOffer";
 
-export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
+export function HomeClient({ initialCoupons = [], latestCoupons = [], popularMerchants = [] }) {
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
   const { city } = useLocation();
@@ -259,7 +259,7 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [] }) {
         <PopularOffers coupons={initialCoupons} />
 
         {/* 9. Popular Stores (with Store of the Month) */}
-        <PopularStores />
+        <PopularStores merchants={popularMerchants} />
 
         {/* 10. Today's Top Coupons & Offers */}
         <TodayTopCoupons

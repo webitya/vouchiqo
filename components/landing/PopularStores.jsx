@@ -154,21 +154,40 @@ const POPULAR_STORES_LIST = [
   },
 ];
 
-export default function PopularStores() {
+export default function PopularStores({ merchants = [] }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const somBanner =
-    "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop";
-  const somLogo = "/brandlogos/10005.jpg";
+  // Map database merchants into standard structure
+  const dbStores = merchants.map((m) => ({
+    name: m.businessName,
+    logo: m.logo || "/placeholder-brand.png",
+    href: `/brand/${m.slug}`,
+    coupons: m.totalCoupons || 0,
+    banner: m.banner,
+    totalOffers: m.totalCoupons + (m.totalRedemptions || 0),
+  }));
+
+  // Combine with static list fallback to ensure at least 12 stores are shown
+  const finalStoresList = dbStores.length >= 8 
+    ? dbStores 
+    : [...dbStores, ...POPULAR_STORES_LIST.filter(staticStore => !dbStores.some(db => db.name.toLowerCase() === staticStore.name.toLowerCase()))];
+
+  // Store of the Month (dynamic first merchant, or fallback)
+  const firstDbMerchant = merchants[0];
+  const somBanner = firstDbMerchant?.banner || "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop";
+  const somLogo = firstDbMerchant?.logo || "/brandlogos/10005.jpg";
+  const somHref = firstDbMerchant ? `/brand/${firstDbMerchant.slug}` : "/brand/samsung";
+  const somCoupons = firstDbMerchant ? firstDbMerchant.totalCoupons || 0 : 0;
+  const somOffers = firstDbMerchant ? (firstDbMerchant.totalCoupons || 0) + (firstDbMerchant.totalRedemptions || 0) : 71;
 
   // Group into pages of 12 stores (3 rows of 4 columns)
   const itemsPerPage = 12;
-  const totalSlides = Math.ceil(POPULAR_STORES_LIST.length / itemsPerPage);
+  const totalSlides = Math.ceil(finalStoresList.length / itemsPerPage);
 
   const slides = [];
   for (let i = 0; i < totalSlides; i++) {
     slides.push(
-      POPULAR_STORES_LIST.slice(i * itemsPerPage, (i + 1) * itemsPerPage),
+      finalStoresList.slice(i * itemsPerPage, (i + 1) * itemsPerPage),
     );
   }
 
@@ -211,7 +230,7 @@ export default function PopularStores() {
         {/* ── Store of the Month Card ── */}
         <div className="lg:w-1/4">
           <Link
-            href="/brand/samsung"
+            href={somHref}
             className="gp-feat block relative no-underline cursor-pointer rounded-md"
           >
             {/* ── LAYER 1: Background photo — FIXED, does NOT move on hover ── */}
@@ -306,7 +325,7 @@ export default function PopularStores() {
                         margin: "4px 0 0",
                       }}
                     >
-                      0 Coupons
+                      {somCoupons} Coupons
                     </p>
                   </li>
                   <li>
@@ -332,14 +351,14 @@ export default function PopularStores() {
                         margin: "4px 0 0",
                       }}
                     >
-                      71 Offers
+                      {somOffers} Offers
                     </p>
                   </li>
                 </ul>
               </div>
 
-              {/* Mobile-only grab label */}
-              <p className="gp-feat__grab-label">GRAB NOW</p>
+              {/* Mobile-only claim label */}
+              <p className="gp-feat__grab-label">CLAIM NOW</p>
 
               {/* Visit Store button */}
               <div className="gp-feat__extra">

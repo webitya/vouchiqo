@@ -70,6 +70,7 @@ export default function MerchantBusinessProfile() {
     },
     logo: "",
     banner: "",
+    autoApproveRevival: false,
   });
 
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -122,6 +123,7 @@ export default function MerchantBusinessProfile() {
         },
         logo: merchant.logo ?? "",
         banner: merchant.banner ?? "",
+        autoApproveRevival: merchant.autoApproveRevival ?? false,
       });
     }
   }, [merchant]);
@@ -236,6 +238,7 @@ export default function MerchantBusinessProfile() {
       operatingHours: formData.operatingHours,
       logo: formData.logo || undefined,
       banner: formData.banner || undefined,
+      autoApproveRevival: formData.autoApproveRevival,
       location: {
         address: formData.address || undefined,
         pincode: formData.pincode || undefined,
@@ -750,6 +753,44 @@ export default function MerchantBusinessProfile() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Offer Revival Settings Card */}
+          <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm space-y-4">
+            <h3 className="font-heading text-sm font-bold text-brand-navy uppercase tracking-wider border-b border-brand-border pb-3 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-brand-blue" />
+              <span>Offer Revival Preferences</span>
+            </h3>
+
+            <div className="flex items-start gap-3 py-2">
+              <input
+                type="checkbox"
+                checked={formData.autoApproveRevival}
+                disabled={merchant?.plan !== "pro" && merchant?.plan !== "enterprise"}
+                onChange={(e) =>
+                  setFormData({ ...formData, autoApproveRevival: e.target.checked })
+                }
+                className="w-4 h-4 text-brand-blue cursor-pointer disabled:cursor-not-allowed mt-0.5"
+                id="autoApproveRevival"
+              />
+              <div className="space-y-1">
+                <Label
+                  htmlFor="autoApproveRevival"
+                  className="text-xs font-bold text-brand-navy cursor-pointer disabled:cursor-not-allowed flex items-center gap-1.5"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 text-brand-blue" />
+                  <span>Auto-approve revival requests within 30 days of expiry, same terms</span>
+                </Label>
+                <p className="text-[11px] text-brand-subtext font-semibold leading-relaxed">
+                  When enabled, any customer request for a coupon that expired in the last 30 days will be approved automatically with the same discount value and a 14-day validity.
+                  {merchant?.plan !== "pro" && merchant?.plan !== "enterprise" && (
+                    <span className="block text-brand-error mt-1 font-bold">
+                      ⚠️ Available on Pro and Enterprise plans only (your current plan is {merchant?.plan || "starter"}).
+                    </span>
+                  )}
+                </p>
+              </div>
             </div>
           </div>
 

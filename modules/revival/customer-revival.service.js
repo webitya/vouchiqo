@@ -165,6 +165,19 @@ export async function createCustomerRevival(data) {
     priority = "medium";
   }
 
+  let initialStatus = "pending";
+  let initialOutcome = "pending";
+
+  if (category === "A" && matchedMerchant) {
+    const isProOrEnterprise =
+      matchedMerchant.plan === "pro" ||
+      matchedMerchant.plan === "enterprise";
+    if (isProOrEnterprise && matchedMerchant.autoApproveRevival && daysSinceSeen <= 30) {
+      initialStatus = "code_regenerated";
+      initialOutcome = "resolved_regenerated";
+    }
+  }
+
   // 4. Create the CustomerRevival record
   const revival = await CustomerRevival.create({
     code: data.code?.trim().toUpperCase() || "",
@@ -183,8 +196,8 @@ export async function createCustomerRevival(data) {
     possibleDuplicate,
     category,
     priority,
-    status: "pending",
-    outcomeStatus: "pending",
+    status: initialStatus,
+    outcomeStatus: initialOutcome,
   });
 
   // 5. Upsert to Merchant Demand Intelligence Database (Category B & C only)

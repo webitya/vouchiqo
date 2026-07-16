@@ -17,6 +17,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -36,9 +38,9 @@ export default function MerchantSubscription() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState(1); // 1: review, 2: pay, 3: success
   const [cardDetails, setCardDetails] = useState({
-    number: "4111 2222 3333 4444",
-    expiry: "12/29",
-    cvv: "123",
+    number: "",
+    expiry: "",
+    cvv: "",
     name: "",
     address: "",
   });
@@ -68,7 +70,7 @@ export default function MerchantSubscription() {
       }
       return res.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["merchant-profile"] });
       toast.success(
         selectedPlan
@@ -208,7 +210,7 @@ export default function MerchantSubscription() {
           addOnId: selectedAddOn.id,
         });
       }
-    }, 2000);
+    }, 1500);
   };
 
   // Calculations for Step 1
@@ -224,21 +226,19 @@ export default function MerchantSubscription() {
   return (
     <DashboardLayout
       title="Billing & Plans"
-      user={{ name: merchant?.businessName || "Merchant", role: "merchant" }}
+      user={{ name: merchant?.businessName || "Merchant Partner", role: "merchant" }}
     >
-      <div className="space-y-6 text-left">
+      <div className="space-y-6 text-left font-sans">
         {/* Active plan card banner */}
         <div className="bg-brand-bg border border-brand-border rounded-xl p-5 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-brand-blue/10 text-brand-blue rounded-full border border-brand-blue/20">
+            <div className="p-3 bg-[#2563eb]/10 text-[#2563eb] rounded-full border border-blue-100">
               <CreditCard className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-heading text-base font-bold text-brand-navy capitalize">
-                  {plans.find((p) => p.id === currentPlanId)?.name ||
-                    currentPlanId}{" "}
-                  Plan
+                  {plans.find((p) => p.id === currentPlanId)?.name || currentPlanId} Plan
                 </h3>
                 <Badge className="bg-brand-success/15 text-brand-success rounded-full border-0 font-bold text-[10px] py-0.5 px-2 hover:bg-brand-success/15 shadow-none uppercase">
                   Active
@@ -270,33 +270,21 @@ export default function MerchantSubscription() {
               </p>
             </div>
 
-            {/* Monthly/Yearly switch */}
-            <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-lg self-start">
-              <button
-                type="button"
-                onClick={() => setBillingCycle("monthly")}
-                className={`text-xs font-bold px-3.5 py-1.5 rounded-md transition-all cursor-pointer ${
-                  billingCycle === "monthly"
-                    ? "bg-white text-brand-navy shadow-sm"
-                    : "text-brand-subtext hover:text-brand-navy"
-                }`}
-              >
+            {/* Monthly/Yearly toggle switch */}
+            <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 p-2 rounded-lg">
+              <span className={`text-xs font-bold ${billingCycle === "monthly" ? "text-brand-navy" : "text-slate-400"}`}>
                 Monthly
-              </button>
-              <button
-                type="button"
-                onClick={() => setBillingCycle("yearly")}
-                className={`text-xs font-bold px-3.5 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
-                  billingCycle === "yearly"
-                    ? "bg-white text-brand-navy shadow-sm"
-                    : "text-brand-subtext hover:text-brand-navy"
-                }`}
-              >
+              </span>
+              <Switch
+                checked={billingCycle === "yearly"}
+                onCheckedChange={(checked) => setBillingCycle(checked ? "yearly" : "monthly")}
+              />
+              <span className={`text-xs font-bold flex items-center gap-1.5 ${billingCycle === "yearly" ? "text-brand-navy" : "text-slate-400"}`}>
                 <span>Yearly</span>
-                <span className="bg-brand-success/10 text-brand-success text-[9px] px-1 py-0.2 rounded font-black">
+                <span className="bg-emerald-100 text-emerald-800 text-[9px] px-1.5 py-0.5 rounded font-bold">
                   Save 15%
                 </span>
-              </button>
+              </span>
             </div>
           </div>
 
@@ -313,12 +301,12 @@ export default function MerchantSubscription() {
                   key={plan.id}
                   className={`bg-brand-bg border rounded-xl p-6 flex flex-col justify-between h-full relative transition-all ${
                     isActive
-                      ? "border-brand-navy ring-1 ring-brand-navy shadow-md"
+                      ? "border-[#2563eb] ring-2 ring-[#2563eb]/20 shadow-md"
                       : "border-brand-border hover:shadow-sm"
                   }`}
                 >
                   {isActive && (
-                    <span className="absolute -top-3 left-6 px-3 py-1 bg-brand-navy text-white text-[10px] font-bold uppercase rounded-full tracking-wider border border-white/20">
+                    <span className="absolute -top-3 left-6 px-3 py-1 bg-[#2563eb] text-white text-[10px] font-bold uppercase rounded-full tracking-wider border border-white/20">
                       Your Active Plan
                     </span>
                   )}
@@ -348,7 +336,7 @@ export default function MerchantSubscription() {
                           key={idx}
                           className="flex gap-2 items-start text-brand-text leading-snug"
                         >
-                          <Check className="w-4 h-4 text-brand-success flex-shrink-0 mt-0.5" />
+                          <Check className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                           <span>{feat}</span>
                         </li>
                       ))}
@@ -358,9 +346,9 @@ export default function MerchantSubscription() {
                   <Button
                     disabled={isActive || plan.id === "starter"}
                     onClick={() => handleOpenUpgrade(plan)}
-                    className={`btn-primary w-full text-xs py-2 mt-6 shadow-none flex items-center justify-center gap-1.5 border-0 h-auto cursor-pointer ${
+                    className={`btn-primary w-full text-xs py-2 mt-6 shadow-none flex items-center justify-center gap-1.5 border-0 h-10 cursor-pointer ${
                       isActive
-                        ? "opacity-50 cursor-not-allowed bg-brand-subtext hover:bg-brand-subtext"
+                        ? "opacity-50 cursor-not-allowed bg-slate-300 hover:bg-slate-300"
                         : ""
                     }`}
                   >
@@ -370,6 +358,57 @@ export default function MerchantSubscription() {
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Feature Comparison Table */}
+        <div className="space-y-4">
+          <h3 className="font-heading text-sm font-bold text-brand-navy uppercase tracking-wider">
+            Feature Comparison Details
+          </h3>
+          <div className="bg-brand-bg border border-brand-border rounded-xl shadow-sm overflow-hidden">
+            <Table className="w-full text-xs">
+              <TableHeader className="bg-slate-50 border-b border-brand-border hover:bg-transparent">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="p-4 text-brand-navy font-bold">Feature Name</TableHead>
+                  <TableHead className="p-4 text-brand-navy font-bold">Starter Free</TableHead>
+                  <TableHead className="p-4 text-brand-navy font-bold">Growth Partner</TableHead>
+                  <TableHead className="p-4 text-brand-navy font-bold">Pro Partner</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="divide-y divide-brand-border font-semibold text-brand-text">
+                <TableRow className="hover:bg-brand-surface/20">
+                  <TableCell className="p-4">Active Coupon Codes</TableCell>
+                  <TableCell className="p-4 text-slate-500">Max 3</TableCell>
+                  <TableCell className="p-4 text-emerald-600 font-bold">Unlimited</TableCell>
+                  <TableCell className="p-4 text-emerald-600 font-bold">Unlimited</TableCell>
+                </TableRow>
+                <TableRow className="hover:bg-brand-surface/20">
+                  <TableCell className="p-4">Store Analytics</TableCell>
+                  <TableCell className="p-4 text-slate-500">Basic View/Claim</TableCell>
+                  <TableCell className="p-4">Advanced CSV</TableCell>
+                  <TableCell className="p-4 text-brand-blue font-bold">Full Demographics</TableCell>
+                </TableRow>
+                <TableRow className="hover:bg-brand-surface/20">
+                  <TableCell className="p-4">Campaign Management Wizard</TableCell>
+                  <TableCell className="p-4 text-slate-400">Locked</TableCell>
+                  <TableCell className="p-4">Included</TableCell>
+                  <TableCell className="p-4">Included</TableCell>
+                </TableRow>
+                <TableRow className="hover:bg-brand-surface/20">
+                  <TableCell className="p-4">Expired Coupon Revival SLA</TableCell>
+                  <TableCell className="p-4 text-slate-400">Locked</TableCell>
+                  <TableCell className="p-4">25 credits/mo</TableCell>
+                  <TableCell className="p-4 font-bold text-brand-blue">50 credits/mo</TableCell>
+                </TableRow>
+                <TableRow className="hover:bg-brand-surface/20">
+                  <TableCell className="p-4">API Verification Endpoint</TableCell>
+                  <TableCell className="p-4 text-slate-400">Locked</TableCell>
+                  <TableCell className="p-4 text-slate-400">Locked</TableCell>
+                  <TableCell className="p-4 text-emerald-600 font-bold">Enabled</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
         </div>
 
@@ -399,7 +438,7 @@ export default function MerchantSubscription() {
 
                 <Button
                   onClick={() => handleOpenAddOn(addon)}
-                  className="btn-tertiary w-full text-xs py-1.5 mt-4 flex items-center justify-center gap-1.5 h-auto cursor-pointer"
+                  className="btn-tertiary w-full text-xs py-1.5 mt-4 flex items-center justify-center gap-1.5 h-9 cursor-pointer"
                 >
                   Buy Pack
                 </Button>
@@ -465,197 +504,179 @@ export default function MerchantSubscription() {
         </div>
       </div>
 
-      {/* Razorpay checkout simulator modal */}
-      {isCheckoutOpen && (
-        <div className="fixed inset-0 bg-black/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-brand-border rounded-[20px] max-w-md w-full p-6 shadow-2xl space-y-6 text-left relative animate-fade-in-scale">
-            {/* Step 1: Review Order */}
-            {checkoutStep === 1 && (
-              <div className="space-y-4 font-semibold text-brand-text">
-                <div className="flex justify-between items-start border-b border-brand-border pb-4">
-                  <div>
-                    <h4 className="font-heading text-sm font-black text-brand-navy uppercase tracking-wider">
-                      Review Your Order
-                    </h4>
-                    <p className="text-[10px] text-brand-subtext">
-                      Razorpay Checkout Sandbox
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setIsCheckoutOpen(false)}
-                    className="text-brand-subtext hover:text-brand-navy text-xs font-bold cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                </div>
+      {/* Razorpay checkout simulator using Shadcn Dialog */}
+      <Dialog open={isCheckoutOpen} onOpenChange={(open) => !open && setIsCheckoutOpen(false)}>
+        <DialogContent className="max-w-md bg-brand-bg border border-brand-border rounded-xl p-6 text-left">
+          <DialogHeader className="border-b border-brand-border pb-4">
+            <DialogTitle className="font-heading text-sm font-black text-brand-navy uppercase tracking-wider flex justify-between items-center w-full">
+              <span>Checkout Order</span>
+              <span className="text-[10px] text-brand-subtext font-normal lowercase font-mono">sandbox</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-brand-subtext">
+              Review transaction and complete payment safely.
+            </DialogDescription>
+          </DialogHeader>
 
-                <div className="bg-brand-surface p-4 border border-brand-border rounded-xl space-y-2.5 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-brand-subtext">Product:</span>
-                    <span className="font-bold text-brand-navy">
-                      {selectedPlan
-                        ? `${selectedPlan.name} (${billingCycle})`
-                        : selectedAddOn?.name}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-brand-subtext">Base Amount:</span>
-                    <span className="font-bold text-brand-text">
-                      ₹{basePrice.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-brand-subtext">GST (18%):</span>
-                    <span className="font-bold text-brand-text">
-                      ₹{gst.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="border-t border-slate-200 pt-2.5 flex justify-between font-black text-brand-navy">
-                    <span>Total Amount:</span>
-                    <span>₹{totalPrice.toLocaleString()}</span>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={() => setCheckoutStep(2)}
-                  className="btn-primary w-full text-xs py-2.5 flex items-center justify-center gap-1 border-0 h-auto cursor-pointer shadow-none font-bold"
-                >
-                  <span>Proceed to Payment</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
-
-            {/* Step 2: Payment Gateway Card Entry */}
-            {checkoutStep === 2 && (
-              <div className="space-y-4 font-semibold text-brand-text">
-                <div className="flex justify-between items-start border-b border-brand-border pb-4">
-                  <div className="flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-brand-success" />
-                    <div>
-                      <h4 className="font-heading text-sm font-black text-brand-navy uppercase tracking-wider">
-                        Razorpay Secure Checkout
-                      </h4>
-                      <p className="text-[10px] text-brand-subtext">
-                        128-bit SSL encrypted connection
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {upgradeMutation.isPending
-                  ? <div className="py-8 text-center space-y-3">
-                      <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
-                      <span className="text-xs font-bold text-brand-navy">
-                        Processing Sandbox Transaction...
-                      </span>
-                    </div>
-                  : <div className="space-y-4">
-                      <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-brand-text uppercase">
-                          Card Number
-                        </Label>
-                        <Input
-                          type="text"
-                          value={cardDetails.number}
-                          onChange={(e) =>
-                            setCardDetails({
-                              ...cardDetails,
-                              number: e.target.value,
-                            })
-                          }
-                          className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-bold text-brand-text uppercase">
-                            Expiry Date
-                          </Label>
-                          <Input
-                            type="text"
-                            value={cardDetails.expiry}
-                            onChange={(e) =>
-                              setCardDetails({
-                                ...cardDetails,
-                                expiry: e.target.value,
-                              })
-                            }
-                            className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-bold text-brand-text uppercase">
-                            CVV
-                          </Label>
-                          <Input
-                            type="password"
-                            value={cardDetails.cvv}
-                            onChange={(e) =>
-                              setCardDetails({
-                                ...cardDetails,
-                                cvv: e.target.value,
-                              })
-                            }
-                            className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-brand-text uppercase">
-                          Cardholder Name
-                        </Label>
-                        <Input
-                          type="text"
-                          placeholder="John Doe"
-                          value={cardDetails.name}
-                          onChange={(e) =>
-                            setCardDetails({
-                              ...cardDetails,
-                              name: e.target.value,
-                            })
-                          }
-                          className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
-                        />
-                      </div>
-
-                      <Button
-                        onClick={executePayment}
-                        className="btn-primary w-full text-xs py-2.5 border-0 h-auto cursor-pointer shadow-none font-bold"
-                      >
-                        Pay ₹{totalPrice.toLocaleString()}
-                      </Button>
-                    </div>}
-              </div>
-            )}
-
-            {/* Step 3: Success Checklist Screen */}
-            {checkoutStep === 3 && (
-              <div className="text-center py-6 space-y-5">
-                <div className="mx-auto w-12 h-12 bg-brand-success/10 text-brand-success rounded-full flex items-center justify-center border border-brand-success/20">
-                  <Check className="w-6 h-6" />
-                </div>
-                <div className="space-y-1.5">
-                  <h3 className="font-heading text-lg font-bold text-brand-text">
-                    Payment Successful!
-                  </h3>
-                  <p className="text-xs text-brand-subtext max-w-xs mx-auto leading-relaxed">
+          {/* Step 1: Review Order */}
+          {checkoutStep === 1 && (
+            <div className="space-y-4 font-semibold text-brand-text">
+              <div className="bg-brand-surface p-4 border border-brand-border rounded-xl space-y-2.5 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-brand-subtext">Product:</span>
+                  <span className="font-bold text-brand-navy">
                     {selectedPlan
-                      ? `Your subscription has been upgraded to ${selectedPlan.name}. Premium features are unlocked immediately.`
-                      : `Your add-on purchase has been confirmed. Resources added successfully.`}
-                  </p>
+                      ? `${selectedPlan.name} (${billingCycle})`
+                      : selectedAddOn?.name}
+                  </span>
                 </div>
-                <Button
-                  onClick={() => setIsCheckoutOpen(false)}
-                  className="btn-primary text-xs py-2 px-6 rounded-lg inline-flex items-center justify-center font-bold border-0 cursor-pointer shadow-none h-auto"
-                >
-                  Return to Dashboard
-                </Button>
+                <div className="flex justify-between">
+                  <span className="text-brand-subtext">Base Amount:</span>
+                  <span className="font-bold text-brand-text">
+                    ₹{basePrice.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-brand-subtext">GST (18%):</span>
+                  <span className="font-bold text-brand-text">
+                    ₹{gst.toLocaleString()}
+                  </span>
+                </div>
+                <div className="border-t border-slate-200 pt-2.5 flex justify-between font-black text-brand-navy">
+                  <span>Total Amount:</span>
+                  <span>₹{totalPrice.toLocaleString()}</span>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
-      )}
+
+              <Button
+                onClick={() => setCheckoutStep(2)}
+                className="btn-primary w-full text-xs py-2.5 flex items-center justify-center gap-1 border-0 h-10 cursor-pointer shadow-none font-bold"
+              >
+                <span>Proceed to Payment</span>
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+
+          {/* Step 2: Payment Gateway Card Entry */}
+          {checkoutStep === 2 && (
+            <div className="space-y-4 font-semibold text-brand-text">
+              {upgradeMutation.isPending ? (
+                <div className="py-8 text-center space-y-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
+                  <span className="text-xs font-bold text-brand-navy">
+                    Processing Sandbox Transaction...
+                  </span>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-bold text-brand-text uppercase">
+                      Card Number
+                    </Label>
+                    <Input
+                      type="text"
+                      placeholder="4111 2222 3333 4444"
+                      value={cardDetails.number}
+                      onChange={(e) =>
+                        setCardDetails({
+                          ...cardDetails,
+                          number: e.target.value,
+                        })
+                      }
+                      className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none font-mono"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-brand-text uppercase">
+                        Expiry Date
+                      </Label>
+                      <Input
+                        type="text"
+                        placeholder="MM/YY"
+                        value={cardDetails.expiry}
+                        onChange={(e) =>
+                          setCardDetails({
+                            ...cardDetails,
+                            expiry: e.target.value,
+                          })
+                        }
+                        className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-brand-text uppercase">
+                        CVV
+                      </Label>
+                      <Input
+                        type="password"
+                        placeholder="•••"
+                        value={cardDetails.cvv}
+                        onChange={(e) =>
+                          setCardDetails({
+                            ...cardDetails,
+                            cvv: e.target.value,
+                          })
+                        }
+                        className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-bold text-brand-text uppercase">
+                      Cardholder Name
+                    </Label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. Aigars S."
+                      value={cardDetails.name}
+                      onChange={(e) =>
+                        setCardDetails({
+                          ...cardDetails,
+                          name: e.target.value,
+                        })
+                      }
+                      className="bg-brand-surface border border-brand-border text-xs h-10 shadow-none"
+                    />
+                  </div>
+
+                  <Button
+                    onClick={executePayment}
+                    className="btn-primary w-full text-xs py-2.5 border-0 h-10 cursor-pointer shadow-none font-bold"
+                  >
+                    Pay ₹{totalPrice.toLocaleString()}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 3: Success Checklist Screen */}
+          {checkoutStep === 3 && (
+            <div className="text-center py-6 space-y-5 font-sans">
+              <div className="mx-auto w-12 h-12 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center border border-emerald-200">
+                <Check className="w-6 h-6" />
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="font-heading text-lg font-bold text-brand-text">
+                  Payment Successful!
+                </h3>
+                <p className="text-xs text-brand-subtext max-w-xs mx-auto leading-relaxed">
+                  {selectedPlan
+                    ? `Your subscription has been upgraded to ${selectedPlan.name}. Premium features are unlocked immediately.`
+                    : `Your add-on purchase has been confirmed. Resources added successfully.`}
+                </p>
+              </div>
+              <Button
+                onClick={() => setIsCheckoutOpen(false)}
+                className="btn-primary text-xs py-2 px-6 rounded-lg inline-flex items-center justify-center font-bold border-0 cursor-pointer shadow-none h-10"
+              >
+                Return to Dashboard
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }

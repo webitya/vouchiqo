@@ -29,6 +29,25 @@ function SectionHeader({ title, viewAllHref }) {
      card boundary (overflow: clip), revealed on
      hover via translateY shifts
    ============================================ */
+const CATEGORY_GRADIENTS = {
+  fashion: "linear-gradient(135deg, #f472b6, #db2777)", // Fashion & Clothing
+  food: "linear-gradient(135deg, #fb923c, #ea580c)", // Food & Dining
+  electronics: "linear-gradient(135deg, #60a5fa, #2563eb)", // Electronics & Gadgets
+  beauty: "linear-gradient(135deg, #f472b6, #e11d48)", // Beauty & Wellness
+  travel: "linear-gradient(135deg, #2dd4bf, #0d9488)", // Travel & Hospitality
+  home: "linear-gradient(135deg, #a78bfa, #7c3aed)", // Home & Living
+  "home-improvement": "linear-gradient(135deg, #fbbf24, #d97706)", // Home Improvement
+  fitness: "linear-gradient(135deg, #34d399, #059669)", // Fitness & Healthcare
+  education: "linear-gradient(135deg, #818cf8, #4f46e5)", // Education & Courses
+  "kids-baby": "linear-gradient(135deg, #fbcfe8, #ec4899)", // Kids & Baby Products
+  jewellery: "linear-gradient(135deg, #fde047, #ca8a04)", // Jewellery & Accessories
+  automotive: "linear-gradient(135deg, #9ca3af, #4b5563)", // Automobile & Auto Services
+  entertainment: "linear-gradient(135deg, #c084fc, #7e22ce)", // Gaming & Entertainment
+  grocery: "linear-gradient(135deg, #a7f3d0, #059669)", // Grocery & Essentials
+  finance: "linear-gradient(135deg, #6ee7b7, #047857)", // Finance & Insurance
+  other: "linear-gradient(135deg, #38bdf8, #0284c7)" // Other
+};
+
 function PopularOfferCard({ coupon }) {
   const discountFormatted =
     coupon.discountType === "percentage"
@@ -39,9 +58,8 @@ function PopularOfferCard({ coupon }) {
     coupon.merchantId?.businessName || coupon.merchantId?.name || "Partner";
 
   const logoUrl = coupon.merchantId?.logo || "/placeholder-brand.png";
-  const coverImage =
-    coupon.image ||
-    "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=400&auto=format&fit=crop";
+  const coverImage = coupon.image || coupon.merchantId?.banner;
+  const gradient = CATEGORY_GRADIENTS[coupon.category] || CATEGORY_GRADIENTS.other;
 
   const isExclusive = coupon.isFeatured;
 
@@ -55,7 +73,11 @@ function PopularOfferCard({ coupon }) {
           covers the bottom ~40%, leaving the top ~60% visible. */}
       <div
         className="po-card__banner absolute top-0 left-0 w-full bg-cover bg-center rounded-md"
-        style={{ height: "100%", backgroundImage: `url(${coverImage})` }}
+        style={{
+          height: "100%",
+          backgroundImage: coverImage ? `url(${coverImage})` : "none",
+          background: coverImage ? undefined : gradient,
+        }}
         role="img"
         aria-label={coupon.title}
       />
@@ -99,7 +121,7 @@ function PopularOfferCard({ coupon }) {
         {/* Title badge — left aligned, matching reference image */}
         <div className="mb-2">
           <p className="po-card__title text-left text-[18px] font-extrabold uppercase tracking-wide text-[#3E80DD] leading-tight">
-            {isExclusive ? "GRABON EXCLUSIVE" : discountFormatted}
+            {isExclusive ? "VOUCHIQO EXCLUSIVE" : discountFormatted}
           </p>
         </div>
 
@@ -110,9 +132,9 @@ function PopularOfferCard({ coupon }) {
           </p>
         </div>
 
-        {/* "GRAB NOW" label — only visible on SM/MD, hidden on desktop */}
+        {/* "CLAIM NOW" label — only visible on SM/MD, hidden on desktop */}
         <p className="po-card__grab text-left text-[12px] font-black uppercase tracking-[0.15em] text-[#3E80DD] md:hidden">
-          GRAB NOW
+          CLAIM NOW
         </p>
 
         {/* ---- EXTRA SECTION (desktop only) ----
@@ -262,74 +284,14 @@ function PopularOfferCard({ coupon }) {
 export default function PopularOffers({ coupons = [] }) {
   const items = coupons.slice(0, 4);
 
-  const demoCoupons = [
-    {
-      _id: "1",
-      discountType: "flat",
-      discountValue: 500,
-      isFeatured: true,
-      title:
-        "Exclusive Offer - Rs 500 OFF Bus Tickets: 12% Discount + 12% Cashback",
-      image:
-        "https://cdn.grabon.in/gograbon/images/banners/banner-1754378462416.jpg",
-      merchantId: {
-        businessName: "redBus",
-        name: "redBus",
-        logo: "https://cdn.grabon.in/gograbon/images/merchant/1755522568013.jpg",
-      },
-    },
-    {
-      _id: "2",
-      discountType: "percentage",
-      discountValue: 40,
-      isFeatured: false,
-      title: "Save 40% OFF On Coursera Plus Annual Subscription",
-      image:
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop",
-      merchantId: {
-        businessName: "Coursera",
-        name: "Coursera",
-        logo: "https://cdn.grabon.in/gograbon/images/store/coursera-logo.png",
-      },
-    },
-    {
-      _id: "3",
-      discountType: "flat",
-      discountValue: 500,
-      isFeatured: true,
-      title: "Grab Up To Rs 500 OFF On Your First Car Rental Booking!",
-      image:
-        "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=600&auto=format&fit=crop",
-      merchantId: {
-        businessName: "Savaari",
-        name: "Savaari",
-        logo: "https://cdn.grabon.in/gograbon/images/store/savaari-logo.png",
-      },
-    },
-    {
-      _id: "4",
-      discountType: "percentage",
-      discountValue: 45,
-      isFeatured: false,
-      title: "Grab Up To 25% OFF + Extra 20% OFF On Annual Plans",
-      image:
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=600&auto=format&fit=crop",
-      merchantId: {
-        businessName: "UltaHost",
-        name: "UltaHost",
-        logo: "https://cdn.grabon.in/gograbon/images/store/ultahost-logo.png",
-      },
-    },
-  ];
-
-  const displayItems = items.length > 0 ? items : demoCoupons;
+  if (items.length === 0) return null;
 
   return (
     <section className="g-sub-banner text-left w-full bg-white rounded-md border border-brand-border p-6 md:p-8">
       <SectionHeader title="Popular Offers of the Day" viewAllHref="/deals" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {displayItems.map((coupon) => (
+        {items.map((coupon) => (
           <PopularOfferCard key={coupon._id} coupon={coupon} />
         ))}
       </div>

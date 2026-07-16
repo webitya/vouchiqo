@@ -92,7 +92,7 @@ export const DUMMY_TAB_COUPONS = {
   electronics: [
     {
       _id: "dummy-elec-1",
-      title: "Grab Up To 15% OFF on Galaxy Laptops & Smartwatches",
+      title: "Save Up To 15% OFF on Galaxy Laptops & Smartwatches",
       discountValue: 15,
       discountType: "percentage",
       description: "Buy premium Galaxy devices directly at Samsung SmartPlazas.",

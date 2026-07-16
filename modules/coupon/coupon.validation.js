@@ -38,6 +38,10 @@ export const createCouponSchema = z.object({
   maxClaims: z.number().int().positive().optional(),
   maxRedemptions: z.number().int().positive().optional(),
 
+  isFeatured: z.boolean().optional(),
+
+  status: z.enum(["active", "paused", "expired"]).optional(),
+
   expiresAt: z
     .string()
     .datetime({ message: "expiresAt must be a valid ISO 8601 date" })

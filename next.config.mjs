@@ -3,6 +3,7 @@ const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig = {
   reactCompiler: true,
+  transpilePackages: ["react-icons"],
   async headers() {
     // Allowed origins: production domain + localhost for dev
     const allowedOrigins = [

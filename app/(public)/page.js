@@ -4,6 +4,8 @@ import {
   getFeaturedCoupons,
   listCoupons,
 } from "@/modules/coupon/coupon.service";
+import Merchant from "@/modules/merchant/merchant.model";
+import { redis } from "@/lib/redis";
 import Navbar from "@/components/layout/navbar";
 
 // Force Next.js to render this page dynamically (SSR) so database queries are fresh
@@ -26,12 +28,38 @@ export default async function Home() {
   const latestResult = await listCoupons(latestParams);
   const latestCoupons = JSON.parse(JSON.stringify(latestResult.coupons || []));
 
+  // 3.5. Fetch active approved merchants from MongoDB (cached in Redis for 5 minutes)
+  let popularMerchants = [];
+  try {
+    const cachedMerchants = await redis.get("home:popular_merchants");
+    if (cachedMerchants) {
+      popularMerchants = JSON.parse(cachedMerchants);
+    } else {
+      const rawMerchants = await Merchant.find({ status: "approved" })
+        .select("businessName slug logo banner totalCoupons totalRedemptions followerCount")
+        .sort({ followerCount: -1, totalCoupons: -1 })
+        .limit(24)
+        .lean();
+      popularMerchants = JSON.parse(JSON.stringify(rawMerchants || []));
+      await redis.setex("home:popular_merchants", 300, JSON.stringify(popularMerchants));
+    }
+  } catch (err) {
+    console.error("Redis error fetching popular merchants:", err);
+    const rawMerchants = await Merchant.find({ status: "approved" })
+      .select("businessName slug logo banner totalCoupons totalRedemptions followerCount")
+      .sort({ followerCount: -1, totalCoupons: -1 })
+      .limit(24)
+      .lean();
+    popularMerchants = JSON.parse(JSON.stringify(rawMerchants || []));
+  }
+
   // 4. Render the client-side component shell with hydrated database props
   return (
     <>
       <HomeClient
         initialCoupons={featuredCoupons}
         latestCoupons={latestCoupons}
+        popularMerchants={popularMerchants}
       />
     </>
   );
