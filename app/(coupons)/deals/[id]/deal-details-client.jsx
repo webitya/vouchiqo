@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
@@ -53,6 +53,9 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
   const matchedClaim = claims.find((c) => c.couponId?._id === coupon._id);
   const isSaved = !!matchedClaim;
   const claimId = matchedClaim?._id;
+  const uniqueClaimCode = claimId
+    ? `VQ-${coupon.code || "DEAL"}-${claimId.slice(-8).toUpperCase()}`
+    : null;
 
   // Toggle Save / Claim mutation
   const toggleSaveMutation = useMutation({
@@ -107,6 +110,12 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
       }
     }
   };
+
+  useEffect(() => {
+    if (isLoggedIn && !isSaved) {
+      autoClaim();
+    }
+  }, [isLoggedIn, isSaved]);
 
   const merchantName = coupon.merchantId?.businessName || "Partner";
   const logoUrl = coupon.merchantId?.logo || "/placeholder-brand.png";
@@ -308,6 +317,56 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
                 </button>
               </div>
 
+              {/* Unique In-Store Claim Card */}
+              {isLoggedIn ? (
+                uniqueClaimCode ? (
+                  <div className="max-w-md mx-auto bg-white border border-slate-200 rounded-2xl p-5 text-left shadow-sm space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-black text-brand-blue uppercase tracking-widest">
+                        Unique In-Store Claim Code
+                      </span>
+                      <span className="text-[10px] bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full font-bold">
+                        Ready to Present
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-3 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 select-all">
+                      <span className="font-mono text-base font-black tracking-wider text-slate-800 uppercase">
+                        {uniqueClaimCode}
+                      </span>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(uniqueClaimCode);
+                          toast.success("Claim code copied!");
+                        }}
+                        type="button"
+                        className="text-xs text-brand-blue font-bold hover:underline cursor-pointer border-0 bg-transparent"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">
+                      Present this code at the physical counter. The merchant can verify your claim and customer details using this code.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-center text-xs text-slate-400 font-semibold py-2">
+                    Generating unique in-store claim code...
+                  </div>
+                )
+              ) : (
+                <div className="max-w-md mx-auto bg-slate-50 border border-slate-200 border-dashed rounded-2xl p-4 text-center">
+                  <p className="text-xs text-slate-500 font-bold mb-2">
+                    Want to redeem in-store?
+                  </p>
+                  <Link
+                    href={`/login?callbackUrl=/deals/${coupon._id}`}
+                    className="inline-block bg-brand-blue text-white text-[11px] font-black px-4 py-2 rounded-xl hover:bg-blue-600 transition-colors cursor-pointer"
+                  >
+                    Login to Generate In-Store Code
+                  </Link>
+                </div>
+              )}
+
               {/* REDIRECT Link */}
               <div className="pt-2">
                 <a
@@ -493,18 +552,45 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
               <span>Promo Code Copied!</span>
             </DialogTitle>
             <DialogDescription className="text-xs font-medium text-slate-500">
-              Your discount coupon is copied and ready to be used at checkout.
+              Your discount coupon is copied and ready to be used.
             </DialogDescription>
           </DialogHeader>
 
           <div className="py-6 space-y-4">
-            <div className="bg-slate-50 border-2 border-dashed border-brand-blue/30 rounded-xl py-4 px-6 select-all font-mono text-xl font-black tracking-widest text-slate-800 uppercase">
-              {coupon.code}
-            </div>
+            {coupon.code && (
+              <div className="space-y-1">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block text-left pl-1">
+                  Online Promo Code:
+                </span>
+                <div className="bg-slate-50 border-2 border-dashed border-brand-blue/30 rounded-xl py-4 px-6 select-all font-mono text-xl font-black tracking-widest text-slate-800 uppercase">
+                  {coupon.code}
+                </div>
+              </div>
+            )}
+            {uniqueClaimCode && (
+              <div className="space-y-1">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block text-left pl-1">
+                  Unique In-Store Verification Code:
+                </span>
+                <div className="bg-blue-50/50 border border-blue-200 rounded-xl py-3 px-6 select-all font-mono text-base font-black tracking-wider text-blue-700 uppercase flex items-center justify-between">
+                  <span>{uniqueClaimCode}</span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(uniqueClaimCode);
+                      toast.success("Claim code copied!");
+                    }}
+                    type="button"
+                    className="text-xs text-blue-600 font-bold hover:underline border-0 bg-transparent p-0 cursor-pointer"
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            )}
             <p className="text-xs font-semibold text-slate-600 leading-relaxed">
-              Now visit{" "}
-              <span className="text-slate-800 font-bold">{merchantName}</span>,
-              shop for eligible items, and paste the code at payment checkout!
+              {uniqueClaimCode
+                ? "Show the unique verification code above to the merchant shop counter to claim your deal!"
+                : `Now visit ${merchantName}, shop for eligible items, and paste the code at payment checkout!`}
             </p>
           </div>
 
