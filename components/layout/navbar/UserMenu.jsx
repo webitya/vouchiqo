@@ -54,7 +54,7 @@ export const UserMenu = () => {
   // Render a consistent loading skeleton during SSR and initial client hydration
   if (!mounted || isPending) {
     return (
-      <div className="w-8 h-8 rounded-full bg-slate-100 animate-pulse shrink-0" />
+      <div className="h-9 w-20 button-shimmer rounded-lg border border-slate-300/40 shrink-0" />
     );
   }
 
