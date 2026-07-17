@@ -1,5 +1,6 @@
 import { analyticsQueue } from "@/lib/queue";
 import { redis } from "@/lib/redis";
+import { escapeRegex } from "@/lib/security";
 import Coupon from "@/modules/coupon/coupon.model";
 import Merchant from "@/modules/merchant/merchant.model";
 import { ForbiddenError, NotFoundError } from "@/utils/app-error";
@@ -11,7 +12,6 @@ import {
   REDIS_TTL,
 } from "@/utils/constants";
 import { buildMeta, parsePagination, parseSort } from "@/utils/pagination";
-import { escapeRegex } from "@/lib/security";
 
 const SORTABLE_FIELDS = [
   "createdAt",
@@ -45,12 +45,17 @@ export async function createCoupon(authId, data) {
   });
 
   const plan = merchant.plan || "starter";
-  const limits = { starter: 3, growth: 15, pro: Infinity, enterprise: Infinity };
+  const limits = {
+    starter: 3,
+    growth: 15,
+    pro: Infinity,
+    enterprise: Infinity,
+  };
   const allowed = limits[plan] ?? 3;
 
   if (activeCount >= allowed) {
     throw new ForbiddenError(
-      `Your subscription plan '${plan}' allows a maximum of ${allowed} active listings. Please upgrade to create more.`
+      `Your subscription plan '${plan}' allows a maximum of ${allowed} active listings. Please upgrade to create more.`,
     );
   }
 

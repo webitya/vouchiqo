@@ -1,32 +1,32 @@
 "use client";
 
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   CheckCircle2,
   Clock,
   ExternalLink,
+  Heart,
   Share2,
   ThumbsDown,
   ThumbsUp,
   User,
-  Heart,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { useUser } from "@/hooks/use-user";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
+import { useUser } from "@/hooks/use-user";
 
 export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
   const router = useRouter();
@@ -76,7 +76,7 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
       toast.success(
         data.action === "save"
           ? "Coupon saved to your collection!"
-          : "Coupon removed from your collection."
+          : "Coupon removed from your collection.",
       );
     },
     onError: (err) => {
@@ -502,7 +502,9 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
               {coupon.code}
             </div>
             <p className="text-xs font-semibold text-slate-600 leading-relaxed">
-              Now visit <span className="text-slate-800 font-bold">{merchantName}</span>, shop for eligible items, and paste the code at payment checkout!
+              Now visit{" "}
+              <span className="text-slate-800 font-bold">{merchantName}</span>,
+              shop for eligible items, and paste the code at payment checkout!
             </p>
           </div>
 

@@ -1,10 +1,25 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  CheckCircle2,
+  ChevronRight,
+  Gift,
+  Grid,
+  Info,
+  LayoutGrid,
+  MapPin,
+  Search,
+  Store,
+  Tag,
+} from "lucide-react";
 import Link from "next/link";
-import { Tag, Search, Grid, Info, CheckCircle2, ChevronRight, LayoutGrid, Store, Gift, MapPin } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { MOCK_BRANDS_SEED, POPULAR_BRANDS } from "@/lib/mock/mock-data";
-import { SIDEBAR_NAV, POPULAR_MERCHANTS_SIDEBAR, ALPHA_LETTERS } from "@/utils/shared-navigation";
+import {
+  ALPHA_LETTERS,
+  POPULAR_MERCHANTS_SIDEBAR,
+  SIDEBAR_NAV,
+} from "@/utils/shared-navigation";
 
 const SIDEBAR_ICONS = {
   Categories: LayoutGrid,
@@ -16,7 +31,16 @@ const SIDEBAR_ICONS = {
 
 function getSidebarIcon(label, isActive) {
   const IconComponent = SIDEBAR_ICONS[label] || Tag;
-  return <IconComponent style={{ width: 16, height: 16, color: isActive ? "#ffffff" : "#4b5563", flexShrink: 0 }} />;
+  return (
+    <IconComponent
+      style={{
+        width: 16,
+        height: 16,
+        color: isActive ? "#ffffff" : "#4b5563",
+        flexShrink: 0,
+      }}
+    />
+  );
 }
 
 export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
@@ -115,11 +139,34 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
   const totalOffersCount = totalCoupons + 340;
 
   return (
-    <main style={{ background: "#ffffff", minHeight: "80vh", paddingBottom: 60, width: "100%" }}>
+    <main
+      style={{
+        background: "#ffffff",
+        minHeight: "80vh",
+        paddingBottom: 60,
+        width: "100%",
+      }}
+    >
       {/* ── BREADCRUMB (Full Width Container) ── */}
       <div style={{ borderBottom: "1px solid #f3f4f6", background: "#ffffff" }}>
-        <div style={{ width: "100%", padding: "12px 24px", display: "flex", gap: 8, fontSize: 13, color: "#4b5563" }}>
-          <Link href="/" style={{ color: "#2563eb", textDecoration: "none", fontWeight: 500 }}>
+        <div
+          style={{
+            width: "100%",
+            padding: "12px 24px",
+            display: "flex",
+            gap: 8,
+            fontSize: 13,
+            color: "#4b5563",
+          }}
+        >
+          <Link
+            href="/"
+            style={{
+              color: "#2563eb",
+              textDecoration: "none",
+              fontWeight: 500,
+            }}
+          >
             Home
           </Link>
           <span style={{ color: "#9ca3af" }}>/</span>
@@ -179,20 +226,60 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
             </div>
 
             {/* Quick Stats Blocks */}
-            <div style={{ display: "flex", gap: 24, marginLeft: 24, paddingLeft: 24, borderLeft: "1px solid #e5e7eb" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 24,
+                marginLeft: 24,
+                paddingLeft: 24,
+                borderLeft: "1px solid #e5e7eb",
+              }}
+            >
               <div>
-                <p style={{ fontSize: 18, fontWeight: 800, color: "#000000", margin: 0 }}>
+                <p
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 800,
+                    color: "#000000",
+                    margin: 0,
+                  }}
+                >
                   {totalBrands + 24}
                 </p>
-                <p style={{ fontSize: 11, color: "#6b7280", fontWeight: 600, margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                <p
+                  style={{
+                    fontSize: 11,
+                    color: "#6b7280",
+                    fontWeight: 600,
+                    margin: 0,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}
+                >
                   Total Brands
                 </p>
               </div>
               <div>
-                <p style={{ fontSize: 18, fontWeight: 800, color: "#000000", margin: 0 }}>
+                <p
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 800,
+                    color: "#000000",
+                    margin: 0,
+                  }}
+                >
                   {totalOffersCount.toLocaleString()}+
                 </p>
-                <p style={{ fontSize: 11, color: "#6b7280", fontWeight: 600, margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                <p
+                  style={{
+                    fontSize: 11,
+                    color: "#6b7280",
+                    fontWeight: 600,
+                    margin: 0,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}
+                >
                   Total Offers
                 </p>
               </div>
@@ -201,8 +288,20 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
 
           {/* Header right: Verification */}
           {formattedDate && (
-            <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#f8fafc", padding: "6px 12px", borderRadius: 4, border: "1px solid #e2e8f0" }}>
-              <CheckCircle2 style={{ width: 14, height: 14, color: "#2563eb" }} />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                background: "#f8fafc",
+                padding: "6px 12px",
+                borderRadius: 4,
+                border: "1px solid #e2e8f0",
+              }}
+            >
+              <CheckCircle2
+                style={{ width: 14, height: 14, color: "#2563eb" }}
+              />
               <span style={{ fontSize: 12, color: "#1e293b", fontWeight: 600 }}>
                 Verified On: {formattedDate}
               </span>
@@ -300,7 +399,10 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                 WebkitBoxOrient: "vertical",
               }}
             >
-              Brand loyalty doesn&apos;t have to mean paying full price. At Vouchiqo, we bring you the best discounts on the top names in fashion, electronics, and everything in between. Discover verified promo codes and active offers.
+              Brand loyalty doesn&apos;t have to mean paying full price. At
+              Vouchiqo, we bring you the best discounts on the top names in
+              fashion, electronics, and everything in between. Discover verified
+              promo codes and active offers.
             </p>
             <button
               onClick={() => setShowMoreAbout((v) => !v)}
@@ -362,7 +464,9 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                   className="sidebar-link-item"
                 >
                   <span>{m.label}</span>
-                  <ChevronRight style={{ width: 12, height: 12, color: "#9ca3af" }} />
+                  <ChevronRight
+                    style={{ width: 12, height: 12, color: "#9ca3af" }}
+                  />
                 </Link>
               ))}
             </div>
@@ -387,7 +491,6 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
 
         {/* ── MAIN CONTENT AREA (Right Column) ── */}
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          
           {/* ── POPULAR BRANDS SECTION ── */}
           <section
             style={{
@@ -463,10 +566,24 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                       </div>
                       <div style={{ height: 1, background: "#f3f4f6" }} />
                       <div style={{ textAlign: "center" }}>
-                        <p style={{ fontSize: 13, fontWeight: 700, color: "#000000", margin: "0 0 2px 0" }}>
+                        <p
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#000000",
+                            margin: "0 0 2px 0",
+                          }}
+                        >
                           {brand.businessName}
                         </p>
-                        <p style={{ fontSize: 11, color: "#2563eb", fontWeight: 600, margin: 0 }}>
+                        <p
+                          style={{
+                            fontSize: 11,
+                            color: "#2563eb",
+                            fontWeight: 600,
+                            margin: 0,
+                          }}
+                        >
                           {totalOffers} Active Offers
                         </p>
                       </div>
@@ -498,10 +615,18 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                 gap: 12,
               }}
             >
-              <h2 style={{ fontSize: 16, fontWeight: 800, color: "#000000", margin: 0, letterSpacing: "-0.2px" }}>
+              <h2
+                style={{
+                  fontSize: 16,
+                  fontWeight: 800,
+                  color: "#000000",
+                  margin: 0,
+                  letterSpacing: "-0.2px",
+                }}
+              >
                 All Brands
               </h2>
-              
+
               {/* Compact Grid Column Selector */}
               <div style={{ display: "flex", gap: 4 }}>
                 {[3, 4, 5].map((cols) => (
@@ -544,7 +669,15 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
               }}
             >
               {/* Alpha list */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 3, flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 3,
+                  flex: 1,
+                  minWidth: 0,
+                }}
+              >
                 <button
                   onClick={() => setActiveLetter("all")}
                   style={{
@@ -552,7 +685,8 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                     borderRadius: 4,
                     border: "1px solid",
                     borderColor: activeLetter === "all" ? "#2563eb" : "#e5e7eb",
-                    background: activeLetter === "all" ? "#2563eb" : "transparent",
+                    background:
+                      activeLetter === "all" ? "#2563eb" : "transparent",
                     color: activeLetter === "all" ? "#ffffff" : "#4b5563",
                     fontSize: 11,
                     fontWeight: 700,
@@ -565,14 +699,18 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                 {ALPHA_LETTERS.map((letter) => (
                   <button
                     key={letter}
-                    onClick={() => setActiveLetter(activeLetter === letter ? "all" : letter)}
+                    onClick={() =>
+                      setActiveLetter(activeLetter === letter ? "all" : letter)
+                    }
                     style={{
                       width: 24,
                       height: 24,
                       borderRadius: 4,
                       border: "1px solid",
-                      borderColor: activeLetter === letter ? "#2563eb" : "#e5e7eb",
-                      background: activeLetter === letter ? "#2563eb" : "transparent",
+                      borderColor:
+                        activeLetter === letter ? "#2563eb" : "#e5e7eb",
+                      background:
+                        activeLetter === letter ? "#2563eb" : "transparent",
                       color: activeLetter === letter ? "#ffffff" : "#1f2937",
                       fontSize: 11,
                       fontWeight: 700,
@@ -672,10 +810,24 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                         </div>
                         <div style={{ height: 1, background: "#f3f4f6" }} />
                         <div style={{ textAlign: "center" }}>
-                          <p style={{ fontSize: 12, fontWeight: 700, color: "#000000", margin: "0 0 1px 0" }}>
+                          <p
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 700,
+                              color: "#000000",
+                              margin: "0 0 1px 0",
+                            }}
+                          >
                             {brand.businessName}
                           </p>
-                          <p style={{ fontSize: 10, color: "#2563eb", fontWeight: 600, margin: 0 }}>
+                          <p
+                            style={{
+                              fontSize: 10,
+                              color: "#2563eb",
+                              fontWeight: 600,
+                              margin: 0,
+                            }}
+                          >
                             {totalOffers} Offers
                           </p>
                         </div>
@@ -685,7 +837,13 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                 })}
               </div>
             ) : (
-              <div style={{ textAlign: "center", padding: "48px 0", color: "#9ca3af" }}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "48px 0",
+                  color: "#9ca3af",
+                }}
+              >
                 <p style={{ fontSize: 13 }}>
                   No brands found for &quot;{searchQuery}&quot;
                 </p>
