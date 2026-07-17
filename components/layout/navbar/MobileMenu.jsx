@@ -124,7 +124,7 @@ export const MobileMenu = () => {
             {session ? (
               <div className="space-y-3.5">
                 {/* Profile menu links for mobile */}
-                <div className="flex flex-col gap-1 pb-2 border-b border-slate-200/60 text-left">
+                <div className="grid grid-cols-2 gap-2 pb-2.5 border-b border-slate-200/60">
                   <Link
                     href={
                       session.user.role === "merchant"
@@ -132,9 +132,9 @@ export const MobileMenu = () => {
                         : "/profile"
                     }
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-semibold text-slate-700 hover:bg-[#eff6ff] hover:text-[#2563eb] rounded-lg transition-all"
+                    className="flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-semibold text-blue-600 bg-blue-50/50 border border-blue-100/50 rounded-lg hover:bg-blue-100/40 transition-all"
                   >
-                    <User className="h-4.5 w-4.5 text-slate-400 shrink-0" />
+                    <User className="h-4 w-4 text-blue-500 shrink-0" />
                     <span>My Profile</span>
                   </Link>
                   <Link
@@ -144,9 +144,9 @@ export const MobileMenu = () => {
                         : "/customer/claimed"
                     }
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-semibold text-slate-700 hover:bg-[#eff6ff] hover:text-[#2563eb] rounded-lg transition-all"
+                    className="flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-semibold text-blue-600 bg-blue-50/50 border border-blue-100/50 rounded-lg hover:bg-blue-100/40 transition-all"
                   >
-                    <Ticket className="h-4.5 w-4.5 text-slate-400 shrink-0" />
+                    <Ticket className="h-4 w-4 text-blue-500 shrink-0" />
                     <span>My Offers</span>
                   </Link>
                 </div>
