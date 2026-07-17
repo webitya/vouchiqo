@@ -31,6 +31,28 @@ export async function POST(request) {
       const email = body.email;
       const password = body.password;
 
+      if (email) {
+        await connectDB();
+        const db = mongoose.connection.db;
+        const normalizedEmail = email.toLowerCase().trim();
+        const dbUser = await db.collection("user").findOne({ email: normalizedEmail });
+        if (dbUser) {
+          const userIdStr = dbUser.id || dbUser._id.toString();
+          const merchantProfile = await db.collection("merchants").findOne({ authId: userIdStr });
+          if (merchantProfile) {
+            console.log(`[Merchant Sync] Promoting user ${normalizedEmail} to role: merchant`);
+            await db.collection("user").updateOne(
+              { _id: dbUser._id },
+              { $set: { role: ROLES.MERCHANT } }
+            );
+            await db.collection("user_profiles").updateOne(
+              { authId: userIdStr },
+              { $set: { role: ROLES.MERCHANT } }
+            );
+          }
+        }
+      }
+
       const adminUsername = process.env.ADMIN_USERNAME || "admin";
       const adminEmail = `${adminUsername}@vouchiqo.com`;
       const adminPassword = process.env.ADMIN_PASSWORD;
