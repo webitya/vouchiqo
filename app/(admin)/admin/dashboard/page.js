@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   AlertTriangle,
   ArrowUpRight,
-  DollarSign,
+  IndianRupee,
   Store,
   Tag,
   TrendingDown,
@@ -133,9 +133,9 @@ export default function AdminDashboard() {
   const trendData = analyticsData?.trendData ?? defaultTrendData;
 
   const chartSeries = {
-    revenue: [{ key: "revenue", name: "Revenue ($)", color: "#2563eb" }],
+    revenue: [{ key: "revenue", name: "Revenue (₹)", color: "#2563eb" }],
     orders: [{ key: "orders", name: "Orders", color: "#1d4ed8" }],
-    profit: [{ key: "profit", name: "Profit ($)", color: "#0a2e6e" }],
+    profit: [{ key: "profit", name: "Profit (₹)", color: "#0a2e6e" }],
   };
 
   // Mock list of pending approvals themed in white, black, and blue
@@ -147,7 +147,7 @@ export default function AdminDashboard() {
       type: "Merchant",
       date: "2026-06-25",
       status: "Pending Approval",
-      amount: "$49.00",
+      amount: "₹1,499.00",
     },
     {
       initials: "JC",
@@ -156,7 +156,7 @@ export default function AdminDashboard() {
       type: "Coupon",
       date: "2026-06-24",
       status: "Auditing",
-      amount: "$0.00",
+      amount: "₹0.00",
     },
     {
       initials: "SG",
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
       type: "Merchant",
       date: "2026-06-23",
       status: "Pending Approval",
-      amount: "$49.00",
+      amount: "₹1,499.00",
     },
     {
       initials: "AT",
@@ -174,7 +174,7 @@ export default function AdminDashboard() {
       type: "Coupon",
       date: "2026-06-22",
       status: "Auditing",
-      amount: "$0.00",
+      amount: "₹0.00",
     },
   ];
 
@@ -226,11 +226,11 @@ export default function AdminDashboard() {
       time: "1 hour ago",
     },
     {
-      icon: DollarSign,
+      icon: IndianRupee,
       color: "text-[#0a2e6e]",
       bg: "bg-[#0a2e6e]/10",
       title: "SaaS Payment received",
-      desc: "$49.00 subscription charge from Starbucks",
+      desc: "₹1,499.00 subscription charge from Starbucks",
       time: "2 hours ago",
     },
     {
@@ -282,7 +282,7 @@ export default function AdminDashboard() {
                     Total Revenue
                   </p>
                   <p className="text-2xl font-bold tracking-tight">
-                    ${kpis.monthlyRevenue.toLocaleString()}
+                    ₹{kpis.monthlyRevenue.toLocaleString()}
                   </p>
                   <div className="flex items-center gap-1.5">
                     <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
@@ -295,7 +295,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-[#2563eb]/10">
-                  <DollarSign className="h-5 w-5 text-[#2563eb]" />
+                  <IndianRupee className="h-5 w-5 text-[#2563eb]" />
                 </div>
               </div>
             </div>
@@ -659,8 +659,8 @@ export default function AdminDashboard() {
                     ></div>
                   </div>
                   <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                    <span>$6,860</span>
-                    <span>Target: $8,000</span>
+                    <span>₹6,860</span>
+                    <span>Target: ₹8,000</span>
                   </div>
                 </div>
                 <div className="space-y-2">

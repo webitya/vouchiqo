@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  DollarSign,
+  IndianRupee,
   Eye,
   Heading,
   Image as ImageIcon,
@@ -323,7 +323,7 @@ export default function BannerManagement() {
 
                 <div className="flex items-center justify-between border-t border-brand-border/60 pt-3">
                   <Label className="flex items-center gap-1.5 text-[10px] font-bold uppercase text-brand-text">
-                    <DollarSign className="w-3.5 h-3.5 text-brand-blue" />
+                    <IndianRupee className="w-3.5 h-3.5 text-brand-blue" />
                     Paid Placement (Sponsored)
                   </Label>
                   <Switch

@@ -2,7 +2,6 @@
 
 import {
   CheckCircle2,
-  DollarSign,
   Eye,
   FolderOpen,
   Plus,
