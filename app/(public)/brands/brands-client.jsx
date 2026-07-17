@@ -50,6 +50,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
   const [mounted, setMounted] = useState(false);
   const [showAllMerchants, setShowAllMerchants] = useState(false);
   const [showMoreAbout, setShowMoreAbout] = useState(false);
+  const [failedLogos, setFailedLogos] = useState({});
 
   useEffect(() => {
     setMounted(true);
@@ -190,43 +191,55 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
             justifyContent: "space-between",
             flexWrap: "wrap",
             gap: 16,
+            width: "100%",
           }}
         >
-          {/* Header left */}
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          {/* Header left group */}
+          <div
+            className="brands-header-left-group"
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            {/* Title Section */}
             <div
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: 4,
-                background: "#eff6ff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                border: "1px solid #dbeafe",
-              }}
+              className="brands-header-title-section"
+              style={{ display: "flex", alignItems: "center", gap: 16 }}
             >
-              <Tag style={{ width: 20, height: 20, color: "#2563eb" }} />
-            </div>
-            <div>
-              <h1
+              <div
                 style={{
-                  fontSize: 24,
-                  fontWeight: 800,
-                  color: "#000000",
-                  margin: 0,
-                  letterSpacing: "-0.5px",
+                  width: 42,
+                  height: 42,
+                  borderRadius: 4,
+                  background: "#eff6ff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1px solid #dbeafe",
+                  flexShrink: 0,
                 }}
               >
-                Brands
-              </h1>
-              <p style={{ fontSize: 12, color: "#6b7280", margin: "2px 0 0" }}>
-                Browse top brands with verified offers
-              </p>
+                <Tag style={{ width: 20, height: 20, color: "#2563eb" }} />
+              </div>
+              <div>
+                <h1
+                  style={{
+                    fontSize: 24,
+                    fontWeight: 800,
+                    color: "#000000",
+                    margin: 0,
+                    letterSpacing: "-0.5px",
+                  }}
+                >
+                  Brands
+                </h1>
+                <p style={{ fontSize: 12, color: "#6b7280", margin: "2px 0 0" }}>
+                  Browse top brands with verified offers
+                </p>
+              </div>
             </div>
 
             {/* Quick Stats Blocks */}
             <div
+              className="brands-header-stats-section"
               style={{
                 display: "flex",
                 gap: 24,
@@ -289,6 +302,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
           {/* Header right: Verification */}
           {formattedDate && (
             <div
+              className="brands-header-verified-section"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -553,19 +567,24 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                           background: "#ffffff",
                         }}
                       >
-                        <img
-                          src={brand.logo}
-                          alt={brand.businessName}
-                          style={{
-                            maxHeight: "85%",
-                            maxWidth: "85%",
-                            objectFit: "contain",
-                          }}
-                          onError={(e) => {
-                            e.target.src =
-                              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2'%3E%3Crect x='3' y='3' width='18' height='18' rx='1'/%3E%3C/svg%3E";
-                          }}
-                        />
+                        {brand.logo && !failedLogos[brand.slug] ? (
+                          <img
+                            src={brand.logo}
+                            alt={brand.businessName}
+                            style={{
+                              maxHeight: "85%",
+                              maxWidth: "85%",
+                              objectFit: "contain",
+                            }}
+                            onError={() => {
+                              setFailedLogos((prev) => ({ ...prev, [brand.slug]: true }));
+                            }}
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 font-extrabold flex items-center justify-center text-sm border border-blue-100 uppercase">
+                            {brand.businessName?.[0]}
+                          </div>
+                        )}
                       </div>
                       <div style={{ height: 1, background: "#f3f4f6" }} />
                       <div style={{ textAlign: "center" }}>
@@ -800,19 +819,24 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
                             background: "#ffffff",
                           }}
                         >
-                          <img
-                            src={brand.logo}
-                            alt={brand.businessName}
-                            style={{
-                              maxHeight: "85%",
-                              maxWidth: "85%",
-                              objectFit: "contain",
-                            }}
-                            onError={(e) => {
-                              e.target.src =
-                                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2'%3E%3Crect x='3' y='3' width='18' height='18' rx='1'/%3E%3C/svg%3E";
-                            }}
-                          />
+                          {brand.logo && !failedLogos[brand.slug] ? (
+                            <img
+                              src={brand.logo}
+                              alt={brand.businessName}
+                              style={{
+                                maxHeight: "85%",
+                                maxWidth: "85%",
+                                objectFit: "contain",
+                              }}
+                              onError={() => {
+                                setFailedLogos((prev) => ({ ...prev, [brand.slug]: true }));
+                              }}
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 font-extrabold flex items-center justify-center text-sm border border-blue-100 uppercase">
+                              {brand.businessName?.[0]}
+                            </div>
+                          )}
                         </div>
                         <div style={{ height: 1, background: "#f3f4f6" }} />
                         <div style={{ textAlign: "center" }}>
@@ -943,6 +967,23 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
           }
         }
         @media (max-width: 768px) {
+          .brands-header-left-group {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+            width: 100% !important;
+          }
+          .brands-header-stats-section {
+            border-left: none !important;
+            padding-left: 0 !important;
+            margin-left: 0 !important;
+            width: 100% !important;
+            gap: 32px !important;
+          }
+          .brands-header-verified-section {
+            width: 100% !important;
+            justify-content: flex-start !important;
+          }
           .alpha-search-container {
             flex-direction: column !important;
             align-items: stretch !important;
