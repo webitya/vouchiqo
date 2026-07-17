@@ -149,135 +149,137 @@ export default function FAQPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col bg-white"
+      className="flex flex-col bg-white"
       style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
     >
-      <Navbar />
+      <div className="min-h-screen flex flex-col w-full">
+        <Navbar />
 
-      {/* ── Hero ── */}
-      <section className="relative w-full bg-blue-50 border-b border-blue-100 overflow-hidden">
-        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-14 text-center">
-          <h1 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight mb-3">
-            Frequently Asked Questions
-          </h1>
-          <p className="text-[14px] text-gray-500 font-normal max-w-md mx-auto mb-8">
-            Find answers about coupon verification, the revival system, merchant
-            billing, and your account.
-          </p>
-
-          {/* Search */}
-          <div className="relative max-w-lg mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search questions or keywords..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 placeholder-gray-400 text-[13px] font-normal focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all shadow-sm"
-              style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ── Category filter pills ── */}
-      <div className="w-full bg-white border-b border-gray-100 sticky top-0 z-30">
-        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-2 overflow-x-auto scrollbar-none">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setActiveCategory(cat)}
-              className={`flex-shrink-0 px-3.5 py-1.5 rounded-lg text-[12px] font-medium transition-all border cursor-pointer ${
-                activeCategory === cat
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600"
-              }`}
-              style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
-            >
-              {cat}
-            </button>
-          ))}
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery("")}
-              className="flex-shrink-0 ml-auto text-[11px] text-gray-400 hover:text-gray-700 transition-colors cursor-pointer border-0 bg-transparent"
-            >
-              Clear search
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* ── FAQ Grid ── */}
-      <main className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow min-h-screen">
-        {filteredFaqs.length > 0 ? (
-          <>
-            <p className="text-[11px] text-gray-400 font-medium mb-5">
-              Showing {filteredFaqs.length} question
-              {filteredFaqs.length !== 1 ? "s" : ""}
-              {activeCategory !== "All" ? ` in ${activeCategory}` : ""}
-              {searchQuery ? ` for "${searchQuery}"` : ""}
+        {/* ── Hero ── */}
+        <section className="relative w-full bg-blue-50 border-b border-blue-100 overflow-hidden">
+          <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-14 text-center">
+            <h1 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight mb-3">
+              Frequently Asked Questions
+            </h1>
+            <p className="text-[14px] text-gray-500 font-normal max-w-md mx-auto mb-8">
+              Find answers about coupon verification, the revival system,
+              merchant billing, and your account.
             </p>
 
-            {/* Desktop: 2 columns | Mobile: 1 column */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Left column */}
-              <div className="space-y-3">
-                {leftCol.map((faq) => {
-                  const globalIdx = ALL_FAQS.indexOf(faq);
-                  const isOpen = openItem === globalIdx;
-                  return (
-                    <FAQItem
-                      key={globalIdx}
-                      faq={faq}
-                      isOpen={isOpen}
-                      onToggle={() => toggle(globalIdx)}
-                    />
-                  );
-                })}
-              </div>
-
-              {/* Right column */}
-              <div className="space-y-3">
-                {rightCol.map((faq) => {
-                  const globalIdx = ALL_FAQS.indexOf(faq);
-                  const isOpen = openItem === globalIdx;
-                  return (
-                    <FAQItem
-                      key={globalIdx}
-                      faq={faq}
-                      isOpen={isOpen}
-                      onToggle={() => toggle(globalIdx)}
-                    />
-                  );
-                })}
-              </div>
+            {/* Search */}
+            <div className="relative max-w-lg mx-auto">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search questions or keywords..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 placeholder-gray-400 text-[13px] font-normal focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all shadow-sm"
+                style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
+              />
             </div>
-          </>
-        ) : (
-          <div className="text-center py-20 bg-gray-50 border border-gray-100 rounded-2xl">
-            <HelpCircle className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-            <h3 className="text-[15px] font-semibold text-gray-800 mb-1">
-              No matching questions
-            </h3>
-            <p className="text-[13px] text-gray-500 font-normal max-w-xs mx-auto mb-4">
-              Try different keywords like "coupon", "revival", or "merchant".
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                setSearchQuery("");
-                setActiveCategory("All");
-              }}
-              className="text-blue-600 text-[13px] font-medium hover:underline border-0 bg-transparent cursor-pointer"
-            >
-              Reset filters
-            </button>
           </div>
-        )}
-      </main>
+        </section>
+
+        {/* ── Category filter pills ── */}
+        <div className="w-full bg-white border-b border-gray-100 sticky top-0 z-30">
+          <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-2 overflow-x-auto scrollbar-none">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={`flex-shrink-0 px-3.5 py-1.5 rounded-lg text-[12px] font-medium transition-all border cursor-pointer ${
+                  activeCategory === cat
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600"
+                }`}
+                style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
+              >
+                {cat}
+              </button>
+            ))}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="flex-shrink-0 ml-auto text-[11px] text-gray-400 hover:text-gray-700 transition-colors cursor-pointer border-0 bg-transparent"
+              >
+                Clear search
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* ── FAQ Grid ── */}
+        <main className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">
+          {filteredFaqs.length > 0 ? (
+            <>
+              <p className="text-[11px] text-gray-400 font-medium mb-5">
+                Showing {filteredFaqs.length} question
+                {filteredFaqs.length !== 1 ? "s" : ""}
+                {activeCategory !== "All" ? ` in ${activeCategory}` : ""}
+                {searchQuery ? ` for "${searchQuery}"` : ""}
+              </p>
+
+              {/* Desktop: 2 columns | Mobile: 1 column */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Left column */}
+                <div className="space-y-3">
+                  {leftCol.map((faq) => {
+                    const globalIdx = ALL_FAQS.indexOf(faq);
+                    const isOpen = openItem === globalIdx;
+                    return (
+                      <FAQItem
+                        key={globalIdx}
+                        faq={faq}
+                        isOpen={isOpen}
+                        onToggle={() => toggle(globalIdx)}
+                      />
+                    );
+                  })}
+                </div>
+
+                {/* Right column */}
+                <div className="space-y-3">
+                  {rightCol.map((faq) => {
+                    const globalIdx = ALL_FAQS.indexOf(faq);
+                    const isOpen = openItem === globalIdx;
+                    return (
+                      <FAQItem
+                        key={globalIdx}
+                        faq={faq}
+                        isOpen={isOpen}
+                        onToggle={() => toggle(globalIdx)}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-20 bg-gray-50 border border-gray-100 rounded-2xl">
+              <HelpCircle className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+              <h3 className="text-[15px] font-semibold text-gray-800 mb-1">
+                No matching questions
+              </h3>
+              <p className="text-[13px] text-gray-500 font-normal max-w-xs mx-auto mb-4">
+                Try different keywords like "coupon", "revival", or "merchant".
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveCategory("All");
+                }}
+                className="text-blue-600 text-[13px] font-medium hover:underline border-0 bg-transparent cursor-pointer"
+              >
+                Reset filters
+              </button>
+            </div>
+          )}
+        </main>
+      </div>
 
       <Footer />
     </div>
