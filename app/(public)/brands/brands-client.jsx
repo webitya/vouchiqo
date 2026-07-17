@@ -323,9 +323,10 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
         className="brand-grid-layout"
       >
         {/* ── SIDEBAR (Left Column) ── */}
-        <aside style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <aside className="brand-sidebar" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {/* Navigation Links */}
           <div
+            className="sidebar-nav-links"
             style={{
               background: "#ffffff",
               borderRadius: 6,
@@ -364,6 +365,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
 
           {/* About Section */}
           <div
+            className="sidebar-about-card"
             style={{
               background: "#ffffff",
               borderRadius: 6,
@@ -423,6 +425,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
 
           {/* Popular Stores / Merchants */}
           <div
+            className="sidebar-popular-card"
             style={{
               background: "#ffffff",
               borderRadius: 6,
@@ -490,7 +493,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
         </aside>
 
         {/* ── MAIN CONTENT AREA (Right Column) ── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div className="brand-main-content" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           {/* ── POPULAR BRANDS SECTION ── */}
           <section
             style={{
@@ -657,6 +660,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
 
             {/* Alphabetical filter row & Search field */}
             <div
+              className="alpha-search-container"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -670,6 +674,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
             >
               {/* Alpha list */}
               <div
+                className="alpha-list-wrapper"
                 style={{
                   display: "flex",
                   flexWrap: "wrap",
@@ -725,6 +730,7 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
 
               {/* Compact Search box */}
               <div
+                className="search-box-wrapper"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -892,12 +898,74 @@ export default function BrandsClient({ brands, totalBrands, totalCoupons }) {
         }
         @media (max-width: 900px) {
           .brand-grid-layout {
-            grid-template-columns: 1fr !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 20px !important;
+          }
+          .brand-sidebar {
+            display: contents !important;
+          }
+          .sidebar-nav-links {
+            order: 1 !important;
+            display: flex !important;
+            flex-direction: row !important;
+            overflow-x: auto !important;
+            white-space: nowrap !important;
+            width: 100% !important;
+            background: #ffffff !important;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            padding: 4px !important;
+            gap: 8px !important;
+            scrollbar-width: none !important;
+          }
+          .sidebar-nav-links::-webkit-scrollbar {
+            display: none !important;
+          }
+          .sidebar-nav-links a {
+            flex: 1 0 auto !important;
+            padding: 8px 16px !important;
+            border-bottom: none !important;
+            border-radius: 4px !important;
+            justify-content: center !important;
+          }
+          .brand-main-content {
+            order: 2 !important;
+            width: 100% !important;
+          }
+          .sidebar-about-card {
+            order: 3 !important;
+            width: 100% !important;
+          }
+          .sidebar-popular-card {
+            order: 4 !important;
+            width: 100% !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .alpha-search-container {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 16px !important;
+          }
+          .alpha-list-wrapper {
+            flex: none !important;
+            width: 100% !important;
+            justify-content: center !important;
+          }
+          .search-box-wrapper {
+            width: 100% !important;
+            min-width: 100% !important;
           }
         }
         @media (max-width: 640px) {
           .all-brands-responsive-grid {
             grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (min-width: 641px) and (max-width: 1024px) {
+          .all-brands-responsive-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
           }
         }
       `}</style>
