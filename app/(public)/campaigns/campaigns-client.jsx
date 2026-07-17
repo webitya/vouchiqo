@@ -91,7 +91,7 @@ export default function CampaignsClient() {
   return (
     <main
       style={{
-        background: "#f8fafc",
+        background: "#ffffff",
         minHeight: "80vh",
         paddingBottom: 60,
         width: "100%",
@@ -99,13 +99,12 @@ export default function CampaignsClient() {
     >
       <div
         style={{
-          maxWidth: "768px",
+          maxWidth: "1400px",
           margin: "0 auto",
           background: "#ffffff",
           minHeight: "80vh",
-          boxShadow: "0 0 20px rgba(0,0,0,0.03)",
         }}
-        className="campaigns-page-container"
+        className="campaigns-page-container w-full"
       >
         {/* ── BREADCRUMB (Clean & Simple) ── */}
         <div style={{ borderBottom: "1px solid #f1f5f9", background: "#ffffff" }}>
@@ -808,9 +807,34 @@ export default function CampaignsClient() {
           color: #1e293b !important;
           border-color: #94a3b8 !important;
         }
+        .all-festivals-responsive-grid {
+          grid-template-columns: ${
+            layoutType === "compact"
+              ? "repeat(5, 1fr)"
+              : "repeat(6, 1fr)"
+          };
+        }
+        @media (max-width: 1024px) {
+          .all-festivals-responsive-grid {
+            grid-template-columns: ${
+              layoutType === "compact"
+                ? "repeat(4, 1fr) !important"
+                : "repeat(5, 1fr) !important"
+            };
+          }
+        }
+        @media (max-width: 768px) {
+          .all-festivals-responsive-grid {
+            grid-template-columns: ${
+              layoutType === "compact"
+                ? "repeat(3, 1fr) !important"
+                : "repeat(4, 1fr) !important"
+            };
+          }
+        }
         @media (max-width: 640px) {
           .all-festivals-responsive-grid {
-            grid-template-columns: \${
+            grid-template-columns: ${
               layoutType === "compact"
                 ? "repeat(2, 1fr) !important"
                 : "repeat(3, 1fr) !important"
@@ -818,6 +842,7 @@ export default function CampaignsClient() {
           }
           .campaigns-page-container {
             box-shadow: none !important;
+            padding: 0 12px !important;
           }
         }
       `}</style>
