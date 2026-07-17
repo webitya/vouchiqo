@@ -6,13 +6,13 @@ export const dynamic = "force-dynamic";
  * Metadata definitions for search crawler optimization (SEO).
  */
 export const metadata = {
-  title: "Verified Deals, Coupon Codes & Promo Links | Vouchiqo",
+  title: "Verified Deals, Promo Offers & Discount Links | Vouchiqo",
   description:
-    "Discover 100% verified coupons, promotional discount codes, retail deals, and seasonal offers on the Vouchiqo savings catalog.",
+    "Discover 100% verified promo offers, discount deals, and seasonal savings from top merchants on the Vouchiqo platform.",
   openGraph: {
-    title: "Verified Deals, Coupon Codes & Promo Links | Vouchiqo",
+    title: "Verified Deals, Promo Offers & Discount Links | Vouchiqo",
     description:
-      "Discover 100% verified coupons, promotional discount codes, retail deals, and seasonal offers on the Vouchiqo savings catalog.",
+      "Discover 100% verified promo offers, discount deals, and seasonal savings from top merchants on the Vouchiqo platform.",
     type: "website",
   },
 };
