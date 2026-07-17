@@ -37,6 +37,15 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
   const [showShareTooltip, setShowShareTooltip] = useState(false);
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
 
+  const isMockCoupon = typeof coupon._id === "string" && coupon._id.startsWith("mock_");
+  const [localMockSaved, setLocalMockSaved] = useState(false);
+
+  useEffect(() => {
+    if (isMockCoupon && typeof window !== "undefined") {
+      setLocalMockSaved(localStorage.getItem(`mock_claim_${coupon._id}`) === "true");
+    }
+  }, [coupon._id, isMockCoupon]);
+
   // Fetch active saved claims for the user
   const { data: claims = [], refetch: refetchClaims } = useQuery({
     queryKey: ["user-claims"],
@@ -47,12 +56,14 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
       const json = await res.json();
       return json.data?.claims || [];
     },
-    enabled: isLoggedIn,
+    enabled: isLoggedIn && !isMockCoupon,
   });
 
   const matchedClaim = claims.find((c) => c.couponId?._id === coupon._id);
-  const isSaved = !!matchedClaim;
-  const claimId = matchedClaim?._id;
+  const isSaved = isMockCoupon ? localMockSaved : !!matchedClaim;
+  const claimId = isMockCoupon
+    ? `mock_clm_${coupon._id.slice(-8)}`
+    : matchedClaim?._id;
   const uniqueClaimCode = claimId
     ? `VQ-${coupon.code || "DEAL"}-${claimId.slice(-8).toUpperCase()}`
     : null;
@@ -88,6 +99,19 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
   });
 
   const handleToggleSave = () => {
+    if (isMockCoupon) {
+      const newSaved = !localMockSaved;
+      setLocalMockSaved(newSaved);
+      if (typeof window !== "undefined") {
+        localStorage.setItem(`mock_claim_${coupon._id}`, String(newSaved));
+      }
+      toast.success(
+        newSaved
+          ? "Coupon saved to your collection!"
+          : "Coupon removed from your collection.",
+      );
+      return;
+    }
     if (!isLoggedIn) {
       toast.error("Please login to save coupons!");
       router.push(`/login?callbackUrl=/deals/${coupon._id}`);
@@ -97,6 +121,7 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
   };
 
   const autoClaim = async () => {
+    if (isMockCoupon) return;
     if (isLoggedIn && !isSaved) {
       try {
         await fetch("/api/claims", {
@@ -112,10 +137,17 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
   };
 
   useEffect(() => {
+    if (isMockCoupon) {
+      if (typeof window !== "undefined") {
+        localStorage.setItem(`mock_claim_${coupon._id}`, "true");
+      }
+      setLocalMockSaved(true);
+      return;
+    }
     if (isLoggedIn && !isSaved) {
       autoClaim();
     }
-  }, [isLoggedIn, isSaved]);
+  }, [isLoggedIn, isSaved, isMockCoupon, coupon._id]);
 
   const merchantName = coupon.merchantId?.businessName || "Partner";
   const logoUrl = coupon.merchantId?.logo || "/placeholder-brand.png";
