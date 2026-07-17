@@ -1,6 +1,13 @@
 "use client";
 
-import { LogOut, Settings, Ticket, User, LayoutDashboard, Users, Store } from "lucide-react";
+import {
+  LayoutDashboard,
+  LogOut,
+  Store,
+  Ticket,
+  User,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -56,10 +63,10 @@ export const UserMenu = () => {
     return (
       <Link
         href="/login"
-        className="text-[12px] font-extrabold text-[#2563eb] hover:bg-[#2563eb]/5 transition-all px-3.5 py-2 rounded-xl border border-[#2563eb]/30 flex items-center gap-1.5 uppercase tracking-wider whitespace-nowrap"
+        className="h-9 text-[13px] font-semibold bg-[#2563eb] text-white hover:bg-[#1d4ed8] rounded-lg px-4 flex items-center justify-center gap-1.5 whitespace-nowrap transition-all duration-200 hover:shadow-sm"
       >
         <User className="h-3.5 w-3.5" />
-        Sign In
+        Login
       </Link>
     );
   }
@@ -70,13 +77,25 @@ export const UserMenu = () => {
     switch (role) {
       case "admin":
         return [
-          { icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin/dashboard" },
+          {
+            icon: LayoutDashboard,
+            label: "Admin Dashboard",
+            href: "/admin/dashboard",
+          },
           { icon: Users, label: "Manage Users", href: "/admin/users" },
-          { icon: Store, label: "Manage Merchants", href: "/admin/approvals/merchants" },
+          {
+            icon: Store,
+            label: "Manage Merchants",
+            href: "/admin/approvals/merchants",
+          },
         ];
       case "merchant":
         return [
-          { icon: LayoutDashboard, label: "Merchant Dashboard", href: "/merchant/dashboard" },
+          {
+            icon: LayoutDashboard,
+            label: "Merchant Dashboard",
+            href: "/merchant/dashboard",
+          },
           { icon: Ticket, label: "Manage Coupons", href: "/merchant/coupons" },
           { icon: User, label: "My Profile", href: "/merchant/profile" },
         ];
@@ -114,6 +133,7 @@ export const UserMenu = () => {
         aria-expanded={open}
       >
         {session.user.image ? (
+          // biome-ignore lint/performance/noImgElement: user avatar img
           <img
             src={session.user.image}
             alt={session.user.name || "User profile"}

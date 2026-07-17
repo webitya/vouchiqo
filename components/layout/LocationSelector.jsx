@@ -1,19 +1,13 @@
 "use client";
 
-import {
-  Check,
-  ChevronDown,
-  Loader2,
-  MapPin,
-  Navigation,
-  Search,
-} from "lucide-react";
+import { Check, ChevronDown, Loader2, MapPin, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "@/hooks/use-location";
 import { INDIAN_CITIES } from "@/utils/cities";
 
 export default function LocationSelector({
   isMobile = false,
+  inDrawer = false,
   onMobileSelect = null,
 }) {
   const [open, setOpen] = useState(false);
@@ -39,8 +33,9 @@ export default function LocationSelector({
     }
   }, [open]);
 
-  // Click-outside to close
+  // Click-outside to close (only if not in mobile drawer to avoid conflicts)
   useEffect(() => {
+    if (inDrawer) return;
     function onClickOutside(e) {
       if (panelRef.current && !panelRef.current.contains(e.target)) {
         setOpen(false);
@@ -49,7 +44,7 @@ export default function LocationSelector({
     }
     document.addEventListener("mousedown", onClickOutside);
     return () => document.removeEventListener("mousedown", onClickOutside);
-  }, []);
+  }, [inDrawer]);
 
   const filtered =
     query.length > 0
@@ -89,32 +84,44 @@ export default function LocationSelector({
       aria-label="Select location"
       aria-expanded={open}
       className={`
-        flex items-center gap-1 font-medium transition-all cursor-pointer select-none
+        flex items-center justify-between font-semibold transition-all duration-200 cursor-pointer select-none outline-none
         ${
-          isMobile
-            ? "text-[11px] text-blue-600 bg-blue-50 border border-blue-200 rounded-md px-2 py-1 hover:bg-blue-100"
-            : "text-[12px] text-blue-700 bg-blue-50 border border-blue-200 rounded-md px-2.5 py-1 hover:bg-blue-100 hover:border-blue-300"
+          inDrawer
+            ? "w-full px-4 py-3 text-slate-700 hover:bg-[#eff6ff] hover:text-[#2563eb] border-b border-slate-100"
+            : isMobile
+              ? "text-[11px] text-[#2563eb] bg-[#2563eb]/5 border border-[#2563eb]/20 rounded-md px-2.5 py-1.5 hover:bg-[#2563eb]/10"
+              : "h-9 text-[13px] text-blue-700 bg-blue-50/50 border border-blue-200/80 rounded-lg px-3.5 hover:bg-blue-100/60 hover:border-blue-300 hover:shadow-sm"
         }
       `}
     >
-      {isDetecting ? (
-        <Loader2 className="w-3 h-3 animate-spin text-blue-500 shrink-0" />
-      ) : (
-        <MapPin className="w-3 h-3 text-blue-500 shrink-0" />
-      )}
-      <span className="max-w-[100px] truncate leading-none">{displayLabel}</span>
+      <div className="flex items-center gap-1.5">
+        {isDetecting ? (
+          <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500 shrink-0" />
+        ) : (
+          <MapPin className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+        )}
+        <span className="truncate leading-none">
+          {inDrawer
+            ? city
+              ? `Location: ${city}`
+              : "Select Location"
+            : displayLabel}
+        </span>
+      </div>
       <ChevronDown
-        className={`w-3 h-3 text-blue-400 transition-transform duration-200 shrink-0 ${open ? "rotate-180" : ""}`}
+        className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 shrink-0 ${
+          open ? "rotate-180 text-blue-500" : ""
+        }`}
       />
     </button>
   );
 
-  /* ─── Dropdown Panel ─── */
+  /* ─── Dropdown Panel (Desktop & Mobile Nav overlay) ─── */
   const dropdown = open && (
     <div
       className="
-        absolute top-full mt-2 w-[240px] bg-white rounded-md
-        shadow-lg border border-blue-100 z-[200] overflow-hidden
+        absolute top-full mt-2 w-[240px] bg-white rounded-xl
+        shadow-xl border border-slate-100 z-[200] overflow-hidden
         animate-[fadeInScale_0.15s_ease-out]
       "
       style={{
@@ -122,39 +129,32 @@ export default function LocationSelector({
         left: isMobile ? "auto" : 0,
       }}
     >
-      {/* Header */}
-      <div className="px-3 py-2 bg-gradient-to-r from-blue-600 to-blue-700 flex items-center gap-2">
-        <MapPin className="w-3 h-3 text-blue-100 shrink-0" />
-        <span className="text-[11px] font-semibold text-white tracking-wide">
-          Select Location
-        </span>
-      </div>
-
-      <div className="p-2 space-y-1.5">
+      <div className="p-2.5 space-y-2">
         {/* GPS Detect Button */}
         <button
           type="button"
           onClick={handleDetect}
           disabled={isDetecting}
           className="
-            w-full flex items-center gap-2 px-2 py-1.5 rounded-md
-            bg-blue-50 border border-blue-200 text-blue-700
-            text-[12px] font-semibold
-            hover:bg-blue-100 hover:border-blue-300 transition-all
+            w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg
+            bg-slate-50 border border-slate-300 text-slate-700
+            text-[12px] font-medium
+            hover:bg-slate-100 hover:border-slate-400 transition-all duration-200
             disabled:opacity-50 disabled:cursor-not-allowed
+            cursor-pointer
           "
         >
           {isDetecting ? (
-            <Loader2 className="w-3 h-3 animate-spin shrink-0" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0 text-slate-500" />
           ) : (
-            <Navigation className="w-3 h-3 shrink-0" />
+            <MapPin className="w-3.5 h-3.5 shrink-0 text-slate-500" />
           )}
           <span>{isDetecting ? "Detecting…" : "Use Current Location"}</span>
         </button>
 
         {/* Search Input */}
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-blue-300 pointer-events-none" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
           <input
             ref={inputRef}
             type="text"
@@ -162,10 +162,10 @@ export default function LocationSelector({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="
-              w-full pl-6 pr-2 py-1 text-[12px] rounded-md
-              bg-blue-50/60 border border-blue-100 text-gray-700
-              placeholder:text-blue-300 outline-none
-              focus:border-blue-400 focus:bg-white transition-all
+              w-full pl-8 pr-3 py-1.5 text-[12px] rounded-lg
+              bg-slate-50 border border-slate-100 text-slate-800
+              placeholder:text-slate-400 outline-none
+              focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all duration-200
             "
           />
         </div>
@@ -173,7 +173,7 @@ export default function LocationSelector({
         {/* City List */}
         <div className="max-h-[160px] overflow-y-auto space-y-0.5 pr-0.5 scrollbar-thin">
           {filtered.length === 0 ? (
-            <p className="text-center text-[11px] text-blue-300 py-2">
+            <p className="text-center text-[11px] text-slate-400 py-2">
               No cities found
             </p>
           ) : (
@@ -185,23 +185,25 @@ export default function LocationSelector({
                   type="button"
                   onClick={() => handleSelect(c)}
                   className={`
-                    w-full flex items-center justify-between px-2 py-1 rounded-md text-[12px] transition-all
+                    w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[12.5px] transition-all duration-150 cursor-pointer
                     ${
                       isActive
                         ? "bg-blue-600 text-white font-semibold"
-                        : "text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                        : "text-slate-600 hover:bg-blue-50 hover:text-blue-700"
                     }
                   `}
                 >
                   <span>{c}</span>
-                  {isActive && <Check className="w-3 h-3 text-white shrink-0" />}
+                  {isActive && (
+                    <Check className="w-3.5 h-3.5 text-white shrink-0" />
+                  )}
                 </button>
               );
             })
           )}
         </div>
 
-        {/* Clear option */}
+        {/* Clear option (Slight soft red button) */}
         {city && (
           <button
             type="button"
@@ -209,19 +211,112 @@ export default function LocationSelector({
               setCity(null);
               setOpen(false);
             }}
-            className="w-full text-[11px] text-blue-400 hover:text-red-500 text-center transition-colors border-t border-blue-50 pt-1"
+            className="w-full flex items-center justify-center py-1.5 rounded-lg bg-red-50 border border-red-100 text-red-600 text-[11.5px] font-semibold transition-all duration-200 hover:bg-red-100 hover:text-red-700 cursor-pointer"
           >
-            Clear location
+            Clear Location
           </button>
         )}
       </div>
     </div>
   );
 
+  /* ─── Inline Panel (For Mobile Drawer) ─── */
+  const inlinePanel = inDrawer && open && (
+    <div className="w-full bg-slate-50/70 border-b border-slate-100 p-3.5 space-y-2.5 animate-fade-in-scale">
+      {/* GPS Detect Button */}
+      <button
+        type="button"
+        onClick={handleDetect}
+        disabled={isDetecting}
+        className="
+          w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg
+          bg-white border border-slate-300 text-slate-700
+          text-[12px] font-medium
+          hover:bg-slate-50 hover:border-slate-400 transition-all duration-200
+          disabled:opacity-50 disabled:cursor-not-allowed
+          cursor-pointer
+        "
+      >
+        {isDetecting ? (
+          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0 text-slate-500" />
+        ) : (
+          <MapPin className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+        )}
+        <span>{isDetecting ? "Detecting…" : "Use Current Location"}</span>
+      </button>
+
+      {/* Search Input */}
+      <div className="relative">
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Search city…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="
+            w-full pl-8 pr-3 py-1.5 text-[12px] rounded-lg
+            bg-white border border-slate-200 text-slate-800
+            placeholder:text-slate-400 outline-none
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200
+          "
+        />
+      </div>
+
+      {/* City List */}
+      <div className="max-h-[160px] overflow-y-auto space-y-1 pr-0.5 scrollbar-thin">
+        {filtered.length === 0 ? (
+          <p className="text-center text-[11px] text-slate-400 py-2">
+            No cities found
+          </p>
+        ) : (
+          filtered.map((c) => {
+            const isActive = city === c;
+            return (
+              <button
+                key={c}
+                type="button"
+                onClick={() => handleSelect(c)}
+                className={`
+                  w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[12.5px] transition-all duration-150 cursor-pointer
+                  ${
+                    isActive
+                      ? "bg-blue-600 text-white font-semibold"
+                      : "text-slate-600 hover:bg-blue-50 hover:text-blue-700 bg-white border border-slate-100"
+                  }
+                `}
+              >
+                <span>{c}</span>
+                {isActive && (
+                  <Check className="w-3.5 h-3.5 text-white shrink-0" />
+                )}
+              </button>
+            );
+          })
+        )}
+      </div>
+
+      {/* Clear option (Slight soft red button) */}
+      {city && (
+        <button
+          type="button"
+          onClick={() => {
+            setCity(null);
+            setOpen(false);
+          }}
+          className="w-full flex items-center justify-center py-1.5 rounded-lg bg-red-50 border border-red-100 text-red-600 text-[11.5px] font-semibold transition-all duration-200 hover:bg-red-100 hover:text-red-700 cursor-pointer"
+        >
+          Clear Location
+        </button>
+      )}
+    </div>
+  );
+
   return (
-    <div className="relative" ref={panelRef}>
+    <div className={inDrawer ? "w-full" : "relative"} ref={panelRef}>
       {trigger}
-      {dropdown}
+      {!inDrawer && dropdown}
+      {inDrawer && inlinePanel}
     </div>
   );
 }

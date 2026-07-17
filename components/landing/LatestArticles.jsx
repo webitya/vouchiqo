@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Clock, Tag } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const ARTICLES = [
   {
     id: 1,
     category: "Shopping Tips",
-    categoryColor: "#6366f1",
     title: "10 Proven Ways to Save More Using Coupon Codes in 2025",
     excerpt:
       "Discover insider tricks that seasoned bargain hunters use to stack discounts and maximize savings on every order.",
@@ -21,7 +20,6 @@ const ARTICLES = [
   {
     id: 2,
     category: "Fashion",
-    categoryColor: "#ec4899",
     title: "Best Myntra & AJIO Deals This Season — Up to 80% OFF",
     excerpt:
       "We curated the top fashion offers live right now on Myntra and AJIO so you don't have to hunt through thousands of listings.",
@@ -34,7 +32,6 @@ const ARTICLES = [
   {
     id: 3,
     category: "Food & Dining",
-    categoryColor: "#f59e0b",
     title: "Swiggy vs Zomato: Which App Gives Better Discounts in 2025?",
     excerpt:
       "A side-by-side comparison of promo codes, subscription perks, and cashback offers from India's two biggest food delivery apps.",
@@ -47,7 +44,6 @@ const ARTICLES = [
   {
     id: 4,
     category: "Electronics",
-    categoryColor: "#3b82f6",
     title: "Amazon vs Flipkart: Who Has the Real Deals on Gadgets?",
     excerpt:
       "We tracked 50+ product prices across both platforms for 30 days. Here's who actually wins on laptops, phones, and accessories.",
@@ -60,7 +56,6 @@ const ARTICLES = [
   {
     id: 5,
     category: "Travel",
-    categoryColor: "#10b981",
     title: "How to Book Flights 40% Cheaper Using These Hidden Tricks",
     excerpt:
       "From incognito mode myths to real airline coupon stacking, here's an honest guide to flying cheaper across India and abroad.",
@@ -73,7 +68,6 @@ const ARTICLES = [
   {
     id: 6,
     category: "Beauty",
-    categoryColor: "#a855f7",
     title: "Nykaa Sale Guide: Best Skincare Deals Not to Miss",
     excerpt:
       "Beauty enthusiasts rejoice — we break down every Nykaa sale category, what to buy first, and coupons that actually work.",
@@ -97,13 +91,19 @@ function ArticleCard({ article }) {
         style={{
           border: "1px solid #e2e8f0",
           boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-          transition: "transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease",
+          transition:
+            "transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease",
           height: "100%",
         }}
       >
         {/* Cover image */}
         <div
-          style={{ height: "170px", overflow: "hidden", flexShrink: 0, position: "relative" }}
+          style={{
+            height: "150px",
+            overflow: "hidden",
+            flexShrink: 0,
+            position: "relative",
+          }}
         >
           <img
             src={article.image}
@@ -116,16 +116,16 @@ function ArticleCard({ article }) {
             }}
             className="art-card__img"
           />
-          {/* Category pill */}
+          {/* Category pill (unified brand blue color) */}
           <span
+            className="bg-brand-blue"
             style={{
               position: "absolute",
               top: "12px",
               left: "12px",
-              background: article.categoryColor,
               color: "#fff",
               fontSize: "10px",
-              fontWeight: 800,
+              fontWeight: 700,
               padding: "3px 10px",
               borderRadius: "999px",
               letterSpacing: "0.06em",
@@ -142,7 +142,7 @@ function ArticleCard({ article }) {
             className="line-clamp-2"
             style={{
               fontSize: "13.5px",
-              fontWeight: 800,
+              fontWeight: 700,
               color: "#0f172a",
               lineHeight: 1.45,
               margin: 0,
@@ -183,15 +183,16 @@ function ArticleCard({ article }) {
                 background: "#cbd5e1",
               }}
             />
-            <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}>
+            <span
+              style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}
+            >
               {article.date}
             </span>
             <span
-              className="ml-auto flex items-center gap-1"
+              className="ml-auto flex items-center gap-1 text-brand-blue"
               style={{
                 fontSize: "11px",
                 fontWeight: 700,
-                color: article.categoryColor,
               }}
             >
               Read →
@@ -217,17 +218,27 @@ export function LatestArticles() {
   const trackRef = useRef(null);
   const [current, setCurrent] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
-  const VISIBLE = 4; // cards visible on desktop
+  const [visibleCount, setVisibleCount] = useState(4);
+
   const total = ARTICLES.length;
-  const maxIndex = total - VISIBLE;
+  const maxIndex = Math.max(0, total - Math.ceil(visibleCount));
 
   // Measure card width on mount & resize
   useEffect(() => {
     function measure() {
       if (trackRef.current) {
+        const width = window.innerWidth;
+        let visible = 4;
+        if (width < 640) {
+          visible = 1.15; // Peek next card
+        } else if (width < 1024) {
+          visible = 2.2;
+        }
+        setVisibleCount(visible);
+
         const gap = 20;
         const containerW = trackRef.current.parentElement.offsetWidth;
-        setCardWidth((containerW - gap * (VISIBLE - 1)) / VISIBLE);
+        setCardWidth((containerW - gap * (Math.ceil(visible) - 1)) / visible);
       }
     }
     measure();
@@ -237,6 +248,7 @@ export function LatestArticles() {
 
   // Auto-slide every 3.5s
   useEffect(() => {
+    if (maxIndex <= 0) return;
     const id = setInterval(() => {
       setCurrent((prev) => (prev >= maxIndex ? 0 : prev + 1));
     }, 3500);
@@ -246,27 +258,72 @@ export function LatestArticles() {
   const goPrev = () => setCurrent((p) => (p <= 0 ? maxIndex : p - 1));
   const goNext = () => setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
 
+  // Touch & drag gestures
+  const dragStart = useRef(0);
+  const isDragging = useRef(false);
+
+  const handleTouchStart = (e) => {
+    dragStart.current = e.touches[0].clientX;
+    isDragging.current = true;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!isDragging.current) return;
+    const dragEnd = e.changedTouches[0].clientX;
+    const diff = dragStart.current - dragEnd;
+    if (diff > 50) {
+      goNext();
+    } else if (diff < -50) {
+      goPrev();
+    }
+    isDragging.current = false;
+  };
+
+  const handleMouseDown = (e) => {
+    dragStart.current = e.clientX;
+    isDragging.current = true;
+  };
+
+  const handleMouseUp = (e) => {
+    if (!isDragging.current) return;
+    const dragEnd = e.clientX;
+    const diff = dragStart.current - dragEnd;
+    if (diff > 50) {
+      goNext();
+    } else if (diff < -50) {
+      goPrev();
+    }
+    isDragging.current = false;
+  };
+
   const gap = 20;
   const offset = current * (cardWidth + gap);
 
   return (
-    <section className="text-left w-full overflow-hidden">
+    <section className="text-left w-full overflow-hidden select-none px-4 md:px-0">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2
-            className="font-heading font-black leading-tight"
-            style={{ fontSize: "clamp(18px,2.5vw,24px)", color: "#0f172a" }}
+            className="font-bold leading-tight"
+            style={{ fontSize: "clamp(18px,2.5vw,22px)", color: "#0f172a" }}
           >
             Latest Articles &amp; Guides
           </h2>
-          <p style={{ fontSize: "12px", color: "#64748b", fontWeight: 500, margin: "3px 0 0" }}>
+          <p
+            style={{
+              fontSize: "11px",
+              color: "#64748b",
+              fontWeight: 500,
+              margin: "2px 0 0",
+            }}
+          >
             Tips, deals breakdowns &amp; shopping guides
           </p>
         </div>
 
         {/* Nav arrows */}
-        <div className="flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2">
           <button
             type="button"
             onClick={goPrev}
@@ -286,7 +343,9 @@ export function LatestArticles() {
               boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
             }}
           >
-            <ChevronLeft style={{ width: "18px", height: "18px", color: "#334155" }} />
+            <ChevronLeft
+              style={{ width: "18px", height: "18px", color: "#334155" }}
+            />
           </button>
           <button
             type="button"
@@ -307,13 +366,22 @@ export function LatestArticles() {
               boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
             }}
           >
-            <ChevronRight style={{ width: "18px", height: "18px", color: "#334155" }} />
+            <ChevronRight
+              style={{ width: "18px", height: "18px", color: "#334155" }}
+            />
           </button>
         </div>
       </div>
 
       {/* Slider track */}
-      <div style={{ overflow: "hidden" }}>
+      <div
+        className="cursor-grab active:cursor-grabbing"
+        style={{ overflow: "hidden" }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
         <div
           ref={trackRef}
           style={{
@@ -338,7 +406,7 @@ export function LatestArticles() {
       </div>
 
       {/* Dot indicators */}
-      <div className="flex justify-center gap-2 mt-5">
+      <div className="flex justify-center gap-2 mt-6">
         {Array.from({ length: maxIndex + 1 }).map((_, i) => (
           <button
             key={i}
@@ -349,7 +417,7 @@ export function LatestArticles() {
               width: i === current ? "20px" : "7px",
               height: "7px",
               borderRadius: "999px",
-              background: i === current ? "#3b82f6" : "#cbd5e1",
+              background: i === current ? "#2563eb" : "#cbd5e1",
               border: "none",
               cursor: "pointer",
               transition: "all 0.3s ease",

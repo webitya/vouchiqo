@@ -1,9 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 
 export default function FlatCouponCard({ coupon }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    setIsMobile(media.matches);
+    const listener = (e) => setIsMobile(e.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, []);
+
   const { _id, title, discountValue, discountType, merchantId } = coupon;
 
   const merchantName =
@@ -127,7 +138,7 @@ export default function FlatCouponCard({ coupon }) {
         style={{
           display: "flex",
           alignItems: "stretch",
-          padding: "24px",
+          padding: isMobile ? "14px 16px" : "20px 20px",
           borderBottom: "1px solid #e2e8f0",
         }}
       >
@@ -135,7 +146,7 @@ export default function FlatCouponCard({ coupon }) {
         <div
           className="amt-header"
           style={{
-            width: "130px",
+            width: isMobile ? "76px" : "110px",
             flexShrink: 0,
             display: "flex",
             flexDirection: "column",
@@ -143,13 +154,13 @@ export default function FlatCouponCard({ coupon }) {
             justifyContent: "center",
             textAlign: "center",
             borderRight: "1px dashed #cbd5e1",
-            paddingRight: "16px",
+            paddingRight: isMobile ? "8px" : "12px",
           }}
         >
           <span
             style={{
               display: "block",
-              fontSize: "11px",
+              fontSize: isMobile ? "9px" : "11px",
               fontWeight: 700,
               color: "#3E80DD",
               textTransform: "uppercase",
@@ -162,7 +173,7 @@ export default function FlatCouponCard({ coupon }) {
           <span
             style={{
               display: "block",
-              fontSize: "26px",
+              fontSize: isMobile ? "18px" : "26px",
               fontWeight: 900,
               color: "#3E80DD",
               textTransform: "uppercase",
@@ -176,7 +187,7 @@ export default function FlatCouponCard({ coupon }) {
           <span
             style={{
               display: "block",
-              fontSize: "11px",
+              fontSize: isMobile ? "9px" : "11px",
               fontWeight: 700,
               color: "#3E80DD",
               textTransform: "uppercase",
@@ -192,11 +203,11 @@ export default function FlatCouponCard({ coupon }) {
         <p
           style={{
             flex: 1,
-            paddingLeft: "16px",
-            fontSize: "16px",
+            paddingLeft: isMobile ? "10px" : "14px",
+            fontSize: isMobile ? "13px" : "15px",
             fontWeight: 500,
             color: "#334155",
-            lineHeight: 1.5,
+            lineHeight: 1.4,
             margin: 0,
             display: "-webkit-box",
             WebkitLineClamp: 3,
@@ -215,8 +226,8 @@ export default function FlatCouponCard({ coupon }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "16px 24px",
-          gap: "16px",
+          padding: isMobile ? "10px 16px" : "12px 20px",
+          gap: isMobile ? "10px" : "12px",
           backgroundColor: "#F8FAFC",
         }}
       >
@@ -224,8 +235,8 @@ export default function FlatCouponCard({ coupon }) {
         <div
           className="imw"
           style={{
-            height: "48px",
-            width: "88px",
+            height: isMobile ? "32px" : "40px",
+            width: isMobile ? "64px" : "80px",
             borderRadius: "6px",
             border: logoHasDarkBg ? "none" : "1px solid #e2e8f0",
             backgroundColor: logoBgColor,
@@ -257,7 +268,7 @@ export default function FlatCouponCard({ coupon }) {
         <Link
           href={`/deals/${_id}`}
           style={{
-            fontSize: "13px",
+            fontSize: isMobile ? "11px" : "12px",
             fontWeight: 600,
             color: "#3E80DD",
             display: "flex",
@@ -274,7 +285,7 @@ export default function FlatCouponCard({ coupon }) {
         >
           <span>View All {merchantName} Coupons</span>
           <ExternalLink
-            style={{ width: "14px", height: "14px", color: "#3E80DD" }}
+            style={{ width: isMobile ? "12px" : "14px", height: isMobile ? "12px" : "14px", color: "#3E80DD" }}
           />
         </Link>
       </div>

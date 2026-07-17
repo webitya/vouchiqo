@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { useCallback, useEffect, useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const LEFT_BRANDS = [
   {
@@ -230,6 +230,82 @@ export function HeroSection({ banners = [] }) {
   const [currentRightCard, setCurrentRightCard] = useState(0); // Start at index 0
   const [autoRotate, setAutoRotate] = useState(true);
 
+  // Swipe/drag for left banner
+  const leftDragStart = useRef(0);
+  const leftIsDragging = useRef(false);
+
+  const handleLeftTouchStart = (e) => {
+    leftDragStart.current = e.touches[0].clientX;
+    leftIsDragging.current = true;
+  };
+
+  const handleLeftTouchEnd = (e) => {
+    if (!leftIsDragging.current) return;
+    const dragEnd = e.changedTouches[0].clientX;
+    const diff = leftDragStart.current - dragEnd;
+    if (diff > 50) {
+      handleNext();
+    } else if (diff < -50) {
+      handlePrev();
+    }
+    leftIsDragging.current = false;
+  };
+
+  const handleLeftMouseDown = (e) => {
+    leftDragStart.current = e.clientX;
+    leftIsDragging.current = true;
+  };
+
+  const handleLeftMouseUp = (e) => {
+    if (!leftIsDragging.current) return;
+    const dragEnd = e.clientX;
+    const diff = leftDragStart.current - dragEnd;
+    if (diff > 50) {
+      handleNext();
+    } else if (diff < -50) {
+      handlePrev();
+    }
+    leftIsDragging.current = false;
+  };
+
+  // Swipe/drag for right banner
+  const rightDragStart = useRef(0);
+  const rightIsDragging = useRef(false);
+
+  const handleRightTouchStart = (e) => {
+    rightDragStart.current = e.touches[0].clientX;
+    rightIsDragging.current = true;
+  };
+
+  const handleRightTouchEnd = (e) => {
+    if (!rightIsDragging.current) return;
+    const dragEnd = e.changedTouches[0].clientX;
+    const diff = rightDragStart.current - dragEnd;
+    if (diff > 50) {
+      handleRightNext();
+    } else if (diff < -50) {
+      handleRightPrev();
+    }
+    rightIsDragging.current = false;
+  };
+
+  const handleRightMouseDown = (e) => {
+    rightDragStart.current = e.clientX;
+    rightIsDragging.current = true;
+  };
+
+  const handleRightMouseUp = (e) => {
+    if (!rightIsDragging.current) return;
+    const dragEnd = e.clientX;
+    const diff = rightDragStart.current - dragEnd;
+    if (diff > 50) {
+      handleRightNext();
+    } else if (diff < -50) {
+      handleRightPrev();
+    }
+    rightIsDragging.current = false;
+  };
+
   // Separate dynamic database slides with fallback to static constants
   const leftSlides = useMemo(() => {
     const dbBanners = (banners || []).filter((b) => b.slot === "left-hero");
@@ -305,7 +381,13 @@ export function HeroSection({ banners = [] }) {
         {/* Left Column: Banners Carousel (75% Width) */}
         <div className="md:w-3/4 rounded-md overflow-hidden shadow-sm relative w-full group border border-brand-border bg-slate-900 h-[200px] sm:h-[300px] md:h-[430px]">
           {/* Viewport for horizontal sliding */}
-          <div className="w-full h-full overflow-hidden">
+          <div
+            className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
+            onTouchStart={handleLeftTouchStart}
+            onTouchEnd={handleLeftTouchEnd}
+            onMouseDown={handleLeftMouseDown}
+            onMouseUp={handleLeftMouseUp}
+          >
             <div
               className="flex h-full transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentLeftSlide * 100}%)` }}
@@ -361,7 +443,9 @@ export function HeroSection({ banners = [] }) {
                   type="button"
                   onClick={() => handleLeftBrandClick(idx)}
                   className={`w-2 h-2 rounded-full transition-all border-0 cursor-pointer ${
-                    idx === currentLeftSlide ? "bg-white w-5" : "bg-white/40 hover:bg-white/60"
+                    idx === currentLeftSlide
+                      ? "bg-white w-5"
+                      : "bg-white/40 hover:bg-white/60"
                   }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
@@ -373,7 +457,13 @@ export function HeroSection({ banners = [] }) {
         {/* Right Column: Banners Carousel (25% Width) */}
         <div className="md:w-1/4 rounded-md overflow-hidden shadow-sm relative w-full border border-brand-border bg-slate-900 h-[200px] sm:h-[300px] md:h-[430px] group">
           {/* Viewport for horizontal sliding */}
-          <div className="w-full h-full overflow-hidden">
+          <div
+            className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
+            onTouchStart={handleRightTouchStart}
+            onTouchEnd={handleRightTouchEnd}
+            onMouseDown={handleRightMouseDown}
+            onMouseUp={handleRightMouseUp}
+          >
             <div
               className="flex h-full transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentRightCard * 100}%)` }}
@@ -429,7 +519,9 @@ export function HeroSection({ banners = [] }) {
                   type="button"
                   onClick={() => handleRightBrandClick(idx)}
                   className={`w-2 h-2 rounded-full transition-all border-0 cursor-pointer ${
-                    idx === currentRightCard ? "bg-white w-5" : "bg-white/40 hover:bg-white/60"
+                    idx === currentRightCard
+                      ? "bg-white w-5"
+                      : "bg-white/40 hover:bg-white/60"
                   }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
@@ -442,7 +534,7 @@ export function HeroSection({ banners = [] }) {
       {/* Brands List (Synchronized directly with slider) */}
       <div className="hidden md:flex flex-col md:flex-row gap-4 mt-2 select-none w-full text-left">
         {/* Left brand list (75% width) */}
-        <div className="md:w-3/4 flex justify-start items-center overflow-x-auto scrollbar-hide py-3.5 gap-4 px-4 border-b border-brand-border">
+        <div className="md:w-3/4 flex justify-start items-center overflow-x-auto scrollbar-hide py-3.5 gap-4 px-4">
           {leftSlides.map((brand, idx) => {
             const isActive = idx === currentLeftSlide;
             return (
@@ -468,9 +560,6 @@ export function HeroSection({ banners = [] }) {
                     {brand.name || brand.title}
                   </span>
                 )}
-                {isActive && (
-                  <span className="w-1.5 h-1.5 bg-[#2563eb] rounded-full absolute -bottom-3 left-1/2 -translate-x-1/2 animate-pulse" />
-                )}
               </button>
             );
           })}
@@ -480,7 +569,7 @@ export function HeroSection({ banners = [] }) {
         <div className="hidden md:block w-px h-6 bg-brand-border self-center" />
 
         {/* Right brand list (25% width) */}
-        <div className="md:w-1/4 flex justify-around items-center py-3.5 gap-4 px-2 border-b border-brand-border">
+        <div className="md:w-1/4 flex justify-around items-center py-3.5 gap-4 px-2">
           {rightSlides.map((brand, idx) => {
             const isActive = idx === currentRightCard;
             return (
@@ -505,9 +594,6 @@ export function HeroSection({ banners = [] }) {
                   <span className="text-[9px] font-bold text-brand-subtext truncate max-w-full uppercase">
                     {brand.name || brand.title}
                   </span>
-                )}
-                {isActive && (
-                  <span className="w-1.5 h-1.5 bg-[#2563eb] rounded-full absolute -bottom-3 left-1/2 -translate-x-1/2 animate-pulse" />
                 )}
               </button>
             );

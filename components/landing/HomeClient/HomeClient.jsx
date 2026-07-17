@@ -43,7 +43,12 @@ import NewsletterSubscription from "./NewsletterSubscription";
 import TodayTopCoupons from "./TodayTopCoupons";
 import TrendingOffer from "./TrendingOffer";
 
-export function HomeClient({ initialCoupons = [], latestCoupons = [], popularMerchants = [], banners = [] }) {
+export function HomeClient({
+  initialCoupons = [],
+  latestCoupons = [],
+  popularMerchants = [],
+  banners = [],
+}) {
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
   const { city } = useLocation();
@@ -185,6 +190,59 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [], popularMer
               category.includes("tiles") ||
               category.includes("hardware")
             );
+          case "fitness":
+            return (
+              category.includes("fitness") ||
+              category.includes("health") ||
+              category.includes("healthcare") ||
+              category.includes("gym")
+            );
+          case "education":
+            return (
+              category.includes("education") ||
+              category.includes("course") ||
+              category.includes("coaching") ||
+              category.includes("learning")
+            );
+          case "kids-baby":
+            return (
+              category.includes("kids") ||
+              category.includes("baby") ||
+              category.includes("toy")
+            );
+          case "jewellery":
+            return (
+              category.includes("jewel") ||
+              category.includes("accessories") ||
+              category.includes("watch")
+            );
+          case "automotive":
+            return (
+              category.includes("automotive") ||
+              category.includes("car") ||
+              category.includes("auto") ||
+              category.includes("service")
+            );
+          case "entertainment":
+            return (
+              category.includes("entertainment") ||
+              category.includes("game") ||
+              category.includes("gaming") ||
+              category.includes("show")
+            );
+          case "grocery":
+            return (
+              category.includes("grocery") ||
+              category.includes("essential") ||
+              category.includes("food")
+            );
+          case "finance":
+            return (
+              category.includes("finance") ||
+              category.includes("insurance") ||
+              category.includes("loan") ||
+              category.includes("bank")
+            );
           default:
             return true;
         }
@@ -240,7 +298,7 @@ export function HomeClient({ initialCoupons = [], latestCoupons = [], popularMer
       <Navbar />
 
       {/* Main Container */}
-      <main className="w-full px-4 md:px-8 py-6">
+      <main className="w-full px-4 md:px-8 pt-6 pb-2">
         {/* 4. Split Hero Section */}
         <section
           className="g-main-banner main__banner__div"

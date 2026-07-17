@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
 import { HOME_FAQS } from "@/utils/home-data";
 
-function FaqItem({ faq, index }) {
+function FaqItem({ faq, index, isMobile }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -24,7 +24,7 @@ function FaqItem({ faq, index }) {
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center justify-between gap-3 text-left cursor-pointer"
         style={{
-          padding: "16px 20px",
+          padding: isMobile ? "12px 14px" : "16px 20px",
           background: "transparent",
           border: "none",
         }}
@@ -32,7 +32,7 @@ function FaqItem({ faq, index }) {
       >
         <span
           style={{
-            fontSize: "13.5px",
+            fontSize: isMobile ? "12.5px" : "13.5px",
             fontWeight: 700,
             color: "#191F2E",
             lineHeight: 1.4,
@@ -42,8 +42,8 @@ function FaqItem({ faq, index }) {
         </span>
         <ChevronDown
           style={{
-            width: "18px",
-            height: "18px",
+            width: isMobile ? "16px" : "18px",
+            height: isMobile ? "16px" : "18px",
             color: "#4685E8",
             flexShrink: 0,
             transition: "transform 0.3s ease",
@@ -62,13 +62,13 @@ function FaqItem({ faq, index }) {
       >
         <p
           style={{
-            fontSize: "12.5px",
+            fontSize: isMobile ? "11.5px" : "12.5px",
             color: "#475569",
-            lineHeight: 1.7,
-            padding: "0 20px 16px",
+            lineHeight: 1.6,
+            padding: isMobile ? "0 14px 12px" : "0 20px 16px",
             margin: 0,
             borderTop: "1px solid #f1f5f9",
-            paddingTop: "12px",
+            paddingTop: "10px",
           }}
         >
           {faq.a}
@@ -79,15 +79,25 @@ function FaqItem({ faq, index }) {
 }
 
 export function FaqSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    setIsMobile(media.matches);
+    const listener = (e) => setIsMobile(e.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, []);
+
   // Split 10 FAQs into two columns of 5
   const col1 = HOME_FAQS.slice(0, 5);
   const col2 = HOME_FAQS.slice(5, 10);
 
   return (
-    <section className="w-full text-center animate-fade-in-up stagger-1">
+    <section className="w-full text-center animate-fade-in-up stagger-1 px-4 md:px-0">
       <h2
-        className="font-heading font-bold tracking-tight mb-8"
-        style={{ fontSize: "clamp(20px,2.5vw,26px)", color: "#191F2E" }}
+        className="font-bold tracking-tight mb-4 md:mb-8"
+        style={{ fontSize: "clamp(18px,2.5vw,26px)", color: "#191F2E" }}
       >
         Frequently Asked Questions
       </h2>
@@ -95,7 +105,8 @@ export function FaqSection() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(420px, 1fr))",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(min(100%, 420px), 1fr))",
           gap: "10px",
           alignItems: "start",
           textAlign: "left",
@@ -104,16 +115,21 @@ export function FaqSection() {
         }}
       >
         {/* Column 1 */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {col1.map((faq, idx) => (
-            <FaqItem key={idx} faq={faq} index={idx} />
+            <FaqItem key={idx} faq={faq} index={idx} isMobile={isMobile} />
           ))}
         </div>
 
         {/* Column 2 */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {col2.map((faq, idx) => (
-            <FaqItem key={idx + 5} faq={faq} index={idx + 5} />
+            <FaqItem
+              key={idx + 5}
+              faq={faq}
+              index={idx + 5}
+              isMobile={isMobile}
+            />
           ))}
         </div>
       </div>

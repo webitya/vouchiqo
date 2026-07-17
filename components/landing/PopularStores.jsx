@@ -3,7 +3,7 @@
 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BrandGridItem from "../shared/BrandGridItem";
 import EmblaCarouselControls from "../shared/EmblaCarouselControls";
 
@@ -168,21 +168,47 @@ export default function PopularStores({ merchants = [] }) {
   }));
 
   // Combine with static list fallback to ensure at least 12 stores are shown
-  const finalStoresList = dbStores.length >= 8 
-    ? dbStores 
-    : [...dbStores, ...POPULAR_STORES_LIST.filter(staticStore => !dbStores.some(db => db.name.toLowerCase() === staticStore.name.toLowerCase()))];
+  const finalStoresList =
+    dbStores.length >= 8
+      ? dbStores
+      : [
+          ...dbStores,
+          ...POPULAR_STORES_LIST.filter(
+            (staticStore) =>
+              !dbStores.some(
+                (db) =>
+                  db.name.toLowerCase() === staticStore.name.toLowerCase(),
+              ),
+          ),
+        ];
 
   // Store of the Month (dynamic first merchant, or fallback)
   const firstDbMerchant = merchants[0];
-  const somBanner = firstDbMerchant?.banner || "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop";
+  const somBanner =
+    firstDbMerchant?.banner ||
+    "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop";
   const somLogo = firstDbMerchant?.logo || "/brandlogos/10005.jpg";
-  const somHref = firstDbMerchant ? `/brand/${firstDbMerchant.slug}` : "/brand/samsung";
+  const somHref = firstDbMerchant
+    ? `/brand/${firstDbMerchant.slug}`
+    : "/brand/samsung";
   const somCoupons = firstDbMerchant ? firstDbMerchant.totalCoupons || 0 : 0;
-  const somOffers = firstDbMerchant ? (firstDbMerchant.totalCoupons || 0) + (firstDbMerchant.totalRedemptions || 0) : 71;
+  const somOffers = firstDbMerchant
+    ? (firstDbMerchant.totalCoupons || 0) +
+      (firstDbMerchant.totalRedemptions || 0)
+    : 71;
 
   // Group into pages of 12 stores (3 rows of 4 columns)
   const itemsPerPage = 12;
   const totalSlides = Math.ceil(finalStoresList.length / itemsPerPage);
+
+  // Auto-rotation effect for slides (5 seconds interval, infinite loop)
+  useEffect(() => {
+    if (totalSlides <= 1) return;
+    const timer = setInterval(() => {
+      setSelectedIndex((prev) => (prev + 1) % totalSlides);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [totalSlides]);
 
   const slides = [];
   for (let i = 0; i < totalSlides; i++) {
@@ -191,36 +217,75 @@ export default function PopularStores({ merchants = [] }) {
     );
   }
 
+  // Swipe/drag gestures
+  const dragStart = useRef(0);
+  const isDragging = useRef(false);
+
+  const handleTouchStart = (e) => {
+    dragStart.current = e.touches[0].clientX;
+    isDragging.current = true;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!isDragging.current) return;
+    const dragEnd = e.changedTouches[0].clientX;
+    const diff = dragStart.current - dragEnd;
+    if (diff > 50) {
+      setSelectedIndex((prev) => (prev + 1) % totalSlides);
+    } else if (diff < -50) {
+      setSelectedIndex((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
+    }
+    isDragging.current = false;
+  };
+
+  const handleMouseDown = (e) => {
+    dragStart.current = e.clientX;
+    isDragging.current = true;
+  };
+
+  const handleMouseUp = (e) => {
+    if (!isDragging.current) return;
+    const dragEnd = e.clientX;
+    const diff = dragStart.current - dragEnd;
+    if (diff > 50) {
+      setSelectedIndex((prev) => (prev + 1) % totalSlides);
+    } else if (diff < -50) {
+      setSelectedIndex((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
+    }
+    isDragging.current = false;
+  };
+
   const handlePrev = () => {
     setSelectedIndex((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setSelectedIndex((prev) => (prev === totalSlides - 1 ? 0 : prev + 1));
+    setSelectedIndex((prev) => (prev + 1) % totalSlides);
   };
 
   return (
     <section className="g-pop-store w-full select-none text-left overflow-hidden">
       {/* Custom Section Header with Embla Controls */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl md:text-2xl font-bold text-brand-text font-heading">
+        <h2 className="text-lg md:text-2xl font-bold text-brand-text font-heading">
           Popular Stores
         </h2>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <EmblaCarouselControls
             totalSlides={totalSlides}
             selectedIndex={selectedIndex}
             onPrev={handlePrev}
             onNext={handleNext}
             onDotClick={setSelectedIndex}
+            className="hidden md:flex"
           />
           <Link
             href="/deals"
-            className="text-brand-blue text-xs font-semibold hover:underline flex items-center gap-1 transition-colors"
+            className="text-brand-blue text-xs font-semibold hover:underline flex items-center gap-1 transition-colors shrink-0"
           >
             <span>View All</span>
-            <div className="bg-brand-blue/5 rounded-full w-6 h-6 flex items-center justify-center">
-              <ArrowRight className="w-3 h-3 text-brand-blue" />
+            <div className="bg-brand-blue/5 rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">
+              <ArrowRight className="w-2.5 h-2.5 md:w-3 md:h-3 text-brand-blue" />
             </div>
           </Link>
         </div>
@@ -248,8 +313,8 @@ export default function PopularStores({ merchants = [] }) {
             <div className="gp-feat__title">
               <p
                 style={{
-                  color: "#D1DE31",
-                  fontWeight: 900,
+                  color: "#60a5fa",
+                  fontWeight: 700,
                   fontSize: "13px",
                   textTransform: "uppercase",
                   letterSpacing: "0.12em",
@@ -262,7 +327,7 @@ export default function PopularStores({ merchants = [] }) {
               <h3
                 style={{
                   color: "#ffffff",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   fontSize: "17px",
                   lineHeight: 1.25,
                   margin: 0,
@@ -272,23 +337,24 @@ export default function PopularStores({ merchants = [] }) {
               </h3>
             </div>
 
-            {/* ── LAYER 4: Dark sliding box — bottom-anchored. ── */}
+            {/* ── LAYER 4: Blue and White themed sliding box ── */}
             <div
-              className="gp-feat__box"
-              style={{ backgroundColor: "#191F2E" }}
+              className="gp-feat__box border-t border-slate-100 shadow-md"
+              style={{ backgroundColor: "#ffffff" }}
             >
-              {/* Amazon logo image */}
+              {/* Brand logo image */}
               <div
-                className="gp-feat__logo-img"
-                style={{ backgroundColor: "#222938" }}
+                className="gp-feat__logo-img border border-slate-200 shadow-sm"
+                style={{ backgroundColor: "#ffffff" }}
               >
                 <img
                   src={somLogo}
-                  alt="Amazon Logo"
+                  alt="Brand Logo"
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover",
+                    objectFit: "contain",
+                    padding: "10px",
                     display: "block",
                   }}
                 />
@@ -302,7 +368,7 @@ export default function PopularStores({ merchants = [] }) {
                       width="15"
                       height="15"
                       fill="none"
-                      stroke="#D1DE31"
+                      stroke="#2563eb"
                       strokeWidth="2.2"
                       viewBox="0 0 24 24"
                     >
@@ -319,13 +385,13 @@ export default function PopularStores({ merchants = [] }) {
                     </svg>
                     <p
                       style={{
-                        color: "rgba(255,255,255,0.85)",
+                        color: "#334155",
                         fontSize: "12px",
-                        fontWeight: 700,
+                        fontWeight: 600,
                         margin: "4px 0 0",
                       }}
                     >
-                      {somCoupons} Coupons
+                      {somCoupons} Deals
                     </p>
                   </li>
                   <li>
@@ -333,7 +399,7 @@ export default function PopularStores({ merchants = [] }) {
                       width="15"
                       height="15"
                       fill="none"
-                      stroke="#D1DE31"
+                      stroke="#2563eb"
                       strokeWidth="2.2"
                       viewBox="0 0 24 24"
                     >
@@ -345,9 +411,9 @@ export default function PopularStores({ merchants = [] }) {
                     </svg>
                     <p
                       style={{
-                        color: "rgba(255,255,255,0.85)",
+                        color: "#334155",
                         fontSize: "12px",
-                        fontWeight: 700,
+                        fontWeight: 600,
                         margin: "4px 0 0",
                       }}
                     >
@@ -357,20 +423,30 @@ export default function PopularStores({ merchants = [] }) {
                 </ul>
               </div>
 
-              {/* Mobile-only claim label */}
-              <p className="gp-feat__grab-label">CLAIM NOW</p>
+              {/* Mobile-only claim button */}
+              <div className="gp-feat__grab-label">
+                <span
+                  className="block w-full text-center text-white bg-[#2563eb] rounded-lg py-2 text-[12px] font-semibold uppercase tracking-wider hover:bg-blue-700 transition-colors"
+                  style={{
+                    boxShadow: "0 2px 10px rgba(37,99,235,0.2)",
+                  }}
+                >
+                  Claim Now
+                </span>
+              </div>
 
               {/* Visit Store button */}
               <div className="gp-feat__extra">
                 <button
                   type="button"
                   aria-label="Visit Store"
+                  className="hover:bg-blue-700 transition-colors"
                   style={{
                     display: "block",
                     width: "100%",
-                    backgroundColor: "#D1DE31",
-                    color: "#191F2E",
-                    fontWeight: 900,
+                    backgroundColor: "#2563eb",
+                    color: "#ffffff",
+                    fontWeight: 700,
                     fontSize: "13px",
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
@@ -378,7 +454,7 @@ export default function PopularStores({ merchants = [] }) {
                     borderRadius: "8px",
                     border: "none",
                     cursor: "pointer",
-                    boxShadow: "0 2px 10px rgba(209,222,49,0.4)",
+                    boxShadow: "0 2px 10px rgba(37,99,235,0.2)",
                   }}
                 >
                   Visit Store
@@ -390,7 +466,13 @@ export default function PopularStores({ merchants = [] }) {
 
         {/* ── Sliding Grid of 12 Partner Stores per page (3 rows) ── */}
         <div className="gp-store-wrap lg:w-3/4 overflow-hidden">
-          <div className="vouchiqo-carousel-viewport h-full">
+          <div
+            className="vouchiqo-carousel-viewport h-full cursor-grab active:cursor-grabbing"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+          >
             <div
               className="vouchiqo-carousel-container h-full flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${selectedIndex * 100}%)` }}
@@ -431,7 +513,8 @@ export default function PopularStores({ merchants = [] }) {
           position: relative;
           overflow: hidden;
           border-radius: 16px;
-          box-shadow: 1px 1px 6px 0px rgba(203,203,221,1), -1px -1px 6px 0px #F7F7F8;
+          border: 1px solid #cbd5e1;
+          box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
           transition: box-shadow 300ms ease;
           display: block;
           height: 290px;
@@ -440,7 +523,7 @@ export default function PopularStores({ merchants = [] }) {
           .gp-feat { height: 400px; }
         }
         .gp-feat:hover {
-          box-shadow: 2px 2px 14px 0px rgba(150,150,200,0.5);
+          box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
         }
 
         /* LAYER 1: Background photo — fills whole card, NEVER moves */
@@ -506,7 +589,7 @@ export default function PopularStores({ merchants = [] }) {
           width: 100%;
           border-radius: 10px;
           overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.08);
+          border: 1px solid #e2e8f0;
           height: 72px;
           margin-bottom: 12px;
         }
@@ -528,7 +611,7 @@ export default function PopularStores({ merchants = [] }) {
           padding: 4px 0;
         }
         .gp-feat__stats-ul li + li {
-          border-left: 1px dashed rgba(255,255,255,0.2);
+          border-left: 1px dashed #e2e8f0;
         }
 
         /* Dashed divider reveals on hover */
@@ -538,18 +621,13 @@ export default function PopularStores({ merchants = [] }) {
           transition: border-color 500ms cubic-bezier(0.4, 0, 0.2, 1);
         }
         .gp-feat:hover .gp-feat__desc-wrap {
-          border-color: rgba(255,255,255,0.15);
+          border-color: #e2e8f0 !important;
         }
 
-        /* Mobile grab label */
+        /* Mobile grab label button container */
         .gp-feat__grab-label {
           display: block;
-          color: #D1DE31;
-          font-size: 11px;
-          font-weight: 900;
-          text-transform: uppercase;
-          letter-spacing: 0.14em;
-          margin: 6px 0 0;
+          margin: 10px 0 0;
         }
         @media (min-width: 768px) {
           .gp-feat__grab-label { display: none; }

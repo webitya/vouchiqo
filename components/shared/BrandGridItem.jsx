@@ -31,7 +31,7 @@ export default function BrandGridItem({ name, logo, href, coupons = 12 }) {
         >
           {/* Front Face: Logo */}
           <div
-            className="absolute inset-0 bg-white rounded-xl border border-brand-border flex items-center justify-center p-4 shadow-sm"
+            className="absolute inset-0 bg-white rounded-xl border border-brand-border flex items-center justify-center p-4 shadow-sm group-hover:shadow-md transition-all duration-300"
             style={{
               backfaceVisibility: "hidden",
               WebkitBackfaceVisibility: "hidden",
@@ -59,11 +59,11 @@ export default function BrandGridItem({ name, logo, href, coupons = 12 }) {
           >
             <Ticket className="w-4 h-4 text-brand-blue mb-1 shrink-0" />
             <div className="flex items-baseline gap-1">
-              <span className="text-[17px] font-black text-brand-blue leading-none">
+              <span className="text-[17px] font-bold text-brand-blue leading-none">
                 {coupons}
               </span>
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                Coupons
+              <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">
+                Offers
               </span>
             </div>
           </div>

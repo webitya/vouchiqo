@@ -31,7 +31,7 @@ export const LeadingTaglineBar = () => (
             fontFamily: '"Nunito Sans", sans-serif',
           }}
         >
-          India&apos;s Leading Coupons &amp; Deals Marketplace
+          India&apos;s Leading Offers &amp; Deals Marketplace
         </h1>
 
         {/* Right arrow decorator - hidden on mobile, visible on sm and up */}

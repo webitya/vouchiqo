@@ -82,81 +82,59 @@ export const NotificationBell = () => {
         </button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-80 md:w-96 rounded-2xl bg-white p-0 border border-slate-100 shadow-xl z-50 mr-4">
+      <PopoverContent className="w-[300px] rounded-xl bg-white p-0 border border-slate-100 shadow-xl z-50 mr-4 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-100 bg-[#f8fafc] rounded-t-2xl">
-          <div className="flex items-center gap-2">
-            <span className="text-[14px] font-bold text-brand-navy">
+        <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-slate-100 bg-[#f8fafc] rounded-t-xl shrink-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[12.5px] font-semibold text-slate-800">
               Notifications
             </span>
             {unreadCount > 0 && (
-              <span className="px-2 py-0.5 text-[10px] font-bold bg-[#eff6ff] text-brand-blue rounded-full">
+              <span className="px-1.5 py-0.5 text-[9px] font-medium bg-blue-50 text-blue-600 rounded-full">
                 {unreadCount} New
               </span>
             )}
           </div>
-          {notifications.length > 0 && (
-            <div className="flex gap-3">
-              <button
-                onClick={markAllRead}
-                type="button"
-                className="text-[11px] font-semibold text-brand-blue hover:underline cursor-pointer flex items-center gap-1 border-0 bg-transparent"
-                title="Mark all as read"
-              >
-                <CheckCheck className="w-3.5 h-3.5" />
-                Read All
-              </button>
-              <button
-                onClick={clearAll}
-                type="button"
-                className="text-[11px] font-semibold text-red-500 hover:underline cursor-pointer flex items-center gap-1 border-0 bg-transparent"
-                title="Clear all"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                Clear
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Scrollable Notifications List */}
-        <ScrollArea className="h-72 w-full">
+        <ScrollArea className="h-64 w-full flex-grow">
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 text-center px-4">
-              <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-3">
-                <Bell className="w-6 h-6 text-slate-400" />
+              <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center mb-2">
+                <Bell className="w-5 h-5 text-slate-400" />
               </div>
-              <p className="text-[13px] font-semibold text-slate-700">
+              <p className="text-[12px] font-medium text-slate-600">
                 All caught up!
               </p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-[10px] text-slate-400 mt-0.5">
                 No new notifications at this time.
               </p>
             </div>
           ) : (
-            <div className="flex flex-col divide-y divide-slate-50">
+            <div className="flex flex-col divide-y divide-slate-100">
               {notifications.map((notif) => (
                 <div
                   key={notif.id}
                   onClick={() => markAsRead(notif.id)}
-                  className={`p-4 flex flex-col gap-1 text-left transition-colors cursor-pointer select-none ${
+                  className={`px-3.5 py-2.5 flex flex-col gap-0.5 text-left transition-colors cursor-pointer select-none ${
                     notif.unread
-                      ? "bg-[#eff6ff]/35 hover:bg-[#eff6ff]/60"
+                      ? "bg-blue-50/20 hover:bg-blue-50/40"
                       : "hover:bg-slate-50/50"
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="text-[13px] font-bold text-brand-navy">
+                  <div className="flex items-start justify-between gap-2.5">
+                    <span className="text-[12px] font-medium text-slate-700">
                       {notif.title}
                     </span>
                     {notif.unread && (
-                      <span className="w-2 h-2 rounded-full bg-brand-blue shrink-0 mt-1.5" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5" />
                     )}
                   </div>
-                  <p className="text-[12px] text-slate-600 leading-snug">
+                  <p className="text-[11px] text-slate-500 leading-normal font-normal">
                     {notif.message}
                   </p>
-                  <span className="text-[10px] text-slate-400 font-medium mt-0.5">
+                  <span className="text-[9.5px] text-slate-400 font-normal">
                     {notif.time}
                   </span>
                 </div>
@@ -164,6 +142,30 @@ export const NotificationBell = () => {
             </div>
           )}
         </ScrollArea>
+
+        {/* Footer (Read All & Clear in Bottom Right) */}
+        {notifications.length > 0 && (
+          <div className="flex items-center justify-end gap-3 px-3.5 py-2 border-t border-slate-100 bg-[#f8fafc] rounded-b-xl shrink-0">
+            <button
+              onClick={markAllRead}
+              type="button"
+              className="text-[10px] font-medium text-blue-600 hover:text-blue-700 cursor-pointer flex items-center gap-0.5 border-0 bg-transparent py-1"
+              title="Mark all as read"
+            >
+              <CheckCheck className="w-3 h-3" />
+              Read All
+            </button>
+            <button
+              onClick={clearAll}
+              type="button"
+              className="text-[10px] font-medium text-slate-500 hover:text-red-500 cursor-pointer flex items-center gap-0.5 border-0 bg-transparent py-1"
+              title="Clear all"
+            >
+              <Trash2 className="w-3 h-3" />
+              Clear
+            </button>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );
