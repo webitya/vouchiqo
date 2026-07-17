@@ -160,9 +160,40 @@ export async function getCouponById(couponId) {
         discType = "percentage";
       }
 
+      let category = "other";
+      const lowerSlug = slug.toLowerCase();
+      if (
+        lowerSlug.includes("tech") ||
+        lowerSlug.includes("oneplus") ||
+        lowerSlug.includes("samsung") ||
+        lowerSlug.includes("dell") ||
+        lowerSlug.includes("hp") ||
+        lowerSlug.includes("lenovo") ||
+        lowerSlug.includes("asus") ||
+        lowerSlug.includes("sony")
+      ) {
+        category = "electronics";
+      } else if (
+        lowerSlug.includes("zomato") ||
+        lowerSlug.includes("starbucks") ||
+        lowerSlug.includes("food")
+      ) {
+        category = "food";
+      } else if (
+        lowerSlug.includes("zara") ||
+        lowerSlug.includes("adidas") ||
+        lowerSlug.includes("nike") ||
+        lowerSlug.includes("puma") ||
+        lowerSlug.includes("style") ||
+        lowerSlug.includes("zivame")
+      ) {
+        category = "fashion";
+      }
+
       return {
         _id: couponId,
         merchantId: mockMerchant,
+        category: category,
         title: couponTitle,
         description: couponDesc,
         code: couponCode,
