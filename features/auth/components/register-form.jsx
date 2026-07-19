@@ -63,8 +63,12 @@ export function RegisterForm() {
 
   return (
     <AuthCard title="Create your free account">
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-3.5">
         <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400">
+            <User className="w-3.5 h-3.5 text-brand-blue" />
+            Full Name
+          </Label>
           <InputGroup className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-250/70 dark:border-zinc-800 rounded-md h-10 px-2 transition-all has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-brand-blue/60">
             <InputGroupAddon>
               <User className="w-4 h-4 text-slate-400 dark:text-slate-500" />
@@ -82,6 +86,10 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400">
+            <Mail className="w-3.5 h-3.5 text-brand-blue" />
+            Email Address
+          </Label>
           <InputGroup className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-250/70 dark:border-zinc-800 rounded-md h-10 px-2 transition-all has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-brand-blue/60">
             <InputGroupAddon>
               <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500" />
@@ -98,13 +106,17 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400">
+            <Phone className="w-3.5 h-3.5 text-brand-blue" />
+            Mobile Number
+          </Label>
           <InputGroup className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-250/70 dark:border-zinc-800 rounded-md h-10 px-2 transition-all has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-brand-blue/60">
             <InputGroupAddon>
               <Phone className="w-4 h-4 text-slate-400 dark:text-slate-500" />
             </InputGroupAddon>
             <InputGroupInput
               type="tel"
-              placeholder="Mobile Number (e.g. 9876543210)"
+              placeholder="e.g. 9876543210"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               className="text-base md:text-sm placeholder:font-light placeholder:text-slate-400 dark:placeholder:text-slate-600 h-full font-normal"
@@ -114,6 +126,10 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400">
+            <Lock className="w-3.5 h-3.5 text-brand-blue" />
+            Password
+          </Label>
           <InputGroup className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-250/70 dark:border-zinc-800 rounded-md h-10 px-2 transition-all has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-brand-blue/60">
             <InputGroupAddon>
               <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />
@@ -144,6 +160,10 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400">
+            <Lock className="w-3.5 h-3.5 text-brand-blue" />
+            Confirm Password
+          </Label>
           <InputGroup className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-250/70 dark:border-zinc-800 rounded-md h-10 px-2 transition-all has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-brand-blue/60">
             <InputGroupAddon>
               <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />
