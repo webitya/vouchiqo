@@ -70,7 +70,7 @@ export function RevivalPromo() {
       {/* Subtle visual radial highlight overlay */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-blue-600/10 to-transparent pointer-events-none z-0" />
 
-      <div className="max-w-6xl mx-auto w-full relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           
           {/* Left Column: Form & Callout (7 cols) */}
