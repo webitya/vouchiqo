@@ -75,10 +75,6 @@ const CATEGORY_META = {
     title: "Finance & Insurance",
     slug: "finance",
   },
-  other: {
-    title: "Other Deals",
-    slug: "other",
-  },
 };
 
 export default async function CategoriesPage() {

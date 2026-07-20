@@ -39,7 +39,6 @@ export const COUPON_CATEGORIES = [
   "entertainment",
   "grocery",
   "finance",
-  "other",
 ];
 
 // ─────────────────────────────────────────────

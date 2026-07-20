@@ -73,7 +73,6 @@ const CATEGORY_ICONS = {
   entertainment: { Icon: Gamepad2, bg: "#eff6ff", color: "#2563eb" },
   grocery: { Icon: ShoppingCart, bg: "#eff6ff", color: "#2563eb" },
   finance: { Icon: CreditCard, bg: "#eff6ff", color: "#2563eb" },
-  other: { Icon: Tag, bg: "#eff6ff", color: "#2563eb" },
 };
 
 function getCategoryIcon(slug) {
@@ -97,7 +96,6 @@ const CATEGORY_DESCRIPTIONS = {
   entertainment: "Gaming peripherals, gaming cafés, events, experiences",
   grocery: "Kirana digital, organic food, specialty grocery, dairy, dry fruits",
   finance: "Insurance, loans, mutual funds, credit cards, tax services",
-  other: "Miscellaneous local offers and brand codes",
 };
 
 function getCategoryDescription(slug) {
