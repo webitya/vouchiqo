@@ -22,8 +22,9 @@ export const HowItWorks = React.memo(function HowItWorks() {
   };
 
   return (
-    <section className="py-16 px-4 max-w-6xl mx-auto w-full select-none border-t border-b border-slate-100 dark:border-zinc-900/60 transition-all">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+    <section className="w-full bg-white dark:bg-zinc-950/40 py-16 px-4 md:px-8 select-none border-t border-b border-slate-100 dark:border-zinc-900/60 transition-all">
+      <div className="max-w-6xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         
         {/* Left Column: Trust Messaging & Explanations (lg:col-span-5) */}
         <div className="lg:col-span-5 space-y-6 text-left">
@@ -203,7 +204,8 @@ export const HowItWorks = React.memo(function HowItWorks() {
         </div>
 
       </div>
-    </section>
+    </div>
+  </section>
   );
 });
 
