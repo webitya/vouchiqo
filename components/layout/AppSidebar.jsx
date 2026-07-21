@@ -2,14 +2,20 @@
 
 import {
   AlertCircle,
+  BarChart2,
+  Bell,
   Bookmark,
   Building2,
   CheckSquare,
   CreditCard,
+  HelpCircle,
   History,
   Home,
+  Layers,
   LayoutDashboard,
+  Link as LinkIcon,
   MapPin,
+  Megaphone,
   PiggyBank,
   PlusCircle,
   RotateCcw,
@@ -66,7 +72,7 @@ export function AppSidebar({ ...props }) {
         image: null,
       };
 
-  // Grouped Navigation Items matching Vouchiqo structure
+  // Grouped Navigation Items matching Vouchiqo structure & reference image
   const getNavGroups = () => {
     switch (role) {
       case "admin":
@@ -145,57 +151,64 @@ export function AppSidebar({ ...props }) {
       case "merchant":
         return [
           {
-            title: "Overview",
+            title: "Navigation",
             items: [
               {
-                title: "Homepage",
-                url: "/",
+                title: "Dashboard Overview",
+                url: "/merchant/dashboard",
                 icon: Home,
               },
               {
-                title: "Dashboard",
-                url: "/merchant/dashboard",
-                icon: LayoutDashboard,
+                title: "My Listings",
+                url: "/merchant/coupons",
+                icon: Layers,
+                subItems: [
+                  { title: "Coupons", url: "/merchant/coupons" },
+                  { title: "Deals & Offers", url: "/merchant/coupons?type=deal" },
+                  { title: "Expired Coupons", url: "/merchant/coupons?status=expired" },
+                ],
+              },
+              {
+                title: "Post New",
+                url: "/merchant/coupons/new",
+                icon: PlusCircle,
+                isCta: true,
               },
               {
                 title: "Analytics",
                 url: "/merchant/analytics",
-                icon: TrendingUp,
-              },
-              {
-                title: "Business Profile",
-                url: "/merchant/profile",
-                icon: Store,
-              },
-            ],
-          },
-          {
-            title: "Commerce",
-            items: [
-              {
-                title: "My Coupons",
-                url: "/merchant/coupons",
-                icon: Tag,
-              },
-              {
-                title: "Create Coupon",
-                url: "/merchant/coupons/new",
-                icon: PlusCircle,
+                icon: BarChart2,
               },
               {
                 title: "Campaigns",
                 url: "/merchant/campaigns",
-                icon: Sparkles,
+                icon: Megaphone,
               },
               {
-                title: "Revival Requests",
-                url: "/merchant/revivals",
-                icon: RotateCcw,
+                title: "Notifications",
+                url: "/merchant/dashboard#notifications",
+                icon: Bell,
+                badge: "4",
               },
               {
-                title: "Billing & Plans",
+                title: "Subscription & Billing",
                 url: "/merchant/billing",
                 icon: CreditCard,
+              },
+              {
+                title: "Affiliate & Commission",
+                url: "/merchant/billing#affiliate",
+                icon: LinkIcon,
+              },
+              {
+                title: "Account Settings",
+                url: "/merchant/profile",
+                icon: Settings,
+              },
+              {
+                title: "Help & Support",
+                url: "/faq",
+                icon: HelpCircle,
               },
             ],
           },
