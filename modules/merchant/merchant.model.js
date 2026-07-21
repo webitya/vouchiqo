@@ -156,6 +156,8 @@ const merchantSchema = new Schema(
       chequeImage: { type: String }, // Cloudinary URL
     },
     shopImage: { type: String }, // Cloudinary URL
+    docType: { type: String, trim: true },
+    docFileUrl: { type: String, trim: true },
   },
   {
     timestamps: true,

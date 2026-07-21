@@ -5,6 +5,8 @@ import {
   Building,
   Check,
   Clock,
+  Eye,
+  EyeOff,
   FileCheck,
   Layers,
   Loader2,
@@ -128,6 +130,7 @@ export function MerchantOnboardingWizard() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     // Section A: Business Identity
@@ -153,11 +156,21 @@ export function MerchantOnboardingWizard() {
     facebookUrl: "",
     googleUrl: "",
 
-    // Section C: Verification Documents
+    // Section C: Verification Documents & Brand Assets
     docType: "GST Registration Certificate",
     docFileUrl: "",
     shopPhotoUrl: "",
     logoUrl: "",
+    bannerUrl: "",
+    chequeUrl: "",
+    constitution: "proprietorship",
+    pan: "",
+    gstin: "",
+    isGstExempt: false,
+    bankHolder: "",
+    accountType: "current",
+    accountNumber: "",
+    ifsc: "",
 
     // Section D: Choose Your Plan
     selectedPlan: "starter",
@@ -196,6 +209,50 @@ export function MerchantOnboardingWizard() {
     submissionDate: new Date().toISOString().split("T")[0],
     digitalInitials: "",
   });
+
+  const [uploadingState, setUploadingState] = useState({
+    logoUrl: false,
+    shopPhotoUrl: false,
+    bannerUrl: false,
+    docFileUrl: false,
+    chequeUrl: false,
+  });
+
+  const handleFileUpload = async (e, fieldKey) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be under 5 MB");
+      return;
+    }
+
+    setUploadingState((prev) => ({ ...prev, [fieldKey]: true }));
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("folder", "merchants");
+
+      const res = await fetch("/api/uploads", {
+        method: "POST",
+        body: data,
+      });
+
+      const json = await res.json();
+      if (!res.ok || !(json.success || json.status === "success")) {
+        throw new Error(json.message || "Image upload failed");
+      }
+
+      const imageUrl = json.data?.url || json.url;
+      setFormData((prev) => ({ ...prev, [fieldKey]: imageUrl }));
+      toast.success("Uploaded image to Cloudinary!");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Upload failed. Please try again.");
+    } finally {
+      setUploadingState((prev) => ({ ...prev, [fieldKey]: false }));
+    }
+  };
 
   const STEPS = [
     { num: 1, label: "Identity", icon: Building },
@@ -318,6 +375,35 @@ export function MerchantOnboardingWizard() {
             pincode: formData.pincode,
             city: formData.city,
             state: formData.state,
+          },
+          logo: formData.logoUrl || undefined,
+          shopImage: formData.shopPhotoUrl || undefined,
+          banner: formData.bannerUrl || undefined,
+          docType: formData.docType,
+          docFileUrl: formData.docFileUrl || undefined,
+          constitution: formData.constitution || "proprietorship",
+          liaisonName: formData.contactName || formData.signatoryName,
+          liaisonDesignation: (formData.designation || "owner").toLowerCase(),
+          liaisonPhone: formData.mobile,
+          regionalHubCity: (formData.city || "ranchi").toLowerCase(),
+          gmapsLink: formData.googleUrl || undefined,
+          pan: formData.pan || undefined,
+          gstin: formData.gstin || undefined,
+          isGstExempt: formData.isGstExempt || false,
+          bankDetails: {
+            holderName: formData.bankHolder || formData.registeredName,
+            accountType: formData.accountType || "current",
+            accountNumber: formData.accountNumber || undefined,
+            ifsc: formData.ifsc || undefined,
+            bankName: formData.bankName || undefined,
+            branchName: formData.branchName || undefined,
+            chequeImage: formData.chequeUrl || undefined,
+          },
+          plan: formData.selectedPlan || "starter",
+          operatingHours: {
+            days: formData.operatingDays,
+            opening: formData.openingTime,
+            closing: formData.closingTime,
           },
         }),
       });
@@ -714,15 +800,31 @@ export function MerchantOnboardingWizard() {
                       <Lock className="w-3.5 h-3.5 text-slate-500" /> Create
                       Password *
                     </Label>
-                    <Input
-                      type="password"
-                      placeholder="Min 6 characters"
-                      value={formData.password}
-                      onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
-                      }
-                      className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-xs h-10 rounded-xl font-medium focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-2 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600 focus-visible:border-2 focus-visible:shadow-none shadow-none placeholder:font-normal placeholder:text-xs placeholder:text-slate-400/80"
-                    />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Min 6 characters"
+                        value={formData.password}
+                        onChange={(e) =>
+                          setFormData({ ...formData, password: e.target.value })
+                        }
+                        className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-xs h-10 rounded-xl font-medium focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-2 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600 focus-visible:border-2 focus-visible:shadow-none shadow-none placeholder:font-normal placeholder:text-xs placeholder:text-slate-400/80 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer border-0 bg-transparent"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -745,24 +847,196 @@ export function MerchantOnboardingWizard() {
             </Card>
           )}
 
-          {/* SECTION 3: BUSINESS VERIFICATION DOCUMENTS */}
+          {/* SECTION 3: BUSINESS VERIFICATION DOCUMENTS & BRAND ASSETS */}
           {currentStep === 3 && (
-            <Card className="border-slate-200 dark:border-zinc-800 shadow-sm rounded-2xl bg-white dark:bg-zinc-900 p-6 space-y-5">
-              <div className="border-b border-slate-100 dark:border-zinc-800 pb-3">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Upload className="w-5 h-5 text-blue-600" /> Section C:
-                  Verification Documents
+            <Card className="border-slate-200 dark:border-zinc-800 shadow-sm rounded-2xl bg-white dark:bg-zinc-900 p-5 space-y-4">
+              <div className="border-b border-slate-100 dark:border-zinc-800 pb-2">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-blue-600" /> Section C: Brand
+                  Assets &amp; Verification Proofs
                 </h3>
-                <p className="text-xs text-slate-550 dark:text-slate-400 font-medium">
-                  Document proof for Verified Merchant Badge
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  Upload high-quality images via Cloudinary for your store
+                  profile &amp; KYC badge.
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-1.5">
+              {/* 3 Brand Images Upload Grid */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-black uppercase text-slate-700 dark:text-zinc-300 tracking-wider">
+                  1. Brand Images (Cloudinary)
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {/* Store Logo */}
+                  <div className="border border-slate-200 dark:border-zinc-800 rounded-xl p-3 bg-slate-50/40 dark:bg-zinc-900/40 space-y-2 text-left">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-slate-800 dark:text-zinc-200">
+                        Store Logo (1:1)
+                      </Label>
+                      {formData.logoUrl && (
+                        <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
+                      )}
+                    </div>
+                    {formData.logoUrl ? (
+                      <div className="relative h-28 rounded-lg overflow-hidden border border-slate-200 bg-white p-1">
+                        {/* biome-ignore lint/performance/noImgElement: logo preview */}
+                        <img
+                          src={formData.logoUrl}
+                          alt="Store Logo"
+                          className="w-full h-full object-contain"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFormData({ ...formData, logoUrl: "" })
+                          }
+                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 text-[10px] cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-slate-300 dark:border-zinc-700 rounded-lg hover:bg-blue-50/50 cursor-pointer transition-colors p-2 text-center">
+                        {uploadingState.logoUrl ? (
+                          <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                        ) : (
+                          <>
+                            <Upload className="w-4 h-4 text-blue-600 mb-1" />
+                            <span className="text-[11px] font-bold text-slate-700 dark:text-zinc-300">
+                              Upload Logo
+                            </span>
+                            <span className="text-[9px] text-slate-400">
+                              PNG/JPG (Max 5MB)
+                            </span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e, "logoUrl")}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+
+                  {/* Store Front Photo */}
+                  <div className="border border-slate-200 dark:border-zinc-800 rounded-xl p-3 bg-slate-50/40 dark:bg-zinc-900/40 space-y-2 text-left">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-slate-800 dark:text-zinc-200">
+                        Store Front (4:3)
+                      </Label>
+                      {formData.shopPhotoUrl && (
+                        <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
+                      )}
+                    </div>
+                    {formData.shopPhotoUrl ? (
+                      <div className="relative h-28 rounded-lg overflow-hidden border border-slate-200 bg-white p-1">
+                        {/* biome-ignore lint/performance/noImgElement: shop photo preview */}
+                        <img
+                          src={formData.shopPhotoUrl}
+                          alt="Store Front"
+                          className="w-full h-full object-contain"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFormData({ ...formData, shopPhotoUrl: "" })
+                          }
+                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 text-[10px] cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-slate-300 dark:border-zinc-700 rounded-lg hover:bg-blue-50/50 cursor-pointer transition-colors p-2 text-center">
+                        {uploadingState.shopPhotoUrl ? (
+                          <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                        ) : (
+                          <>
+                            <Upload className="w-4 h-4 text-blue-600 mb-1" />
+                            <span className="text-[11px] font-bold text-slate-700 dark:text-zinc-300">
+                              Upload Shop Photo
+                            </span>
+                            <span className="text-[9px] text-slate-400">
+                              PNG/JPG (Max 5MB)
+                            </span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e, "shopPhotoUrl")}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+
+                  {/* Cover Banner */}
+                  <div className="border border-slate-200 dark:border-zinc-800 rounded-xl p-3 bg-slate-50/40 dark:bg-zinc-900/40 space-y-2 text-left">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-slate-800 dark:text-zinc-200">
+                        Cover Banner (Landscape)
+                      </Label>
+                      {formData.bannerUrl && (
+                        <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
+                      )}
+                    </div>
+                    {formData.bannerUrl ? (
+                      <div className="relative h-28 rounded-lg overflow-hidden border border-slate-200 bg-white p-1">
+                        {/* biome-ignore lint/performance/noImgElement: banner preview */}
+                        <img
+                          src={formData.bannerUrl}
+                          alt="Cover Banner"
+                          className="w-full h-full object-contain"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFormData({ ...formData, bannerUrl: "" })
+                          }
+                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 text-[10px] cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-slate-300 dark:border-zinc-700 rounded-lg hover:bg-blue-50/50 cursor-pointer transition-colors p-2 text-center">
+                        {uploadingState.bannerUrl ? (
+                          <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                        ) : (
+                          <>
+                            <Upload className="w-4 h-4 text-blue-600 mb-1" />
+                            <span className="text-[11px] font-bold text-slate-700 dark:text-zinc-300">
+                              Upload Banner
+                            </span>
+                            <span className="text-[9px] text-slate-400">
+                              PNG/JPG (Max 5MB)
+                            </span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e, "bannerUrl")}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Verification & KYC Documents Upload */}
+              <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-zinc-800">
+                <h4 className="text-xs font-black uppercase text-slate-700 dark:text-zinc-300 tracking-wider">
+                  2. Statutory KYC &amp; Verification Document (Image Format)
+                </h4>
+                <div className="space-y-2">
                   <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800 dark:text-zinc-250">
                     <FileCheck className="w-3.5 h-3.5 text-blue-500" /> Primary
-                    Identity Document Type *
+                    Verification Document Type
                   </Label>
                   <Select
                     value={formData.docType}
@@ -770,7 +1044,7 @@ export function MerchantOnboardingWizard() {
                       setFormData({ ...formData, docType: val })
                     }
                   >
-                    <SelectTrigger className="w-full bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 rounded-xl text-xs h-10 px-3.5 font-bold text-slate-850 dark:text-zinc-300 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-2 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600 focus-visible:border-2 focus-visible:shadow-none shadow-none">
+                    <SelectTrigger className="w-full bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 rounded-xl text-xs h-10 px-3.5 font-bold text-slate-850 dark:text-zinc-300">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="z-[300]">
@@ -791,26 +1065,44 @@ export function MerchantOnboardingWizard() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
 
-                <div className="space-y-1.5">
-                  <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800 dark:text-zinc-250">
-                    <Upload className="w-3.5 h-3.5 text-blue-500" /> Document
-                    File URL / Image Link
-                  </Label>
-                  <Input
-                    type="text"
-                    placeholder="https://drive.google.com/... or file link"
-                    value={formData.docFileUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, docFileUrl: e.target.value })
-                    }
-                    className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-xs h-10 rounded-xl font-medium focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-2 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600 focus-visible:border-2 focus-visible:shadow-none shadow-none placeholder:font-normal placeholder:text-xs placeholder:text-slate-400/80"
-                  />
+                  {formData.docFileUrl ? (
+                    <div className="flex items-center justify-between p-2 rounded-xl border border-emerald-200 bg-emerald-50/60 text-xs font-bold text-emerald-800">
+                      <span className="truncate max-w-[280px]">
+                        Verification Document Image Uploaded
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, docFileUrl: "" })
+                        }
+                        className="text-red-600 hover:underline text-[11px] font-bold"
+                      >
+                        Change Image
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex items-center justify-center gap-2 h-11 border border-slate-300 dark:border-zinc-700 rounded-xl bg-slate-50 dark:bg-zinc-800 hover:bg-blue-50 cursor-pointer text-xs font-bold text-slate-700 dark:text-zinc-200 transition-colors">
+                      {uploadingState.docFileUrl ? (
+                        <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4 text-blue-600" />
+                          Upload Verification Document Image (Cloudinary)
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e, "docFileUrl")}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
                 </div>
               </div>
 
-              <div className="flex justify-between pt-4 border-t border-slate-100 dark:border-zinc-800">
+              <div className="flex justify-between pt-3 border-t border-slate-100 dark:border-zinc-800">
                 <Button
                   variant="outline"
                   onClick={() => setCurrentStep(2)}

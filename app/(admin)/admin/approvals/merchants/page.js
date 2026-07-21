@@ -33,30 +33,32 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function MerchantApprovals() {
-  const [merchants, setMerchants] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedMerchant, setSelectedMerchant] = useState(null);
-  const [kycDialogOpen, setKycDialogOpen] = useState(false);
+  const [activeStatusTab, setActiveStatusTab] = useState("pending");
 
-  const fetchPendingMerchants = async () => {
+  const fetchMerchants = async (statusTab) => {
     try {
       setLoading(true);
-      const res = await fetch("/api/admin/merchants?status=pending");
+      const url =
+        statusTab && statusTab !== "all"
+          ? `/api/admin/merchants?status=${statusTab}`
+          : "/api/admin/merchants";
+      const res = await fetch(url);
       const json = await res.json();
       if ((json.success || json.status === "success") && json.data) {
         setMerchants(json.data.merchants || []);
       }
     } catch (err) {
-      console.error("Error fetching pending merchants:", err);
-      toast.error("Failed to load pending merchants.");
+      console.error("Error fetching merchants:", err);
+      toast.error("Failed to load merchants.");
     } finally {
       setLoading(false);
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fetch on status tab change
   useEffect(() => {
-    fetchPendingMerchants();
-  }, []);
+    fetchMerchants(activeStatusTab);
+  }, [activeStatusTab]);
 
   const handleAction = async (merchantId, action) => {
     try {
@@ -93,9 +95,47 @@ export default function MerchantApprovals() {
       title="Merchant Approvals"
       user={{ name: "Platform Admin", role: "admin" }}
     >
-      <h2 className="text-base font-bold text-brand-navy font-heading uppercase tracking-wider border-b border-brand-border pb-3">
-        Merchant Signup Review Queue
-      </h2>
+      {/* Top Status Switcher Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-brand-border pb-3 mb-4 gap-3">
+        <h2 className="text-base font-bold text-brand-navy font-heading uppercase tracking-wider">
+          Merchant Applications Queue
+        </h2>
+        <div className="flex bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl gap-1 border-0 w-fit">
+          <button
+            type="button"
+            onClick={() => setActiveStatusTab("pending")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border-0 ${
+              activeStatusTab === "pending"
+                ? "bg-white text-blue-600 shadow-sm"
+                : "bg-transparent text-slate-600 hover:text-slate-900 dark:text-zinc-400"
+            }`}
+          >
+            Pending Review
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveStatusTab("approved")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border-0 ${
+              activeStatusTab === "approved"
+                ? "bg-white text-emerald-600 shadow-sm"
+                : "bg-transparent text-slate-600 hover:text-slate-900 dark:text-zinc-400"
+            }`}
+          >
+            Accepted / Approved
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveStatusTab("rejected")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border-0 ${
+              activeStatusTab === "rejected"
+                ? "bg-white text-red-600 shadow-sm"
+                : "bg-transparent text-slate-600 hover:text-slate-900 dark:text-zinc-400"
+            }`}
+          >
+            Rejected
+          </button>
+        </div>
+      </div>
 
       {loading
         ? <div className="bg-brand-bg border border-brand-border rounded-xl p-8 text-center text-brand-subtext font-semibold shadow-sm">
@@ -133,9 +173,21 @@ export default function MerchantApprovals() {
                       >
                         <TableCell className="p-4 h-auto">
                           <div className="flex flex-col">
-                            <span className="font-bold text-brand-navy">
-                              {merchant.businessName}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-brand-navy">
+                                {merchant.businessName}
+                              </span>
+                              {merchant.status === "approved" && (
+                                <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                                  Approved
+                                </span>
+                              )}
+                              {merchant.status === "rejected" && (
+                                <span className="text-[9px] font-bold text-red-700 bg-red-50 px-1.5 py-0.5 rounded border border-red-200">
+                                  Rejected
+                                </span>
+                              )}
+                            </div>
                             {merchant.website && (
                               <a
                                 href={merchant.website}
@@ -222,8 +274,9 @@ export default function MerchantApprovals() {
                 </div>
                 <TabsList className="flex bg-slate-100 p-1 rounded-xl h-10 w-fit shrink-0 gap-1 ml-4 border-0">
                   <TabsTrigger value="details">Merchant Details</TabsTrigger>
-                  <TabsTrigger value="assets">
-                    Brand Assets &amp; Proofs
+                  <TabsTrigger value="assets">Brand Images</TabsTrigger>
+                  <TabsTrigger value="docs">
+                    KYC &amp; Statutory Docs
                   </TabsTrigger>
                 </TabsList>
               </DialogHeader>
@@ -387,118 +440,153 @@ export default function MerchantApprovals() {
                   </div>
                 </TabsContent>
 
+                {/* TAB 2: BRAND IMAGES (Logo, Store Front, Cover Banner) */}
                 <TabsContent value="assets" className="mt-0">
-                  {/* Visual assets grid styled according to real proportions */}
-                  <div className="grid grid-cols-1 md:grid-cols-8 gap-6 bg-brand-surface border border-brand-border p-5 rounded-xl">
-                    {/* Store Logo - spans 2 columns */}
-                    <div className="md:col-span-2 space-y-2 text-left">
-                      <span className="text-brand-subtext text-[10px] uppercase font-bold block">
-                        Store Logo (1:1)
-                      </span>
-                      <div className="relative border border-brand-border rounded-xl h-44 bg-white flex items-center justify-center overflow-hidden shadow-inner p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-brand-surface border border-brand-border p-5 rounded-xl">
+                    {/* Store Logo (1:1) */}
+                    <div className="space-y-2 text-left">
+                      <div className="flex items-center justify-between">
+                        <span className="text-brand-subtext text-[10px] uppercase font-bold">
+                          Store Logo (1:1)
+                        </span>
+                        {selectedMerchant.logo && (
+                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                            Cloudinary Verified
+                          </span>
+                        )}
+                      </div>
+                      <div className="relative border border-brand-border rounded-xl h-48 bg-white flex items-center justify-center overflow-hidden shadow-inner p-4">
                         {selectedMerchant.logo
-                          ? <>
+                          ? <a
+                              href={selectedMerchant.logo}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="w-full h-full flex items-center justify-center group"
+                            >
+                              {/* biome-ignore lint/performance/noImgElement: user logo */}
                               <img
                                 src={selectedMerchant.logo}
-                                alt="Logo"
-                                className="max-w-full max-h-full object-contain hover:scale-105 transition-transform duration-300"
-                                onError={(e) => {
-                                  e.target.style.display = "none";
-                                  e.target.nextSibling.style.display = "flex";
-                                }}
+                                alt="Store Logo"
+                                className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
                               />
-                              <div className="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold bg-slate-50">
-                                <ImageIcon className="w-5 h-5 mb-1 text-slate-300" />
-                                <span>Logo Unavailable</span>
-                              </div>
-                            </>
-                          : <span className="text-slate-400 text-[10px]">
-                              No logo uploaded
-                            </span>}
+                            </a>
+                          : <div className="flex flex-col items-center justify-center text-slate-400 text-xs">
+                              <ImageIcon className="w-6 h-6 mb-1 text-slate-300" />
+                              <span>No Logo Uploaded</span>
+                            </div>}
                       </div>
                     </div>
 
-                    {/* Shop Photo - spans 3 columns */}
-                    <div className="md:col-span-3 space-y-2 text-left">
-                      <span className="text-brand-subtext text-[10px] uppercase font-bold block">
-                        Shop Photograph (4:3)
-                      </span>
-                      <div className="relative border border-brand-border rounded-xl h-44 bg-white flex items-center justify-center overflow-hidden shadow-inner p-2">
+                    {/* Store Front / Shop Photo (4:3) */}
+                    <div className="space-y-2 text-left">
+                      <div className="flex items-center justify-between">
+                        <span className="text-brand-subtext text-[10px] uppercase font-bold">
+                          Store Front Photo (4:3)
+                        </span>
+                        {selectedMerchant.shopImage && (
+                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                            Cloudinary Verified
+                          </span>
+                        )}
+                      </div>
+                      <div className="relative border border-brand-border rounded-xl h-48 bg-white flex items-center justify-center overflow-hidden shadow-inner p-2">
                         {selectedMerchant.shopImage
-                          ? <>
+                          ? <a
+                              href={selectedMerchant.shopImage}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="w-full h-full flex items-center justify-center group"
+                            >
+                              {/* biome-ignore lint/performance/noImgElement: user shop photo */}
                               <img
                                 src={selectedMerchant.shopImage}
-                                alt="Shop Front"
-                                className="max-w-full max-h-full object-contain hover:scale-105 transition-transform duration-300"
-                                onError={(e) => {
-                                  e.target.style.display = "none";
-                                  e.target.nextSibling.style.display = "flex";
-                                }}
+                                alt="Store Front"
+                                className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
                               />
-                              <div className="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold bg-slate-50">
-                                <ImageIcon className="w-5 h-5 mb-1 text-slate-300" />
-                                <span>Photo Unavailable</span>
-                              </div>
-                            </>
-                          : <span className="text-slate-400 text-[10px]">
-                              No shop photo uploaded
-                            </span>}
+                            </a>
+                          : <div className="flex flex-col items-center justify-center text-slate-400 text-xs">
+                              <ImageIcon className="w-6 h-6 mb-1 text-slate-300" />
+                              <span>No Shop Photo Uploaded</span>
+                            </div>}
                       </div>
                     </div>
 
-                    {/* Cancelled Cheque - spans 3 columns */}
-                    <div className="md:col-span-3 space-y-2 text-left">
-                      <span className="text-brand-subtext text-[10px] uppercase font-bold block">
-                        Bank Proof Cheque (4:3)
-                      </span>
-                      <div className="relative border border-brand-border rounded-xl h-44 bg-white flex items-center justify-center overflow-hidden shadow-inner p-2">
-                        {selectedMerchant.bankDetails?.chequeImage
-                          ? <>
-                              <img
-                                src={selectedMerchant.bankDetails.chequeImage}
-                                alt="Cancelled Cheque"
-                                className="max-w-full max-h-full object-contain hover:scale-105 transition-transform duration-300"
-                                onError={(e) => {
-                                  e.target.style.display = "none";
-                                  e.target.nextSibling.style.display = "flex";
-                                }}
-                              />
-                              <div className="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold bg-slate-50">
-                                <ImageIcon className="w-5 h-5 mb-1 text-slate-300" />
-                                <span>Proof Unavailable</span>
-                              </div>
-                            </>
-                          : <span className="text-slate-400 text-[10px]">
-                              No bank proof uploaded
-                            </span>}
+                    {/* Cover Banner (Landscape) */}
+                    <div className="space-y-2 text-left">
+                      <div className="flex items-center justify-between">
+                        <span className="text-brand-subtext text-[10px] uppercase font-bold">
+                          Cover Banner (Landscape)
+                        </span>
+                        {selectedMerchant.banner && (
+                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                            Cloudinary Verified
+                          </span>
+                        )}
                       </div>
-                    </div>
-
-                    {/* Cover Banner - spans all 8 columns for full width display */}
-                    <div className="md:col-span-8 space-y-2 text-left mt-2">
-                      <span className="text-brand-subtext text-[10px] uppercase font-bold block">
-                        Cover Banner (Landscape)
-                      </span>
                       <div className="relative border border-brand-border rounded-xl h-48 bg-white flex items-center justify-center overflow-hidden shadow-inner p-2">
                         {selectedMerchant.banner
-                          ? <>
+                          ? <a
+                              href={selectedMerchant.banner}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="w-full h-full flex items-center justify-center group"
+                            >
+                              {/* biome-ignore lint/performance/noImgElement: user banner */}
                               <img
                                 src={selectedMerchant.banner}
                                 alt="Cover Banner"
-                                className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
-                                onError={(e) => {
-                                  e.target.style.display = "none";
-                                  e.target.nextSibling.style.display = "flex";
-                                }}
+                                className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
                               />
-                              <div className="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold bg-slate-50">
-                                <ImageIcon className="w-5 h-5 mb-1 text-slate-300" />
-                                <span>Banner Unavailable</span>
-                              </div>
-                            </>
-                          : <span className="text-slate-400 text-[10px]">
-                              No cover banner uploaded
-                            </span>}
+                            </a>
+                          : <div className="flex flex-col items-center justify-center text-slate-400 text-xs">
+                              <ImageIcon className="w-6 h-6 mb-1 text-slate-300" />
+                              <span>No Cover Banner Uploaded</span>
+                            </div>}
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                {/* TAB 3: KYC & STATUTORY DOCUMENTS */}
+                <TabsContent value="docs" className="mt-0">
+                  <div className="bg-brand-surface border border-brand-border p-5 rounded-xl">
+                    {/* Primary Identity Document */}
+                    <div className="space-y-2 text-left">
+                      <div className="flex items-center justify-between">
+                        <span className="text-brand-subtext text-[10px] uppercase font-bold">
+                          Primary Verification Doc (
+                          {selectedMerchant.docType || "GST / MSME / PAN"})
+                        </span>
+                        {selectedMerchant.docFileUrl && (
+                          <a
+                            href={selectedMerchant.docFileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] font-bold text-brand-blue hover:underline"
+                          >
+                            Open Original Doc ↗
+                          </a>
+                        )}
+                      </div>
+                      <div className="relative border border-brand-border rounded-xl h-64 bg-white flex items-center justify-center overflow-hidden shadow-inner p-3">
+                        {selectedMerchant.docFileUrl
+                          ? <a
+                              href={selectedMerchant.docFileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="w-full h-full flex items-center justify-center group"
+                            >
+                              {/* biome-ignore lint/performance/noImgElement: user doc preview */}
+                              <img
+                                src={selectedMerchant.docFileUrl}
+                                alt="Verification Document"
+                                className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                              />
+                            </a>
+                          : <div className="flex flex-col items-center justify-center text-slate-400 text-xs">
+                              <ShieldAlert className="w-6 h-6 mb-1 text-slate-300" />
+                              <span>No Verification Document Uploaded</span>
+                            </div>}
                       </div>
                     </div>
                   </div>
