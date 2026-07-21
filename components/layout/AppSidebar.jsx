@@ -293,29 +293,29 @@ export function AppSidebar({ ...props }) {
 
   return (
     <Sidebar collapsible="icon" side="left" {...props}>
-      <SidebarHeader className="border-b border-sidebar-border px-3 py-3">
+      <SidebarHeader className="border-b border-sidebar-border px-3 py-2">
         <div
           className={`flex items-center gap-2.5 ${isCollapsed ? "justify-center" : ""}`}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xs shadow-xs">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xs shadow-xs">
             V
           </div>
           {!isCollapsed && (
             <div className="flex flex-col text-left leading-tight min-w-0">
-              <span className="text-sm font-semibold tracking-tight text-sidebar-foreground truncate">
+              <span className="text-xs font-semibold tracking-tight text-sidebar-foreground truncate">
                 Vouchiqo
               </span>
-              <span className="text-[10px] font-medium uppercase tracking-wider text-sidebar-foreground/60">
+              <span className="text-[9px] font-medium uppercase tracking-wider text-sidebar-foreground/60">
                 {role} Console
               </span>
             </div>
           )}
         </div>
       </SidebarHeader>
-      <SidebarContent className="px-3 py-3">
+      <SidebarContent className="px-2 py-2">
         <NavMain groups={groups} />
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border p-2.5">
+      <SidebarFooter className="border-t border-sidebar-border p-2">
         <NavUser user={user} role={role} />
       </SidebarFooter>
       <SidebarRail />

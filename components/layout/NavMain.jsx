@@ -34,16 +34,16 @@ export function NavMain({ groups }) {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-2.5">
       {groups.map((group) => (
         <SidebarGroup key={group.title} className="p-0">
           {!isCollapsed && group.title !== "Navigation" && (
-            <SidebarGroupLabel className="px-2.5 py-1 mb-1 text-[10px] font-bold text-sidebar-foreground/50 uppercase tracking-widest block">
+            <SidebarGroupLabel className="px-2 py-0.5 text-[10px] font-bold text-sidebar-foreground/50 uppercase tracking-wider block h-auto">
               {group.title}
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1.5">
+            <SidebarMenu className="gap-0.5">
               {group.items.map((item) => {
                 const normalizedPath = pathname.replace(/\/$/, "");
                 const normalizedUrl = item.url.replace(/\/$/, "");
@@ -62,14 +62,14 @@ export function NavMain({ groups }) {
 
                 if (item.isCta) {
                   return (
-                    <SidebarMenuItem key={item.title} className="my-1.5 px-0.5">
+                    <SidebarMenuItem key={item.title} className="my-0.5 px-0.5">
                       <Link
                         href={item.url}
-                        className={`flex w-full items-center gap-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold px-3.5 py-2.5 text-xs shadow-sm transition-all active:scale-[0.98] ${
-                          isCollapsed ? "justify-center px-2" : "justify-start"
+                        className={`flex w-full items-center gap-2 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-bold px-3 py-1.5 text-xs shadow-xs transition-all active:scale-[0.98] ${
+                          isCollapsed ? "justify-center px-1.5" : "justify-start"
                         }`}
                       >
-                        {Icon && <Icon className="h-4 w-4 shrink-0 text-white" />}
+                        {Icon && <Icon className="h-3.5 w-3.5 shrink-0 text-white" />}
                         {!isCollapsed && <span>{item.title}</span>}
                       </Link>
                     </SidebarMenuItem>
@@ -83,15 +83,15 @@ export function NavMain({ groups }) {
                         onClick={() => toggleSubMenu(item.title)}
                         isActive={isParentActive}
                         tooltip={isCollapsed ? item.title : undefined}
-                        className="w-full justify-between py-2.5 px-2.5 text-xs font-semibold h-auto"
+                        className="w-full justify-between h-8 py-1 px-2 text-xs font-semibold"
                       >
-                        <div className="flex items-center gap-2.5">
-                          {Icon && <Icon className="h-4 w-4 shrink-0" />}
+                        <div className="flex items-center gap-2">
+                          {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
                           <span>{item.title}</span>
                         </div>
                         {!isCollapsed && (
                           <ChevronDown
-                            className={`h-3.5 w-3.5 shrink-0 text-sidebar-foreground/50 transition-transform duration-200 ${
+                            className={`h-3 w-3 shrink-0 text-sidebar-foreground/50 transition-transform duration-200 ${
                               isSubOpen ? "rotate-180" : ""
                             }`}
                           />
@@ -99,7 +99,7 @@ export function NavMain({ groups }) {
                       </SidebarMenuButton>
 
                       {!isCollapsed && isSubOpen && (
-                        <SidebarMenuSub className="mt-1.5 space-y-1">
+                        <SidebarMenuSub className="mt-0.5 space-y-0.5">
                           {item.subItems.map((sub) => {
                             const isSubActive = pathname === sub.url;
                             return (
@@ -107,7 +107,7 @@ export function NavMain({ groups }) {
                                 <SidebarMenuSubButton
                                   asChild
                                   isActive={isSubActive}
-                                  className="py-1.5 px-3 text-xs"
+                                  className="h-7 py-1 px-2.5 text-xs"
                                 >
                                   <Link href={sub.url}>
                                     <span>{sub.title}</span>
@@ -128,11 +128,11 @@ export function NavMain({ groups }) {
                       asChild
                       isActive={isParentActive}
                       tooltip={isCollapsed ? item.title : undefined}
-                      className="py-2.5 px-2.5 text-xs font-semibold h-auto"
+                      className="h-8 py-1 px-2 text-xs font-semibold"
                     >
                       <Link href={item.url} className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2.5">
-                          {Icon && <Icon className="h-4 w-4 shrink-0" />}
+                        <div className="flex items-center gap-2">
+                          {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
                           <span>{item.title}</span>
                         </div>
                         {item.badge && !isCollapsed && (
