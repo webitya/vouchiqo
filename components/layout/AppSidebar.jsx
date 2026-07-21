@@ -72,7 +72,7 @@ export function AppSidebar({ ...props }) {
         image: null,
       };
 
-  // Grouped Navigation Items matching Vouchiqo structure & reference image
+  // Grouped Navigation Items categorized into logical sections
   const getNavGroups = () => {
     switch (role) {
       case "admin":
@@ -113,7 +113,7 @@ export function AppSidebar({ ...props }) {
             ],
           },
           {
-            title: "System",
+            title: "System & Content",
             items: [
               {
                 title: "Featured Deals",
@@ -151,13 +151,23 @@ export function AppSidebar({ ...props }) {
       case "merchant":
         return [
           {
-            title: "Navigation",
+            title: "Overview",
             items: [
               {
                 title: "Dashboard Overview",
                 url: "/merchant/dashboard",
                 icon: Home,
               },
+              {
+                title: "Analytics",
+                url: "/merchant/analytics",
+                icon: BarChart2,
+              },
+            ],
+          },
+          {
+            title: "Listings & Offers",
+            items: [
               {
                 title: "My Listings",
                 url: "/merchant/coupons",
@@ -174,11 +184,11 @@ export function AppSidebar({ ...props }) {
                 icon: PlusCircle,
                 isCta: true,
               },
-              {
-                title: "Analytics",
-                url: "/merchant/analytics",
-                icon: BarChart2,
-              },
+            ],
+          },
+          {
+            title: "Engagement",
+            items: [
               {
                 title: "Campaigns",
                 url: "/merchant/campaigns",
@@ -190,6 +200,11 @@ export function AppSidebar({ ...props }) {
                 icon: Bell,
                 badge: "4",
               },
+            ],
+          },
+          {
+            title: "Account & Billing",
+            items: [
               {
                 title: "Subscription & Billing",
                 url: "/merchant/billing",
@@ -216,7 +231,7 @@ export function AppSidebar({ ...props }) {
       default:
         return [
           {
-            title: "Navigation",
+            title: "Main",
             items: [
               {
                 title: "Dashboard",
@@ -238,6 +253,11 @@ export function AppSidebar({ ...props }) {
                 url: "/profile?tab=wallet",
                 icon: Wallet,
               },
+            ],
+          },
+          {
+            title: "Activity & Discovery",
+            items: [
               {
                 title: "My Activity",
                 url: "/profile?tab=activity",
@@ -292,10 +312,10 @@ export function AppSidebar({ ...props }) {
           )}
         </div>
       </SidebarHeader>
-      <SidebarContent className="px-2 py-2">
+      <SidebarContent className="px-3 py-3">
         <NavMain groups={groups} />
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border p-2">
+      <SidebarFooter className="border-t border-sidebar-border p-2.5">
         <NavUser user={user} role={role} />
       </SidebarFooter>
       <SidebarRail />

@@ -34,16 +34,16 @@ export function NavMain({ groups }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {groups.map((group) => (
         <SidebarGroup key={group.title} className="p-0">
           {!isCollapsed && group.title !== "Navigation" && (
-            <SidebarGroupLabel className="px-2 py-1 text-[11px] font-semibold text-sidebar-foreground/60 uppercase tracking-wider">
+            <SidebarGroupLabel className="px-2.5 py-1 mb-1 text-[10px] font-bold text-sidebar-foreground/50 uppercase tracking-widest block">
               {group.title}
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1.5">
               {group.items.map((item) => {
                 const normalizedPath = pathname.replace(/\/$/, "");
                 const normalizedUrl = item.url.replace(/\/$/, "");
@@ -62,10 +62,10 @@ export function NavMain({ groups }) {
 
                 if (item.isCta) {
                   return (
-                    <SidebarMenuItem key={item.title} className="my-1 px-0.5">
+                    <SidebarMenuItem key={item.title} className="my-1.5 px-0.5">
                       <Link
                         href={item.url}
-                        className={`flex w-full items-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold px-3.5 py-2.5 text-xs shadow-sm transition-all active:scale-[0.98] ${
+                        className={`flex w-full items-center gap-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold px-3.5 py-2.5 text-xs shadow-sm transition-all active:scale-[0.98] ${
                           isCollapsed ? "justify-center px-2" : "justify-start"
                         }`}
                       >
@@ -83,9 +83,9 @@ export function NavMain({ groups }) {
                         onClick={() => toggleSubMenu(item.title)}
                         isActive={isParentActive}
                         tooltip={isCollapsed ? item.title : undefined}
-                        className="w-full justify-between"
+                        className="w-full justify-between py-2.5 px-2.5 text-xs font-semibold h-auto"
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5">
                           {Icon && <Icon className="h-4 w-4 shrink-0" />}
                           <span>{item.title}</span>
                         </div>
@@ -99,7 +99,7 @@ export function NavMain({ groups }) {
                       </SidebarMenuButton>
 
                       {!isCollapsed && isSubOpen && (
-                        <SidebarMenuSub className="mt-1 space-y-0.5">
+                        <SidebarMenuSub className="mt-1.5 space-y-1">
                           {item.subItems.map((sub) => {
                             const isSubActive = pathname === sub.url;
                             return (
@@ -107,6 +107,7 @@ export function NavMain({ groups }) {
                                 <SidebarMenuSubButton
                                   asChild
                                   isActive={isSubActive}
+                                  className="py-1.5 px-3 text-xs"
                                 >
                                   <Link href={sub.url}>
                                     <span>{sub.title}</span>
@@ -127,9 +128,10 @@ export function NavMain({ groups }) {
                       asChild
                       isActive={isParentActive}
                       tooltip={isCollapsed ? item.title : undefined}
+                      className="py-2.5 px-2.5 text-xs font-semibold h-auto"
                     >
                       <Link href={item.url} className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5">
                           {Icon && <Icon className="h-4 w-4 shrink-0" />}
                           <span>{item.title}</span>
                         </div>
