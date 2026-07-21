@@ -266,15 +266,6 @@ export function LatestArticles() {
         </div>
       </div>
 
-      <style jsx="true">{`
-        @keyframes marquee-horizontal-ltr {
-          0% { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
-        }
-        .animate-marquee-horizontal-ltr {
-          animation: marquee-horizontal-ltr 30s linear infinite;
-        }
-      `}</style>
     </section>
   );
 }

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -53,7 +53,7 @@
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
 
-  /* ─── GrabOn Design System Variables ───────────────────────────────────── */
+  /* â”€â”€â”€ GrabOn Design System Variables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   /* Colors */
   --_g-default-bg: #f7f7f8;
   --_base-white: #fff;
@@ -206,7 +206,7 @@
 body {
   background-color: var(--brand-surface);
   color: var(--brand-text);
-  /* GrabOn primary font — Nunito Sans with Inter as fallback */
+  /* GrabOn primary font â€” Nunito Sans with Inter as fallback */
   font-family: "Nunito Sans", var(--font-sans), sans-serif;
 }
 
@@ -506,7 +506,7 @@ body {
   }
 }
 
-/* ─── Premium UX UI Animations ─────────────────── */
+/* â”€â”€â”€ Premium UX UI Animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 /* 1. Keyframes */
 @keyframes fadeInUp {
@@ -779,7 +779,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* ─── GrabOn Header Replication Styles ─────────────────── */
+/* â”€â”€â”€ GrabOn Header Replication Styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .top-header-banner {
   display: flex;
@@ -878,7 +878,7 @@ body {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
-/* ─── Search Overlay Modal ─────────────────── */
+/* â”€â”€â”€ Search Overlay Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .g-search-open {
   position: fixed;
   top: 0;
@@ -1045,7 +1045,7 @@ body {
   color: #e11d48;
 }
 
-/* ─── Predefined Offers Grid ─── */
+/* â”€â”€â”€ Predefined Offers Grid â”€â”€â”€ */
 .fresh-offer-grid {
   display: flex;
   flex-direction: column;
@@ -1135,7 +1135,7 @@ body {
   overflow: hidden;
 }
 
-/* ─── Flag & Notification Dropdowns ─────────────────── */
+/* â”€â”€â”€ Flag & Notification Dropdowns â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #countryflag,
 #countryflagmobile {
   position: relative;
@@ -1300,7 +1300,7 @@ body {
   font-weight: 500;
 }
 
-/* ─── Login Button ─── */
+/* â”€â”€â”€ Login Button â”€â”€â”€ */
 .g-login {
   display: flex;
   align-items: center;
@@ -1328,7 +1328,7 @@ body {
   align-items: center;
 }
 
-/* ─── Mobile Bell Notification Badge ─── */
+/* â”€â”€â”€ Mobile Bell Notification Badge â”€â”€â”€ */
 .g-notify {
   display: flex;
   align-items: center;
@@ -1361,7 +1361,7 @@ body {
   border: 1.5px solid #fff;
 }
 
-/* ─── Responsive Media Queries for hidden-lg / visible-lg ─── */
+/* â”€â”€â”€ Responsive Media Queries for hidden-lg / visible-lg â”€â”€â”€ */
 @media (min-width: 1024px) {
   .hidden-lg {
     display: none !important;
@@ -1400,7 +1400,7 @@ body {
   transition: all 0.2s;
 }
 
-/* ─── Secondary Nav menu ─── */
+/* â”€â”€â”€ Secondary Nav menu â”€â”€â”€ */
 .g-nav-menu {
   width: 100%;
   background: #fff;
@@ -1441,7 +1441,7 @@ body {
   border-bottom-color: #2563eb;
 }
 
-/* ─── Mobile drawer navigation ─── */
+/* â”€â”€â”€ Mobile drawer navigation â”€â”€â”€ */
 .g-login-m {
   position: fixed;
   top: 0;
@@ -1610,7 +1610,7 @@ body {
   background: #f8fafc;
 }
 
-/* ─── Reusable Sliding Carousel CSS ─── */
+/* â”€â”€â”€ Reusable Sliding Carousel CSS â”€â”€â”€ */
 .vouchiqo-carousel-viewport {
   overflow: hidden;
   width: 100%;
@@ -1662,4 +1662,13 @@ body {
 
 .animate-trending-glow {
   animation: trending-glow-shift 2.5s infinite linear;
+}
+
+/* ── Marquee scroll animation (LatestArticles) ─────────────────── */
+@keyframes marquee-horizontal-ltr {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+.animate-marquee-horizontal-ltr {
+  animation: marquee-horizontal-ltr 30s linear infinite;
 }

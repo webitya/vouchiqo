@@ -28,7 +28,10 @@ export const UserMenu = () => {
   }, []);
 
   useEffect(() => {
-    if (!mounted || !session?.user || session.user.role !== "customer") return;
+    if (!mounted || !session?.user) return;
+    const role = session.user.role ?? "";
+    // Never show onboarding to merchants or admins
+    if (role === "merchant" || role === "admin") return;
 
     const storageKey = `vouchiqo_onboarded_${session.user.id}`;
     if (localStorage.getItem(storageKey) === "true") return;

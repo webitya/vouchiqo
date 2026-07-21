@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { signUp } from "@/lib/auth-client";
 import {
   INDIAN_CITIES,
   lookupByPincode,
@@ -264,25 +265,70 @@ export function MerchantOnboardingWizard() {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/auth/register", {
+      // ── Step 1: Create the user account via Better Auth ──────────────────
+      const { error: signUpError } = await signUp.email({
+        name: formData.tradingName.trim() || formData.registeredName.trim(),
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password,
+        data: {
+          role: "merchant",
+          phoneNumber: formData.mobile,
+        },
+      });
+
+      if (signUpError) {
+        throw new Error(
+          signUpError.message || "Account creation failed. Please try again.",
+        );
+      }
+
+      // ── Step 2: Create merchant profile (session now active) ─────────────
+      // Auto-generate a URL-safe slug from the business name
+      const rawSlug = (formData.tradingName || formData.registeredName)
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .substring(0, 45);
+      // Append short random suffix to avoid collisions
+      const slug = `${rawSlug}-${Math.random().toString(36).substring(2, 6)}`;
+
+      // Map human-readable businessType → schema enum (online | physical | both)
+      const btMap = {
+        "Online-Only Business": "online",
+        "Online + Physical Store (both)": "both",
+        "Service + Product (mixed)": "both",
+      };
+      const businessType = btMap[formData.businessType] ?? "physical";
+
+      const merchantRes = await fetch("/api/merchants", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
-          name: formData.tradingName || formData.registeredName,
-          email: formData.email,
-          password: formData.password,
-          role: "merchant",
           businessName: formData.registeredName,
+          slug,
           category: formData.category,
-          plan: formData.selectedPlan,
-          phone: formData.mobile,
-          address: formData.address,
+          contactEmail: formData.email.trim().toLowerCase(),
+          contactPhone: formData.mobile,
+          whatsappNumber: formData.whatsapp,
+          businessType,
+          location: {
+            address: formData.address,
+            pincode: formData.pincode,
+            city: formData.city,
+            state: formData.state,
+          },
         }),
       });
 
-      if (!res.ok) {
-        const json = await res.json().catch(() => ({}));
-        throw new Error(json.message || "Registration failed.");
+      if (!merchantRes.ok) {
+        const json = await merchantRes.json().catch(() => ({}));
+        throw new Error(
+          json.message ||
+            json.error ||
+            "Merchant profile creation failed. Please contact support.",
+        );
       }
 
       toast.success(
@@ -290,7 +336,7 @@ export function MerchantOnboardingWizard() {
       );
       router.push("/merchant/dashboard");
     } catch (err) {
-      toast.error(err.message || "Registration failed.");
+      toast.error(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
