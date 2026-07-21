@@ -2,14 +2,21 @@
 
 import {
   AlertCircle,
+  BarChart2,
+  Bell,
   Bookmark,
   Building2,
   CheckSquare,
+  Clock,
   CreditCard,
+  HelpCircle,
   History,
   Home,
+  Layers,
   LayoutDashboard,
+  Link as LinkIcon,
   MapPin,
+  Megaphone,
   PiggyBank,
   PlusCircle,
   RotateCcw,
@@ -20,7 +27,6 @@ import {
   Tag,
   Ticket,
   TrendingUp,
-  User,
   Users,
   Wallet,
 } from "lucide-react";
@@ -67,7 +73,7 @@ export function AppSidebar({ ...props }) {
         image: null,
       };
 
-  // Grouped Navigation Items matching Vouchiqo structure
+  // Grouped Navigation Items categorized into logical sections
   const getNavGroups = () => {
     switch (role) {
       case "admin":
@@ -76,7 +82,7 @@ export function AppSidebar({ ...props }) {
             title: "Overview",
             items: [
               {
-                title: "Go to Homepage",
+                title: "Homepage",
                 url: "/",
                 icon: Home,
               },
@@ -101,14 +107,14 @@ export function AppSidebar({ ...props }) {
                 icon: Users,
               },
               {
-                title: "Merchant Intelligence",
+                title: "Demand Intelligence",
                 url: "/admin/merchant-demand",
                 icon: Building2,
               },
             ],
           },
           {
-            title: "System",
+            title: "System & Content",
             items: [
               {
                 title: "Featured Deals",
@@ -149,54 +155,84 @@ export function AppSidebar({ ...props }) {
             title: "Overview",
             items: [
               {
-                title: "Go to Homepage",
-                url: "/",
+                title: "Dashboard",
+                url: "/merchant/dashboard",
                 icon: Home,
               },
               {
-                title: "Dashboard",
-                url: "/merchant/dashboard",
-                icon: LayoutDashboard,
-              },
-              {
-                title: "Business Analytics",
+                title: "Analytics",
                 url: "/merchant/analytics",
-                icon: TrendingUp,
-              },
-              {
-                title: "Business Profile",
-                url: "/merchant/profile",
-                icon: Store,
+                icon: BarChart2,
               },
             ],
           },
           {
-            title: "Commerce",
+            title: "Listings & Offers",
             items: [
               {
-                title: "My Coupons",
+                title: "My Listings",
                 url: "/merchant/coupons",
-                icon: Tag,
+                icon: Layers,
+                subItems: [
+                  { title: "Coupons", url: "/merchant/coupons", icon: Ticket },
+                  {
+                    title: "Deals & Offers",
+                    url: "/merchant/coupons?type=deal",
+                    icon: Sparkles,
+                  },
+                  {
+                    title: "Expired Coupons",
+                    url: "/merchant/coupons?status=expired",
+                    icon: Clock,
+                  },
+                ],
               },
               {
-                title: "Create Coupon",
+                title: "Post New",
                 url: "/merchant/coupons/new",
                 icon: PlusCircle,
+                isCta: true,
               },
+            ],
+          },
+          {
+            title: "Engagement",
+            items: [
               {
                 title: "Campaigns",
                 url: "/merchant/campaigns",
-                icon: Sparkles,
+                icon: Megaphone,
               },
               {
-                title: "Revival Requests",
-                url: "/merchant/revivals",
-                icon: RotateCcw,
+                title: "Notifications",
+                url: "/merchant/dashboard#notifications",
+                icon: Bell,
+                badge: "4",
               },
+            ],
+          },
+          {
+            title: "Account & Billing",
+            items: [
               {
-                title: "Billing & Plans",
+                title: "Subscription & Billing",
                 url: "/merchant/billing",
                 icon: CreditCard,
+              },
+              {
+                title: "Affiliate & Commission",
+                url: "/merchant/billing#affiliate",
+                icon: LinkIcon,
+              },
+              {
+                title: "Account Settings",
+                url: "/merchant/profile",
+                icon: Settings,
+              },
+              {
+                title: "Help & Support",
+                url: "/faq",
+                icon: HelpCircle,
               },
             ],
           },
@@ -204,7 +240,7 @@ export function AppSidebar({ ...props }) {
       default:
         return [
           {
-            title: "Navigation",
+            title: "Main",
             items: [
               {
                 title: "Dashboard",
@@ -226,6 +262,11 @@ export function AppSidebar({ ...props }) {
                 url: "/profile?tab=wallet",
                 icon: Wallet,
               },
+            ],
+          },
+          {
+            title: "Activity & Discovery",
+            items: [
               {
                 title: "My Activity",
                 url: "/profile?tab=activity",
@@ -247,7 +288,7 @@ export function AppSidebar({ ...props }) {
                 icon: Settings,
               },
               {
-                title: "Go to Homepage",
+                title: "Homepage",
                 url: "/",
                 icon: Home,
               },
@@ -260,57 +301,30 @@ export function AppSidebar({ ...props }) {
   const groups = getNavGroups();
 
   return (
-    <Sidebar
-      collapsible="icon"
-      style={{
-        "--sidebar": "var(--brand-bg)",
-        "--sidebar-foreground": "var(--brand-subtext)",
-        "--sidebar-border": "var(--brand-border)",
-        "--sidebar-accent": "var(--brand-surface)",
-        "--sidebar-accent-foreground": "var(--brand-navy)",
-      }}
-      {...props}
-    >
-      <SidebarHeader className="p-0 border-b border-sidebar-border">
+    <Sidebar collapsible="icon" side="left" {...props}>
+      <SidebarHeader className="h-15 flex items-center justify-center border-b border-sidebar-border px-3.5 py-0">
         <div
-          className={`flex h-[60px] items-center gap-2 ${isCollapsed ? "justify-center px-0" : "px-3"}`}
+          className={`flex items-center gap-2.5 w-full ${isCollapsed ? "justify-center" : ""}`}
         >
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#0f172a] text-white">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-3.5 w-3.5 text-white"
-            >
-              <path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z" />
-            </svg>
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xs shadow-xs">
+            V
           </div>
           {!isCollapsed && (
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-xs font-semibold tracking-tight text-slate-800 truncate max-w-[170px]">
-                {user.name || "Vouchiqo"}
+            <div className="flex flex-col text-left leading-tight min-w-0">
+              <span className="text-xs font-semibold tracking-tight text-sidebar-foreground truncate">
+                Vouchiqo
               </span>
-              <span className="text-[9px] font-medium uppercase tracking-wider text-slate-400">
-                Dashboard
+              <span className="text-[9px] font-medium uppercase tracking-wider text-sidebar-foreground/60">
+                {role} Console
               </span>
             </div>
           )}
         </div>
       </SidebarHeader>
-      <SidebarContent
-        className={`py-2 ${isCollapsed ? "px-1" : "px-2"} space-y-2`}
-      >
+      <SidebarContent className="px-2 py-2">
         <NavMain groups={groups} />
       </SidebarContent>
-      <SidebarFooter
-        className={`border-t border-sidebar-border ${isCollapsed ? "p-1.5 flex justify-center" : "p-3"}`}
-      >
+      <SidebarFooter className="border-t border-sidebar-border">
         <NavUser user={user} role={role} />
       </SidebarFooter>
       <SidebarRail />

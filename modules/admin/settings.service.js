@@ -128,36 +128,21 @@ export async function getPlatformSettings() {
 
   if (!settingsMap.categories) {
     settingsMap.categories = [
+      { id: "fashion", name: "Fashion & Clothing", slug: "fashion", active: true },
       { id: "food", name: "Food & Dining", slug: "food", active: true },
-      {
-        id: "fashion",
-        name: "Fashion & Apparel",
-        slug: "fashion",
-        active: true,
-      },
-      {
-        id: "electronics",
-        name: "Electronics",
-        slug: "electronics",
-        active: true,
-      },
+      { id: "electronics", name: "Electronics & Gadgets", slug: "electronics", active: true },
       { id: "beauty", name: "Beauty & Wellness", slug: "beauty", active: true },
-      { id: "travel", name: "Travel & Hotels", slug: "travel", active: true },
-      { id: "fitness", name: "Fitness & Gym", slug: "fitness", active: true },
-      { id: "home", name: "Home decor", slug: "home", active: true },
-      {
-        id: "entertainment",
-        name: "Entertainment",
-        slug: "entertainment",
-        active: true,
-      },
-      {
-        id: "services",
-        name: "Local services",
-        slug: "services",
-        active: true,
-      },
-      { id: "other", name: "Others", slug: "other", active: true },
+      { id: "travel", name: "Travel & Hospitality", slug: "travel", active: true },
+      { id: "home", name: "Home & Living", slug: "home", active: true },
+      { id: "home-improvement", name: "Home Improvement", slug: "home-improvement", active: true },
+      { id: "fitness", name: "Fitness & Healthcare", slug: "fitness", active: true },
+      { id: "education", name: "Education & Courses", slug: "education", active: true },
+      { id: "kids-baby", name: "Kids & Baby Products", slug: "kids-baby", active: true },
+      { id: "jewellery", name: "Jewellery & Accessories", slug: "jewellery", active: true },
+      { id: "automotive", name: "Automobile & Auto Services", slug: "automotive", active: true },
+      { id: "entertainment", name: "Gaming & Entertainment", slug: "entertainment", active: true },
+      { id: "grocery", name: "Grocery & Essentials", slug: "grocery", active: true },
+      { id: "finance", name: "Finance & Insurance", slug: "finance", active: true },
     ];
   }
 

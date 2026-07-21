@@ -1,2 +1,0 @@
-Testing git push access for Prince.
-This is a test file to verify if git pushes are successfully reaching the main repository.

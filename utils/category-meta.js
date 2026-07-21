@@ -91,11 +91,6 @@ export const CATEGORY_META = {
     icon: "https://cdn.grabon.in/gograbon/images/category/1773409648578/food.svg",
     slug: "grocery",
   },
-  other: {
-    title: "Other Deals",
-    icon: "https://cdn.grabon.in/gograbon/images/category/1773409656550/tickets.svg",
-    slug: "other",
-  },
 };
 
 // Extended metadata used by /category/[slug] page (includes banners, emojis, sub-categories)
@@ -218,11 +213,5 @@ export const CATEGORY_DETAIL_META = {
     emoji: "🛒",
     banner: "bg-gradient-to-r from-blue-400 to-lime-500",
     subs: ["Fresh Vegetables", "Beverages", "Snacks", "Household Items"],
-  },
-  other: {
-    title: "Special & Other Deals",
-    emoji: "🏷️",
-    banner: "bg-gradient-to-r from-slate-500 to-slate-700",
-    subs: ["Daily Deals", "Bundles", "Freebies", "Cashbacks"],
   },
 };

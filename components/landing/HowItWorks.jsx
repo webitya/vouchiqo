@@ -22,11 +22,12 @@ export const HowItWorks = React.memo(function HowItWorks() {
   };
 
   return (
-    <section className="py-16 px-4 max-w-6xl mx-auto w-full select-none border-t border-b border-slate-100 dark:border-zinc-900/60 transition-all">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+    <section className="w-full bg-white dark:bg-zinc-950/40 py-16 px-4 md:px-8 select-none border-t border-b border-slate-100 dark:border-zinc-900/60 transition-all">
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         
-        {/* Left Column: Trust Messaging & Explanations (lg:col-span-5) */}
-        <div className="lg:col-span-5 space-y-6 text-left">
+        {/* Left Column: Trust Messaging & Explanations (lg:col-span-6) */}
+        <div className="lg:col-span-6 space-y-6 text-left">
           <div className="space-y-1">
             <span className="text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest block">
               THE VOUCHIQO TRUST STANDARD
@@ -37,7 +38,7 @@ export const HowItWorks = React.memo(function HowItWorks() {
             </h2>
           </div>
           
-          <p className="text-xs md:text-sm text-slate-500 dark:text-slate-450 leading-relaxed font-medium max-w-md">
+          <p className="text-xs md:text-sm text-slate-500 dark:text-slate-450 leading-relaxed font-medium max-w-xl">
             Every deal on Vouchiqo is backed by verification signals designed to help you avoid expired codes, misleading offers, and wasted checkout attempts.
           </p>
           
@@ -102,11 +103,11 @@ export const HowItWorks = React.memo(function HowItWorks() {
           </div>
         </div>
 
-        {/* Right Column: Verified Deal Preview & Trust Strip (lg:col-span-7) */}
-        <div className="lg:col-span-7 flex flex-col items-center justify-center relative w-full">
+        {/* Right Column: Verified Deal Preview & Trust Strip (lg:col-span-6) */}
+        <div className="lg:col-span-6 flex flex-col items-center justify-center relative w-full">
           
           {/* Main Verified Deal Card Showcase */}
-          <div className="w-full max-w-sm bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/85 rounded-3xl p-6 shadow-md relative overflow-hidden transition-all duration-200 hover:shadow-lg">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/85 rounded-3xl p-6 shadow-md relative overflow-hidden transition-all duration-200 hover:shadow-lg">
             
             {/* Verified Badge Header */}
             <div className="flex justify-between items-center mb-4">
@@ -203,7 +204,8 @@ export const HowItWorks = React.memo(function HowItWorks() {
         </div>
 
       </div>
-    </section>
+    </div>
+  </section>
   );
 });
 

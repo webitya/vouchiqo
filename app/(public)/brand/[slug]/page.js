@@ -55,7 +55,7 @@ const MOCK_MERCHANTS = {
   },
   hostinger: {
     businessName: "Hostinger",
-    category: "other",
+    category: "entertainment",
     logo: "https://cdn.grabon.in/gograbon/images/merchant/1620645638457/hostinger-coupons.jpg",
     description:
       "Hostinger offers cheap and reliable web hosting services with 24/7 customer support, 99.9% uptime guarantee, and easy-to-use control panel.",
@@ -111,7 +111,7 @@ const MOCK_MERCHANTS = {
   },
   google: {
     businessName: "Google Workspace",
-    category: "other",
+    category: "entertainment",
     logo: "https://cdn.grabon.in/gograbon/images/merchant/1621589145623/google-workspace-logo.jpg",
     description:
       "Google Workspace is a collection of cloud computing, productivity and collaboration tools, software and products developed by Google.",
@@ -139,7 +139,7 @@ const MOCK_MERCHANTS = {
   },
   amazon: {
     businessName: "Amazon",
-    category: "other",
+    category: "grocery",
     logo: "https://cdn.grabon.in/gograbon/images/merchant/1614838752233/amazon-logo.jpg",
     description:
       "Online shopping from the Earth's biggest selection of books, magazines, music, DVDs, videos, electronics, computers, software, apparel & accessories.",
@@ -207,7 +207,7 @@ function getMockMerchant(slug) {
     _id: hexId,
     businessName: titleName,
     slug,
-    category: "other",
+    category: "grocery",
     logo: "",
     description: `Verified discount coupons and promo codes for ${titleName}. Grab the latest offers and save today.`,
     longDescription: `${titleName} is a verified partner brand offering premium products and services. Shop online using our exclusive discount coupons and get the best savings on every checkout.`,

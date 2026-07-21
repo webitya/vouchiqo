@@ -79,12 +79,6 @@ const CATEGORY_META = {
     banner: "bg-gradient-to-r from-violet-500 to-fuchsia-600",
     subs: ["Repairs", "Catering", "Spa", "On-Demand"],
   },
-  other: {
-    title: "Special & Other Deals",
-    emoji: "🏷️",
-    banner: "bg-gradient-to-r from-slate-500 to-slate-700",
-    subs: ["Daily Deals", "Bundles", "Freebies", "Cashbacks"],
-  },
 };
 
 export default async function CategoryPage({ params }) {

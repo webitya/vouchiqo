@@ -167,7 +167,7 @@ export async function getCouponById(couponId) {
         discType = "percentage";
       }
 
-      let category = "other";
+      let category = "fashion";
       const lowerSlug = slug.toLowerCase();
       if (
         lowerSlug.includes("tech") ||
