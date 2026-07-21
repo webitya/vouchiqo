@@ -33,6 +33,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function MerchantApprovals() {
+  const [merchants, setMerchants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedMerchant, setSelectedMerchant] = useState(null);
+  const [kycDialogOpen, setKycDialogOpen] = useState(false);
   const [activeStatusTab, setActiveStatusTab] = useState("pending");
 
   const fetchMerchants = async (statusTab) => {
