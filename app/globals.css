@@ -1643,3 +1643,23 @@ body {
   background-size: 200% 100%;
   animation: shimmer-shine 1.5s infinite linear;
 }
+
+/* Custom infinite glow and color shifting animation for Trending icon */
+@keyframes trending-glow-shift {
+  0% {
+    color: #f97316; /* orange-500 */
+  }
+  33% {
+    color: #ef4444; /* red-500 */
+  }
+  66% {
+    color: #ec4899; /* pink-500 */
+  }
+  100% {
+    color: #f97316;
+  }
+}
+
+.animate-trending-glow {
+  animation: trending-glow-shift 2.5s infinite linear;
+}
