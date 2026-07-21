@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import ProductOfferCard from "@/components/shared/ProductOfferCard";
@@ -18,17 +17,8 @@ export const DealsOfTheDay = () => {
     return () => media.removeEventListener("change", listener);
   }, []);
 
-  const itemsPerPage = isMobile ? 2 : 4;
+  const itemsPerPage = isMobile ? 4 : 10;
   const totalSlides = Math.ceil(TODAY_PRODUCT_DEALS.length / itemsPerPage);
-
-  // Auto-scroll loop every 5 seconds
-  useEffect(() => {
-    if (totalSlides <= 1) return;
-    const timer = setInterval(() => {
-      setSelectedIndex((prev) => (prev + 1) % totalSlides);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [totalSlides]);
 
   const slides = [];
   for (let i = 0; i < totalSlides; i++) {
@@ -102,18 +92,6 @@ export const DealsOfTheDay = () => {
 
       {/* Slider Viewport Container */}
       <div className="relative w-full px-1 pb-4">
-        {/* Left Chevron at corner */}
-        {totalSlides > 1 && (
-          <button
-            type="button"
-            onClick={handlePrev}
-            className="absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center hover:bg-gray-50 text-slate-500 hover:text-slate-800 transition-all cursor-pointer"
-            aria-label="Previous Slide"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-        )}
-
         {/* Viewport */}
         <div
           className="vouchiqo-carousel-viewport w-full overflow-hidden cursor-grab active:cursor-grabbing py-2"
@@ -131,7 +109,7 @@ export const DealsOfTheDay = () => {
                 key={slideIdx}
                 className="vouchiqo-carousel-slide w-full flex-shrink-0"
               >
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 md:gap-4">
                   {slideItems.map((product, idx) => (
                     <ProductOfferCard key={idx} product={product} />
                   ))}
@@ -141,16 +119,47 @@ export const DealsOfTheDay = () => {
           </div>
         </div>
 
-        {/* Right Chevron at corner */}
+        {/* Centered Pagination Next/Prev & Square Numbers block */}
         {totalSlides > 1 && (
-          <button
-            type="button"
-            onClick={handleNext}
-            className="absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center hover:bg-gray-50 text-slate-500 hover:text-slate-800 transition-all cursor-pointer"
-            aria-label="Next Slide"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+          <div className="flex items-center justify-center gap-1.5 mt-6 select-none font-sans">
+            {/* Prev Button */}
+            <button
+              type="button"
+              onClick={handlePrev}
+              className="px-3.5 py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition-colors rounded-none cursor-pointer"
+            >
+              Prev
+            </button>
+
+            {/* Numbers */}
+            {Array.from({ length: totalSlides }).map((_, idx) => {
+              const pageNum = idx + 1;
+              const isActive = selectedIndex === idx;
+              return (
+                <button
+                  key={pageNum}
+                  type="button"
+                  onClick={() => setSelectedIndex(idx)}
+                  className={`w-9 h-9 flex items-center justify-center text-xs font-extrabold border transition-colors rounded-none cursor-pointer ${
+                    isActive
+                      ? "bg-blue-600 border-blue-600 text-white"
+                      : "bg-white border-slate-300 hover:bg-slate-50 text-slate-700"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            {/* Next Button */}
+            <button
+              type="button"
+              onClick={handleNext}
+              className="px-3.5 py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition-colors rounded-none cursor-pointer"
+            >
+              Next
+            </button>
+          </div>
         )}
       </div>
     </section>

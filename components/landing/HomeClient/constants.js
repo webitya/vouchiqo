@@ -307,6 +307,138 @@ export const TODAY_PRODUCT_DEALS = [
       "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=400&auto=format&fit=crop",
     href: "/deals",
   },
+  {
+    title: "Apple iPad Air 10.9-inch Wi-Fi 64GB Space Grey",
+    originalPrice: 59900,
+    discountPrice: 54900,
+    discountText: "8% OFF",
+    merchantName: "Apple Authorised Store",
+    merchantLogo: "/brandlogos/10005.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "Nike Air Zoom Pegasus 40 Men's Running Shoes",
+    originalPrice: 11995,
+    discountPrice: 9495,
+    discountText: "20% OFF",
+    merchantName: "Nike Outlet",
+    merchantLogo: "/brandlogos/10012.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones",
+    originalPrice: 34990,
+    discountPrice: 27990,
+    discountText: "20% OFF",
+    merchantName: "Sony Center",
+    merchantLogo: "/brandlogos/10005.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "Puma Classic Suede Retro Unisex Sneakers",
+    originalPrice: 7999,
+    discountPrice: 4799,
+    discountText: "40% OFF",
+    merchantName: "Puma Store",
+    merchantLogo: "/brandlogos/10012.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1539185441755-769473a23570?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "Bose QuietComfort Ultra Sound Wireless Earbuds",
+    originalPrice: 25900,
+    discountPrice: 21900,
+    discountText: "15% OFF",
+    merchantName: "Bose Premium Shop",
+    merchantLogo: "/brandlogos/10005.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "OnePlus 12 5G (Flowy Emerald, 16GB RAM + 512GB)",
+    originalPrice: 69999,
+    discountPrice: 64999,
+    discountText: "7% OFF",
+    merchantName: "OnePlus Experience Store",
+    merchantLogo: "/brandlogos/10005.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "Titan Neo Workwear Blue Dial Men's Watch",
+    originalPrice: 7995,
+    discountPrice: 5995,
+    discountText: "25% OFF",
+    merchantName: "World of Titan",
+    merchantLogo: "/brandlogos/10035.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "HP Pavilion 15.6-inch AMD Ryzen 5 Thin Laptop",
+    originalPrice: 58450,
+    discountPrice: 49990,
+    discountText: "14% OFF",
+    merchantName: "HP World Store",
+    merchantLogo: "/brandlogos/10005.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "Ray-Ban Classic Wayfarer Green UV Sunglasses",
+    originalPrice: 9990,
+    discountPrice: 8490,
+    discountText: "15% OFF",
+    merchantName: "Ray-Ban Sunglasses Shop",
+    merchantLogo: "/brandlogos/10012.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "Zara Water Resistant Heavyweight Bomber Jacket",
+    originalPrice: 5990,
+    discountPrice: 3990,
+    discountText: "33% OFF",
+    merchantName: "Zara Outlet",
+    merchantLogo: "/brandlogos/10012.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "Philips Digital Essential Air Fryer 4.1 Litre",
+    originalPrice: 8995,
+    discountPrice: 6295,
+    discountText: "30% OFF",
+    merchantName: "Philips Smart Kitchen",
+    merchantLogo: "/brandlogos/10007.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1621972750749-0fbb1abb7736?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
+  {
+    title: "H&M Denim Classic Regular Fit Blue Jacket",
+    originalPrice: 2999,
+    discountPrice: 1999,
+    discountText: "33% OFF",
+    merchantName: "H&M Store",
+    merchantLogo: "/brandlogos/10012.jpg",
+    productImage:
+      "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?q=80&w=400&auto=format&fit=crop",
+    href: "/deals",
+  },
 ];
 
 export const COLLECTIONS_LIST = [

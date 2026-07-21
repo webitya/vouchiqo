@@ -29,6 +29,7 @@ const RevivalPromo = dynamicImport(() =>
 // Layout elements
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
+import LocationPromptModal from "@/components/shared/LocationPromptModal";
 import { useInterests } from "@/hooks/use-interests";
 import { useLocation } from "@/hooks/use-location";
 import { useSession } from "@/lib/auth-client";
@@ -40,7 +41,6 @@ import { DUMMY_TAB_COUPONS } from "./constants";
 import DealsOfTheDay from "./DealsOfTheDay";
 import InterestBanner from "./InterestBanner";
 import InterestSheet from "./InterestSheet";
-import LocationPromptModal from "@/components/shared/LocationPromptModal";
 // Component page sections
 import LeadingTaglineBar from "./LeadingTaglineBar";
 import NewsletterSubscription from "./NewsletterSubscription";
@@ -327,6 +327,7 @@ export function HomeClient({
       {/* Full-bleed Edge-to-Edge Sections */}
       <HowItWorks />
       <RevivalPromo />
+      <LatestArticles />
 
       {/* Main Container */}
       <main className="w-full px-1 md:px-8 py-2 space-y-12">
@@ -342,9 +343,6 @@ export function HomeClient({
 
         {/* 12. Deals of the Day (Product retail grid) */}
         <DealsOfTheDay />
-
-        {/* 20. Latest Articles carousel */}
-        <LatestArticles />
       </main>
 
       {/* 23. FAQ Section — full width on mobile */}
