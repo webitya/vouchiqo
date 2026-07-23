@@ -414,13 +414,13 @@ export function AppSidebar({ ...props }) {
           {!isCollapsed && (
             <div className="flex flex-col text-left leading-tight min-w-0 flex-1">
               <span
-                className="text-xs font-semibold tracking-tight truncate text-slate-900"
+                className="text-sm font-black tracking-tight truncate text-slate-900"
               >
                 {role === "admin" ? "Super Admin" : user.name}
               </span>
               <div className="flex items-center gap-1 mt-0.5">
                 <Badge
-                  className="bg-blue-50 text-blue-700 border-blue-200 text-[8px] font-medium px-1.5 py-0"
+                  className="bg-blue-50 text-blue-700 border-blue-200 text-[8px] font-extrabold px-1.5 py-0"
                 >
                   GROWTH PARTNER
                 </Badge>
