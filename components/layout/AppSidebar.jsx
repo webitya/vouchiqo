@@ -106,7 +106,7 @@ export function AppSidebar({ ...props }) {
                     icon: ShieldCheck,
                   },
                   {
-                    title: "Coupon Moderation",
+                    title: "Offer Moderation",
                     url: "/admin/approvals/coupons",
                     icon: Tag,
                   },
@@ -374,7 +374,7 @@ export function AppSidebar({ ...props }) {
                 url: "/profile?tab=nearby",
                 icon: MapPin,
               },
-              { title: "My Coupons", url: "/customer/claimed", icon: Ticket },
+              { title: "My Offers", url: "/customer/claimed", icon: Ticket },
               {
                 title: "Settings",
                 url: "/profile?tab=settings",

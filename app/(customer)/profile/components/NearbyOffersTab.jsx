@@ -78,7 +78,7 @@ export default function NearbyOffersTab() {
             Nearby Deals Explorer
           </h3>
           <p className="text-[10px] text-slate-400 font-light">
-            Explore live partner store coupons around your physical location
+            Explore live partner store offers around your physical location
             dynamically.
           </p>
         </div>

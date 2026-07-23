@@ -67,7 +67,7 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
     );
 
     showSuccess(
-      `Coupon "${target.code}" ${next === "active" ? "resumed" : "paused"} successfully.`,
+      `Offer "${target.code}" ${next === "active" ? "resumed" : "paused"} successfully.`,
     );
   };
 
@@ -80,7 +80,7 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
     if (!couponToDelete) return;
     const targetId = couponToDelete.id || couponToDelete._id;
     setCouponsList((prev) => prev.filter((c) => (c.id || c._id) !== targetId));
-    showSuccess(`Coupon "${couponToDelete.code}" deleted.`);
+    showSuccess(`Offer "${couponToDelete.code}" deleted.`);
     setCouponToDelete(null);
     setDeleteModalOpen(false);
   };
@@ -89,7 +89,7 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
   const columns = [
     {
       key: "title",
-      header: "Coupon",
+      header: "Offer",
       sortable: true,
       cell: (row) => (
         <span className="font-bold text-brand-text truncate block max-w-[160px]">
@@ -197,7 +197,7 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
       <CardHeader className="px-4 py-3 sm:px-4 sm:py-3 border-b border-slate-100 flex flex-row items-center justify-between gap-3 bg-slate-50/50 min-h-[48px]">
         <div>
           <CardTitle className="font-sans text-xs sm:text-[12px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
-            Top Performing Coupons & Offers
+            Top Performing Offers
           </CardTitle>
           <CardDescription className="text-[10px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Your best listings ranked by redemptions and engagement

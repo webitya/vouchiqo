@@ -27,7 +27,7 @@ export default function CategoryEditor({
       <CardHeader className="border-b border-brand-border pb-3.5">
         <CardTitle className="font-heading text-sm font-bold text-brand-navy uppercase tracking-wider flex items-center gap-1.5">
           <FolderOpen className="w-4 h-4 text-brand-blue" />
-          <span>Coupon Category Settings</span>
+          <span>Offer Category Settings</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">

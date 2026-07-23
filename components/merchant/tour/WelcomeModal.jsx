@@ -29,7 +29,7 @@ export default function WelcomeModal({
           </DialogTitle>
           <DialogDescription className="text-xs font-medium text-slate-300 leading-relaxed">
             Your merchant portal is ready. Take a quick 2-minute interactive
-            tour to discover how to publish offer listings, track live coupon
+            tour to discover how to publish offer listings, track live offer
             claims, analyze performance, and grow your sales.
           </DialogDescription>
         </DialogHeader>

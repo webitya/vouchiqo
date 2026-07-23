@@ -149,7 +149,7 @@ function MerchantCouponsContent() {
 
   return (
     <DashboardLayout
-      title="My Coupons"
+      title="My Offers"
       user={{
         name: merchant?.businessName || "Merchant Partner",
         role: "merchant",
@@ -164,7 +164,7 @@ function MerchantCouponsContent() {
           <Card className="border border-slate-200/90 shadow-xs bg-white rounded-2xl p-4 transition-all hover:border-blue-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 pb-1">
               <CardTitle className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
-                Total Coupons
+                Total Offers
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -178,7 +178,7 @@ function MerchantCouponsContent() {
           <Card className="border border-slate-200/90 shadow-xs bg-white rounded-2xl p-4 transition-all hover:border-blue-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 pb-1">
               <CardTitle className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
-                Active Coupons
+                Active Offers
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -194,7 +194,7 @@ function MerchantCouponsContent() {
           <Card className="border border-slate-200/90 shadow-xs bg-white rounded-2xl p-4 transition-all hover:border-blue-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 pb-1">
               <CardTitle className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
-                Expired Coupons
+                Expired Offers
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -217,7 +217,7 @@ function MerchantCouponsContent() {
               </InputGroupAddon>
               <InputGroupInput
                 type="text"
-                placeholder="Search my coupons..."
+                placeholder="Search my offers..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="text-xs placeholder:text-slate-400 h-full font-medium"
@@ -258,7 +258,7 @@ function MerchantCouponsContent() {
             className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-4 flex items-center gap-1.5 shadow-md shadow-blue-500/20 w-full sm:w-auto justify-center rounded-xl border-0 h-9 cursor-pointer transition-all"
           >
             <Plus className="w-4 h-4" />
-            <span>Create Coupon</span>
+            <span>Create Offer</span>
           </Link>
         </div>
 
@@ -269,7 +269,7 @@ function MerchantCouponsContent() {
               <TableHeader className="bg-slate-50/70 border-b border-slate-200 hover:bg-transparent">
                 <TableRow className="hover:bg-transparent border-b border-slate-200">
                   <TableHead className="py-3 px-4 text-slate-500 font-extrabold uppercase tracking-wider text-[10px] h-auto">
-                    Coupon Detail
+                    Offer Detail
                   </TableHead>
                   <TableHead className="py-3 px-4 text-slate-500 font-extrabold uppercase tracking-wider text-[10px] h-auto">
                     Discount
@@ -383,7 +383,7 @@ function MerchantCouponsContent() {
                           colSpan={7}
                           className="p-8 text-center text-slate-400 text-xs font-semibold"
                         >
-                          No coupons found. Click "Create Coupon" to add your
+                          No offers found. Click "Create Offer" to add your
                           first offer.
                         </TableCell>
                       </TableRow>}
@@ -403,7 +403,7 @@ function MerchantCouponsContent() {
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              coupon and disable any active customer claims.
+              offer and disable any active customer claims.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

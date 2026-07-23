@@ -220,8 +220,8 @@ export default function TickerManagement() {
                                   }`}
                                   title={
                                     coupon.isFeatured
-                                      ? "Unpin Coupon"
-                                      : "Pin Coupon to Tier 1"
+                                      ? "Unpin Offer"
+                                      : "Pin Offer to Tier 1"
                                   }
                                 >
                                   <Pin

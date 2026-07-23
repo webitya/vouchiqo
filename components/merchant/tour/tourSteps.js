@@ -4,7 +4,7 @@ export const TOUR_STEPS = [
     id: "post-new",
     title: "Welcome to your Vouchiqo dashboard! 👋",
     content:
-      "Let's take a quick tour. Start by clicking here anytime to post a new coupon, deal, or offer for your customers.",
+      "Let's take a quick tour. Start by clicking here anytime to post a new deal or offer for your customers.",
     anchor: "[data-tour='tour-post-new']",
     mode: "sidebar",
   },
@@ -14,13 +14,13 @@ export const TOUR_STEPS = [
     id: "kpi-cards",
     title: "Your live business metrics 📊",
     content:
-      "Track total store views, coupon claims, redemptions and revenue driven — all updated in real time from your customers.",
+      "Track total store views, offer claims, redemptions and revenue driven — all updated in real time from your customers.",
     anchor: "[data-tour='kpi-cards']",
     mode: "content",
     placement: "bottom",
   },
 
-  // ─── STEP 3: Top Coupons Table ───────────────────────────────────────────
+  // ─── STEP 3: Top Offers Table ───────────────────────────────────────────
   {
     id: "top-coupons",
     title: "Your top performing offers 🏷️",
@@ -31,12 +31,12 @@ export const TOUR_STEPS = [
     placement: "top",
   },
 
-  // ─── STEP 4: My Listings (Coupons) ───────────────────────────────────────
+  // ─── STEP 4: My Listings (Offers) ───────────────────────────────────────
   {
     id: "my-listings",
-    title: "Manage all your coupon listings",
+    title: "Manage all your offer listings",
     content:
-      "View, edit, pause or create new coupon deals. Filter by active, expired or pending review status.",
+      "View, edit, pause or create new offer deals. Filter by active, expired or pending review status.",
     anchor: "[data-tour='tour-my-listings']",
     mode: "sidebar",
   },
@@ -66,7 +66,7 @@ export const TOUR_STEPS = [
     id: "notifications",
     title: "Stay on top of every update 🔔",
     content:
-      "Instant alerts for new coupon claims, campaign approvals, billing renewals and platform announcements.",
+      "Instant alerts for new offer claims, campaign approvals, billing renewals and platform announcements.",
     anchor: "[data-tour='tour-notifications']",
     mode: "sidebar",
   },

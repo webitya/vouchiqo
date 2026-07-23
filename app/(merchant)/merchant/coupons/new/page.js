@@ -297,7 +297,7 @@ export default function CreateCoupon() {
 
   return (
     <DashboardLayout
-      title="Create New Coupon / Deal"
+      title="Create New Offer"
       user={{
         name: merchant?.businessName || "Merchant Partner",
         role: "merchant",

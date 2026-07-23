@@ -38,8 +38,8 @@ export default function SavedDealsTab({
       ) : (
         <EmptyState
           icon={Bookmark}
-          title="No saved coupons"
-          description="Save coupons while browsing to keep track of deals you want to use later."
+          title="No saved offers"
+          description="Save offers while browsing to keep track of deals you want to use later."
         />
       )}
     </div>

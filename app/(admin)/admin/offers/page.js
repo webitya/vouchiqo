@@ -170,7 +170,7 @@ export default function AdminOffersPage() {
                   Merchant Name
                 </TableHead>
                 <TableHead className="p-4 text-slate-500 font-bold uppercase">
-                  Coupon Code
+                  Offer Code
                 </TableHead>
                 <TableHead className="p-4 text-slate-500 font-bold uppercase">
                   Discount

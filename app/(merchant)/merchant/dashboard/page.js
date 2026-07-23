@@ -117,16 +117,16 @@ export default function MerchantDashboard() {
   // Check for any expiring coupons (from overviewStats keys count as proxy)
   if (trendData.length > 0 && totalRedemptions === 0) {
     alerts.push({
-      type: "blue",
+      msg: "No redemptions yet. Share your offer codes with customers to drive your first sale.",
+      type: "info",
       icon: Info,
-      msg: "No redemptions yet. Share your coupon codes with customers to drive your first sale.",
     });
   }
   if (totalClaims > 0 && totalRedemptions / totalClaims < 0.1) {
     alerts.push({
       type: "amber",
       icon: AlertTriangle,
-      msg: `Low redemption rate (${Math.round((totalRedemptions / totalClaims) * 100)}%). Try adjusting your coupon discount to convert more claims.`,
+      msg: `Low redemption rate (${Math.round((totalRedemptions / totalClaims) * 100)}%). Try adjusting your offer discount to convert more claims.`,
     });
   }
 

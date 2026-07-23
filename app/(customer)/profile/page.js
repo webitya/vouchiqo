@@ -253,7 +253,7 @@ function ProfileContent() {
   const handleRemoveClaim = async (e, claimId) => {
     e.preventDefault();
     e.stopPropagation();
-    const confirmRemove = window.confirm("Remove this coupon from bookmarks?");
+    const confirmRemove = window.confirm("Remove this offer from bookmarks?");
     if (!confirmRemove) return;
     try {
       const res = await fetch(`/api/claims/${claimId}`, { method: "DELETE" });
@@ -290,7 +290,7 @@ function ProfileContent() {
 
   const handleShareSavings = () => {
     const saved = savingsData?.kpis?.totalSavedMonth || 0;
-    const shareText = `I saved ₹${saved.toLocaleString("en-IN")} this month using Vouchiqo! 🔴 Find verified coupon codes and save. https://vouchiqo.com`;
+    const shareText = `I saved ₹${saved.toLocaleString("en-IN")} this month using Vouchiqo! 🔴 Find verified offer codes and save. https://vouchiqo.com`;
     navigator.clipboard.writeText(shareText);
     setCopiedShareCard(true);
     toast.success("Copied to clipboard!");
@@ -303,7 +303,7 @@ function ProfileContent() {
     const headers = [
       "Date",
       "Brand",
-      "Coupon Code",
+      "Offer Code",
       "Original Price",
       "Discount Applied",
       "Amount Paid",

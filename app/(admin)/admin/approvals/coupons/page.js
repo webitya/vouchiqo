@@ -93,17 +93,17 @@ export default function CouponModeration() {
 
   return (
     <DashboardLayout
-      title="Coupon Moderation"
+      title="Offer Moderation"
       user={{ name: "Platform Admin", role: "admin" }}
     >
-      <h2 className="text-base font-bold text-brand-navy font-heading uppercase tracking-wider border-b border-brand-border pb-3">
-        Coupon Moderation Queue
+      <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2.5">
+        Offer Moderation Queue
       </h2>
 
       {loading
         ? <div className="bg-brand-bg border border-brand-border rounded-xl p-8 text-center text-brand-subtext font-semibold shadow-sm">
             <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-brand-blue" />
-            <span>Loading coupons pending moderation...</span>
+            <span>Loading offers pending moderation...</span>
           </div>
         : coupons.length > 0
           ? <div className="bg-brand-bg border border-brand-border rounded-xl shadow-sm overflow-hidden flex flex-col justify-between">
@@ -200,7 +200,7 @@ export default function CouponModeration() {
             </div>
           : <EmptyState
               icon={Tag}
-              title="No coupons pending review"
+              title="No offers pending review"
               description="Good job. All discount campaigns are currently active and moderated."
             />}
 
@@ -210,7 +210,7 @@ export default function CouponModeration() {
           <DialogHeader>
             <DialogTitle className="font-heading text-brand-navy font-bold text-sm flex items-center gap-1.5">
               <AlertTriangle className="w-4 h-4 text-brand-error" />
-              <span>Reject Coupon Offer</span>
+              <span>Reject Offer</span>
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3 py-3">
