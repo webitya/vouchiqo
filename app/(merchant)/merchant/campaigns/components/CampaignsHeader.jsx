@@ -1,7 +1,6 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -35,7 +34,8 @@ export default function CampaignsHeader({
       <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 space-y-3">
         <div className="flex items-center justify-between text-xs font-bold text-slate-700">
           <span>
-            {campaignsCount} of {isPro ? "Unlimited" : "4"} annual campaigns used
+            {campaignsCount} of {isPro ? "Unlimited" : "4"} annual campaigns
+            used
           </span>
           <span className="text-slate-400 uppercase tracking-wider text-[11px] font-semibold">
             {planName ? `${planName.toUpperCase()} plan` : "PRO plan"}
@@ -45,7 +45,9 @@ export default function CampaignsHeader({
           <div
             className="bg-[#e85d04] h-full rounded-full transition-all duration-500"
             style={{
-              width: isPro ? "25%" : `${Math.min(100, (campaignsCount / 4) * 100)}%`,
+              width: isPro
+                ? "25%"
+                : `${Math.min(100, (campaignsCount / 4) * 100)}%`,
             }}
           />
         </div>

@@ -1,21 +1,13 @@
 "use client";
 
-import {
-  ChevronRight,
-  Gift,
-  LayoutGrid,
-  MapPin,
-  Search,
-  Store,
-  Tag,
-} from "lucide-react";
+import { Gift, LayoutGrid, MapPin, Search, Store, Tag } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import DirectoryLayout from "@/components/layout/DirectoryLayout";
 import { ALL_FESTIVALS, POPULAR_FESTIVALS } from "@/lib/mock/mock-data";
 import {
   ALPHA_LETTERS,
   POPULAR_MERCHANTS_SIDEBAR,
-  SIDEBAR_NAV,
 } from "@/utils/shared-navigation";
 
 const SIDEBAR_ICONS = {
@@ -89,301 +81,146 @@ export default function CampaignsClient() {
   const totalFestivals = ALL_FESTIVALS.length;
 
   return (
-    <main
-      style={{
-        background: "#ffffff",
-        minHeight: "80vh",
-        paddingBottom: 60,
-        width: "100%",
+    <DirectoryLayout
+      activeKey="Festivals"
+      title="Festival Offers"
+      icon={Gift}
+      stat1={{
+        count: totalFestivals,
+        label: "Total Festival Offers",
+        shortLabel: "Festivals",
       }}
+      stat2={{ count: totalOffersCount, label: "Total Coupons & Offers" }}
+      aboutTitle="About Festival Offers"
+      aboutText="India's got no shortage of festivals, and we're here for it. From Diwali lights to Christmas cheer, Vouchiqo brings you epic deals to grab the best savings."
     >
-      <div
+      {/* ── POPULAR FESTIVALS SECTION ── */}
+      <section
         style={{
-          maxWidth: "1400px",
-          margin: "0 auto",
           background: "#ffffff",
-          minHeight: "80vh",
+          borderRadius: 6,
+          border: "1px solid #e5e7eb",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+          padding: "16px 20px 20px",
         }}
-        className="campaigns-page-container w-full"
       >
-        {/* ── BREADCRUMB (Clean & Simple) ── */}
-        <div style={{ borderBottom: "1px solid #f1f5f9", background: "#ffffff" }}>
-          <div
-            style={{
-              padding: "12px 24px",
-              display: "flex",
-              gap: 8,
-              fontSize: 12,
-              color: "#64748b",
-            }}
-          >
-            <Link
-              href="/"
-              style={{
-                color: "#4685e8",
-                textDecoration: "none",
-                fontWeight: 600,
-              }}
-            >
-              Home
-            </Link>
-            <span style={{ color: "#cbd5e1" }}>/</span>
-            <span style={{ color: "#334155", fontWeight: 600 }}>Festival Offers</span>
-          </div>
-        </div>
-
-        {/* ── PAGE HEADER (GrabOn Mockup Style) ── */}
-        <section
+        <h2
           style={{
-            background: "#ffffff",
-            padding: "20px 24px 16px 24px",
-            width: "100%",
+            fontSize: 16,
+            fontWeight: 800,
+            color: "#000000",
+            marginBottom: 16,
+            letterSpacing: "-0.2px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 12,
-                background: "#f8fafc",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                border: "1px solid #e2e8f0",
-                flexShrink: 0,
-              }}
-            >
-              <Gift style={{ width: 22, height: 22, color: "#475569" }} />
-            </div>
-            <div>
-              <h1
-                style={{
-                  fontSize: "19px",
-                  fontWeight: 800,
-                  color: "#1e293b",
-                  margin: 0,
-                  lineHeight: 1.2,
-                }}
+          Popular Festival Offers
+        </h2>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+            gap: 12,
+          }}
+        >
+          {POPULAR_FESTIVALS.map((fest) => {
+            const totalOffers = (fest.coupons || 0) + (fest.offers || 0);
+            return (
+              <Link
+                key={fest.title}
+                href={`/category/${fest.slug}`}
+                style={{ textDecoration: "none" }}
               >
-                Festival Offers
-              </h1>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  fontSize: "12.5px",
-                  color: "#64748b",
-                  marginTop: 3,
-                }}
-              >
-                <span>
-                  Festivals : <strong style={{ color: "#1e293b", fontWeight: 700 }}>{totalFestivals}</strong>
-                </span>
-                <span>
-                  Coupons & Offers :{" "}
-                  <strong style={{ color: "#1e293b", fontWeight: 700 }}>
-                    {totalOffersCount}
-                  </strong>
-                </span>
-              </div>
-            </div>
-          </div>
-          {formattedDate && (
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                background: "#f8fafc",
-                padding: "6px 12px",
-                borderRadius: 8,
-                border: "1px solid #e2e8f0",
-                marginTop: 14,
-                fontSize: 12,
-                color: "#475569",
-                fontWeight: 600,
-              }}
-            >
-              <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#10b981" }} />
-              Verified On: {formattedDate}
-            </div>
-          )}
-        </section>
-
-        {/* ── TABS BAR (GrabOn Mockup Style) ── */}
-        <div style={{ padding: "0 24px 16px 24px", width: "100%", background: "#ffffff" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              overflowX: "auto",
-              paddingBottom: 8,
-              borderBottom: "1px solid #f1f5f9",
-              scrollbarWidth: "none",
-            }}
-            className="horizontal-tabs-scrollbar"
-          >
-            {SIDEBAR_NAV.map((nav) => {
-              const isActive = nav.label === "Festivals";
-              return (
-                <Link
-                  key={nav.label}
-                  href={nav.href}
+                <div
                   style={{
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 6,
+                    background: "#ffffff",
+                    overflow: "hidden",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
                     display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "8px 18px",
-                    borderRadius: "9999px",
-                    background: isActive ? "#4685e8" : "transparent",
-                    color: isActive ? "#ffffff" : "#475569",
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    whiteSpace: "nowrap",
-                    transition: "all 0.15s ease",
-                    border: isActive ? "none" : "1px solid #e2e8f0",
+                    flexDirection: "column",
+                    height: "100%",
+                    transition: "all 0.2s ease",
                   }}
-                  className={isActive ? "" : "inactive-tab-btn"}
+                  className="brand-card-hover"
                 >
-                  {getSidebarIcon(nav.label, isActive)}
-                  <span>{nav.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* ── ABOUT FESTIVALS SECTION (GrabOn Mockup Style) ── */}
-        <section
-          style={{
-            padding: "20px 24px 20px 24px",
-            width: "100%",
-            background: "#ffffff",
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <h2
-              style={{
-                fontSize: "16px",
-                fontWeight: 800,
-                color: "#1e293b",
-                margin: 0,
-              }}
-            >
-              About Festival Offers
-            </h2>
-            <div style={{ height: "1px", background: "#f1f5f9", width: "100%" }} />
-            <p
-              style={{
-                fontSize: "13px",
-                color: "#475569",
-                lineHeight: 1.6,
-                margin: 0,
-                overflow: "hidden",
-                display: "-webkit-box",
-                WebkitLineClamp: showMoreAbout ? "unset" : 3,
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              India&apos;s got no shortage of festivals, and we&apos;re here for it.
-              From Diwali lights to Christmas cheer, Vouchiqo brings you epic deals
-              to grab the best savings from physical stores — without going over
-              budget. Discover curated offers on popular shopping events.
-            </p>
-            <button
-              onClick={() => setShowMoreAbout((v) => !v)}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#4685e8",
-                fontSize: "13px",
-                fontWeight: 700,
-                cursor: "pointer",
-                padding: 0,
-                alignSelf: "flex-start",
-              }}
-            >
-              {showMoreAbout ? "Less" : "More"}
-            </button>
-          </div>
-        </section>
-
-        {/* ── POPULAR MERCHANTS SECTION (GrabOn Mockup Style) ── */}
-        <section
-          style={{
-            padding: "0 24px 24px 24px",
-            width: "100%",
-            background: "#ffffff",
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <h2
-              style={{
-                fontSize: "16px",
-                fontWeight: 800,
-                color: "#1e293b",
-                margin: 0,
-              }}
-            >
-              Popular Merchants
-            </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {visibleSidebarMerchants.map((m) => (
-                <Link
-                  key={m.label}
-                  href={m.href}
-                  style={{
-                    fontSize: "13px",
-                    color: "#4685e8",
-                    textDecoration: "none",
-                    fontWeight: 700,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    alignSelf: "flex-start",
-                  }}
-                  className="popular-merchant-link"
-                >
-                  <span>{m.label} Coupons</span>
-                  <svg
-                    style={{ width: 13, height: 13, fill: "none", stroke: "#4685e8", strokeWidth: 2 }}
-                    viewBox="0 0 24 24"
+                  <div
+                    style={{
+                      height: 100,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "#ffffff",
+                      padding: 12,
+                    }}
                   >
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                  </svg>
-                </Link>
-              ))}
-            </div>
-            <button
-              onClick={() => setShowAllMerchants((v) => !v)}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#4685e8",
-                fontSize: "12px",
-                fontWeight: 700,
-                cursor: "pointer",
-                padding: 0,
-                alignSelf: "flex-start",
-                marginTop: 4,
-              }}
-            >
-              {showAllMerchants ? "See less" : "See more"}
-            </button>
-          </div>
-        </section>
+                    <img
+                      src={fest.image}
+                      alt={fest.title}
+                      style={{
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                        objectFit: "contain",
+                      }}
+                      onError={(e) => {
+                        e.target.src =
+                          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%234685e8' stroke-width='2'%3E%3Cpath d='M20 12V22H4V12'/%3E%3Cpath d='M22 7H2v5h20V7z'/%3E%3Cpath d='M12 22V7'/%3E%3C/svg%3E";
+                      }}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      background: "#f8fafc",
+                      padding: "12px 14px",
+                      borderTop: "1px solid #e5e7eb",
+                      textAlign: "center",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: "#000000",
+                        margin: 0,
+                      }}
+                    >
+                      {fest.title}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        color: "#2563eb",
+                        fontWeight: 600,
+                        margin: "4px 0 0",
+                      }}
+                    >
+                      {totalOffers} Active Offers
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
 
-        {/* ── POPULAR FESTIVALS SECTION (GrabOn Mockup Style) ── */}
-        <section
+      {/* ── ALL FESTIVALS SECTION ── */}
+      <section
+        style={{
+          background: "#ffffff",
+          borderRadius: 6,
+          border: "1px solid #e5e7eb",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+          padding: "16px 20px 20px",
+        }}
+      >
+        {/* Section Header with grid switcher */}
+        <div
           style={{
-            padding: "0 24px 24px 24px",
-            width: "100%",
-            background: "#ffffff",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 16,
           }}
         >
           <h2
@@ -391,461 +228,302 @@ export default function CampaignsClient() {
               fontSize: "16px",
               fontWeight: 800,
               color: "#1e293b",
-              marginBottom: 16,
+              margin: 0,
             }}
           >
-            Popular Festival Offers
+            All Festival Offers
           </h2>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 16,
-            }}
-          >
-            {POPULAR_FESTIVALS.map((fest) => {
-              const totalOffers = (fest.coupons || 0) + (fest.offers || 0);
-              return (
-                <Link
-                  key={fest.title}
-                  href={`/category/${fest.slug}`}
-                  style={{ textDecoration: "none" }}
-                >
-                  <div
-                    style={{
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 16,
-                      background: "#ffffff",
-                      overflow: "hidden",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.02)",
-                      display: "flex",
-                      flexDirection: "column",
-                      transition: "all 0.2s ease",
-                    }}
-                    className="brand-card-hover"
-                  >
-                    <div
-                      style={{
-                        height: 100,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "#ffffff",
-                        padding: 16,
-                      }}
-                    >
-                      <img
-                        src={fest.image}
-                        alt={fest.title}
-                        style={{
-                          maxHeight: "100%",
-                          maxWidth: "100%",
-                          objectFit: "contain",
-                        }}
-                        onError={(e) => {
-                          e.target.src =
-                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%234685e8' stroke-width='2'%3E%3Cpath d='M20 12V22H4V12'/%3E%3Cpath d='M22 7H2v5h20V7z'/%3E%3Cpath d='M12 22V7'/%3E%3C/svg%3E";
-                        }}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        background: "#f8fafc",
-                        padding: "12px 14px",
-                        borderTop: "1px solid #e2e8f0",
-                        textAlign: "center",
-                      }}
-                    >
-                      <p
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 800,
-                          color: "#1e293b",
-                          margin: 0,
-                        }}
-                      >
-                        {fest.title}
-                      </p>
-                      <p
-                        style={{
-                          fontSize: 12,
-                          color: "#4685e8",
-                          fontWeight: 700,
-                          margin: "4px 0 0",
-                        }}
-                      >
-                        {totalOffers} Active Offers
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
 
-        {/* ── ALL FESTIVALS SECTION (GrabOn Mockup Style) ── */}
-        <section
+          {/* Layout switchers: || and ||| */}
+          <div style={{ display: "flex", gap: 6 }}>
+            <button
+              onClick={() => setLayoutType("compact")}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                border: "1px solid #cbd5e1",
+                background: layoutType === "compact" ? "#4685e8" : "#ffffff",
+                color: layoutType === "compact" ? "#ffffff" : "#475569",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.15s ease",
+              }}
+              className={layoutType === "compact" ? "" : "layout-btn-hover"}
+              title="Compact View (||)"
+            >
+              <span
+                style={{ fontSize: 13, fontWeight: 900, letterSpacing: -1 }}
+              >
+                ||
+              </span>
+            </button>
+            <button
+              onClick={() => setLayoutType("wide")}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                border: "1px solid #cbd5e1",
+                background: layoutType === "wide" ? "#4685e8" : "#ffffff",
+                color: layoutType === "wide" ? "#ffffff" : "#475569",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.15s ease",
+              }}
+              className={layoutType === "wide" ? "" : "layout-btn-hover"}
+              title="Wide View (|||)"
+            >
+              <span
+                style={{ fontSize: 13, fontWeight: 900, letterSpacing: -1 }}
+              >
+                |||
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Alphabet filters & Search button */}
+        <div
           style={{
-            padding: "0 24px 40px 24px",
-            width: "100%",
-            background: "#ffffff",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 16,
+            borderBottom: "1px solid #f1f5f9",
+            paddingBottom: 12,
           }}
         >
-          {/* Section Header with grid switcher */}
+          {/* Search Toggle Icon */}
+          <button
+            onClick={() => setShowSearchBox((v) => !v)}
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              border: "1px solid #e2e8f0",
+              background: showSearchBox ? "#eff6ff" : "#ffffff",
+              color: showSearchBox ? "#4685e8" : "#64748b",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <Search style={{ width: 14, height: 14 }} />
+          </button>
+
+          {/* "All" button */}
+          <button
+            onClick={() => {
+              setActiveLetter("all");
+              setSearchQuery("");
+            }}
+            style={{
+              padding: "0 14px",
+              height: 32,
+              borderRadius: "9999px",
+              border: "none",
+              background:
+                activeLetter === "all" && !searchQuery ? "#4685e8" : "#f1f5f9",
+              color:
+                activeLetter === "all" && !searchQuery ? "#ffffff" : "#475569",
+              fontSize: "12px",
+              fontWeight: 700,
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            All
+          </button>
+
+          {/* Alphabet letter strip */}
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
+              gap: 6,
+              overflowX: "auto",
+              height: 32,
               alignItems: "center",
-              marginBottom: 16,
+              scrollbarWidth: "none",
             }}
+            className="horizontal-tabs-scrollbar"
           >
-            <h2
-              style={{
-                fontSize: "16px",
-                fontWeight: 800,
-                color: "#1e293b",
-                margin: 0,
-              }}
-            >
-              All Festival Offers
-            </h2>
-
-            {/* Layout switchers: || and ||| */}
-            <div style={{ display: "flex", gap: 6 }}>
+            {ALPHA_LETTERS.map((letter) => (
               <button
-                onClick={() => setLayoutType("compact")}
+                key={letter}
+                onClick={() => {
+                  setActiveLetter(activeLetter === letter ? "all" : letter);
+                  setSearchQuery("");
+                }}
+                disabled={!availableLetters.has(letter)}
                 style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  border: "1px solid #cbd5e1",
-                  background: layoutType === "compact" ? "#4685e8" : "#ffffff",
-                  color: layoutType === "compact" ? "#ffffff" : "#475569",
-                  cursor: "pointer",
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  border: "none",
+                  background:
+                    activeLetter === letter ? "#4685e8" : "transparent",
+                  color:
+                    activeLetter === letter
+                      ? "#ffffff"
+                      : availableLetters.has(letter)
+                        ? "#64748b"
+                        : "#cbd5e1",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  cursor: availableLetters.has(letter) ? "pointer" : "default",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  flexShrink: 0,
                   transition: "all 0.15s ease",
                 }}
-                className={layoutType === "compact" ? "" : "layout-btn-hover"}
-                title="Compact View (||)"
               >
-                <span style={{ fontSize: 13, fontWeight: 900, letterSpacing: -1 }}>||</span>
+                {letter}
               </button>
-              <button
-                onClick={() => setLayoutType("wide")}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  border: "1px solid #cbd5e1",
-                  background: layoutType === "wide" ? "#4685e8" : "#ffffff",
-                  color: layoutType === "wide" ? "#ffffff" : "#475569",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.15s ease",
-                }}
-                className={layoutType === "wide" ? "" : "layout-btn-hover"}
-                title="Wide View (|||)"
-              >
-                <span style={{ fontSize: 13, fontWeight: 900, letterSpacing: -1 }}>|||</span>
-              </button>
-            </div>
+            ))}
           </div>
+        </div>
 
-          {/* Alphabet filters & Search button */}
+        {/* Search box overlay */}
+        {showSearchBox && (
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 8,
+              border: "1px solid #e2e8f0",
+              borderRadius: 8,
+              padding: "8px 12px",
+              background: "#f8fafc",
               marginBottom: 16,
-              borderBottom: "1px solid #f1f5f9",
-              paddingBottom: 12,
             }}
           >
-            {/* Search Toggle Icon */}
-            <button
-              onClick={() => setShowSearchBox((v) => !v)}
+            <Search style={{ width: 14, height: 14, color: "#94a3b8" }} />
+            <input
+              placeholder="Search festivals by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                border: "1px solid #e2e8f0",
-                background: showSearchBox ? "#eff6ff" : "#ffffff",
-                color: showSearchBox ? "#4685e8" : "#64748b",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <Search style={{ width: 14, height: 14 }} />
-            </button>
-
-            {/* "All" button */}
-            <button
-              onClick={() => {
-                setActiveLetter("all");
-                setSearchQuery("");
-              }}
-              style={{
-                padding: "0 14px",
-                height: 32,
-                borderRadius: "9999px",
                 border: "none",
-                background: activeLetter === "all" && !searchQuery ? "#4685e8" : "#f1f5f9",
-                color: activeLetter === "all" && !searchQuery ? "#ffffff" : "#475569",
-                fontSize: "12px",
-                fontWeight: 700,
-                cursor: "pointer",
-                flexShrink: 0,
+                background: "transparent",
+                fontSize: "12.5px",
+                color: "#1e293b",
+                outline: "none",
+                width: "100%",
               }}
-            >
-              All
-            </button>
+            />
+          </div>
+        )}
 
-            {/* Alphabet letter strip */}
-            <div
-              style={{
-                display: "flex",
-                gap: 6,
-                overflowX: "auto",
-                height: 32,
-                alignItems: "center",
-                scrollbarWidth: "none",
-              }}
-              className="horizontal-tabs-scrollbar"
-            >
-              {ALPHA_LETTERS.map((letter) => (
-                <button
-                  key={letter}
-                  onClick={() => {
-                    setActiveLetter(activeLetter === letter ? "all" : letter);
-                    setSearchQuery("");
-                  }}
-                  disabled={!availableLetters.has(letter)}
+        {/* All Campaigns Grid */}
+        {filteredFestivals.length > 0 ? (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                layoutType === "compact" ? "repeat(3, 1fr)" : "repeat(4, 1fr)",
+              gap: "16px 12px",
+            }}
+            className="all-festivals-responsive-grid"
+          >
+            {filteredFestivals.map((fest) => {
+              const totalOffers = (fest.coupons || 0) + (fest.offers || 0);
+              return (
+                <Link
+                  key={fest.slug}
+                  href={`/category/${fest.slug}`}
                   style={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: "50%",
-                    border: "none",
-                    background: activeLetter === letter ? "#4685e8" : "transparent",
-                    color: activeLetter === letter
-                      ? "#ffffff"
-                      : availableLetters.has(letter)
-                        ? "#64748b"
-                        : "#cbd5e1",
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    cursor: availableLetters.has(letter) ? "pointer" : "default",
+                    textDecoration: "none",
                     display: "flex",
+                    flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    transition: "all 0.15s ease",
+                    gap: 6,
                   }}
                 >
-                  {letter}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Search box overlay */}
-          {showSearchBox && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                border: "1px solid #e2e8f0",
-                borderRadius: 8,
-                padding: "8px 12px",
-                background: "#f8fafc",
-                marginBottom: 16,
-              }}
-            >
-              <Search style={{ width: 14, height: 14, color: "#94a3b8" }} />
-              <input
-                placeholder="Search festivals by name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  border: "none",
-                  background: "transparent",
-                  fontSize: "12.5px",
-                  color: "#1e293b",
-                  outline: "none",
-                  width: "100%",
-                }}
-              />
-            </div>
-          )}
-
-          {/* All Campaigns Grid */}
-          {filteredFestivals.length > 0 ? (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns:
-                  layoutType === "compact"
-                    ? "repeat(3, 1fr)"
-                    : "repeat(4, 1fr)",
-                gap: "16px 12px",
-              }}
-              className="all-festivals-responsive-grid"
-            >
-              {filteredFestivals.map((fest) => {
-                const totalOffers = (fest.coupons || 0) + (fest.offers || 0);
-                return (
-                  <Link
-                    key={fest.slug}
-                    href={`/category/${fest.slug}`}
+                  <div
                     style={{
-                      textDecoration: "none",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: 12,
+                      background: "#ffffff",
+                      width: "100%",
+                      height: 75,
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
-                      gap: 6,
+                      justifyContent: "center",
+                      padding: 8,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.01)",
+                      transition: "all 0.2s ease",
+                    }}
+                    className="brand-card-hover"
+                  >
+                    <img
+                      src={fest.image}
+                      alt={fest.title}
+                      style={{
+                        maxHeight: "85%",
+                        maxWidth: "85%",
+                        objectFit: "contain",
+                      }}
+                      onError={(e) => {
+                        e.target.src =
+                          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%234685e8' stroke-width='2'%3E%3Cpath d='M20 12V22H4V12'/%3E%3Cpath d='M22 7H2v5h20V7z'/%3E%3Cpath d='M12 22V7'/%3E%3C/svg%3E";
+                      }}
+                    />
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: "#1e293b",
+                      textAlign: "center",
                     }}
                   >
-                    <div
-                      style={{
-                        border: "1px solid #e2e8f0",
-                        borderRadius: 12,
-                        background: "#ffffff",
-                        width: "100%",
-                        height: 75,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: 8,
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.01)",
-                        transition: "all 0.2s ease",
-                      }}
-                      className="brand-card-hover"
-                    >
-                      <img
-                        src={fest.image}
-                        alt={fest.title}
-                        style={{
-                          maxHeight: "85%",
-                          maxWidth: "85%",
-                          objectFit: "contain",
-                        }}
-                        onError={(e) => {
-                          e.target.src =
-                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%234685e8' stroke-width='2'%3E%3Cpath d='M20 12V22H4V12'/%3E%3Cpath d='M22 7H2v5h20V7z'/%3E%3Cpath d='M12 22V7'/%3E%3C/svg%3E";
-                        }}
-                      />
-                    </div>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: "#1e293b",
-                        textAlign: "center",
-                      }}
-                    >
-                      {fest.title}
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-          ) : (
-            <div style={{ textAlign: "center", padding: "48px 0", color: "#9ca3af" }}>
-              <p style={{ fontSize: 13 }}>No festival offers found for &quot;{searchQuery}&quot;</p>
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setActiveLetter("all");
-                }}
-                style={{
-                  marginTop: 12,
-                  padding: "6px 16px",
-                  borderRadius: 9999,
-                  border: "none",
-                  background: "#4685e8",
-                  color: "#ffffff",
-                  fontSize: 12,
-                  cursor: "pointer",
-                  fontWeight: 700,
-                }}
-              >
-                Clear Filters
-              </button>
-            </div>
-          )}
-        </section>
-      </div>
-
-      <style>{`
-        .horizontal-tabs-scrollbar::-webkit-scrollbar {
-          display: none !important;
-        }
-        .inactive-tab-btn:hover {
-          background: #f1f5f9 !important;
-          color: #1e293b !important;
-        }
-        .popular-merchant-link:hover {
-          text-decoration: underline !important;
-        }
-        .brand-card-hover:hover {
-          box-shadow: 0 4px 16px rgba(70,133,232,0.08) !important;
-          border-color: #4685e8 !important;
-          transform: translateY(-2px);
-        }
-        .layout-btn-hover:hover {
-          background: #f1f5f9 !important;
-          color: #1e293b !important;
-          border-color: #94a3b8 !important;
-        }
-        .all-festivals-responsive-grid {
-          grid-template-columns: ${
-            layoutType === "compact"
-              ? "repeat(5, 1fr)"
-              : "repeat(6, 1fr)"
-          };
-        }
-        @media (max-width: 1024px) {
-          .all-festivals-responsive-grid {
-            grid-template-columns: ${
-              layoutType === "compact"
-                ? "repeat(4, 1fr) !important"
-                : "repeat(5, 1fr) !important"
-            };
-          }
-        }
-        @media (max-width: 768px) {
-          .all-festivals-responsive-grid {
-            grid-template-columns: ${
-              layoutType === "compact"
-                ? "repeat(3, 1fr) !important"
-                : "repeat(4, 1fr) !important"
-            };
-          }
-        }
-        @media (max-width: 640px) {
-          .all-festivals-responsive-grid {
-            grid-template-columns: ${
-              layoutType === "compact"
-                ? "repeat(2, 1fr) !important"
-                : "repeat(3, 1fr) !important"
-            };
-          }
-          .campaigns-page-container {
-            box-shadow: none !important;
-            padding: 0 12px !important;
-          }
-        }
-      `}</style>
-    </main>
+                    {fest.title}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "48px 0",
+              color: "#9ca3af",
+            }}
+          >
+            <p style={{ fontSize: 13 }}>
+              No festival offers found for &quot;{searchQuery}&quot;
+            </p>
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setActiveLetter("all");
+              }}
+              style={{
+                marginTop: 12,
+                padding: "6px 16px",
+                borderRadius: 9999,
+                border: "none",
+                background: "#4685e8",
+                color: "#ffffff",
+                fontSize: 12,
+                cursor: "pointer",
+                fontWeight: 700,
+              }}
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
+      </section>
+    </DirectoryLayout>
   );
 }

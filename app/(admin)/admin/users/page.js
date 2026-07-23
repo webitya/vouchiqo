@@ -1,7 +1,7 @@
 "use client";
 
 import { Ban, Download, RefreshCw, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ export default function UserManagement() {
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminFetchUsers();
@@ -41,11 +41,11 @@ export default function UserManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   const handleToggleStatus = async (authId, isActive) => {
     try {
@@ -80,7 +80,7 @@ export default function UserManagement() {
         return `"${name}","${email}","${date}"`;
       });
 
-      const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\n");
+      const csvContent = `\uFEFF${[headers.join(","), ...rows].join("\n")}`;
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");

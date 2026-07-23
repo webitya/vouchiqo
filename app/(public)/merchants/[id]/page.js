@@ -12,8 +12,8 @@ import {
 import { useState } from "react";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
-import ConfirmationModal from "@/components/shared/ConfirmationModal";
-import CouponCard from "@/components/shared/CouponCard";
+import ConfirmationModal from "@/components/shared/modals/ConfirmationModal";
+import CouponCard from "@/components/shared/cards/CouponCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 

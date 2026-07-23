@@ -1,13 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  AlertTriangle,
-  Info,
-  ShoppingCart,
-  Zap,
-} from "lucide-react";
-import Link from "next/link";
+import { AlertTriangle, Info, ShoppingCart, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import KpiCards from "./components/KpiCards";
@@ -80,9 +74,18 @@ export default function MerchantDashboard() {
   const overviewStats = analyticsData?.overview ?? {};
 
   // KPI computations from real DB
-  const pageViews = Object.values(overviewStats).reduce((sum, s) => sum + (s.views || 0), 0);
-  const totalClaims = Object.values(overviewStats).reduce((sum, s) => sum + (s.claims || 0), 0);
-  const totalRedemptions = Object.values(overviewStats).reduce((sum, s) => sum + (s.redemptions || 0), 0);
+  const pageViews = Object.values(overviewStats).reduce(
+    (sum, s) => sum + (s.views || 0),
+    0,
+  );
+  const totalClaims = Object.values(overviewStats).reduce(
+    (sum, s) => sum + (s.claims || 0),
+    0,
+  );
+  const totalRedemptions = Object.values(overviewStats).reduce(
+    (sum, s) => sum + (s.redemptions || 0),
+    0,
+  );
   const totalRevenue = trendData.reduce((sum, t) => sum + t.revenue, 0);
 
   // Month-over-month change
@@ -99,67 +102,104 @@ export default function MerchantDashboard() {
   // Plan info
   const plan = merchantProfile?.plan ?? "starter";
   const planLimit = plan === "starter" ? 3 : plan === "growth" ? 15 : -1;
-  const activeCoupons = merchant?.totalCoupons ?? Object.keys(overviewStats).length;
+  const activeCoupons =
+    merchant?.totalCoupons ?? Object.keys(overviewStats).length;
 
   // Contextual alerts
   const alerts = [];
   if (activeCoupons >= planLimit * 0.9) {
-    alerts.push({ type: "orange", icon: Zap, msg: `You're using ${activeCoupons}/${planLimit} listings. Consider upgrading your plan.` });
+    alerts.push({
+      type: "orange",
+      icon: Zap,
+      msg: `You're using ${activeCoupons}/${planLimit} listings. Consider upgrading your plan.`,
+    });
   }
   // Check for any expiring coupons (from overviewStats keys count as proxy)
   if (trendData.length > 0 && totalRedemptions === 0) {
-    alerts.push({ type: "blue", icon: Info, msg: "No redemptions yet. Share your coupon codes with customers to drive your first sale." });
+    alerts.push({
+      type: "blue",
+      icon: Info,
+      msg: "No redemptions yet. Share your coupon codes with customers to drive your first sale.",
+    });
   }
   if (totalClaims > 0 && totalRedemptions / totalClaims < 0.1) {
-    alerts.push({ type: "amber", icon: AlertTriangle, msg: `Low redemption rate (${Math.round((totalRedemptions / totalClaims) * 100)}%). Try adjusting your coupon discount to convert more claims.` });
+    alerts.push({
+      type: "amber",
+      icon: AlertTriangle,
+      msg: `Low redemption rate (${Math.round((totalRedemptions / totalClaims) * 100)}%). Try adjusting your coupon discount to convert more claims.`,
+    });
   }
 
   // Recent redemptions table rows
-  const recentRedemptions = redemptionsData?.redemptions?.length > 0
-    ? redemptionsData.redemptions.map((r) => {
-        const name = r.userId?.name || "Customer User";
-        const email = r.userId?.email || "customer@vouchiqo.com";
-        const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-        return {
-          initials, bg: "bg-[#3e80dd]", name, email,
-          id: r._id.toString().slice(-8).toUpperCase(),
-          product: r.couponId?.title || "Special Deal Offer",
-          status: "Completed",
-          amount: `₹${r.savingsAmount || 0}`,
-        };
-      })
-    : [];
+  const recentRedemptions =
+    redemptionsData?.redemptions?.length > 0
+      ? redemptionsData.redemptions.map((r) => {
+          const name = r.userId?.name || "Customer User";
+          const email = r.userId?.email || "customer@vouchiqo.com";
+          const initials = name
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+          return {
+            initials,
+            bg: "bg-[#3e80dd]",
+            name,
+            email,
+            id: r._id.toString().slice(-8).toUpperCase(),
+            product: r.couponId?.title || "Special Deal Offer",
+            status: "Completed",
+            amount: `₹${r.savingsAmount || 0}`,
+          };
+        })
+      : [];
 
-  const recentClaims = claimsData?.claims?.length > 0
-    ? claimsData.claims.map((c) => {
-        const name = c.userName || "Customer User";
-        const email = c.userEmail || "customer@vouchiqo.com";
-        const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-        return {
-          initials, bg: "bg-indigo-600", name, email,
-          id: c._id.toString().slice(-8).toUpperCase(),
-          product: c.coupon?.title || "Special Deal Offer",
-          status: "Claimed",
-          amount: c.coupon?.code || "VOUCHIQO",
-        };
-      })
-    : [];
+  const recentClaims =
+    claimsData?.claims?.length > 0
+      ? claimsData.claims.map((c) => {
+          const name = c.userName || "Customer User";
+          const email = c.userEmail || "customer@vouchiqo.com";
+          const initials = name
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+          return {
+            initials,
+            bg: "bg-indigo-600",
+            name,
+            email,
+            id: c._id.toString().slice(-8).toUpperCase(),
+            product: c.coupon?.title || "Special Deal Offer",
+            status: "Claimed",
+            amount: c.coupon?.code || "VOUCHIQO",
+          };
+        })
+      : [];
 
-  const recentActivities = redemptionsData?.redemptions?.length > 0
-    ? redemptionsData.redemptions.map((r) => {
-        const name = r.userId?.name || "Customer User";
-        const date = new Date(r.createdAt);
-        const timeLabel = date.toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-        return {
-          icon: ShoppingCart,
-          color: "text-[#2563eb]",
-          bg: "bg-[#2563eb]/10",
-          title: "Coupon Redeemed",
-          desc: `${name} redeemed "${r.couponId?.title || "Coupon"}" (Saved ₹${r.savingsAmount || 0})`,
-          time: timeLabel,
-        };
-      })
-    : [];
+  const recentActivities =
+    redemptionsData?.redemptions?.length > 0
+      ? redemptionsData.redemptions.map((r) => {
+          const name = r.userId?.name || "Customer User";
+          const date = new Date(r.createdAt);
+          const timeLabel = date.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          return {
+            icon: ShoppingCart,
+            color: "text-[#2563eb]",
+            bg: "bg-[#2563eb]/10",
+            title: "Coupon Redeemed",
+            desc: `${name} redeemed "${r.couponId?.title || "Coupon"}" (Saved ₹${r.savingsAmount || 0})`,
+            time: timeLabel,
+          };
+        })
+      : [];
 
   // Top performing coupons from overview stats
   const topCoupons = Object.entries(overviewStats)
@@ -171,7 +211,10 @@ export default function MerchantDashboard() {
       category: stats.category || "General",
       clicks: stats.views || 0,
       redemptions: stats.redemptions || 0,
-      successRate: stats.views > 0 ? Math.round((stats.redemptions / stats.views) * 100) : 0,
+      successRate:
+        stats.views > 0
+          ? Math.round((stats.redemptions / stats.views) * 100)
+          : 0,
       status: stats.isActive !== false ? "Active" : "Paused",
     }))
     .sort((a, b) => b.redemptions - a.redemptions)
@@ -183,9 +226,6 @@ export default function MerchantDashboard() {
       user={{ name: merchant?.businessName || "Merchant", role: "merchant" }}
     >
       <div className="space-y-6 text-left font-sans">
-
-
-
         {/* Contextual Alert Cards */}
         {alerts.length > 0 && (
           <div className="space-y-2">
@@ -197,7 +237,10 @@ export default function MerchantDashboard() {
                 orange: "bg-orange-50 border-orange-200 text-orange-800",
               };
               return (
-                <div key={idx} className={`flex items-start gap-2.5 border rounded-xl px-4 py-3 text-xs font-semibold ${styles[alert.type]}`}>
+                <div
+                  key={idx}
+                  className={`flex items-start gap-2.5 border rounded-xl px-4 py-3 text-xs font-semibold ${styles[alert.type]}`}
+                >
                   <Icon className="w-4 h-4 mt-0.5 shrink-0" />
                   <span>{alert.msg}</span>
                 </div>
@@ -214,17 +257,19 @@ export default function MerchantDashboard() {
         />
 
         {/* 4 KPI Cards */}
-        <KpiCards
-          totalRevenue={totalRevenue}
-          revenueMoM={revenueMoM}
-          totalClaims={totalClaims}
-          totalRedemptions={totalRedemptions}
-          ordersMoM={ordersMoM}
-          pageViews={pageViews}
-          trendData={trendData}
-          activeCoupons={activeCoupons}
-          planLimit={planLimit}
-        />
+        <div data-tour="kpi-cards">
+          <KpiCards
+            totalRevenue={totalRevenue}
+            revenueMoM={revenueMoM}
+            totalClaims={totalClaims}
+            totalRedemptions={totalRedemptions}
+            ordersMoM={ordersMoM}
+            pageViews={pageViews}
+            trendData={trendData}
+            activeCoupons={activeCoupons}
+            planLimit={planLimit}
+          />
+        </div>
 
         {/* Main Chart + Right Sidebar */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
@@ -246,7 +291,9 @@ export default function MerchantDashboard() {
         </div>
 
         {/* Top Performing Coupons Table */}
-        <TopCouponsTable coupons={topCoupons} />
+        <div data-tour="top-coupons">
+          <TopCouponsTable coupons={topCoupons} />
+        </div>
 
         {/* Bottom Row: Quick Actions + Plan Usage */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -259,12 +306,13 @@ export default function MerchantDashboard() {
         </div>
 
         {/* Recent Orders & Activity Feed */}
-        <RecentOrdersAndActivity
-          recentRedemptions={recentRedemptions}
-          recentClaims={recentClaims}
-          recentActivities={recentActivities}
-        />
-
+        <div data-tour="recent-orders">
+          <RecentOrdersAndActivity
+            recentRedemptions={recentRedemptions}
+            recentClaims={recentClaims}
+            recentActivities={recentActivities}
+          />
+        </div>
       </div>
     </DashboardLayout>
   );

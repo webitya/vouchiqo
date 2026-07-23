@@ -2,24 +2,17 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Bell,
   Calendar,
-  CreditCard,
-  Flame,
-  LayoutDashboard,
   ListOrdered,
   PieChart,
   Rocket,
-  ShieldCheck,
   Sparkles,
   Zap,
 } from "lucide-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
+import DashboardSkeleton from "@/components/shared/feedback/DashboardSkeleton";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AddOnsTab from "./components/AddOnsTab";
 import AnalyticsRevenueTab from "./components/AnalyticsRevenueTab";
@@ -45,7 +38,10 @@ export default function AdminCampaignsPage() {
             type: "flash",
             objective: "Maximize Sales",
             status: "pending_review",
-            merchantId: { businessName: "Marbella Tiles & Sanitary", plan: "pro" },
+            merchantId: {
+              businessName: "Marbella Tiles & Sanitary",
+              plan: "pro",
+            },
             code: "SAVE20",
             startDate: "2026-07-25",
             endDate: "2026-07-28",
@@ -58,7 +54,10 @@ export default function AdminCampaignsPage() {
             type: "festival",
             objective: "Brand Awareness",
             status: "Live — Active",
-            merchantId: { businessName: "JewelCraft Ranchi", plan: "enterprise" },
+            merchantId: {
+              businessName: "JewelCraft Ranchi",
+              plan: "enterprise",
+            },
             code: "DIWALI50",
             startDate: "2026-10-28",
             endDate: "2026-11-03",
@@ -109,25 +108,35 @@ export default function AdminCampaignsPage() {
 
   if (isLoading) {
     return (
-      <DashboardLayout title="Admin Campaign Control Room" user={{ role: "admin" }}>
+      <DashboardLayout
+        title="Admin Campaign Control Room"
+        user={{ role: "admin" }}
+      >
         <DashboardSkeleton mode="dashboard" />
       </DashboardLayout>
     );
   }
 
-  const pendingCount = campaigns.filter((c) => c.status === "pending_review").length;
+  const pendingCount = campaigns.filter(
+    (c) => c.status === "pending_review",
+  ).length;
 
   return (
-    <DashboardLayout title="Admin Campaign Control Room" user={{ role: "admin" }}>
-      <div className="flex flex-col gap-6 text-left font-sans w-full max-w-[1300px] mx-auto">
+    <DashboardLayout
+      title="Admin Campaign Control Room"
+      user={{ role: "admin" }}
+    >
+      <div className="flex flex-col gap-6 text-left font-sans w-full">
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-              <Rocket className="w-6 h-6 text-[#e85d04]" /> Admin Campaign Control Room
+              <Rocket className="w-6 h-6 text-[#e85d04]" /> Admin Campaign
+              Control Room
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-0.5">
-              Quality control, 4-point verification checklist, scheduling &amp; add-on activations.
+              Quality control, 4-point verification checklist, scheduling &amp;
+              add-on activations.
             </p>
           </div>
           <Badge className="bg-[#e85d04] text-white font-bold text-xs px-3 py-1.5 border-0">
@@ -138,26 +147,49 @@ export default function AdminCampaignsPage() {
         {/* Master Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid grid-cols-2 sm:grid-cols-5 w-full bg-slate-100/80 p-1.5 rounded-2xl h-auto gap-1">
-            <TabsTrigger value="queue" className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs">
-              <ListOrdered className="w-3.5 h-3.5 mr-1 text-orange-600" /> Review Queue
+            <TabsTrigger
+              value="queue"
+              className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs"
+            >
+              <ListOrdered className="w-3.5 h-3.5 mr-1 text-orange-600" />{" "}
+              Review Queue
             </TabsTrigger>
-            <TabsTrigger value="calendar" className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs">
-              <Calendar className="w-3.5 h-3.5 mr-1 text-blue-600" /> Calendar &amp; Schedule
+            <TabsTrigger
+              value="calendar"
+              className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs"
+            >
+              <Calendar className="w-3.5 h-3.5 mr-1 text-blue-600" /> Calendar
+              &amp; Schedule
             </TabsTrigger>
-            <TabsTrigger value="addons" className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 mr-1 text-purple-600" /> Add-On Activations
+            <TabsTrigger
+              value="addons"
+              className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs"
+            >
+              <Sparkles className="w-3.5 h-3.5 mr-1 text-purple-600" /> Add-On
+              Activations
             </TabsTrigger>
-            <TabsTrigger value="live" className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs">
-              <Zap className="w-3.5 h-3.5 mr-1 text-emerald-600" /> Live Monitoring
+            <TabsTrigger
+              value="live"
+              className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs"
+            >
+              <Zap className="w-3.5 h-3.5 mr-1 text-emerald-600" /> Live
+              Monitoring
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs">
-              <PieChart className="w-3.5 h-3.5 mr-1 text-amber-600" /> Analytics &amp; Revenue
+            <TabsTrigger
+              value="analytics"
+              className="rounded-xl text-xs font-bold py-2 data-[state=active]:bg-white data-[state=active]:shadow-2xs"
+            >
+              <PieChart className="w-3.5 h-3.5 mr-1 text-amber-600" /> Analytics
+              &amp; Revenue
             </TabsTrigger>
           </TabsList>
 
           <div className="mt-6">
             <TabsContent value="queue">
-              <QueueTab campaigns={campaigns} onUpdateStatus={handleUpdateStatus} />
+              <QueueTab
+                campaigns={campaigns}
+                onUpdateStatus={handleUpdateStatus}
+              />
             </TabsContent>
             <TabsContent value="calendar">
               <CalendarTab campaigns={campaigns} />
@@ -166,7 +198,10 @@ export default function AdminCampaignsPage() {
               <AddOnsTab />
             </TabsContent>
             <TabsContent value="live">
-              <LiveMonitoringTab campaigns={campaigns} onUpdateStatus={handleUpdateStatus} />
+              <LiveMonitoringTab
+                campaigns={campaigns}
+                onUpdateStatus={handleUpdateStatus}
+              />
             </TabsContent>
             <TabsContent value="analytics">
               <AnalyticsRevenueTab />

@@ -5,10 +5,9 @@ import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 // Defer static loads of heavy below-the-fold and modal overlay components
-const ConfirmationModal = dynamicImport(
-  () => import("@/components/shared/ConfirmationModal"),
-  { ssr: false },
-);
+const ConfirmationModal = dynamicImport(() => import("@/components/shared/modals/ConfirmationModal"), {
+  ssr: false,
+});
 
 const HowItWorks = dynamicImport(() =>
   import("../HowItWorks").then((mod) => mod.HowItWorks),
@@ -40,7 +39,7 @@ import { DUMMY_TAB_COUPONS } from "./constants";
 import DealsOfTheDay from "./DealsOfTheDay";
 import InterestBanner from "./InterestBanner";
 import InterestSheet from "./InterestSheet";
-import LocationPromptModal from "@/components/shared/LocationPromptModal";
+import LocationPromptModal from "@/components/shared/modals/LocationPromptModal";
 // Component page sections
 import LeadingTaglineBar from "./LeadingTaglineBar";
 import NewsletterSubscription from "./NewsletterSubscription";

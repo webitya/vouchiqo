@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import ProductOfferCard from "@/components/shared/ProductOfferCard";
+import ProductOfferCard from "@/components/shared/cards/ProductOfferCard";
 import { TODAY_PRODUCT_DEALS } from "./constants";
 
 export const DealsOfTheDay = () => {

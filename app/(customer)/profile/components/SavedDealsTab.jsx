@@ -1,8 +1,8 @@
 "use client";
 
 import { Bookmark, Trash2 } from "lucide-react";
-import CouponCard from "@/components/shared/CouponCard";
-import EmptyState from "@/components/shared/EmptyState";
+import CouponCard from "@/components/shared/cards/CouponCard";
+import EmptyState from "@/components/shared/feedback/EmptyState";
 
 export default function SavedDealsTab({
   savedClaims,

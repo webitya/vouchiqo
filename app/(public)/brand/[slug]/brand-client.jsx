@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
+import { useTrackEvent } from "@/hooks/useTrackEvent";
 
 import BrandHeader from "./components/BrandHeader";
 import BrandStats from "./components/BrandStats";
@@ -17,7 +18,14 @@ export default function BrandClient({
   expiredCoupons = [],
   relatedBrands = [],
 }) {
+  const track = useTrackEvent();
   const [activeTab, setActiveTab] = useState("all");
+
+  useEffect(() => {
+    if (merchant?._id) {
+      track("store_view", { merchantId: merchant._id, source: "direct" });
+    }
+  }, [merchant?._id, track]);
   const [isFollowing, setIsFollowing] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedCouponId, setCopiedCouponId] = useState(null);

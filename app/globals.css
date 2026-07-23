@@ -211,6 +211,26 @@ body {
 }
 
 /* Signature Gradient Utilities */
+
+/* ─── Merchant Tour Utilities ─────────────────────────────────────────────── */
+
+/* Highlighted SIDEBAR item during tour */
+[data-tour-active="sidebar"] {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-radius: 8px !important;
+  position: relative;
+  z-index: 61 !important;
+}
+
+/* Highlighted CONTENT element during tour — orange outline glow */
+[data-tour-active="content"] {
+  outline: 2px solid rgba(232, 93, 4, 0.65) !important;
+  outline-offset: 6px !important;
+  border-radius: 12px !important;
+  position: relative;
+  z-index: 61 !important;
+}
+
 .bg-brand-gradient {
   background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
   background-size: 200% auto;

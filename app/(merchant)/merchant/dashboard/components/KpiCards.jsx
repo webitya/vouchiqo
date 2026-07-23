@@ -5,21 +5,33 @@ import {
   Eye,
   IndianRupee,
   LayoutList,
-  Ticket,
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
-function RechartsSparkline({ data = [], dataKey = "value", color = "#2563eb" }) {
+function RechartsSparkline({
+  data = [],
+  dataKey = "value",
+  color = "#2563eb",
+}) {
   if (data.length === 0) return null;
   const chartData = data.map((val, idx) => ({ id: idx, value: val }));
   return (
     <div className="w-full h-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
+        <AreaChart
+          data={chartData}
+          margin={{ top: 2, right: 2, left: 2, bottom: 2 }}
+        >
           <defs>
-            <linearGradient id={`sparkGrad-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
+            <linearGradient
+              id={`sparkGrad-${dataKey}`}
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="1"
+            >
               <stop offset="0%" stopColor={color} stopOpacity={0.25} />
               <stop offset="100%" stopColor={color} stopOpacity={0} />
             </linearGradient>
@@ -39,7 +51,19 @@ function RechartsSparkline({ data = [], dataKey = "value", color = "#2563eb" }) 
   );
 }
 
-function KpiCard({ title, value, subtitle, icon: Icon, iconBg, iconColor, trend, trendLabel, sparkData, sparkKey, sparkColor }) {
+function KpiCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  iconBg,
+  iconColor,
+  trend,
+  trendLabel,
+  sparkData,
+  sparkKey,
+  sparkColor,
+}) {
   return (
     <div
       data-slot="card"
@@ -59,22 +83,33 @@ function KpiCard({ title, value, subtitle, icon: Icon, iconBg, iconColor, trend,
                 )
               ) : null}
               {trend !== null && trend !== undefined && (
-                <span className={`text-xs font-semibold ${trend >= 0 ? "text-blue-600" : "text-rose-600"}`}>
-                  {trend >= 0 ? "+" : ""}{trend}%
+                <span
+                  className={`text-xs font-semibold ${trend >= 0 ? "text-blue-600" : "text-rose-600"}`}
+                >
+                  {trend >= 0 ? "+" : ""}
+                  {trend}%
                 </span>
               )}
               <span className="text-xs text-muted-foreground">
-                {trend !== null && trend !== undefined ? "vs last month" : subtitle}
+                {trend !== null && trend !== undefined
+                  ? "vs last month"
+                  : subtitle}
               </span>
             </div>
           </div>
-          <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${iconBg}`}>
+          <div
+            className={`flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${iconBg}`}
+          >
             <Icon className={`h-5 w-5 ${iconColor}`} />
           </div>
         </div>
       </div>
       <div className="h-12 w-full mt-3">
-        <RechartsSparkline data={sparkData} dataKey={sparkKey} color={sparkColor} />
+        <RechartsSparkline
+          data={sparkData}
+          dataKey={sparkKey}
+          color={sparkColor}
+        />
       </div>
     </div>
   );
@@ -91,7 +126,10 @@ export default function KpiCards({
   activeCoupons,
   planLimit,
 }) {
-  const listingPct = planLimit > 0 ? Math.min(100, Math.round((activeCoupons / planLimit) * 100)) : 0;
+  const listingPct =
+    planLimit > 0
+      ? Math.min(100, Math.round((activeCoupons / planLimit) * 100))
+      : 0;
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -142,11 +180,15 @@ export default function KpiCards({
         <div data-slot="card-content" className="p-5 pb-0">
           <div className="flex items-start justify-between">
             <div className="space-y-2 w-full">
-              <p className="text-xs font-medium text-muted-foreground">Active Listings</p>
+              <p className="text-xs font-medium text-muted-foreground">
+                Active Listings
+              </p>
               <p className="text-2xl font-bold tracking-tight">
                 {activeCoupons ?? 0}
                 {planLimit > 0 && (
-                  <span className="text-sm font-semibold text-muted-foreground ml-1">/ {planLimit}</span>
+                  <span className="text-sm font-semibold text-muted-foreground ml-1">
+                    / {planLimit}
+                  </span>
                 )}
               </p>
               {planLimit > 0 ? (
@@ -157,10 +199,14 @@ export default function KpiCards({
                       style={{ width: `${listingPct}%` }}
                     />
                   </div>
-                  <p className="text-[10px] text-muted-foreground font-medium">{listingPct}% of plan limit used</p>
+                  <p className="text-[10px] text-muted-foreground font-medium">
+                    {listingPct}% of plan limit used
+                  </p>
                 </div>
               ) : (
-                <span className="text-xs text-muted-foreground">Live coupons &amp; deals</span>
+                <span className="text-xs text-muted-foreground">
+                  Live coupons &amp; deals
+                </span>
               )}
             </div>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-violet-100 ml-3 shrink-0">

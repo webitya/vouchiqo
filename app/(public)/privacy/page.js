@@ -101,6 +101,15 @@ export default function PrivacyPolicy() {
               profile at any time via your account settings.
             </p>
           </div>
+
+          <div className="space-y-3 p-4 bg-orange-50/60 border border-orange-200/80 rounded-xl" id="revival-data-clause">
+            <h2 className="text-sm font-bold text-orange-950 uppercase tracking-wider flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#e85d04]" /> 6. Expired Offer Revival &amp; Merchant Demand Data Usage
+            </h2>
+            <p className="text-xs text-orange-900 font-medium leading-relaxed">
+              Information submitted about businesses not currently partnered with Vouchiqo (Category B and Category C revival submissions) may be used by Vouchiqo to evaluate and pursue potential business partnerships with those businesses. Customer contact details remain confidential and are protected under strict encryption standards.
+            </p>
+          </div>
         </article>
       </main>
 

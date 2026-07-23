@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   Edit,
   HelpCircle,
-  Loader2,
   Plus,
   Search,
   Trash2,
@@ -150,7 +149,10 @@ export default function MerchantCoupons() {
     >
       <div className="space-y-6 text-left font-sans">
         {/* Stats Cards Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div
+          data-tour="coupons-list"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
           <Card className="border-[#e2e8f0] shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -235,6 +237,7 @@ export default function MerchantCoupons() {
 
           <Link
             href="/merchant/coupons/new"
+            data-tour="create-coupon-btn"
             className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5 shadow-none w-full sm:w-auto justify-center rounded-lg border-0 h-10 font-bold cursor-pointer"
           >
             <Plus className="w-4 h-4" />

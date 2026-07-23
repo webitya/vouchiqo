@@ -28,15 +28,15 @@ export default function EmblaCarouselControls({
       </button>
 
       {/* Dots */}
-      <div className="embla__dots hidden md:flex items-center gap-1.5">
+      <div className="embla__dots flex items-center gap-1.5">
         {Array.from({ length: totalSlides }).map((_, i) => (
           <button
             key={i}
             type="button"
             className={`transition-all duration-300 ease-in-out rounded-full cursor-pointer h-1.5 ${
               i === selectedIndex
-                ? "w-8 bg-[#2563eb] opacity-100"
-                : "w-1.5 bg-slate-300 opacity-40 hover:opacity-100 hover:bg-[#2563eb]"
+                ? "w-6 bg-[#84cc16] opacity-100"
+                : "w-1.5 bg-slate-300 opacity-60 hover:opacity-100 hover:bg-[#84cc16]"
             }`}
             onClick={() => onDotClick(i)}
             aria-label={`Go to slide ${i + 1}`}

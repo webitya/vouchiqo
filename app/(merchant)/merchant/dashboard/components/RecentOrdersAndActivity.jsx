@@ -33,15 +33,15 @@ export default function RecentOrdersAndActivity({
   return (
     <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
       {/* Recent Orders / Claims List (2/3 width) */}
-      <Card className="col-span-full xl:col-span-8 border-[#e2e8f0] shadow-sm">
-        <CardHeader className="pb-3 border-b border-[#f1f5f9] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <Card className="col-span-full xl:col-span-8 bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col h-full hover:shadow-xs transition-all duration-200 p-0 gap-0 text-left">
+        <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-50/50 min-h-14">
           <div>
-            <CardTitle className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+            <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
               {activeTab === "redemptions"
                 ? "Recent Orders (Redemptions)"
                 : "Recent Coupon Claims"}
             </CardTitle>
-            <CardDescription className="text-[11px] font-semibold mt-0.5">
+            <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
               {activeTab === "redemptions"
                 ? "Latest redeemed transactions from your store"
                 : "Latest customer claims & saved codes from your store"}
@@ -50,14 +50,14 @@ export default function RecentOrdersAndActivity({
 
           <div className="flex items-center gap-3 self-end sm:self-auto">
             {/* Tab Switched Header */}
-            <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+            <div className="flex bg-slate-100/90 p-0.5 rounded-lg border border-slate-200/60 shrink-0">
               <button
                 type="button"
                 onClick={() => setActiveTab("redemptions")}
-                className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded cursor-pointer transition-all ${
+                className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-md transition-all cursor-pointer border-0 ${
                   activeTab === "redemptions"
-                    ? "bg-white text-slate-800 shadow-sm border border-slate-200/20"
-                    : "text-slate-500 hover:text-slate-800"
+                    ? "bg-white text-[#08214d] shadow-2xs"
+                    : "text-slate-500 hover:text-slate-800 bg-transparent"
                 }`}
               >
                 Redemptions
@@ -65,10 +65,10 @@ export default function RecentOrdersAndActivity({
               <button
                 type="button"
                 onClick={() => setActiveTab("claims")}
-                className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded cursor-pointer transition-all ${
+                className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-md transition-all cursor-pointer border-0 ${
                   activeTab === "claims"
-                    ? "bg-white text-slate-800 shadow-sm border border-slate-200/20"
-                    : "text-slate-500 hover:text-slate-800"
+                    ? "bg-white text-[#08214d] shadow-2xs"
+                    : "text-slate-500 hover:text-slate-800 bg-transparent"
                 }`}
               >
                 Claims ({recentClaims.length})
@@ -77,7 +77,7 @@ export default function RecentOrdersAndActivity({
 
             <Link
               href="/merchant/coupons"
-              className="text-xs font-bold text-[#3e80dd] hover:underline flex items-center gap-0.5"
+              className="text-xs font-bold text-[#2563eb] hover:underline flex items-center gap-0.5"
             >
               <span>View all</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -110,51 +110,47 @@ export default function RecentOrdersAndActivity({
                 {displayList.length > 0 ? (
                   displayList.map((tx, idx) => (
                     <TableRow
-                      key={idx}
-                      className="hover:bg-[#f8fafc]/50 transition-colors border-b border-[#f1f5f9] last:border-b-0"
+                      key={tx.id || idx}
+                      className="hover:bg-slate-50/80 transition-colors border-b border-slate-100 last:border-b-0"
                     >
                       <TableCell className="p-4 flex items-center gap-3">
                         <div
-                          className={`w-8 h-8 rounded-full ${tx.bg} text-white flex items-center justify-center font-bold text-[10px] shadow-sm`}
+                          className={`w-8 h-8 rounded-full ${tx.bg || "bg-blue-600"} text-white flex items-center justify-center font-bold text-[10px] shadow-sm shrink-0`}
                         >
-                          {tx.initials}
+                          {tx.initials || "CU"}
                         </div>
                         <div className="flex flex-col text-left">
                           <span className="font-bold text-slate-800">
-                            {tx.name}
+                            {tx.name || tx.userName || "Customer"}
                           </span>
                           <span className="text-[9px] text-slate-400 font-semibold">
-                            {tx.email}
+                            {tx.email || "customer@example.com"}
                           </span>
                         </div>
                       </TableCell>
                       <TableCell className="p-4 font-mono text-[10px] text-slate-500">
-                        {tx.id}
+                        {tx.id?.slice(0, 8) || "—"}
                       </TableCell>
-                      <TableCell className="p-4 text-slate-600 font-bold">
-                        {tx.product}
+                      <TableCell className="p-4 text-slate-600 font-bold text-xs">
+                        {tx.product || tx.couponTitle || "Discount Offer"}
                       </TableCell>
                       <TableCell className="p-4">
                         <Badge
-                          className={`rounded px-2.5 py-0.5 border-0 text-[9px] font-bold shadow-none ${
-                            tx.status === "Completed"
-                              ? "bg-blue-100 text-blue-800"
-                              : tx.status === "Claimed"
-                                ? "bg-indigo-100 text-indigo-800"
-                                : tx.status === "Processing"
-                                  ? "bg-slate-950 text-white"
-                                  : tx.status === "Pending"
-                                    ? "bg-amber-100 text-amber-800"
-                                    : "bg-rose-100 text-rose-800"
+                          className={`rounded-full px-2.5 py-0.5 border-0 text-[10px] font-bold shadow-none ${
+                            tx.status === "Completed" ||
+                            activeTab === "redemptions"
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200/80"
+                              : "bg-indigo-50 text-indigo-700 border border-indigo-200/80"
                           }`}
                         >
-                          {tx.status}
+                          {tx.status ||
+                            (activeTab === "redemptions"
+                              ? "Redeemed"
+                              : "Claimed")}
                         </Badge>
                       </TableCell>
-                      <TableCell
-                        className={`p-4 text-right text-slate-900 font-bold ${activeTab === "claims" ? "font-mono uppercase tracking-wider text-indigo-600" : ""}`}
-                      >
-                        {tx.amount}
+                      <TableCell className="p-4 text-right text-slate-900 font-bold text-xs">
+                        {tx.amount || "—"}
                       </TableCell>
                     </TableRow>
                   ))
@@ -162,13 +158,9 @@ export default function RecentOrdersAndActivity({
                   <TableRow>
                     <TableCell
                       colSpan={5}
-                      className="text-center p-8 text-slate-400 font-medium"
+                      className="text-center py-8 text-slate-400 text-xs"
                     >
-                      No recent{" "}
-                      {activeTab === "redemptions"
-                        ? "coupon redemptions"
-                        : "claims"}{" "}
-                      found.
+                      No recent {activeTab} recorded yet.
                     </TableCell>
                   </TableRow>
                 )}
@@ -179,25 +171,25 @@ export default function RecentOrdersAndActivity({
       </Card>
 
       {/* Recent Activity Timeline (1/3 width) */}
-      <Card className="col-span-full xl:col-span-4 border-[#e2e8f0] shadow-sm">
-        <CardHeader className="pb-3 border-b border-[#f1f5f9] flex flex-row justify-between items-center">
+      <Card className="col-span-full xl:col-span-4 bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col h-full hover:shadow-xs transition-all duration-200 p-0 gap-0">
+        <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 flex flex-row justify-between items-center bg-slate-50/50 min-h-[56px]">
           <div>
-            <CardTitle className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+            <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
               Recent Activity
             </CardTitle>
-            <CardDescription className="text-[11px] font-semibold mt-0.5">
+            <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
               Latest events from your store
             </CardDescription>
           </div>
           <Link
             href="/merchant/analytics"
-            className="text-xs font-bold text-[#3e80dd] hover:underline flex items-center gap-0.5"
+            className="text-xs font-bold text-[#2563eb] hover:underline flex items-center gap-0.5"
           >
             <span>View all</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </CardHeader>
-        <CardContent className="pt-4 px-5">
+        <CardContent className="p-4 sm:p-5 pt-4">
           <div className="space-y-5">
             {recentActivities.length > 0 ? (
               recentActivities.map((act, idx) => {

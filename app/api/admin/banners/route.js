@@ -53,12 +53,14 @@ export const PUT = asyncHandler(async (request) => {
   await requireRole(request, ROLES.ADMIN);
 
   const body = await request.json();
-  const { id, ...updateData } = body;
-  if (!id) {
+  const targetId = body.id || body.bannerId;
+  if (!targetId) {
     return error("Missing banner ID", HTTP.BAD_REQUEST);
   }
 
-  const banner = await updateBanner(id, updateData);
+  const { id, bannerId, ...updateData } = body;
+
+  const banner = await updateBanner(targetId, updateData);
   return ok(banner, "Promo banner updated successfully");
 });
 

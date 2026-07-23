@@ -49,16 +49,18 @@ export default function QuickActionsCard({ plan = "starter" }) {
   const isStarter = plan === "starter";
 
   return (
-    <Card className="border-[#e2e8f0] shadow-sm">
-      <CardHeader className="pb-3 border-b border-slate-100">
-        <CardTitle className="text-sm font-bold text-slate-800 uppercase tracking-wider">
-          Quick Actions
-        </CardTitle>
-        <CardDescription className="text-[11px] font-semibold mt-0.5">
-          Common tasks to manage your listings
-        </CardDescription>
+    <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col hover:shadow-xs transition-all duration-200 p-0 gap-0">
+      <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 flex flex-row items-center justify-between gap-3 bg-slate-50/50 min-h-[52px]">
+        <div>
+          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
+            Quick Actions
+          </CardTitle>
+          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
+            Common tasks to manage your listings
+          </CardDescription>
+        </div>
       </CardHeader>
-      <CardContent className="pt-4">
+      <CardContent className="p-4 sm:p-5 pt-4">
         <div className="grid grid-cols-2 gap-3">
           {ACTIONS.map((action) => {
             const Icon = action.icon;
@@ -94,7 +96,10 @@ export default function QuickActionsCard({ plan = "starter" }) {
         {isStarter && (
           <p className="mt-3 text-[10px] text-slate-400 font-semibold text-center">
             Campaign &amp; Revival tools require{" "}
-            <Link href="/merchant/billing" className="text-[#e85d04] underline underline-offset-2 font-bold">
+            <Link
+              href="/merchant/billing"
+              className="text-[#e85d04] underline underline-offset-2 font-bold"
+            >
               Growth plan or above
             </Link>
           </p>

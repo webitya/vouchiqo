@@ -37,8 +37,8 @@ export default function CampaignStepper({
                   isActive
                     ? "text-slate-900 font-extrabold"
                     : isCompleted
-                    ? "text-emerald-600 font-bold"
-                    : "text-slate-400 font-medium"
+                      ? "text-emerald-600 font-bold"
+                      : "text-slate-400 font-medium"
                 }`}
               >
                 <span
@@ -46,11 +46,15 @@ export default function CampaignStepper({
                     isActive
                       ? "bg-[#e85d04] text-white shadow-xs"
                       : isCompleted
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-slate-200/80 text-slate-500"
+                        ? "bg-emerald-100 text-emerald-700"
+                        : "bg-slate-200/80 text-slate-500"
                   }`}
                 >
-                  {isCompleted ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : step.number}
+                  {isCompleted ? (
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
+                  ) : (
+                    step.number
+                  )}
                 </span>
                 <span>{step.label}</span>
               </button>

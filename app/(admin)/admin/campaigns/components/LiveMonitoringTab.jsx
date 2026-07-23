@@ -1,18 +1,6 @@
 "use client";
 
-import {
-  AlertTriangle,
-  BarChart2,
-  Check,
-  CheckCircle2,
-  Flame,
-  Pause,
-  Play,
-  Plus,
-  RefreshCw,
-  StopCircle,
-  TrendingUp,
-} from "lucide-react";
+import { AlertTriangle, Pause, Play, Plus, StopCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +29,9 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
 
   const handlePause = () => {
     if (pauseReason.trim().length < 20) {
-      toast.error("Pausing a campaign requires a mandatory reason of at least 20 characters.");
+      toast.error(
+        "Pausing a campaign requires a mandatory reason of at least 20 characters.",
+      );
       return;
     }
     onUpdateStatus(selectedCamp._id, "Live — Paused", pauseReason);
@@ -70,10 +60,13 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
       <Card className="border-amber-200/80 shadow-xs rounded-2xl bg-amber-50/50 p-4 space-y-2">
         <div className="flex items-center gap-2 text-xs font-bold text-amber-900">
           <AlertTriangle className="w-4 h-4 text-amber-600" />
-          <span>Real-time Live Monitoring Auto-Alerts (Refreshes every 2 minutes)</span>
+          <span>
+            Real-time Live Monitoring Auto-Alerts (Refreshes every 2 minutes)
+          </span>
         </div>
         <p className="text-[11px] text-amber-800 font-medium">
-          System automatically flags: Redemptions &ge;80% of cap, Success Rate &lt;80%, or 24 hours with zero redemptions.
+          System automatically flags: Redemptions &ge;80% of cap, Success Rate
+          &lt;80%, or 24 hours with zero redemptions.
         </p>
       </Card>
 
@@ -86,16 +79,26 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
           const pctCap = Math.min(100, Math.round((redemptions / cap) * 100));
 
           return (
-            <Card key={camp._id} className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 space-y-4">
+            <Card
+              key={camp._id}
+              className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 space-y-4"
+            >
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base font-bold text-slate-900">{camp.name}</h4>
-                    <Badge variant="secondary" className="capitalize text-[10px] font-bold">
+                    <h4 className="text-base font-bold text-slate-900">
+                      {camp.name}
+                    </h4>
+                    <Badge
+                      variant="secondary"
+                      className="capitalize text-[10px] font-bold"
+                    >
                       {camp.type}
                     </Badge>
                   </div>
-                  <p className="text-xs text-slate-500 font-semibold">{camp.merchantId?.businessName}</p>
+                  <p className="text-xs text-slate-500 font-semibold">
+                    {camp.merchantId?.businessName}
+                  </p>
                 </div>
                 <Badge
                   className={`text-[10px] font-bold border-0 ${
@@ -111,16 +114,28 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
               {/* Realtime Metrics */}
               <div className="grid grid-cols-3 gap-2 py-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
                 <div>
-                  <span className="text-base font-black text-slate-900 block">{clicks}</span>
-                  <span className="text-[9px] font-bold text-slate-400 uppercase">Clicks</span>
+                  <span className="text-base font-black text-slate-900 block">
+                    {clicks}
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase">
+                    Clicks
+                  </span>
                 </div>
                 <div className="border-x border-slate-200/60">
-                  <span className="text-base font-black text-slate-900 block">{redemptions}</span>
-                  <span className="text-[9px] font-bold text-slate-400 uppercase">Redemptions</span>
+                  <span className="text-base font-black text-slate-900 block">
+                    {redemptions}
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase">
+                    Redemptions
+                  </span>
                 </div>
                 <div>
-                  <span className="text-base font-black text-emerald-600 block">98.4%</span>
-                  <span className="text-[9px] font-bold text-slate-400 uppercase">Success Rate</span>
+                  <span className="text-base font-black text-emerald-600 block">
+                    98.4%
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase">
+                    Success Rate
+                  </span>
                 </div>
               </div>
 
@@ -128,7 +143,9 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
               <div className="space-y-1">
                 <div className="flex justify-between text-xs font-bold text-slate-700">
                   <span>Cap Progress</span>
-                  <span>{redemptions} / {cap} ({pctCap}%)</span>
+                  <span>
+                    {redemptions} / {cap} ({pctCap}%)
+                  </span>
                 </div>
                 <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                   <div
@@ -144,7 +161,11 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
                   <Button
                     size="sm"
                     onClick={() => {
-                      onUpdateStatus(camp._id, "Live — Active", "Resumed by admin");
+                      onUpdateStatus(
+                        camp._id,
+                        "Live — Active",
+                        "Resumed by admin",
+                      );
                       toast.success("Campaign resumed!");
                     }}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] h-8 rounded-xl cursor-pointer"
@@ -206,7 +227,9 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-2 text-xs">
-            <Label className="font-bold text-slate-800">Mandatory Pause Reason (Min 20 chars)</Label>
+            <Label className="font-bold text-slate-800">
+              Mandatory Pause Reason (Min 20 chars)
+            </Label>
             <Textarea
               rows={3}
               placeholder="e.g. Counter staff reported high rush, pausing temporarily..."
@@ -215,7 +238,10 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
               className="bg-white border-slate-200 text-xs rounded-xl"
             />
           </div>
-          <Button onClick={handlePause} className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs h-9 rounded-xl cursor-pointer">
+          <Button
+            onClick={handlePause}
+            className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs h-9 rounded-xl cursor-pointer"
+          >
             Confirm Pause
           </Button>
         </DialogContent>
@@ -230,10 +256,13 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
             </DialogTitle>
           </DialogHeader>
           <p className="text-xs text-slate-600 font-medium">
-            This will stop all promotional channels immediately and compile final analytics.
+            This will stop all promotional channels immediately and compile
+            final analytics.
           </p>
           <div className="space-y-2 text-xs">
-            <Label className="font-bold text-slate-800">Termination Reason</Label>
+            <Label className="font-bold text-slate-800">
+              Termination Reason
+            </Label>
             <Input
               type="text"
               placeholder="Reason sent to merchant..."
@@ -242,7 +271,10 @@ export default function LiveMonitoringTab({ campaigns = [], onUpdateStatus }) {
               className="bg-white border-slate-200 text-xs h-9 rounded-xl font-medium"
             />
           </div>
-          <Button onClick={handleEndNow} className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs h-9 rounded-xl cursor-pointer">
+          <Button
+            onClick={handleEndNow}
+            className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs h-9 rounded-xl cursor-pointer"
+          >
             Confirm Termination
           </Button>
         </DialogContent>

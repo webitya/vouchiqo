@@ -1,6 +1,11 @@
 "use client";
 
-import { ArrowUpRight, CalendarDays, LayoutList, Megaphone } from "lucide-react";
+import {
+  ArrowUpRight,
+  CalendarDays,
+  LayoutList,
+  Megaphone,
+} from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -41,7 +46,9 @@ function UsageBar({ label, icon: Icon, used, limit, color }) {
               style={{ width: `${pct}%` }}
             />
           </div>
-          <p className="text-[10px] text-muted-foreground font-medium">{pct}% used</p>
+          <p className="text-[10px] text-muted-foreground font-medium">
+            {pct}% used
+          </p>
         </>
       )}
     </div>
@@ -59,25 +66,29 @@ export default function PlanUsageCard({
   const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
   const planColor = PLAN_COLORS[plan] ?? PLAN_COLORS.starter;
 
-  const effectiveListingLimit = plan === "starter" ? 3 : plan === "growth" ? 15 : -1;
-  const effectiveCampaignLimit = plan === "starter" ? 0 : plan === "growth" ? 4 : -1;
+  const effectiveListingLimit =
+    plan === "starter" ? 3 : plan === "growth" ? 15 : -1;
+  const effectiveCampaignLimit =
+    plan === "starter" ? 0 : plan === "growth" ? 4 : -1;
 
   return (
-    <Card className="border-[#e2e8f0] shadow-sm">
-      <CardHeader className="pb-3 border-b border-slate-100 flex flex-row items-start justify-between">
+    <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col hover:shadow-xs transition-all duration-200 p-0 gap-0">
+      <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 flex flex-row items-center justify-between gap-3 bg-slate-50/50 min-h-[52px]">
         <div>
-          <CardTitle className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
             Plan Usage
           </CardTitle>
-          <CardDescription className="text-[11px] font-semibold mt-0.5">
+          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Your current subscription limits
           </CardDescription>
         </div>
-        <span className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider ${planColor}`}>
+        <span
+          className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${planColor}`}
+        >
           {planLabel}
         </span>
       </CardHeader>
-      <CardContent className="pt-4 space-y-4">
+      <CardContent className="p-4 sm:p-5 pt-4 space-y-4">
         <UsageBar
           label="Listings"
           icon={LayoutList}
@@ -100,8 +111,8 @@ export default function PlanUsageCard({
               {renewalDays > 0
                 ? `Renews in ${renewalDays} days`
                 : renewalDays === 0
-                ? "Renews today"
-                : "Subscription expired"}
+                  ? "Renews today"
+                  : "Subscription expired"}
             </span>
           </div>
         )}

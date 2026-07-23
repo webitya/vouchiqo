@@ -4,7 +4,7 @@ import { Search, Tag } from "lucide-react";
 import { useEffect, useState } from "react";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
-import CouponCard from "@/components/shared/CouponCard";
+import CouponCard from "@/components/shared/cards/CouponCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

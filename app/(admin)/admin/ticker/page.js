@@ -8,12 +8,11 @@ import {
   Tag,
   TrendingUp,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import EmptyState from "@/components/shared/EmptyState";
+import EmptyState from "@/components/shared/feedback/EmptyState";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -33,7 +32,7 @@ export default function TickerManagement() {
   const [loading, setLoading] = useState(true);
   const [successMsg, setSuccessMsg] = useState("");
 
-  const fetchActiveCoupons = async () => {
+  const fetchActiveCoupons = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminFetchActiveCoupons();
@@ -43,11 +42,11 @@ export default function TickerManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchActiveCoupons();
-  }, []);
+  }, [fetchActiveCoupons]);
 
   const getPriority = (coupon) => {
     if (coupon.isFeatured) return 1;

@@ -3,9 +3,14 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import DirectoryLayout from "@/components/layout/DirectoryLayout";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
 import { useLocation } from "@/hooks/use-location";
+import {
+  ALPHA_LETTERS,
+  POPULAR_MERCHANTS_SIDEBAR,
+} from "@/utils/shared-navigation";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -702,7 +707,7 @@ export default function NearbyOffers() {
       gap: "6px",
       background: active ? "#2563eb" : "white",
       color: active ? "white" : "#4b5563",
-      border: "1px solid " + (active ? "#2563eb" : "#e5e7eb"),
+      border: `1px solid ${active ? "#2563eb" : "#e5e7eb"}`,
       borderRadius: "8px",
       padding: "7px 13px",
       fontSize: "13px",
@@ -749,7 +754,7 @@ export default function NearbyOffers() {
       gap: "6px",
       background: active ? "#eff6ff" : "white",
       color: active ? "#2563eb" : "#4b5563",
-      border: "1px solid " + (active ? "#bfdbfe" : "#e5e7eb"),
+      border: `1px solid ${active ? "#bfdbfe" : "#e5e7eb"}`,
       borderRadius: "8px",
       padding: "0 13px",
       height: "38px",
@@ -1411,401 +1416,655 @@ export default function NearbyOffers() {
     <div style={s.grid}>{activeList.map(renderCard)}</div>
   );
 
+  const [viewMode, setViewMode] = useState("directory"); // 'directory' or 'map'
+  const [citySearch, setCitySearch] = useState("");
+  const [activeCityLetter, setActiveCityLetter] = useState("all");
+  const [cityGridCols, setCityGridCols] = useState(4);
+  const [showMoreAboutCities, setShowMoreAboutCities] = useState(false);
+  const [showAllSidebarMerchants, setShowAllSidebarMerchants] = useState(false);
+
+  const CITIES_LIST = [
+    {
+      name: "Delhi",
+      slug: "delhi",
+      coupons: 51,
+      offers: 90,
+      svg: `<path d="M12 2L4 7v10l8 5 8-5V7l-8-5z M12 6v6 M8 9h8" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Hyderabad",
+      slug: "hyderabad",
+      coupons: 111,
+      offers: 107,
+      svg: `<path d="M6 22V8l6-4 6 4v14 M10 14h4 M10 18h4" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Bangalore",
+      slug: "bangalore",
+      coupons: 85,
+      offers: 104,
+      svg: `<path d="M3 21h18 M6 18V6l6-3 6 3v12" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Mumbai",
+      slug: "mumbai",
+      coupons: 56,
+      offers: 102,
+      svg: `<path d="M4 21h16 M7 17V4l5-2 5 2v13" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Ranchi",
+      slug: "ranchi",
+      coupons: 42,
+      offers: 88,
+      svg: `<path d="M5 20h14 M8 16V9l4-3 4 3v7" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Jamshedpur",
+      slug: "jamshedpur",
+      coupons: 38,
+      offers: 74,
+      svg: `<path d="M4 19h16 M7 15V8l5-3 5 3v7" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Patna",
+      slug: "patna",
+      coupons: 64,
+      offers: 92,
+      svg: `<path d="M6 20h12 M9 16V7l3-2 3 2v9" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Arrah",
+      slug: "arrah",
+      coupons: 22,
+      offers: 45,
+      svg: `<path d="M5 19h14 M8 15V9l4-3 4 3v6" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Pune",
+      slug: "pune",
+      coupons: 78,
+      offers: 112,
+      svg: `<path d="M4 20h16 M7 16V6l5-2 5 2v10" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Chennai",
+      slug: "chennai",
+      coupons: 69,
+      offers: 98,
+      svg: `<path d="M5 21h14 M8 17V7l4-3 4 3v10" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Kolkata",
+      slug: "kolkata",
+      coupons: 92,
+      offers: 130,
+      svg: `<path d="M4 20h16 M7 16V5l5-2 5 2v11" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Ahmedabad",
+      slug: "ahmedabad",
+      coupons: 54,
+      offers: 86,
+      svg: `<path d="M6 19h12 M9 15V8l3-3 3 3v7" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Jaipur",
+      slug: "jaipur",
+      coupons: 47,
+      offers: 79,
+      svg: `<path d="M5 20h14 M8 16V7l4-2 4 2v9" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Chandigarh",
+      slug: "chandigarh",
+      coupons: 33,
+      offers: 61,
+      svg: `<path d="M6 19h12 M9 15V9l3-2 3 2v6" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Lucknow",
+      slug: "lucknow",
+      coupons: 58,
+      offers: 94,
+      svg: `<path d="M4 21h16 M7 17V6l5-3 5 3v11" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Surat",
+      slug: "surat",
+      coupons: 41,
+      offers: 73,
+      svg: `<path d="M5 20h14 M8 16V8l4-2 4 2v8" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Kochi",
+      slug: "kochi",
+      coupons: 36,
+      offers: 68,
+      svg: `<path d="M6 19h12 M9 15V9l3-3 3 3v6" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Indore",
+      slug: "indore",
+      coupons: 44,
+      offers: 81,
+      svg: `<path d="M5 20h14 M8 16V8l4-3 4 3v8" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Bhopal",
+      slug: "bhopal",
+      coupons: 29,
+      offers: 53,
+      svg: `<path d="M6 19h12 M9 15V9l3-2 3 2v6" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Nagpur",
+      slug: "nagpur",
+      coupons: 31,
+      offers: 57,
+      svg: `<path d="M5 20h14 M8 16V8l4-2 4 2v8" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+    {
+      name: "Visakhapatnam",
+      slug: "visakhapatnam",
+      coupons: 27,
+      offers: 49,
+      svg: `<path d="M6 19h12 M9 15V9l3-2 3 2v6" stroke="#2563eb" stroke-width="1.5" fill="none"/>`,
+    },
+  ];
+
+  const POPULAR_CITIES_FOUR = CITIES_LIST.slice(0, 4);
+
+  const filteredCities = useMemo(() => {
+    let list = CITIES_LIST;
+    if (activeCityLetter !== "all") {
+      list = list.filter((c) =>
+        c.name.toUpperCase().startsWith(activeCityLetter),
+      );
+    }
+    if (citySearch.trim()) {
+      list = list.filter((c) =>
+        c.name.toLowerCase().includes(citySearch.toLowerCase()),
+      );
+    }
+    return list;
+  }, [activeCityLetter, citySearch]);
+
+  const visibleSidebarMerchants = showAllSidebarMerchants
+    ? POPULAR_MERCHANTS_SIDEBAR
+    : POPULAR_MERCHANTS_SIDEBAR.slice(0, 6);
+
   // ─── Main render ──────────────────────────────────────────────────────────────
   return (
     <div style={s.page}>
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
-        .nb-main { width: 100%; padding: 16px 24px 100px; box-sizing: border-box; flex: 1; min-height: 100vh; }
-        .nb-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #e5e7eb; }
-        .nb-header-left { min-width: 0; }
-        .nb-location-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .nb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-        .nb-search-row { display: flex; gap: 8px; align-items: stretch; margin-bottom: 10px; }
-        .nb-search-wrap { position: relative; flex: 1; min-width: 0; }
-        .nb-tabs { display: flex; gap: 3px; background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 4px; margin-bottom: 16px; overflow-x: auto; box-shadow: 0 1px 6px rgba(0,0,0,0.06); -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-        .nb-tabs::-webkit-scrollbar { display: none; }
-        /* Mobile: <= 640px */
+        .sidebar-item-hover:hover { background: #f8fafc !important; color: #2563eb !important; }
+        .sidebar-link-item:hover { color: #2563eb !important; }
+        .brand-card-hover:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important; border-color: #2563eb !important; transform: translateY(-1px); }
+        .grid-btn-hover:hover { background: #f8fafc !important; color: #2563eb !important; border-color: #2563eb !important; }
+        @media (max-width: 900px) {
+          .stores-grid-layout { grid-template-columns: 1fr !important; padding: 12px !important; gap: 16px !important; }
+        }
         @media (max-width: 640px) {
-          .nb-main { padding: 12px 12px 36px; }
-          .nb-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-          .nb-header-left h1 { font-size: 17px !important; }
-          .nb-header-left p { font-size: 12px !important; }
-          .nb-location-bar { width: 100%; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
-          .nb-grid { grid-template-columns: 1fr; gap: 10px; }
-          .nb-search-row { flex-direction: row; }
-        }
-        /* Tablet: 641px – 1024px */
-        @media (min-width: 641px) and (max-width: 1024px) {
-          .nb-main { padding: 16px 20px 40px; }
-          .nb-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-          .nb-header { gap: 12px; }
-        }
-        /* Desktop: >= 1025px */
-        @media (min-width: 1025px) {
-          .nb-main { padding: 20px 32px 48px; }
-          .nb-grid { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
-        }
-        /* Large screens */
-        @media (min-width: 1440px) {
-          .nb-main { padding: 20px 48px 48px; }
-          .nb-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+          .all-stores-responsive-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
         }
       `}</style>
       <Navbar />
 
-      {/* ── MAP VIEW ONLY ── */}
-      <>
-        <div style={s.mapLayout}>
-          {/* Sidebar — scrollable */}
-          <div style={s.mapSidebar}>
-            <div style={s.mapSidebarHeader}>
-              <div style={{ marginBottom: "10px" }}>
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: "14px",
-                    color: "#111827",
-                  }}
-                >
-                  Deals Near You
-                </div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    color: "#9ca3af",
-                    marginTop: "2px",
-                  }}
-                >
-                  Browse offers on the map
-                </div>
-              </div>
-              <div style={{ position: "relative" }}>
-                <span
-                  style={{
-                    position: "absolute",
-                    left: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "#9ca3af",
-                  }}
-                >
-                  <IconSearch />
-                </span>
-                <input
-                  style={{ ...s.searchInput, paddingLeft: "34px" }}
-                  placeholder="Search stores or deals…"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-            <div style={s.mapSidebarList}>
-              {loading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                  }}
-                >
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <SkeletonCard key={i} />
-                  ))}
-                </div>
-              ) : grouped.all.length === 0 ? (
-                <div
-                  style={{
-                    padding: "24px",
-                    textAlign: "center",
-                    color: "#6b7280",
-                    fontSize: "13px",
-                  }}
-                >
-                  No deals match your filters
-                </div>
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                  }}
-                >
-                  {grouped.all.map(renderCard)}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Compact map panel — right side */}
-          <div style={s.mapPanel}>
-            <div
-              ref={mapRef}
+      {viewMode === "directory" ? (
+        <DirectoryLayout
+          activeKey="Cities Deals"
+          title="Cities"
+          icon={IconPin}
+          stat1={{ count: 21, label: "Total Cities", shortLabel: "Cities" }}
+          stat2={{ count: "2,157", label: "Total Coupons & Offers" }}
+          aboutTitle="About Cities"
+          aboutText="Every city has its own vibe, and so do its deals. Vouchiqo brings you exclusive offers that cater to your city's tastes and needs."
+          actionElement={
+            <button
+              onClick={() => setViewMode("map")}
+              className="px-3 py-1.5 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-bold border border-blue-200 transition-colors flex items-center gap-1.5"
+            >
+              <IconMap /> Interactive Map
+            </button>
+          }
+        >
+          {/* Popular Cities */}
+          <section
+            style={{
+              background: "#ffffff",
+              borderRadius: 6,
+              border: "1px solid #e5e7eb",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+              padding: "16px 20px 20px",
+            }}
+          >
+            <h2
               style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: "10px",
-                border: "1px solid #e5e7eb",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                fontSize: 16,
+                fontWeight: 800,
+                color: "#000000",
+                marginBottom: 16,
+                letterSpacing: "-0.2px",
               }}
-            />
-            {!leafletLoaded && (
-              <div
+            >
+              Popular Cities
+            </h2>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: 12,
+              }}
+            >
+              {POPULAR_CITIES_FOUR.map((c) => (
+                <div
+                  key={c.name}
+                  style={{
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 6,
+                    background: "#ffffff",
+                    padding: "16px 12px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 10,
+                    cursor: "pointer",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
+                  }}
+                  className="brand-card-hover"
+                  onClick={() => {
+                    setSavedCity(c.name);
+                    setViewMode("map");
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 60,
+                      height: 60,
+                      borderRadius: "50%",
+                      background: "#eff6ff",
+                      border: "1px solid #dbeafe",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyCenter: "center",
+                      padding: 12,
+                    }}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="36"
+                      height="36"
+                      dangerouslySetInnerHTML={{ __html: c.svg }}
+                    />
+                  </div>
+                  <div style={{ textAlign: "center" }}>
+                    <p
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 800,
+                        color: "#000000",
+                        margin: "0 0 3px 0",
+                      }}
+                    >
+                      {c.name}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        color: "#6b7280",
+                        fontWeight: 600,
+                        margin: 0,
+                      }}
+                    >
+                      {c.coupons} Coupons &bull; {c.offers} Offers
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* All Cities */}
+          <section
+            style={{
+              background: "#ffffff",
+              borderRadius: 6,
+              border: "1px solid #e5e7eb",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+              padding: "16px 20px 20px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 16,
+                flexWrap: "wrap",
+                gap: 12,
+              }}
+            >
+              <h2
                 style={{
-                  position: "absolute",
-                  top: "12px",
-                  left: "12px",
-                  right: "12px",
-                  bottom: "12px",
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                  zIndex: 1000,
-                  background: "#e8ede9",
-                  border: "1px solid #e5e7eb",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                  fontSize: 16,
+                  fontWeight: 800,
+                  color: "#000000",
+                  margin: 0,
+                  letterSpacing: "-0.2px",
                 }}
               >
-                {/* SVG terrain skeleton */}
-                <svg
-                  width="100%"
-                  height="100%"
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ position: "absolute", inset: 0 }}
-                >
-                  <rect x="0" y="0" width="100%" height="100%" fill="#e8ede9" />
-                  <rect
-                    x="0"
-                    y="0"
-                    width="38%"
-                    height="42%"
-                    fill="#dde8df"
-                    opacity="0.8"
-                  />
-                  <rect
-                    x="55%"
-                    y="15%"
-                    width="45%"
-                    height="35%"
-                    fill="#d4e8d8"
-                    opacity="0.7"
-                  />
-                  <rect
-                    x="10%"
-                    y="55%"
-                    width="40%"
-                    height="30%"
-                    fill="#dde4dd"
-                    opacity="0.6"
-                  />
-                  <rect
-                    x="60%"
-                    y="60%"
-                    width="40%"
-                    height="40%"
-                    fill="#e2eddf"
-                    opacity="0.7"
-                  />
-                  <ellipse
-                    cx="72%"
-                    cy="38%"
-                    rx="12%"
-                    ry="8%"
-                    fill="#c8dff0"
-                    opacity="0.65"
-                  />
-                  <ellipse
-                    cx="25%"
-                    cy="75%"
-                    rx="8%"
-                    ry="5%"
-                    fill="#c8dff0"
-                    opacity="0.5"
-                  />
-                  <rect
-                    x="0"
-                    y="48%"
-                    width="100%"
-                    height="2%"
-                    fill="#d1cfc8"
-                    opacity="0.9"
-                  />
-                  <rect
-                    x="0"
-                    y="28%"
-                    width="60%"
-                    height="1.2%"
-                    fill="#d8d5ce"
-                    opacity="0.75"
-                  />
-                  <rect
-                    x="40%"
-                    y="70%"
-                    width="60%"
-                    height="1.5%"
-                    fill="#d1cfc8"
-                    opacity="0.75"
-                  />
-                  <rect
-                    x="33%"
-                    y="0"
-                    width="1.5%"
-                    height="100%"
-                    fill="#d1cfc8"
-                    opacity="0.85"
-                  />
-                  <rect
-                    x="66%"
-                    y="0"
-                    width="1.2%"
-                    height="100%"
-                    fill="#d8d5ce"
-                    opacity="0.7"
-                  />
-                  <line
-                    x1="0%"
-                    y1="100%"
-                    x2="50%"
-                    y2="0%"
-                    stroke="#ccc9c1"
-                    strokeWidth="6"
-                    opacity="0.5"
-                  />
-                  <line
-                    x1="50%"
-                    y1="100%"
-                    x2="100%"
-                    y2="30%"
-                    stroke="#ccc9c1"
-                    strokeWidth="4"
-                    opacity="0.4"
-                  />
-                  <rect
-                    x="36%"
-                    y="20%"
-                    width="10%"
-                    height="7%"
-                    rx="2"
-                    fill="#c8c5be"
-                    opacity="0.35"
-                  />
-                  <rect
-                    x="50%"
-                    y="52%"
-                    width="12%"
-                    height="8%"
-                    rx="2"
-                    fill="#c8c5be"
-                    opacity="0.35"
-                  />
-                  <rect
-                    x="18%"
-                    y="38%"
-                    width="8%"
-                    height="6%"
-                    rx="2"
-                    fill="#c8c5be"
-                    opacity="0.3"
-                  />
-                  <rect
-                    x="72%"
-                    y="20%"
-                    width="9%"
-                    height="6%"
-                    rx="2"
-                    fill="#c8c5be"
-                    opacity="0.3"
-                  />
-                </svg>
-                {/* Pulse shimmer overlay */}
-                <div
+                All Cities
+              </h2>
+              <div style={{ display: "flex", gap: 4 }}>
+                {[3, 4, 5].map((cols) => (
+                  <button
+                    key={cols}
+                    onClick={() => setCityGridCols(cols)}
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 4,
+                      border: "1px solid #e5e7eb",
+                      background: cityGridCols === cols ? "#2563eb" : "#ffffff",
+                      color: cityGridCols === cols ? "#ffffff" : "#4b5563",
+                      cursor: "pointer",
+                      fontSize: 11,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {cols}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Alpha + Search */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 12,
+                marginBottom: 16,
+                paddingBottom: 14,
+                borderBottom: "1px solid #f3f4f6",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 3,
+                  flex: 1,
+                  minWidth: 0,
+                }}
+              >
+                <button
+                  onClick={() => setActiveCityLetter("all")}
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    animation: "pulse 1.8s infinite ease-in-out",
-                    background: "rgba(255,255,255,0.1)",
+                    padding: "3px 8px",
+                    borderRadius: 4,
+                    border: "1px solid",
+                    borderColor:
+                      activeCityLetter === "all" ? "#2563eb" : "#e5e7eb",
+                    background:
+                      activeCityLetter === "all" ? "#2563eb" : "transparent",
+                    color: activeCityLetter === "all" ? "#ffffff" : "#4b5563",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                  }}
+                >
+                  All
+                </button>
+                {ALPHA_LETTERS.map((letter) => (
+                  <button
+                    key={letter}
+                    onClick={() =>
+                      setActiveCityLetter(
+                        activeCityLetter === letter ? "all" : letter,
+                      )
+                    }
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: 4,
+                      border: "1px solid",
+                      borderColor:
+                        activeCityLetter === letter ? "#2563eb" : "#e5e7eb",
+                      background:
+                        activeCityLetter === letter ? "#2563eb" : "transparent",
+                      color:
+                        activeCityLetter === letter ? "#ffffff" : "#1f2937",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {letter}
+                  </button>
+                ))}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 4,
+                  padding: "5px 10px",
+                  background: "#ffffff",
+                  minWidth: 200,
+                }}
+              >
+                <IconSearch />
+                <input
+                  placeholder="Search by cities name"
+                  value={citySearch}
+                  onChange={(e) => setCitySearch(e.target.value)}
+                  style={{
+                    border: "none",
+                    background: "transparent",
+                    fontSize: 12,
+                    color: "#000000",
+                    outline: "none",
+                    width: "100%",
                   }}
                 />
-                {/* Pin placeholders */}
-                {[
-                  { top: "42%", left: "32%", primary: true },
-                  { top: "55%", left: "58%", primary: false },
-                  { top: "25%", left: "65%", primary: false },
-                  { top: "68%", left: "22%", primary: false },
-                ].map((pos, i) => (
+              </div>
+            </div>
+
+            {/* City Cards Grid */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${cityGridCols}, 1fr)`,
+                gap: 12,
+              }}
+              className="all-stores-responsive-grid"
+            >
+              {filteredCities.map((c) => (
+                <div
+                  key={c.name}
+                  style={{
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 6,
+                    background: "#ffffff",
+                    padding: "12px",
+                    display: "flex",
+                    flexDirection: "column",
+                    items: "center",
+                    textAlign: "center",
+                    gap: 8,
+                    cursor: "pointer",
+                  }}
+                  className="brand-card-hover"
+                  onClick={() => {
+                    setSavedCity(c.name);
+                    setViewMode("map");
+                  }}
+                >
                   <div
-                    key={i}
                     style={{
-                      position: "absolute",
-                      top: pos.top,
-                      left: pos.left,
-                      width: "28px",
-                      height: "28px",
+                      width: 42,
+                      height: 42,
                       borderRadius: "50%",
-                      background: pos.primary ? "#2563eb" : "#94a3b8",
-                      border: "3px solid white",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
-                      animation: `pulse ${1.4 + i * 0.2}s infinite ease-in-out`,
+                      background: "#f8fafc",
+                      border: "1px solid #e2e8f0",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      zIndex: 2,
+                      margin: "0 auto",
+                      padding: 8,
                     }}
                   >
-                    {pos.primary && (
-                      <div
-                        style={{
-                          width: "8px",
-                          height: "8px",
-                          borderRadius: "50%",
-                          background: "white",
-                        }}
-                      />
-                    )}
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      dangerouslySetInnerHTML={{ __html: c.svg }}
+                    />
                   </div>
-                ))}
-                {/* Loading label */}
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "20px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    background: "white",
-                    borderRadius: "8px",
-                    padding: "8px 18px",
-                    fontSize: "12px",
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-                    whiteSpace: "nowrap",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "7px",
-                    zIndex: 3,
-                  }}
-                >
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#2563eb"
-                    strokeWidth="2.5"
+                  <p
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#000000",
+                      margin: 0,
+                    }}
                   >
-                    <circle cx="12" cy="12" r="8" />
-                    <path d="M12 2a14.5 14.5 0 0 0 0 20" />
-                    <path d="M2 12h20" />
-                  </svg>
-                  Loading map…
+                    {c.name}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: 11,
+                      color: "#2563eb",
+                      fontWeight: 600,
+                      margin: 0,
+                    }}
+                  >
+                    {c.coupons + c.offers} Active Offers
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </DirectoryLayout>
+      ) : (
+        /* ── INTERACTIVE MAP VIEW ── */
+        <>
+          <div className="p-3 bg-white border-b border-slate-200 flex justify-between items-center px-6">
+            <span className="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <IconPin /> Interactive Deals Map — {savedCity || "All Cities"}
+            </span>
+            <button
+              onClick={() => setViewMode("directory")}
+              className="px-3 py-1.5 rounded-md bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors"
+            >
+              Back to Cities Directory
+            </button>
+          </div>
+          <div style={s.mapLayout}>
+            <div style={s.mapSidebar}>
+              <div style={s.mapSidebarHeader}>
+                <div style={{ marginBottom: "10px" }}>
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      color: "#111827",
+                    }}
+                  >
+                    Deals Near You
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      color: "#9ca3af",
+                      marginTop: "2px",
+                    }}
+                  >
+                    Browse offers on the map
+                  </div>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      color: "#9ca3af",
+                    }}
+                  >
+                    <IconSearch />
+                  </span>
+                  <input
+                    style={{ ...s.searchInput, paddingLeft: "34px" }}
+                    placeholder="Search stores or deals…"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
               </div>
-            )}
+              <div style={s.mapSidebarList}>
+                {loading ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "10px",
+                    }}
+                  >
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <SkeletonCard key={i} />
+                    ))}
+                  </div>
+                ) : grouped.all.length === 0 ? (
+                  <div
+                    style={{
+                      padding: "24px",
+                      textAlign: "center",
+                      color: "#6b7280",
+                      fontSize: "13px",
+                    }}
+                  >
+                    No deals match your filters
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "10px",
+                    }}
+                  >
+                    {grouped.all.map(renderCard)}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div style={s.mapPanel}>
+              <div
+                ref={mapRef}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "10px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <Footer />
-      </>
+          <Footer />
+        </>
+      )}
 
       {/* Location Modal */}
       {showLocationModal && locationModal}

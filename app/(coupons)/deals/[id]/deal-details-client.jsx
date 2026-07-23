@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
@@ -27,22 +27,27 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useUser } from "@/hooks/use-user";
+import { useTrackEvent } from "@/hooks/useTrackEvent";
 
 export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
   const router = useRouter();
   const { isLoggedIn, user } = useUser();
+  const track = useTrackEvent();
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
   const [userVote, setUserVote] = useState(null); // 'yes' | 'no' | null
   const [showShareTooltip, setShowShareTooltip] = useState(false);
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
 
-  const isMockCoupon = typeof coupon._id === "string" && coupon._id.startsWith("mock_");
+  const isMockCoupon =
+    typeof coupon._id === "string" && coupon._id.startsWith("mock_");
   const [localMockSaved, setLocalMockSaved] = useState(false);
 
   useEffect(() => {
     if (isMockCoupon && typeof window !== "undefined") {
-      setLocalMockSaved(localStorage.getItem(`mock_claim_${coupon._id}`) === "true");
+      setLocalMockSaved(
+        localStorage.getItem(`mock_claim_${coupon._id}`) === "true",
+      );
     }
   }, [coupon._id, isMockCoupon]);
 
@@ -63,7 +68,10 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
     if (!claims || !Array.isArray(claims)) return null;
     return claims.find((c) => {
       if (!c || !c.couponId) return false;
-      const cId = typeof c.couponId === "object" ? (c.couponId._id || c.couponId.id) : c.couponId;
+      const cId =
+        typeof c.couponId === "object"
+          ? c.couponId._id || c.couponId.id
+          : c.couponId;
       return String(cId) === String(coupon._id);
     });
   }, [claims, coupon._id]);
@@ -84,8 +92,13 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
 
   const uniqueClaimCode = useMemo(() => {
     if (!claimId) return null;
-    const prefixCode = (coupon.code || "DEAL").replace(/[^A-Z0-9]/gi, "").toUpperCase();
-    const suffix = String(claimId).replace(/[^A-Z0-9]/gi, "").slice(-8).toUpperCase();
+    const prefixCode = (coupon.code || "DEAL")
+      .replace(/[^A-Z0-9]/gi, "")
+      .toUpperCase();
+    const suffix = String(claimId)
+      .replace(/[^A-Z0-9]/gi, "")
+      .slice(-8)
+      .toUpperCase();
     return `VQ-${prefixCode || "DEAL"}-${suffix}`;
   }, [claimId, coupon.code]);
 
@@ -141,22 +154,6 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
     toggleSaveMutation.mutate();
   };
 
-  const autoClaim = async () => {
-    if (isMockCoupon) return;
-    if (isLoggedIn && !isSaved) {
-      try {
-        await fetch("/api/claims", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ couponId: coupon._id }),
-        });
-        refetchClaims();
-      } catch (err) {
-        console.error("Auto-claim failed:", err);
-      }
-    }
-  };
-
   useEffect(() => {
     if (isMockCoupon) {
       if (typeof window !== "undefined") {
@@ -166,9 +163,20 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
       return;
     }
     if (isLoggedIn && !isSaved) {
-      autoClaim();
+      (async () => {
+        try {
+          await fetch("/api/claims", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ couponId: coupon._id }),
+          });
+          refetchClaims();
+        } catch (err) {
+          console.error("Auto-claim failed:", err);
+        }
+      })();
     }
-  }, [isLoggedIn, isSaved, isMockCoupon, coupon._id]);
+  }, [isLoggedIn, isSaved, isMockCoupon, coupon._id, refetchClaims]);
 
   const merchantName = coupon.merchantId?.businessName || "Partner";
   const logoUrl = coupon.merchantId?.logo || "/placeholder-brand.png";
@@ -209,8 +217,8 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
 
-    // Save claim event to DB in the background
-    autoClaim();
+    const mId = typeof coupon.merchantId === "object" ? coupon.merchantId?._id : coupon.merchantId;
+    track("copy_code", { couponId: coupon._id, merchantId: mId, source: "direct" });
 
     // Open Code Copied success dialog
     setIsCopyModalOpen(true);
@@ -398,7 +406,9 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
                       </button>
                     </div>
                     <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">
-                      Present this code at the physical counter. The merchant can verify your claim and customer details using this code.
+                      Present this code at the physical counter. The merchant
+                      can verify your claim and customer details using this
+                      code.
                     </p>
                   </div>
                 ) : (
@@ -451,13 +461,15 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
                             coupon.merchantId.location.address,
                             coupon.merchantId.location.city,
                             coupon.merchantId.location.state,
-                            coupon.merchantId.location.pincode
-                          ].filter(Boolean).join(", ")}
+                            coupon.merchantId.location.pincode,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
                         </p>
                         <div className="pt-2">
                           <a
                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                              `${coupon.merchantId.businessName} ${coupon.merchantId.location.address || ""} ${coupon.merchantId.location.city || ""} ${coupon.merchantId.location.pincode || ""}`
+                              `${coupon.merchantId.businessName} ${coupon.merchantId.location.address || ""} ${coupon.merchantId.location.city || ""} ${coupon.merchantId.location.pincode || ""}`,
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -470,7 +482,8 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
                       </div>
                     ) : (
                       <p className="text-[11px] text-slate-400 font-semibold italic">
-                        No physical location or website details available for this store partner.
+                        No physical location or website details available for
+                        this store partner.
                       </p>
                     )}
                   </div>
@@ -721,12 +734,14 @@ export default function DealDetailsClient({ coupon, relatedCoupons = [] }) {
                         coupon.merchantId.location.address,
                         coupon.merchantId.location.city,
                         coupon.merchantId.location.state,
-                        coupon.merchantId.location.pincode
-                      ].filter(Boolean).join(", ")}
+                        coupon.merchantId.location.pincode,
+                      ]
+                        .filter(Boolean)
+                        .join(", ")}
                     </p>
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                        `${merchantName} ${coupon.merchantId.location.address || ""} ${coupon.merchantId.location.city || ""} ${coupon.merchantId.location.pincode || ""}`
+                        `${merchantName} ${coupon.merchantId.location.address || ""} ${coupon.merchantId.location.city || ""} ${coupon.merchantId.location.pincode || ""}`,
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"

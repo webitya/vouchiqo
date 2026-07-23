@@ -36,13 +36,19 @@ export default function StepListings({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-              <Ticket className="w-3.5 h-3.5 text-orange-600" /> Campaign Promo Code *
+              <Ticket className="w-3.5 h-3.5 text-orange-600" /> Campaign Promo
+              Code *
             </Label>
             <Input
               type="text"
               placeholder="e.g. SAVE20"
               value={campaignData.code}
-              onChange={(e) => setCampaignData({ ...campaignData, code: e.target.value.toUpperCase().replace(/\s/g, "") })}
+              onChange={(e) =>
+                setCampaignData({
+                  ...campaignData,
+                  code: e.target.value.toUpperCase().replace(/\s/g, ""),
+                })
+              }
               className="bg-white border-slate-200 text-xs h-10 rounded-xl font-mono uppercase font-bold"
             />
           </div>
@@ -52,17 +58,29 @@ export default function StepListings({
             </Label>
             <Select
               value={campaignData.offerType}
-              onValueChange={(val) => setCampaignData({ ...campaignData, offerType: val })}
+              onValueChange={(val) =>
+                setCampaignData({ ...campaignData, offerType: val })
+              }
             >
               <SelectTrigger className="w-full bg-white border-slate-200 rounded-xl text-xs h-10 px-3.5 font-bold text-slate-800">
                 <SelectValue placeholder="Select offer type" />
               </SelectTrigger>
               <SelectContent className="z-[300]">
-                <SelectItem value="Percentage Discount (% off)">Percentage Discount (% off)</SelectItem>
-                <SelectItem value="Flat ₹ Amount Off">Flat ₹ Amount Off</SelectItem>
-                <SelectItem value="Buy One Get One (BOGO)">Buy One Get One (BOGO)</SelectItem>
-                <SelectItem value="Free Gift / Service with Purchase">Free Gift / Service with Purchase</SelectItem>
-                <SelectItem value="Bundle / Combo Pricing">Bundle / Combo Pricing</SelectItem>
+                <SelectItem value="Percentage Discount (% off)">
+                  Percentage Discount (% off)
+                </SelectItem>
+                <SelectItem value="Flat ₹ Amount Off">
+                  Flat ₹ Amount Off
+                </SelectItem>
+                <SelectItem value="Buy One Get One (BOGO)">
+                  Buy One Get One (BOGO)
+                </SelectItem>
+                <SelectItem value="Free Gift / Service with Purchase">
+                  Free Gift / Service with Purchase
+                </SelectItem>
+                <SelectItem value="Bundle / Combo Pricing">
+                  Bundle / Combo Pricing
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -88,7 +106,9 @@ export default function StepListings({
             </div>
           ) : (
             filteredCoupons.map((couponItem) => {
-              const isAttached = campaignData.couponIds.includes(couponItem._id);
+              const isAttached = campaignData.couponIds.includes(
+                couponItem._id,
+              );
               return (
                 <label
                   key={couponItem._id}
@@ -99,7 +119,9 @@ export default function StepListings({
                   <div className="flex items-center gap-3">
                     <Checkbox
                       checked={isAttached}
-                      onCheckedChange={() => toggleCouponAttachment(couponItem._id)}
+                      onCheckedChange={() =>
+                        toggleCouponAttachment(couponItem._id)
+                      }
                     />
                     <div>
                       <span className="text-xs font-bold text-slate-900 block">

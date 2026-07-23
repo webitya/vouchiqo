@@ -114,6 +114,9 @@ const merchantSchema = new Schema(
     totalCoupons: { type: Number, default: 0 },
     totalRedemptions: { type: Number, default: 0 },
     totalClaims: { type: Number, default: 0 },
+    totalClicks: { type: Number, default: 0 },
+    totalImpressions: { type: Number, default: 0 },
+    storePageViews: { type: Number, default: 0 },
     followerCount: { type: Number, default: 0 },
 
     autoApproveRevival: { type: Boolean, default: false },
