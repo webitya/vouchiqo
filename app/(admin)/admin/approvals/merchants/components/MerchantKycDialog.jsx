@@ -326,18 +326,18 @@ export default function MerchantKycDialog({
 
           {/* ── TAB 4: STORE VISUALS & PHOTOS ───────────────────────── */}
           <TabsContent value="visuals" className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 text-center space-y-2">
-                <span className="text-xs font-medium text-slate-900 block">Shop Front Photograph</span>
+                <span className="text-xs font-semibold text-slate-900 block">Shop Front Photograph</span>
                 {merchant.shopImage ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={merchant.shopImage}
                     alt="Shop Front"
-                    className="max-h-56 mx-auto object-contain rounded-xl border border-slate-200 bg-white shadow-2xs"
+                    className="max-h-48 mx-auto object-contain rounded-xl border border-slate-200 bg-white shadow-2xs"
                   />
                 ) : (
-                  <div className="py-10 text-center space-y-1">
+                  <div className="py-8 text-center space-y-1">
                     <ImageIcon className="w-8 h-8 text-slate-300 mx-auto" />
                     <span className="text-xs text-slate-400 font-normal block">No shop front photo uploaded</span>
                   </div>
@@ -345,18 +345,35 @@ export default function MerchantKycDialog({
               </div>
 
               <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 text-center space-y-2">
-                <span className="text-xs font-medium text-slate-900 block">Store Brand Logo</span>
+                <span className="text-xs font-semibold text-slate-900 block">Store Brand Logo</span>
                 {merchant.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={merchant.logo}
                     alt="Store Logo"
-                    className="max-h-56 mx-auto object-contain rounded-xl border border-slate-200 bg-white shadow-2xs"
+                    className="max-h-48 mx-auto object-contain rounded-xl border border-slate-200 bg-white shadow-2xs"
                   />
                 ) : (
-                  <div className="py-10 text-center space-y-1">
+                  <div className="py-8 text-center space-y-1">
                     <ImageIcon className="w-8 h-8 text-slate-300 mx-auto" />
                     <span className="text-xs text-slate-400 font-normal block">No store logo uploaded</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 text-center space-y-2">
+                <span className="text-xs font-semibold text-slate-900 block">Store Banner Image</span>
+                {merchant.banner ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={merchant.banner}
+                    alt="Banner Image"
+                    className="max-h-48 mx-auto object-contain rounded-xl border border-slate-200 bg-white shadow-2xs"
+                  />
+                ) : (
+                  <div className="py-8 text-center space-y-1">
+                    <ImageIcon className="w-8 h-8 text-slate-300 mx-auto" />
+                    <span className="text-xs text-slate-400 font-normal block">No banner image uploaded</span>
                   </div>
                 )}
               </div>

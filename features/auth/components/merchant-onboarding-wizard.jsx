@@ -5,6 +5,7 @@ import {
   ChevronRight,
   FileCheck,
   Globe,
+  Image as ImageIcon,
   Loader2,
   MapPin,
   Upload,
@@ -88,6 +89,7 @@ export function MerchantOnboardingWizard() {
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadingShopPhoto, setUploadingShopPhoto] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
   const [uploadingSignature, setUploadingSignature] = useState(false);
 
   // Location Geolocation State
@@ -132,6 +134,7 @@ export function MerchantOnboardingWizard() {
     docFileUrl: "",
     shopPhotoUrl: "",
     logoUrl: "",
+    bannerUrl: "",
     signatureUrl: "",
 
     // Section D: Plan
@@ -302,8 +305,13 @@ export function MerchantOnboardingWizard() {
       toast.error("Please accept all Policy Agreements");
       return;
     }
-    if (!formData.signatoryName.trim()) {
-      toast.error("Please enter Authorised Signatory Full Name");
+    const effectiveSignatoryName = (formData.contactName || formData.signatoryName || "").trim();
+    if (!effectiveSignatoryName) {
+      toast.error("Please enter Authorized Liaison Name in Section B first");
+      return;
+    }
+    if (!formData.signatureUrl) {
+      toast.error("Please upload Authorised Digital Signature Image");
       return;
     }
 
@@ -349,13 +357,15 @@ export function MerchantOnboardingWizard() {
         contactPhone: formData.mobile,
         whatsappNumber: formData.whatsapp,
         website: formData.websiteUrl,
-        liaisonName: formData.contactName,
+        liaisonName: effectiveSignatoryName,
+        signatoryName: effectiveSignatoryName,
         liaisonDesignation: formData.designation,
         liaisonPhone: formData.mobile,
         docType: formData.docType,
         docImage: formData.docFileUrl,
         shopImage: formData.shopPhotoUrl,
         logo: formData.logoUrl,
+        banner: formData.bannerUrl,
         signatureImage: formData.signatureUrl,
         plan: formData.selectedPlan,
         gmapsLink: formData.googleUrl,
@@ -787,9 +797,14 @@ export function MerchantOnboardingWizard() {
                   type="text"
                   placeholder="Rajan Kumar Singh"
                   value={formData.contactName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, contactName: e.target.value })
-                  }
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFormData((prev) => ({
+                      ...prev,
+                      contactName: val,
+                      signatoryName: val,
+                    }));
+                  }}
                   className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
                 />
               </div>
@@ -1067,34 +1082,38 @@ export function MerchantOnboardingWizard() {
               </div>
             </div>
 
-            {/* Shop Front Photo & Store Logo Cloudinary Uploads */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            {/* 3 Store Visual Images Upload Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+              {/* 1. Shop Photograph */}
               <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <Label className="text-xs font-medium text-slate-700">Shop Front Photo</Label>
-                  <span className="text-[10px] text-slate-400 font-normal">Rec: 1200x800px (Max 5MB)</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1">
+                    <ImageIcon className="w-3.5 h-3.5 text-blue-600" />
+                    Shop Photograph
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-normal">1200x800px</span>
                 </div>
-                <div className="border border-dashed border-slate-200 bg-slate-50 hover:bg-blue-50/40 rounded-xl p-3.5 flex flex-col items-center justify-center text-center space-y-2 transition-all">
+                <div className="border border-dashed border-slate-200 bg-slate-50 hover:bg-blue-50/40 rounded-xl p-3 flex flex-col items-center justify-center text-center space-y-2 h-32 overflow-hidden transition-all">
                   {formData.shopPhotoUrl ? (
-                    <div className="space-y-1.5 w-full flex flex-col items-center">
+                    <div className="space-y-1 w-full flex flex-col items-center">
                       <img
                         src={formData.shopPhotoUrl}
-                        alt="Shop Front"
-                        className="h-28 max-w-full object-contain rounded-lg border border-slate-200 bg-white p-1 shadow-2xs"
+                        alt="Shop Photograph"
+                        className="max-h-16 max-w-full object-contain rounded-md border border-slate-200 bg-white p-0.5"
                       />
-                      <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1">
-                        <Check className="w-3.5 h-3.5" /> Shop Photo Uploaded
+                      <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                        <Check className="w-3 h-3" /> Shop Photo Uploaded
                       </span>
                     </div>
                   ) : (
-                    <div className="py-2 flex flex-col items-center space-y-1">
-                      <Upload className="w-6 h-6 text-slate-400" />
-                      <span className="text-xs text-slate-500 font-normal">
-                        Upload storefront image (JPG, PNG, WebP)
+                    <div className="flex flex-col items-center space-y-1">
+                      <Upload className="w-5 h-5 text-slate-400" />
+                      <span className="text-xs text-slate-500 font-medium">
+                        Upload Shop Photo
                       </span>
                     </div>
                   )}
-                  <div className="relative w-full max-w-xs">
+                  <div className="relative w-full">
                     <input
                       type="file"
                       accept="image/*"
@@ -1107,45 +1126,49 @@ export function MerchantOnboardingWizard() {
                     <Button
                       type="button"
                       disabled={uploadingShopPhoto}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs h-8.5 rounded-lg border-0 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-[11px] h-7.5 rounded-lg border-0 cursor-pointer shadow-2xs flex items-center justify-center gap-1"
                     >
                       {uploadingShopPhoto ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" />
+                        <Loader2 className="w-3 h-3 animate-spin mx-auto" />
                       ) : (
-                        <Upload className="w-3.5 h-3.5" />
+                        <Upload className="w-3 h-3" />
                       )}
-                      <span>{formData.shopPhotoUrl ? "Change Shop Photo" : "Upload Shop Photo"}</span>
+                      <span>{formData.shopPhotoUrl ? "Change Photo" : "Upload Shop Photo"}</span>
                     </Button>
                   </div>
                 </div>
               </div>
 
+              {/* 2. Store Logo */}
               <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <Label className="text-xs font-medium text-slate-700">Store Brand Logo</Label>
-                  <span className="text-[10px] text-slate-400 font-normal">Rec: 400x400px PNG (Max 5MB)</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1">
+                    <ImageIcon className="w-3.5 h-3.5 text-blue-600" />
+                    Store Logo
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-normal">400x400px (PNG)</span>
                 </div>
-                <div className="border border-dashed border-slate-200 bg-slate-50 hover:bg-blue-50/40 rounded-xl p-3.5 flex flex-col items-center justify-center text-center space-y-2 transition-all">
+                <div className="border border-dashed border-slate-200 bg-slate-50 hover:bg-blue-50/40 rounded-xl p-3 flex flex-col items-center justify-center text-center space-y-2 h-32 overflow-hidden transition-all">
                   {formData.logoUrl ? (
-                    <div className="space-y-1.5 w-full flex flex-col items-center">
+                    <div className="space-y-1 w-full flex flex-col items-center">
                       <img
                         src={formData.logoUrl}
                         alt="Store Logo"
-                        className="h-28 max-w-full object-contain rounded-lg border border-slate-200 bg-white p-1 shadow-2xs"
+                        className="max-h-16 max-w-full object-contain rounded-md border border-slate-200 bg-white p-0.5"
                       />
-                      <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1">
-                        <Check className="w-3.5 h-3.5" /> Logo Uploaded
+                      <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                        <Check className="w-3 h-3" /> Logo Uploaded
                       </span>
                     </div>
                   ) : (
-                    <div className="py-2 flex flex-col items-center space-y-1">
-                      <Upload className="w-6 h-6 text-slate-400" />
-                      <span className="text-xs text-slate-500 font-normal">
-                        Upload store brand logo (PNG preferred)
+                    <div className="flex flex-col items-center space-y-1">
+                      <Upload className="w-5 h-5 text-slate-400" />
+                      <span className="text-xs text-slate-500 font-medium">
+                        Upload Store Logo
                       </span>
                     </div>
                   )}
-                  <div className="relative w-full max-w-xs">
+                  <div className="relative w-full">
                     <input
                       type="file"
                       accept="image/*"
@@ -1158,14 +1181,69 @@ export function MerchantOnboardingWizard() {
                     <Button
                       type="button"
                       disabled={uploadingLogo}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs h-8.5 rounded-lg border-0 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-[11px] h-7.5 rounded-lg border-0 cursor-pointer shadow-2xs flex items-center justify-center gap-1"
                     >
                       {uploadingLogo ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" />
+                        <Loader2 className="w-3 h-3 animate-spin mx-auto" />
                       ) : (
-                        <Upload className="w-3.5 h-3.5" />
+                        <Upload className="w-3 h-3" />
                       )}
-                      <span>{formData.logoUrl ? "Change Logo" : "Upload Logo"}</span>
+                      <span>{formData.logoUrl ? "Change Logo" : "Upload Store Logo"}</span>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Banner Image */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1">
+                    <ImageIcon className="w-3.5 h-3.5 text-blue-600" />
+                    Banner Image
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-normal">1200x400px</span>
+                </div>
+                <div className="border border-dashed border-slate-200 bg-slate-50 hover:bg-blue-50/40 rounded-xl p-3 flex flex-col items-center justify-center text-center space-y-2 h-32 overflow-hidden transition-all">
+                  {formData.bannerUrl ? (
+                    <div className="space-y-1 w-full flex flex-col items-center">
+                      <img
+                        src={formData.bannerUrl}
+                        alt="Banner Image"
+                        className="max-h-16 max-w-full object-contain rounded-md border border-slate-200 bg-white p-0.5"
+                      />
+                      <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                        <Check className="w-3 h-3" /> Banner Uploaded
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center space-y-1">
+                      <Upload className="w-5 h-5 text-slate-400" />
+                      <span className="text-xs text-slate-500 font-medium">
+                        Upload Banner Image
+                      </span>
+                    </div>
+                  )}
+                  <div className="relative w-full">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleFileUpload(e.target.files[0], "bannerUrl", setUploadingBanner)
+                      }
+                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                      disabled={uploadingBanner}
+                    />
+                    <Button
+                      type="button"
+                      disabled={uploadingBanner}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-[11px] h-7.5 rounded-lg border-0 cursor-pointer shadow-2xs flex items-center justify-center gap-1"
+                    >
+                      {uploadingBanner ? (
+                        <Loader2 className="w-3 h-3 animate-spin mx-auto" />
+                      ) : (
+                        <Upload className="w-3 h-3" />
+                      )}
+                      <span>{formData.bannerUrl ? "Change Banner" : "Upload Banner Image"}</span>
                     </Button>
                   </div>
                 </div>
@@ -1471,33 +1549,21 @@ export function MerchantOnboardingWizard() {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div className="grid grid-cols-1 gap-3 pt-2">
               <div className="space-y-1">
-                <Label className="text-xs font-medium text-slate-700">
-                  Authorised Signatory Full Name <span className="text-rose-500">*</span>
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-medium text-slate-700">
+                    Authorised Signatory Full Name <span className="text-rose-500">*</span>
+                  </Label>
+                  <span className="text-[10px] text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded border border-blue-100 flex items-center gap-1">
+                    ✓ Auto-synced from Authorized Liaison Name (Section B)
+                  </span>
+                </div>
                 <Input
                   type="text"
-                  placeholder="Rajan Kumar Singh"
-                  value={formData.signatoryName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, signatoryName: e.target.value })
-                  }
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs font-medium text-slate-700">
-                  Digital Signature Initials <span className="text-slate-400 font-normal">(Optional)</span>
-                </Label>
-                <Input
-                  type="text"
-                  placeholder="R.K.S."
-                  value={formData.digitalInitials}
-                  onChange={(e) =>
-                    setFormData({ ...formData, digitalInitials: e.target.value })
-                  }
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-mono uppercase font-normal focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
+                  readOnly
+                  value={formData.contactName || formData.signatoryName || "Fill Authorized Liaison Name in Section B"}
+                  className="bg-slate-100 border-slate-200 text-xs h-9 rounded-lg font-medium text-slate-800 cursor-not-allowed"
                 />
               </div>
             </div>
@@ -1506,26 +1572,26 @@ export function MerchantOnboardingWizard() {
             <div className="space-y-1.5 pt-1">
               <div className="flex justify-between items-center">
                 <Label className="text-xs font-medium text-slate-700">
-                  Authorised Digital Signature Image
+                  Authorised Digital Signature Image <span className="text-rose-500">*</span>
                 </Label>
-                <span className="text-[10px] text-slate-400 font-normal">Clear signature on paper (Max 5MB)</span>
+                <span className="text-[10px] text-slate-400 font-normal">Clear signature photo on paper (Max 5MB)</span>
               </div>
-              <div className="border border-dashed border-slate-200 bg-slate-50 hover:bg-blue-50/40 rounded-xl p-3.5 flex flex-col items-center justify-center text-center space-y-2 transition-all">
+              <div className="border border-dashed border-slate-200 bg-slate-50 hover:bg-blue-50/40 rounded-xl p-4 flex flex-col items-center justify-center text-center space-y-2 transition-all">
                 {formData.signatureUrl ? (
                   <div className="space-y-1.5 w-full flex flex-col items-center">
                     <img
                       src={formData.signatureUrl}
                       alt="Uploaded Signature"
-                      className="h-20 max-w-full object-contain border border-slate-200 rounded-lg bg-white p-1 shadow-2xs"
+                      className="h-20 max-w-full object-contain border border-slate-200 rounded-lg bg-white p-1.5 shadow-2xs"
                     />
                     <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5" /> Signature Image Uploaded
+                      <Check className="w-3.5 h-3.5" /> Signature Image Uploaded Successfully
                     </span>
                   </div>
                 ) : (
                   <div className="py-2 flex flex-col items-center space-y-1">
-                    <Upload className="w-5 h-5 text-slate-400" />
-                    <span className="text-xs text-slate-500 font-normal">
+                    <Upload className="w-6 h-6 text-slate-400" />
+                    <span className="text-xs text-slate-600 font-medium">
                       Upload photo or scanned image of authorized signature (JPG, PNG)
                     </span>
                   </div>
@@ -1543,7 +1609,7 @@ export function MerchantOnboardingWizard() {
                   <Button
                     type="button"
                     disabled={uploadingSignature}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs h-8.5 rounded-lg border-0 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs h-9 rounded-lg border-0 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5"
                   >
                     {uploadingSignature ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />

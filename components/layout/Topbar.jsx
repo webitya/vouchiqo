@@ -2,7 +2,7 @@
 
 import { Bell, ChevronDown, LogOut, Search, User } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import UserDropdown from "./UserDropdown";
 export default function Topbar({ title = "Dashboard", user: propUser = null }) {
   const { user: authUser, logout } = useUser();
   const router = useRouter();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -136,14 +137,28 @@ export default function Topbar({ title = "Dashboard", user: propUser = null }) {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
+  const displayRole = pathname.startsWith("/admin")
+    ? "admin"
+    : pathname.startsWith("/merchant")
+      ? "merchant"
+      : authUser?.role || propUser?.role || "customer";
+
   const user =
     mounted && authUser
       ? {
           name: authUser.name,
-          role: authUser.role,
+          role: displayRole,
           image: authUser.image,
         }
-      : propUser;
+      : propUser
+        ? {
+            ...propUser,
+            role: displayRole,
+          }
+        : {
+            name: "Merchant",
+            role: displayRole,
+          };
 
   return (
     <header className="h-[60px] bg-white border-b border-slate-200 shadow-xs flex items-center justify-between px-6 sticky top-0 z-40 font-sans">

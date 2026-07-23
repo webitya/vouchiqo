@@ -53,13 +53,11 @@ export function AppSidebar({ ...props }) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
-  const role = authUser
-    ? authRole
-    : pathname.startsWith("/admin")
-      ? "admin"
-      : pathname.startsWith("/merchant")
-        ? "merchant"
-        : "customer";
+  const role = pathname.startsWith("/admin")
+    ? "admin"
+    : pathname.startsWith("/merchant")
+      ? "merchant"
+      : authUser?.role || "customer";
 
   const isMerchant = role === "merchant";
 

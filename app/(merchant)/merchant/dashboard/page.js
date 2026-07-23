@@ -1,7 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, Info, ShoppingCart, Zap } from "lucide-react";
+import { AlertTriangle, Clock, Info, ShoppingCart, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import KpiCards from "./components/KpiCards";
@@ -14,6 +15,7 @@ import TopCouponsTable from "./components/TopCouponsTable";
 import TrafficAndGoals from "./components/TrafficAndGoals";
 
 export default function MerchantDashboard() {
+  const router = useRouter();
   const [activeRange, setActiveRange] = useState("30 Days");
   const [onboardingDismissed, setOnboardingDismissed] = useState(false);
 
@@ -226,6 +228,38 @@ export default function MerchantDashboard() {
       user={{ name: merchant?.businessName || "Merchant", role: "merchant" }}
     >
       <div className="space-y-4 text-left font-sans">
+        {/* Application Under Review Overlay Banner */}
+        {merchant?.status === "pending" && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center space-y-3 shadow-2xs">
+            <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto text-amber-600">
+              <Clock className="w-6 h-6 animate-pulse" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="text-lg font-bold text-amber-950 uppercase tracking-wide">
+                APPLICATION UNDER REVIEW
+              </h2>
+              <p className="text-xs text-amber-800 max-w-lg mx-auto font-medium">
+                Your merchant profile &amp; KYC verification are currently under review by our super admin team. Account features will be activated upon approval (usually 24–48 hours).
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => router.push("/merchant/profile")}
+                className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold h-8 px-4 rounded-lg shadow-2xs cursor-pointer"
+              >
+                Modify Business Profile &amp; Documents
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push("/merchant/application-status")}
+                className="border border-amber-300 text-amber-900 bg-white hover:bg-amber-50 text-xs font-semibold h-8 px-4 rounded-lg cursor-pointer"
+              >
+                Track Live Application Status
+              </button>
+            </div>
+          </div>
+        )}
         {/* Contextual Alert Cards */}
         {alerts.length > 0 && (
           <div className="space-y-2">

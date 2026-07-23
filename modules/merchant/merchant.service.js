@@ -21,6 +21,16 @@ export async function createMerchant(authId, data) {
   if (existing) throw new ConflictError("You already have a merchant profile");
 
   const merchant = await Merchant.create({ authId, ...data });
+
+  // Update user's role to "merchant" in UserProfile and Better Auth user collection
+  await UserProfile.updateOne({ authId }, { role: "merchant" }).catch(() => {});
+  if (mongoose.connection && mongoose.connection.db) {
+    await mongoose.connection.db
+      .collection("user")
+      .updateOne({ _id: authId }, { $set: { role: "merchant" } })
+      .catch(() => {});
+  }
+
   return merchant;
 }
 

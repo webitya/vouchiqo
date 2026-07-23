@@ -16,7 +16,7 @@ import {
   Wallet,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -34,9 +34,16 @@ export default function UserDropdown({
   onMobileClose = null,
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { logout } = useUser();
 
   if (!user) return null;
+
+  const effectiveRole = pathname.startsWith("/admin")
+    ? "admin"
+    : pathname.startsWith("/merchant")
+      ? "merchant"
+      : user.role || "customer";
 
   const handleLogoutAction = async () => {
     if (onMobileClose) onMobileClose();
@@ -65,7 +72,7 @@ export default function UserDropdown({
         </div>
         <div className="flex flex-col gap-3 pl-2 text-left">
           {/* Customer links */}
-          {(!user.role || user.role === "customer") && (
+          {(!effectiveRole || effectiveRole === "customer") && (
             <>
               <Link
                 href="/profile?tab=savings"
@@ -111,7 +118,7 @@ export default function UserDropdown({
           )}
 
           {/* Merchant links */}
-          {user.role === "merchant" && (
+          {effectiveRole === "merchant" && (
             <>
               <Link
                 href="/merchant/dashboard"
@@ -149,7 +156,7 @@ export default function UserDropdown({
           )}
 
           {/* Admin links */}
-          {user.role === "admin" && (
+          {effectiveRole === "admin" && (
             <>
               <Link
                 href="/admin/dashboard"
@@ -220,7 +227,7 @@ export default function UserDropdown({
               {user.name}
             </span>
             <span className="text-[9px] text-brand-subtext capitalize font-semibold leading-none">
-              {user.role}
+              {effectiveRole}
             </span>
           </div>
           <ChevronDown className="w-3.5 h-3.5 text-brand-subtext group-hover:text-brand-blue transition-colors ml-0.5" />
@@ -236,7 +243,7 @@ export default function UserDropdown({
         <DropdownMenuSeparator className="bg-brand-border" />
 
         {/* Customer view */}
-        {(!user.role || user.role === "customer") && (
+        {(!effectiveRole || effectiveRole === "customer") && (
           <>
             <DropdownMenuItem asChild>
               <Link
@@ -287,7 +294,7 @@ export default function UserDropdown({
         )}
 
         {/* Merchant view */}
-        {user.role === "merchant" && (
+        {effectiveRole === "merchant" && (
           <>
             <DropdownMenuItem asChild>
               <Link
