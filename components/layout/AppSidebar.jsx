@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { NavMain } from "@/components/layout/NavMain";
 import { NavUser } from "@/components/layout/NavUser";
 import { Badge } from "@/components/ui/badge";
@@ -47,11 +48,20 @@ import {
 } from "@/components/ui/sidebar";
 import { useUser } from "@/hooks/use-user";
 
+// Map DB plan slug → display label shown in the sidebar badge
+const PLAN_LABELS = {
+  starter: "STARTER",
+  growth: "GROWTH PARTNER",
+  pro: "PRO PARTNER",
+  enterprise: "ENTERPRISE",
+};
+
 export function AppSidebar({ ...props }) {
   const pathname = usePathname();
   const { user: authUser, role: authRole } = useUser();
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+  const [merchantPlan, setMerchantPlan] = useState(null);
 
   const role = pathname.startsWith("/admin")
     ? "admin"
@@ -60,6 +70,17 @@ export function AppSidebar({ ...props }) {
       : authUser?.role || "customer";
 
   const isMerchant = role === "merchant";
+
+  // Fetch actual plan from DB whenever we're on a merchant route
+  useEffect(() => {
+    if (!isMerchant) return;
+    fetch("/api/merchants/me")
+      .then((r) => r.ok ? r.json() : null)
+      .then((json) => {
+        if (json?.data?.plan) setMerchantPlan(json.data.plan);
+      })
+      .catch(() => {});
+  }, [isMerchant]);
 
   const user = authUser
     ? {
@@ -420,7 +441,7 @@ export function AppSidebar({ ...props }) {
                 <Badge
                   className="bg-blue-50 text-blue-700 border-blue-200 text-[8px] font-extrabold px-1.5 py-0"
                 >
-                  GROWTH PARTNER
+                  {merchantPlan ? (PLAN_LABELS[merchantPlan] ?? merchantPlan.toUpperCase()) : "PARTNER"}
                 </Badge>
               </div>
             </div>
