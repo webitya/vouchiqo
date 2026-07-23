@@ -62,14 +62,14 @@ export function NavUser({ user, role = "admin" }) {
                   src={user?.image || user?.avatar}
                   alt={user?.name || "User"}
                 />
-                <AvatarFallback className="rounded-lg font-extrabold text-xs bg-blue-100 text-blue-800">
+                <AvatarFallback className="rounded-lg font-medium text-xs bg-blue-100 text-blue-800">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               {!isCollapsed && (
                 <>
                   <div className="grid flex-1 text-left text-xs leading-tight min-w-0">
-                    <span className="truncate font-bold text-sm text-slate-900">
+                    <span className="truncate font-medium text-sm text-slate-900">
                       {user?.name || "User"}
                     </span>
                     <span className="truncate text-[11px] text-slate-500 font-medium">
@@ -94,12 +94,12 @@ export function NavUser({ user, role = "admin" }) {
                     src={user?.image || user?.avatar}
                     alt={user?.name || "User"}
                   />
-                  <AvatarFallback className="rounded-lg font-bold text-xs">
+                  <AvatarFallback className="rounded-lg font-medium text-xs">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-xs leading-tight min-w-0">
-                  <span className="truncate font-bold text-slate-900">
+                  <span className="truncate font-medium text-slate-900">
                     {user?.name || "User"}
                   </span>
                   <span className="truncate text-[11px] text-slate-500 font-medium">
@@ -115,7 +115,7 @@ export function NavUser({ user, role = "admin" }) {
                   <DropdownMenuItem asChild>
                     <Link
                       href="/merchant/billing"
-                      className="flex items-center gap-2 text-xs font-bold text-blue-600 cursor-pointer"
+                      className="flex items-center gap-2 text-xs font-medium text-blue-600 cursor-pointer"
                     >
                       <Zap className="h-4 w-4 text-blue-600" />
                       Upgrade Plan

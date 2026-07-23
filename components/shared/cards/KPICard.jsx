@@ -57,7 +57,7 @@ export default function KPICard({
             {/* Header: Title & Icon Badge */}
             <div className="flex items-center justify-between gap-1.5 mb-1">
               <span
-                className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block truncate max-w-[calc(100%-1.75rem)]"
+                className="text-[10px] sm:text-[11px] font-medium text-slate-500 uppercase tracking-wider block truncate max-w-[calc(100%-1.75rem)]"
                 title={title}
               >
                 {title}
@@ -75,8 +75,8 @@ export default function KPICard({
             </div>
 
             {/* Metric Value */}
-            <div className="my-1">
-              <span className="text-xl sm:text-2xl font-bold text-[#08214d] tracking-tight leading-tight block">
+            <div className="my-0.5">
+              <span className="text-lg sm:text-xl font-semibold text-slate-900 tracking-tight leading-tight block">
                 {value}
               </span>
             </div>
@@ -93,7 +93,7 @@ export default function KPICard({
               {change !== undefined && change !== null && (
                 <span
                   className={cn(
-                    "inline-flex items-center gap-0.5 text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-md border",
+                    "inline-flex items-center gap-0.5 text-[10px] sm:text-[11px] font-medium px-1.5 py-0.5 rounded-md border",
                     isPositive
                       ? "text-blue-600 bg-blue-50/90 border-blue-100"
                       : "text-rose-600 bg-rose-50/90 border-rose-100",

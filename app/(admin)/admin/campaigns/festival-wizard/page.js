@@ -63,44 +63,49 @@ export default function FestivalCampaignWizardPage() {
       title="Festival Campaign Package Wizard (₹2,999)"
       user={{ name: "Super Admin", role: "admin" }}
     >
-      <div className="space-y-6 text-left font-sans w-full">
+      <div className="space-y-4 text-left font-sans w-full pb-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" asChild className="p-1.5 h-auto rounded-xl">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-3">
+          <div className="flex items-center gap-2.5">
+            <Button variant="ghost" asChild className="p-1 h-8 w-8 rounded-lg">
               <Link href="/admin/campaigns/queue">
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-4 h-4 text-slate-600" />
               </Link>
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-500" /> Activate
+                <h1 className="text-base font-semibold text-slate-900 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-amber-500" /> Activate
                   Festival Package Wizard (₹2,999)
                 </h1>
-                <Badge className="bg-amber-100 text-amber-900 text-[9px] font-bold border-0">
+                <Badge className="bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-medium px-2 py-0.5">
                   Simultaneous Multi-Channel
                 </Badge>
               </div>
-              <p className="text-xs text-slate-500 font-medium mt-0.5">
-                Simultaneous activation: Email Blast + Push + Ticker Priority +
-                Festival Theme + 3-Day Teaser + 7-Day Duration
+              <p className="text-xs text-slate-500 font-normal mt-0.5">
+                Email Blast + Push + Ticker Priority + Festival Theme + 3-Day Teaser + 7-Day Duration
               </p>
             </div>
           </div>
         </div>
 
         {/* 6-Step Stepper Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-1.5">
           {WIZARD_STEPS.map((s) => (
             <div
               key={s.step}
-              className={`p-3 rounded-xl border text-center transition-all ${currentStep === s.step ? "bg-slate-900 text-white border-slate-900 font-bold" : currentStep > s.step ? "bg-emerald-50 border-emerald-200 text-emerald-900 font-bold" : "bg-white border-slate-200 text-slate-400"}`}
+              className={`p-2.5 rounded-lg border text-center transition-all ${
+                currentStep === s.step
+                  ? "bg-blue-600 text-white border-blue-600 font-medium shadow-xs"
+                  : currentStep > s.step
+                    ? "bg-blue-50/80 border-blue-200 text-blue-900 font-normal"
+                    : "bg-white border-slate-200 text-slate-500 font-normal"
+              }`}
             >
-              <span className="text-[10px] block opacity-80 uppercase">
+              <span className="text-[10px] block uppercase font-medium opacity-80">
                 Step {s.step}
               </span>
-              <span className="text-xs font-bold truncate block">
+              <span className="text-xs font-normal truncate block">
                 {s.title}
               </span>
             </div>
@@ -108,20 +113,20 @@ export default function FestivalCampaignWizardPage() {
         </div>
 
         {/* WIZARD CONTENT CARD */}
-        <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-6 space-y-6 text-left">
+        <Card className="border-slate-200/80 shadow-2xs rounded-xl bg-white p-4 space-y-4 text-left">
           {/* Step 1: Festival Theme */}
           {currentStep === 1 && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 uppercase">
+            <div className="space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Step 1: Confirm Festival Theme
               </h3>
               <Select value={festivalTheme} onValueChange={setFestivalTheme}>
-                <SelectTrigger className="w-full bg-white border-slate-200 rounded-xl text-xs h-10 font-bold text-slate-800">
+                <SelectTrigger className="w-full bg-white border-slate-200 rounded-lg text-xs h-9 font-normal text-slate-800">
                   <SelectValue placeholder="Select festival theme" />
                 </SelectTrigger>
                 <SelectContent className="z-[300]">
                   {FESTIVAL_THEMES.map((t) => (
-                    <SelectItem key={t} value={t}>
+                    <SelectItem key={t} value={t} className="text-xs font-normal">
                       {t}
                     </SelectItem>
                   ))}
@@ -132,41 +137,41 @@ export default function FestivalCampaignWizardPage() {
 
           {/* Step 2: 3-Day Teaser */}
           {currentStep === 2 && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 uppercase">
+            <div className="space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Step 2: Set Pre-Launch Teaser Date
               </h3>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-slate-500 font-normal">
                 Configures 3-day pre-launch teaser banner on homepage
               </p>
               <Input
                 type="date"
                 value={teaserDate}
                 onChange={(e) => setTeaserDate(e.target.value)}
-                className="w-full sm:w-60 bg-white border-slate-200 rounded-xl text-xs h-10 font-bold"
+                className="w-full sm:w-60 bg-white border-slate-200 rounded-lg text-xs h-9 font-normal"
               />
             </div>
           )}
 
           {/* Step 3: Build Email Blast */}
           {currentStep === 3 && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 uppercase">
+            <div className="space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Step 3: Build Email Blast (Template E-9)
               </h3>
               <Input
                 type="text"
                 value={emailSubject}
                 onChange={(e) => setEmailSubject(e.target.value)}
-                className="w-full bg-white border-slate-200 rounded-xl text-xs h-10 font-bold"
+                className="w-full bg-white border-slate-200 rounded-lg text-xs h-9 font-normal"
               />
             </div>
           )}
 
           {/* Step 4: Schedule Push Notification */}
           {currentStep === 4 && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 uppercase">
+            <div className="space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Step 4: Schedule Push Notification (MSG91 Template 8)
               </h3>
               <Input
@@ -174,18 +179,18 @@ export default function FestivalCampaignWizardPage() {
                 maxLength={100}
                 value={pushText}
                 onChange={(e) => setPushText(e.target.value)}
-                className="w-full bg-white border-slate-200 rounded-xl text-xs h-10 font-bold"
+                className="w-full bg-white border-slate-200 rounded-lg text-xs h-9 font-normal"
               />
             </div>
           )}
 
           {/* Step 5: Activate Ticker Priority */}
           {currentStep === 5 && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 uppercase">
+            <div className="space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Step 5: Activate Ticker Priority Slot (3 Days)
               </h3>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-slate-500 font-normal">
                 Pin campaign headline to Homepage Ticker Slot #1 for 3 days
               </p>
             </div>
@@ -193,64 +198,65 @@ export default function FestivalCampaignWizardPage() {
 
           {/* Step 6: Confirm Full Activation */}
           {currentStep === 6 && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 uppercase">
+            <div className="space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Step 6: Confirm Simultaneous Full Package Activation
               </h3>
-              <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs font-semibold text-amber-950 space-y-2">
-                <div className="flex items-center gap-2 font-bold text-amber-900">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600" />
+              <div className="p-3.5 bg-blue-50/80 border border-blue-200 rounded-lg text-xs font-normal text-blue-950 space-y-2">
+                <div className="flex items-center gap-2 font-medium text-blue-900">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600" />
                   <span>Simultaneous Multi-Channel Package Ready</span>
                 </div>
-                <ul className="space-y-1 list-disc pl-4 text-slate-700">
+                <ul className="space-y-1 list-disc pl-4 text-slate-700 font-normal">
                   <li>
-                    Email Blast + Push Notification + Ticker Priority
-                    simultaneously deployed
+                    Email Blast + Push Notification + Ticker Priority simultaneously deployed
                   </li>
                   <li>
                     Festival-themed card design activated:{" "}
-                    <strong>{festivalTheme}</strong>
+                    <span className="font-medium text-slate-900">{festivalTheme}</span>
                   </li>
                   <li>
                     3-Day Pre-Launch Teaser starting{" "}
-                    <strong>{teaserDate}</strong>
+                    <span className="font-medium text-slate-900">{teaserDate}</span>
                   </li>
                   <li>
                     Campaign duration extended to minimum{" "}
-                    <strong>7 Days</strong>
+                    <span className="font-medium text-slate-900">7 Days</span>
                   </li>
                 </ul>
               </div>
 
-              {!isActivated
-                ? <Button
-                    onClick={handleConfirmFullActivation}
-                    className="bg-[#e85d04] hover:bg-orange-600 text-white text-xs font-bold py-3 px-6 rounded-xl cursor-pointer w-full shadow-xs"
-                  >
-                    Confirm &amp; Deploy Festival Package (₹2,999) Now →
-                  </Button>
-                : <div className="p-4 bg-emerald-100 text-emerald-900 font-bold text-xs rounded-xl text-center">
-                    ✅ Festival Campaign Package Fully Activated &amp; Deployed!
-                  </div>}
+              {!isActivated ? (
+                <Button
+                  onClick={handleConfirmFullActivation}
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2.5 px-5 rounded-lg cursor-pointer w-full shadow-2xs"
+                >
+                  Confirm &amp; Deploy Festival Package (₹2,999) Now →
+                </Button>
+              ) : (
+                <div className="p-3 bg-blue-100/70 text-blue-900 font-medium text-xs rounded-lg text-center border border-blue-200">
+                  ✅ Festival Campaign Package Fully Activated &amp; Deployed!
+                </div>
+              )}
             </div>
           )}
 
           {/* Navigation Controls */}
-          <div className="flex justify-between pt-4 border-t border-slate-100">
+          <div className="flex justify-between pt-3 border-t border-slate-100">
             <Button
               variant="outline"
               onClick={prevStep}
               disabled={currentStep === 1}
-              className="text-xs font-bold rounded-xl border-slate-200"
+              className="text-xs font-normal rounded-lg border-slate-200 h-8 px-3"
             >
-              <ArrowLeft className="w-4 h-4 mr-1" /> Previous
+              <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Previous
             </Button>
             {currentStep < 6 && (
               <Button
                 onClick={nextStep}
-                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl"
+                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg h-8 px-4"
               >
-                Next Step <ArrowRight className="w-4 h-4 ml-1" />
+                Next Step <ArrowRight className="w-3.5 h-3.5 ml-1" />
               </Button>
             )}
           </div>

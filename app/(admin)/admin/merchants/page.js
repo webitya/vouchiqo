@@ -158,43 +158,42 @@ export default function AdminMerchantsPage() {
       title="Merchant Management"
       user={{ name: "Super Admin", role: "admin" }}
     >
-      <div className="space-y-6 text-left font-sans w-full">
+      <div className="space-y-4 text-left font-sans w-full pb-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-3">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-              <Store className="w-6 h-6 text-[#e85d04]" /> Merchant Management
+            <h1 className="text-base font-semibold text-slate-900 flex items-center gap-2">
+              <Store className="w-4 h-4 text-blue-600" /> Merchant Management
             </h1>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">
-              Full merchant list, pending approvals, plan upgrades &amp; account
-              controls.
+            <p className="text-xs text-slate-500 font-normal mt-0.5">
+              Full merchant list, pending approvals, plan upgrades &amp; account controls.
             </p>
           </div>
           {pendingCount > 0 && (
-            <Badge className="bg-amber-500 text-white font-bold text-xs px-3 py-1.5 border-0">
+            <Badge className="bg-amber-50 text-amber-900 border border-amber-200 font-medium text-[10px] px-2.5 py-1">
               {pendingCount} Pending Approval Queue
             </Badge>
           )}
         </div>
 
-        {/* Master Tabs: All Merchants vs Pending Approval Queue */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-slate-100 p-1 rounded-xl border border-slate-200 flex gap-2 justify-start h-auto w-full sm:w-auto">
+        {/* Master Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-3">
+          <TabsList className="bg-slate-100/80 p-1 rounded-xl border border-slate-200 flex gap-1 justify-start h-auto w-full sm:w-auto">
             <TabsTrigger
               value="all"
-              className="text-xs font-bold rounded-lg px-4 py-2 cursor-pointer"
+              className="text-xs font-medium rounded-lg px-3 py-1.5 cursor-pointer data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-xs"
             >
               All Merchants ({merchants.length})
             </TabsTrigger>
             <TabsTrigger
               value="pending"
-              className="text-xs font-bold rounded-lg px-4 py-2 cursor-pointer"
+              className="text-xs font-medium rounded-lg px-3 py-1.5 cursor-pointer data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-xs"
             >
               Pending Approval ({pendingCount})
             </TabsTrigger>
             <TabsTrigger
               value="active"
-              className="text-xs font-bold rounded-lg px-4 py-2 cursor-pointer"
+              className="text-xs font-medium rounded-lg px-3 py-1.5 cursor-pointer data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-xs"
             >
               Active Merchants (
               {merchants.filter((m) => m.status === "Active").length})
@@ -202,21 +201,21 @@ export default function AdminMerchantsPage() {
           </TabsList>
 
           {/* Filters Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 pt-4">
-            <div className="flex flex-col sm:flex-row items-center gap-3 flex-1">
+          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2.5">
+            <div className="flex flex-col sm:flex-row items-center gap-2 flex-1">
               <div className="relative flex-1 w-full">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                 <Input
                   type="text"
                   placeholder="Search by business name, email, category..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white border-slate-200 text-xs h-10 pl-9 rounded-xl font-medium w-full"
+                  className="bg-white border-slate-200 text-xs h-9 pl-9 rounded-lg font-normal w-full"
                 />
               </div>
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full sm:w-40 bg-white border-slate-200 rounded-xl text-xs h-10 font-bold text-slate-800">
+                <SelectTrigger className="w-full sm:w-40 bg-white border-slate-200 rounded-lg text-xs h-9 font-normal text-slate-800">
                   <SelectValue placeholder="Filter Status" />
                 </SelectTrigger>
                 <SelectContent className="z-[300]">
@@ -230,7 +229,7 @@ export default function AdminMerchantsPage() {
               </Select>
 
               <Select value={planFilter} onValueChange={setPlanFilter}>
-                <SelectTrigger className="w-full sm:w-40 bg-white border-slate-200 rounded-xl text-xs h-10 font-bold text-slate-800">
+                <SelectTrigger className="w-full sm:w-40 bg-white border-slate-200 rounded-lg text-xs h-9 font-normal text-slate-800">
                   <SelectValue placeholder="Filter Plan" />
                 </SelectTrigger>
                 <SelectContent className="z-[300]">
@@ -245,49 +244,49 @@ export default function AdminMerchantsPage() {
           </div>
 
           {/* Merchant List Table */}
-          <div className="pt-4">
-            <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white overflow-hidden text-left">
+          <div className="pt-2">
+            <Card className="border-slate-200/80 shadow-2xs rounded-xl bg-white overflow-hidden text-left">
               <Table className="w-full text-xs">
                 <TableHeader className="bg-slate-50 border-b border-slate-100">
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="p-4 text-slate-500 font-bold uppercase">
+                    <TableHead className="p-3 text-slate-500 font-medium uppercase text-[11px]">
                       Business Name
                     </TableHead>
-                    <TableHead className="p-4 text-slate-500 font-bold uppercase">
+                    <TableHead className="p-3 text-slate-500 font-medium uppercase text-[11px]">
                       Category
                     </TableHead>
-                    <TableHead className="p-4 text-slate-500 font-bold uppercase">
+                    <TableHead className="p-3 text-slate-500 font-medium uppercase text-[11px]">
                       Plan
                     </TableHead>
-                    <TableHead className="p-4 text-slate-500 font-bold uppercase">
+                    <TableHead className="p-3 text-slate-500 font-medium uppercase text-[11px]">
                       Status
                     </TableHead>
-                    <TableHead className="p-4 text-slate-500 font-bold uppercase">
+                    <TableHead className="p-3 text-slate-500 font-medium uppercase text-[11px]">
                       Joined Date
                     </TableHead>
-                    <TableHead className="p-4 text-slate-500 font-bold uppercase text-right">
+                    <TableHead className="p-3 text-slate-500 font-medium uppercase text-[11px] text-right">
                       Active Listings
                     </TableHead>
-                    <TableHead className="p-4 text-slate-500 font-bold uppercase text-right">
+                    <TableHead className="p-3 text-slate-500 font-medium uppercase text-[11px] text-right">
                       Monthly Rev (₹)
                     </TableHead>
-                    <TableHead className="p-4 text-slate-500 font-bold uppercase text-center">
+                    <TableHead className="p-3 text-slate-500 font-medium uppercase text-[11px] text-center">
                       Actions
                     </TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="divide-y divide-slate-100 font-semibold text-slate-700">
+                <TableBody className="divide-y divide-slate-100 font-normal text-slate-700">
                   {filteredMerchants.length > 0
                     ? filteredMerchants.map((m) => (
                         <TableRow
                           key={m.id}
                           className="hover:bg-slate-50/60 transition-colors"
                         >
-                          <TableCell className="p-4">
+                          <TableCell className="p-3">
                             <div className="flex flex-col">
                               <Link
                                 href={`/admin/merchants/${m.id}`}
-                                className="font-bold text-slate-900 hover:text-[#e85d04] hover:underline"
+                                className="font-semibold text-slate-900 hover:text-blue-600 hover:underline"
                               >
                                 {m.businessName}
                               </Link>
@@ -296,41 +295,41 @@ export default function AdminMerchantsPage() {
                               </span>
                             </div>
                           </TableCell>
-                          <TableCell className="p-4">
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                          <TableCell className="p-3">
+                            <span className="text-[10px] font-normal px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/50">
                               {m.category}
                             </span>
                           </TableCell>
-                          <TableCell className="p-4">
+                          <TableCell className="p-3">
                             <Badge
-                              className={`rounded-full text-[9px] font-bold border-0 ${m.plan.includes("Pro") ? "bg-purple-100 text-purple-800" : m.plan.includes("Growth") ? "bg-blue-100 text-blue-800" : "bg-slate-100 text-slate-600"}`}
+                              className={`rounded-full text-[9px] font-medium border-0 ${m.plan.includes("Pro") ? "bg-blue-100 text-blue-800" : m.plan.includes("Growth") ? "bg-blue-50 text-blue-700 border border-blue-200" : "bg-slate-100 text-slate-600"}`}
                             >
                               {m.plan}
                             </Badge>
                           </TableCell>
-                          <TableCell className="p-4">
+                          <TableCell className="p-3">
                             <Badge
-                              className={`rounded px-2 py-0.5 border-0 text-[9px] font-bold ${m.status === "Active" ? "bg-emerald-100 text-emerald-700" : m.status === "Pending Approval" ? "bg-amber-100 text-amber-800" : "bg-rose-100 text-rose-700"}`}
+                              className={`rounded px-2 py-0.5 border-0 text-[9px] font-medium ${m.status === "Active" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : m.status === "Pending Approval" ? "bg-amber-50 text-amber-800 border border-amber-200" : "bg-rose-50 text-rose-700 border border-rose-200"}`}
                             >
                               {m.status}
                             </Badge>
                           </TableCell>
-                          <TableCell className="p-4 text-slate-500 font-mono text-[11px]">
+                          <TableCell className="p-3 text-slate-500 font-mono text-[11px]">
                             {m.joinedDate}
                           </TableCell>
-                          <TableCell className="p-4 text-right font-mono font-bold text-slate-800">
+                          <TableCell className="p-3 text-right font-mono font-medium text-slate-800">
                             {m.activeListings}
                           </TableCell>
-                          <TableCell className="p-4 text-right font-black text-slate-900">
+                          <TableCell className="p-3 text-right font-semibold text-slate-900">
                             ₹{m.monthlyRevenue.toLocaleString("en-IN")}
                           </TableCell>
-                          <TableCell className="p-4 text-center">
+                          <TableCell className="p-3 text-center">
                             {m.status === "Pending Approval"
                               ? <div className="flex items-center justify-center gap-1.5">
                                   <Button
                                     size="sm"
                                     onClick={() => handleApprove(m.id)}
-                                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold h-7 px-2.5 rounded-lg cursor-pointer"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-medium h-6.5 px-2 rounded-md cursor-pointer shadow-2xs"
                                   >
                                     Approve
                                   </Button>
@@ -338,7 +337,7 @@ export default function AdminMerchantsPage() {
                                     size="sm"
                                     variant="outline"
                                     onClick={() => handleRequestInfo(m.id)}
-                                    className="text-amber-700 border-amber-300 hover:bg-amber-50 text-[10px] font-bold h-7 px-2 rounded-lg cursor-pointer"
+                                    className="text-amber-700 border-amber-300 hover:bg-amber-50 text-[10px] font-medium h-6.5 px-2 rounded-md cursor-pointer"
                                   >
                                     Info
                                   </Button>
@@ -346,7 +345,7 @@ export default function AdminMerchantsPage() {
                                     size="sm"
                                     variant="outline"
                                     onClick={() => handleReject(m.id)}
-                                    className="text-rose-600 border-rose-200 hover:bg-rose-50 text-[10px] font-bold h-7 px-2 rounded-lg cursor-pointer"
+                                    className="text-rose-600 border-rose-200 hover:bg-rose-50 text-[10px] font-medium h-6.5 px-2 rounded-md cursor-pointer"
                                   >
                                     Reject
                                   </Button>
@@ -354,7 +353,7 @@ export default function AdminMerchantsPage() {
                               : <div className="flex items-center justify-center gap-2">
                                   <Link
                                     href={`/admin/merchants/${m.id}`}
-                                    className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-600 hover:text-blue-600 transition-colors"
+                                    className="w-6.5 h-6.5 flex items-center justify-center rounded-md hover:bg-slate-100 text-slate-600 hover:text-blue-600 transition-colors"
                                     title="View Details"
                                   >
                                     <Eye className="w-3.5 h-3.5" />
@@ -366,7 +365,7 @@ export default function AdminMerchantsPage() {
                     : <TableRow>
                         <TableCell
                           colSpan={8}
-                          className="text-center p-12 text-slate-400 font-medium"
+                          className="text-center p-8 text-slate-400 font-normal"
                         >
                           No merchants match your filter parameters.
                         </TableCell>

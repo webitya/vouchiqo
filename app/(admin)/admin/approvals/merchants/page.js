@@ -72,7 +72,7 @@ export default function MerchantApprovals() {
       sortable: true,
       cell: (row) => (
         <div>
-          <span className="font-bold text-slate-900 block">
+          <span className="font-semibold text-slate-900 block">
             {row.businessName}
           </span>
           {row.website && (
@@ -80,7 +80,7 @@ export default function MerchantApprovals() {
               href={row.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[10px] text-blue-600 hover:underline font-semibold block"
+              className="text-[10px] text-blue-600 hover:underline font-medium block"
             >
               {row.website.replace("https://", "").replace("http://", "")}
             </a>
@@ -93,7 +93,7 @@ export default function MerchantApprovals() {
       header: "Contact Info",
       cell: (row) => (
         <div>
-          <span className="font-semibold text-slate-800 block">
+          <span className="font-normal text-slate-800 block">
             {row.contactEmail}
           </span>
           <span className="text-[10px] text-slate-400 block">
@@ -106,7 +106,7 @@ export default function MerchantApprovals() {
       key: "location",
       header: "Registered Location",
       cell: (row) => (
-        <span className="font-medium text-slate-700">
+        <span className="font-normal text-slate-700">
           {row.location?.city
             ? `${row.location.city}, ${row.location.state}`
             : "Pan-India"}
@@ -134,14 +134,14 @@ export default function MerchantApprovals() {
             size="sm"
             variant="outline"
             onClick={() => handleOpenKyc(row)}
-            className="text-[10px] font-bold rounded-lg border-slate-200 shadow-none cursor-pointer h-8 px-2.5 gap-1"
+            className="text-[10px] font-medium rounded-lg border-slate-200 shadow-none cursor-pointer h-7 px-2 gap-1 bg-white hover:bg-slate-50"
           >
             <Eye className="w-3.5 h-3.5 text-blue-600" /> Audit KYC
           </Button>
           <Button
             size="sm"
             onClick={() => handleAction(row._id, "approve")}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold rounded-lg cursor-pointer h-8 px-2.5 gap-1"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-medium rounded-lg cursor-pointer h-7 px-2 gap-1 shadow-2xs"
           >
             <Check className="w-3.5 h-3.5" /> Approve
           </Button>
@@ -149,7 +149,7 @@ export default function MerchantApprovals() {
             size="sm"
             variant="outline"
             onClick={() => handleAction(row._id, "reject")}
-            className="bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200 text-[10px] font-bold rounded-lg cursor-pointer h-8 px-2.5 gap-1"
+            className="bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200 text-[10px] font-medium rounded-lg cursor-pointer h-7 px-2 gap-1"
           >
             <X className="w-3.5 h-3.5" /> Reject
           </Button>
@@ -163,12 +163,12 @@ export default function MerchantApprovals() {
       title="Merchant Approvals"
       user={{ name: "Platform Admin", role: "admin" }}
     >
-      <div className="space-y-6 text-left font-sans w-full">
-        <h2 className="text-base font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3">
+      <div className="space-y-4 text-left font-sans w-full pb-6">
+        <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2.5">
           Merchant Signup Review Queue
         </h2>
 
-        <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 text-left">
+        <Card className="border-slate-200/80 shadow-2xs rounded-xl bg-white p-4 text-left">
           <DataTable
             columns={columns}
             data={merchants}

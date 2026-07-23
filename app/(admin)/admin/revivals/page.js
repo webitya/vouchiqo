@@ -158,24 +158,23 @@ export default function RevivalManagement() {
     >
       <div className="space-y-6 text-left font-sans w-full">
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-3">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-              <RefreshCw className="w-6 h-6 text-[#e85d04]" /> Master Revival
-              Queue &amp; Intelligence (/admin/revivals)
+            <h1 className="text-base font-semibold text-slate-900 flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-blue-600" /> Master Revival
+              Queue &amp; Intelligence
             </h1>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">
-              Category A/B/C workflows, Win-Back outreach, priority auto-ranking
-              &amp; Alternative Offer Engine.
+            <p className="text-xs text-slate-500 font-normal mt-0.5">
+              Category A/B/C workflows, Win-Back outreach, priority auto-ranking &amp; Alternative Offer Engine.
             </p>
           </div>
 
           <Button
             asChild
-            className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2.5 px-5 rounded-xl cursor-pointer"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium h-8 px-3 rounded-lg cursor-pointer shadow-2xs"
           >
             <Link href="/admin/merchant-demand">
-              View Merchant Demand Report →
+              Merchant Demand Report →
             </Link>
           </Button>
         </div>

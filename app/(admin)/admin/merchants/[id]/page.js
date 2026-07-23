@@ -173,27 +173,27 @@ export default function MerchantDetailPage({ params }) {
       title="Merchant Detail Control"
       user={{ name: "Super Admin", role: "admin" }}
     >
-      <div className="space-y-6 text-left font-sans w-full">
+      <div className="space-y-4 text-left font-sans w-full pb-6">
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" asChild className="p-1.5 h-auto rounded-xl">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-3">
+          <div className="flex items-center gap-2.5">
+            <Button variant="ghost" asChild className="p-1 h-8 w-8 rounded-lg">
               <Link href="/admin/merchants">
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-4 h-4 text-slate-600" />
               </Link>
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-slate-900">
+                <h1 className="text-base font-semibold text-slate-900">
                   {merchantProfile.businessName}
                 </h1>
                 <Badge
-                  className={`rounded px-2.5 py-0.5 text-[9px] font-bold border-0 ${isSuspended ? "bg-rose-100 text-rose-800" : "bg-emerald-100 text-emerald-800"}`}
+                  className={`rounded px-2 py-0.5 text-[9px] font-medium border-0 ${isSuspended ? "bg-rose-100 text-rose-800" : "bg-emerald-100 text-emerald-800"}`}
                 >
                   {merchantProfile.status}
                 </Badge>
               </div>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-slate-500 font-normal mt-0.5">
                 {merchantProfile.email} • {merchantProfile.address}
               </p>
             </div>
@@ -203,119 +203,119 @@ export default function MerchantDetailPage({ params }) {
           <div className="flex flex-wrap items-center gap-2">
             <Button
               onClick={handleAddCredits}
-              className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl cursor-pointer"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg h-8 px-3 cursor-pointer shadow-2xs"
             >
-              + Add 25 Revival Credits (Current: {revivalCredits})
+              + Add 25 Revival Credits ({revivalCredits})
             </Button>
             <Button
               variant="outline"
               onClick={() => setIsChangePlanOpen(true)}
-              className="text-xs font-bold rounded-xl border-slate-200 cursor-pointer"
+              className="text-xs font-medium rounded-lg border-slate-200 h-8 px-3 cursor-pointer bg-white"
             >
-              Manually Change Plan ({currentPlan})
+              Change Plan ({currentPlan})
             </Button>
             <Button
               onClick={handleToggleSuspend}
-              className={`text-xs font-bold rounded-xl cursor-pointer ${isSuspended ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"}`}
+              className={`text-xs font-medium rounded-lg h-8 px-3 cursor-pointer ${isSuspended ? "bg-emerald-600 text-white" : "bg-slate-900 text-white"}`}
             >
               {isSuspended ? "Reactivate Account" : "Suspend Account"}
             </Button>
           </div>
         </div>
 
-        {/* 6 MASTER TABS: Full Business Profile, All Listings, Subscription History, Commission Transactions, Support Tickets, Activity Log */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-slate-100 p-1.5 rounded-2xl border border-slate-200 flex flex-wrap gap-1 justify-start h-auto w-full">
+        {/* 6 MASTER TABS */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-3">
+          <TabsList className="bg-slate-100/80 p-1 rounded-xl border border-slate-200/80 flex flex-wrap gap-1 justify-start h-auto w-full">
             <TabsTrigger
               value="profile"
-              className="text-xs font-bold rounded-xl px-4 py-2 cursor-pointer"
+              className="text-xs font-medium rounded-lg px-3 py-1.5 cursor-pointer data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-xs"
             >
               Business Profile
             </TabsTrigger>
             <TabsTrigger
               value="listings"
-              className="text-xs font-bold rounded-xl px-4 py-2 cursor-pointer"
+              className="text-xs font-medium rounded-lg px-3 py-1.5 cursor-pointer data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-xs"
             >
               All Listings ({listings.length})
             </TabsTrigger>
             <TabsTrigger
               value="subscriptions"
-              className="text-xs font-bold rounded-xl px-4 py-2 cursor-pointer"
+              className="text-xs font-medium rounded-lg px-3 py-1.5 cursor-pointer data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-xs"
             >
               Subscription History
             </TabsTrigger>
             <TabsTrigger
               value="commissions"
-              className="text-xs font-bold rounded-xl px-4 py-2 cursor-pointer"
+              className="text-xs font-medium rounded-lg px-3 py-1.5 cursor-pointer data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-xs"
             >
               Commission Transactions
             </TabsTrigger>
             <TabsTrigger
               value="tickets"
-              className="text-xs font-bold rounded-xl px-4 py-2 cursor-pointer"
+              className="text-xs font-medium rounded-lg px-3 py-1.5 cursor-pointer data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-xs"
             >
               Support Tickets ({tickets.length})
             </TabsTrigger>
             <TabsTrigger
               value="activity"
-              className="text-xs font-bold rounded-xl px-4 py-2 cursor-pointer"
+              className="text-xs font-medium rounded-lg px-3 py-1.5 cursor-pointer data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-xs"
             >
               Activity Log
             </TabsTrigger>
           </TabsList>
 
           {/* TAB 1: BUSINESS PROFILE */}
-          <TabsContent value="profile" className="pt-4">
-            <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-6 space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+          <TabsContent value="profile" className="pt-3">
+            <Card className="border-slate-200/80 shadow-2xs rounded-xl bg-white p-4 space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Full Business &amp; Contact Profile
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <div className="p-3 bg-slate-50 rounded-xl space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div className="p-2.5 bg-slate-50 rounded-lg space-y-0.5 border border-slate-100">
+                  <span className="text-slate-400 font-medium text-[11px] block">
                     Legal Entity Name
                   </span>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-semibold text-slate-900">
                     {merchantProfile.businessName}
                   </span>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-xl space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                <div className="p-2.5 bg-slate-50 rounded-lg space-y-0.5 border border-slate-100">
+                  <span className="text-slate-400 font-medium text-[11px] block">
                     Trading / Brand Name
                   </span>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-semibold text-slate-900">
                     {merchantProfile.tradingName}
                   </span>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-xl space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                <div className="p-2.5 bg-slate-50 rounded-lg space-y-0.5 border border-slate-100">
+                  <span className="text-slate-400 font-medium text-[11px] block">
                     Business Constitution
                   </span>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-semibold text-slate-900">
                     {merchantProfile.constitution}
                   </span>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-xl space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                <div className="p-2.5 bg-slate-50 rounded-lg space-y-0.5 border border-slate-100">
+                  <span className="text-slate-400 font-medium text-[11px] block">
                     Primary Category
                   </span>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-semibold text-slate-900">
                     {merchantProfile.category}
                   </span>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-xl space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                <div className="p-2.5 bg-slate-50 rounded-lg space-y-0.5 border border-slate-100">
+                  <span className="text-slate-400 font-medium text-[11px] block">
                     Authorized Liaison
                   </span>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-semibold text-slate-900">
                     {merchantProfile.contactPerson} ({merchantProfile.phone})
                   </span>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-xl space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                <div className="p-2.5 bg-slate-50 rounded-lg space-y-0.5 border border-slate-100">
+                  <span className="text-slate-400 font-medium text-[11px] block">
                     Physical Showroom Address
                   </span>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-semibold text-slate-900">
                     {merchantProfile.address}
                   </span>
                 </div>
@@ -324,32 +324,32 @@ export default function MerchantDetailPage({ params }) {
           </TabsContent>
 
           {/* TAB 2: LISTINGS */}
-          <TabsContent value="listings" className="pt-4">
-            <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 space-y-3">
-              <h3 className="text-sm font-bold text-slate-900 uppercase">
+          <TabsContent value="listings" className="pt-3">
+            <Card className="border-slate-200/80 shadow-2xs rounded-xl bg-white p-4 space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Merchant Offer Listings
               </h3>
               <Table className="w-full text-xs">
-                <TableHeader className="bg-slate-50">
+                <TableHeader className="bg-slate-50/80">
                   <TableRow>
-                    <TableHead>Offer Title</TableHead>
-                    <TableHead>Code</TableHead>
-                    <TableHead>Clicks</TableHead>
-                    <TableHead>Redemptions</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead className="font-medium text-slate-600">Offer Title</TableHead>
+                    <TableHead className="font-medium text-slate-600">Code</TableHead>
+                    <TableHead className="font-medium text-slate-600">Clicks</TableHead>
+                    <TableHead className="font-medium text-slate-600">Redemptions</TableHead>
+                    <TableHead className="font-medium text-slate-600">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {listings.map((l, i) => (
                     <TableRow key={i}>
-                      <TableCell className="font-bold">{l.title}</TableCell>
-                      <TableCell className="font-mono">{l.code}</TableCell>
-                      <TableCell>{l.clicks}</TableCell>
-                      <TableCell className="font-bold">
+                      <TableCell className="font-medium text-slate-900">{l.title}</TableCell>
+                      <TableCell className="font-mono text-slate-600">{l.code}</TableCell>
+                      <TableCell className="text-slate-700">{l.clicks}</TableCell>
+                      <TableCell className="font-semibold text-slate-900">
                         {l.redemptions}
                       </TableCell>
                       <TableCell>
-                        <Badge>{l.status}</Badge>
+                        <Badge className="bg-blue-50 text-blue-700 border-blue-200 text-[10px] font-medium">{l.status}</Badge>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -359,30 +359,30 @@ export default function MerchantDetailPage({ params }) {
           </TabsContent>
 
           {/* TAB 3: SUBSCRIPTIONS */}
-          <TabsContent value="subscriptions" className="pt-4">
-            <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 space-y-3">
-              <h3 className="text-sm font-bold text-slate-900 uppercase">
+          <TabsContent value="subscriptions" className="pt-3">
+            <Card className="border-slate-200/80 shadow-2xs rounded-xl bg-white p-4 space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Subscription Billing History
               </h3>
               <Table className="w-full text-xs">
-                <TableHeader className="bg-slate-50">
+                <TableHeader className="bg-slate-50/80">
                   <TableRow>
-                    <TableHead>Billing Date</TableHead>
-                    <TableHead>Plan Tier</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Cycle</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead className="font-medium text-slate-600">Billing Date</TableHead>
+                    <TableHead className="font-medium text-slate-600">Plan Tier</TableHead>
+                    <TableHead className="font-medium text-slate-600">Amount</TableHead>
+                    <TableHead className="font-medium text-slate-600">Cycle</TableHead>
+                    <TableHead className="font-medium text-slate-600">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {subscriptions.map((s, i) => (
                     <TableRow key={i}>
-                      <TableCell>{s.date}</TableCell>
-                      <TableCell className="font-bold">{s.plan}</TableCell>
-                      <TableCell className="font-black">{s.amount}</TableCell>
-                      <TableCell>{s.cycle}</TableCell>
+                      <TableCell className="text-slate-700">{s.date}</TableCell>
+                      <TableCell className="font-medium text-slate-900">{s.plan}</TableCell>
+                      <TableCell className="font-semibold text-slate-900">{s.amount}</TableCell>
+                      <TableCell className="text-slate-700">{s.cycle}</TableCell>
                       <TableCell>
-                        <Badge className="bg-emerald-100 text-emerald-800">
+                        <Badge className="bg-emerald-50 text-emerald-800 border-emerald-200 text-[10px] font-medium">
                           {s.status}
                         </Badge>
                       </TableCell>
@@ -394,32 +394,32 @@ export default function MerchantDetailPage({ params }) {
           </TabsContent>
 
           {/* TAB 4: COMMISSIONS */}
-          <TabsContent value="commissions" className="pt-4">
-            <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 space-y-3">
-              <h3 className="text-sm font-bold text-slate-900 uppercase">
+          <TabsContent value="commissions" className="pt-3">
+            <Card className="border-slate-200/80 shadow-2xs rounded-xl bg-white p-4 space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 Commission Transactions
               </h3>
               <Table className="w-full text-xs">
-                <TableHeader className="bg-slate-50">
+                <TableHeader className="bg-slate-50/80">
                   <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Listing</TableHead>
-                    <TableHead>Model</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead className="font-medium text-slate-600">ID</TableHead>
+                    <TableHead className="font-medium text-slate-600">Date</TableHead>
+                    <TableHead className="font-medium text-slate-600">Listing</TableHead>
+                    <TableHead className="font-medium text-slate-600">Model</TableHead>
+                    <TableHead className="font-medium text-slate-600">Amount</TableHead>
+                    <TableHead className="font-medium text-slate-600">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {commissions.map((c, i) => (
                     <TableRow key={i}>
-                      <TableCell className="font-mono">{c.id}</TableCell>
-                      <TableCell>{c.date}</TableCell>
-                      <TableCell className="font-bold">{c.item}</TableCell>
-                      <TableCell>{c.model}</TableCell>
-                      <TableCell className="font-black">{c.amount}</TableCell>
+                      <TableCell className="font-mono text-slate-600">{c.id}</TableCell>
+                      <TableCell className="text-slate-700">{c.date}</TableCell>
+                      <TableCell className="font-medium text-slate-900">{c.item}</TableCell>
+                      <TableCell className="text-slate-700">{c.model}</TableCell>
+                      <TableCell className="font-semibold text-slate-900">{c.amount}</TableCell>
                       <TableCell>
-                        <Badge className="bg-blue-100 text-blue-800">
+                        <Badge className="bg-blue-50 text-blue-700 border-blue-200 text-[10px] font-medium">
                           {c.status}
                         </Badge>
                       </TableCell>

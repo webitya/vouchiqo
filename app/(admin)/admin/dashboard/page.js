@@ -169,26 +169,25 @@ export default function AdminDashboard() {
     >
       <div className="space-y-6 text-left font-sans w-full">
         {/* Welcome Banner */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-3">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-              Dashboard
+            <h1 className="text-base font-semibold text-slate-900 tracking-tight">
+              Super Admin Dashboard
             </h1>
-            <p className="text-xs text-slate-500 font-semibold mt-0.5">
-              Welcome back, Admin. Here's what's happening with your business
-              today.
+            <p className="text-xs text-slate-500 font-normal mt-0.5">
+              Welcome back, Admin. Here's what's happening with your business today.
             </p>
           </div>
           <Link
             href="/admin/approvals/merchants"
-            className="bg-[#0f172a] hover:bg-slate-800 text-white text-xs font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 shadow-none"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 shadow-2xs"
           >
-            New Order
+            Review Queue
           </Link>
         </div>
 
         {/* 4 Reusable KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
           <KPICard
             title="Total Revenue"
             value={`₹${kpis.monthlyRevenue.toLocaleString()}`}
@@ -224,14 +223,14 @@ export default function AdminDashboard() {
         </div>
 
         {/* Overview Chart & Traffic Column */}
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-          <Card className="col-span-full xl:col-span-8 bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col h-full hover:shadow-xs transition-all duration-200 p-0 gap-0">
-            <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-50/50 min-h-[56px]">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
+          <Card className="col-span-full xl:col-span-8 bg-white border border-slate-200/90 rounded-xl shadow-2xs overflow-hidden flex flex-col h-full hover:shadow-xs transition-all duration-200 p-0 gap-0">
+            <CardHeader className="px-4 py-3 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-50/50 min-h-[48px]">
               <div>
-                <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
+                <CardTitle className="font-sans text-xs font-semibold text-slate-900 tracking-wider uppercase m-0 leading-none">
                   Overview
                 </CardTitle>
-                <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
+                <CardDescription className="text-[11px] font-normal text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
                   Monthly performance for the current year
                 </CardDescription>
               </div>
@@ -241,9 +240,9 @@ export default function AdminDashboard() {
                     key={metric}
                     type="button"
                     onClick={() => setActiveMetricTab(metric)}
-                    className={`text-[11px] font-bold px-3 py-1 rounded-md transition-all uppercase cursor-pointer border-0 ${
+                    className={`text-[11px] font-medium px-2.5 py-0.5 rounded-md transition-all uppercase cursor-pointer border-0 ${
                       activeMetricTab === metric
-                        ? "bg-white text-[#08214d] shadow-2xs"
+                        ? "bg-white text-blue-600 shadow-2xs"
                         : "text-slate-500 hover:text-slate-800 bg-transparent"
                     }`}
                   >

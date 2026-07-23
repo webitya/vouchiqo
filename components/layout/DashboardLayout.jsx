@@ -65,7 +65,7 @@ export default function DashboardLayout({ title, user, children }) {
 
             {/* Plan Expiry / Notice Alert Banner for Merchants */}
             {isMerchant && showBanner && (
-              <div className="bg-blue-50/80 border-b border-blue-200/60 px-4 py-2.5 flex items-center justify-between text-xs font-semibold text-blue-900 font-sans">
+              <div className="bg-blue-50/80 border-b border-blue-200/60 px-4 py-2.5 flex items-center justify-between text-xs font-normal text-blue-900 font-sans">
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-blue-600 flex-shrink-0 animate-pulse" />
                   <span>
@@ -78,7 +78,7 @@ export default function DashboardLayout({ title, user, children }) {
                 <div className="flex items-center gap-2">
                   <Badge
                     onClick={() => router.push("/merchant/billing")}
-                    className="bg-blue-600 hover:bg-blue-700 text-white border-0 text-[10px] font-bold cursor-pointer px-2.5 py-0.5 shadow-xs"
+                    className="bg-blue-600 hover:bg-blue-700 text-white border-0 text-[10px] font-medium cursor-pointer px-2.5 py-0.5 shadow-xs"
                   >
                     Manage Subscription
                   </Badge>
