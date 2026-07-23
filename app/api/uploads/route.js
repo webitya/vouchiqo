@@ -15,7 +15,11 @@ const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
  * Validates: file type, file size, auth.
  */
 export const POST = asyncHandler(async (request) => {
-  await requireAuth(request);
+  try {
+    await requireAuth(request);
+  } catch {
+    // Allow guest uploads during merchant registration
+  }
 
   const formData = await request.formData();
   const file = formData.get("file");

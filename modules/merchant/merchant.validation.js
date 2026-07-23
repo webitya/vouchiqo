@@ -21,6 +21,7 @@ export const createMerchantSchema = z.object({
   longDescription: z.string().max(1000).optional(),
 
   category: z.enum(COUPON_CATEGORIES),
+  customCategoryNotes: z.string().optional(),
 
   location: z
     .object({
@@ -46,6 +47,7 @@ export const createMerchantSchema = z.object({
   operatingHours: z.record(z.any()).optional(),
   logo: z.string().optional(),
   banner: z.string().optional(),
+  signatureImage: z.string().optional(),
   autoApproveRevival: z.boolean().optional(),
 
   // KYC compliance onboarding fields

@@ -50,6 +50,11 @@ const merchantSchema = new Schema(
       required: true,
     },
 
+    customCategoryNotes: {
+      type: String,
+      trim: true,
+    },
+
     location: {
       address: { type: String, trim: true },
       pincode: { type: String, trim: true },
@@ -161,6 +166,7 @@ const merchantSchema = new Schema(
       chequeImage: { type: String }, // Cloudinary URL
     },
     shopImage: { type: String }, // Cloudinary URL
+    signatureImage: { type: String }, // Cloudinary URL for digital signature
   },
   {
     timestamps: true,
