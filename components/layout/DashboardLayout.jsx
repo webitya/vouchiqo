@@ -19,31 +19,47 @@ export default function DashboardLayout({ title, user, children }) {
   const [showBanner, setShowBanner] = useState(true);
 
   useEffect(() => {
-    if (isLoaded) {
-      if (!isLoggedIn) {
-        router.push("/login");
-        return;
-      }
+    if (!isLoaded) return;
 
-      // Verify merchant access
-      if (pathname.startsWith("/merchant")) {
-        if (
-          role !== "merchant" &&
-          role !== "admin" &&
-          pathname !== "/merchant/profile"
-        ) {
-          router.push("/merchant/profile");
-        }
-      }
+    if (!isLoggedIn) {
+      router.push("/login");
+      return;
+    }
 
-      // Verify admin access
-      if (pathname.startsWith("/admin")) {
-        if (role !== "admin") {
-          router.push("/");
-        }
+    // Verify admin access — no DB check needed, admin role is always explicit
+    if (pathname.startsWith("/admin")) {
+      if (role !== "admin") {
+        router.push("/");
+      }
+      return;
+    }
+
+    // Verify merchant access with stale-session tolerance.
+    // Better Auth caches the session cookie for up to 5 minutes, so a newly
+    // registered merchant may still have role:"customer" in the client session
+    // even though the DB has already been updated to role:"merchant".
+    // We therefore check /api/merchants/me (DB) before rejecting access.
+    if (pathname.startsWith("/merchant")) {
+      if (role === "merchant" || role === "admin") return; // session is current — allow
+
+      // Session says "customer" — verify against DB before redirecting
+      if (authUser?.id) {
+        fetch("/api/merchants/me")
+          .then((r) => {
+            if (!r.ok) {
+              // Confirmed non-merchant → send to customer dashboard
+              router.push("/customer/dashboard");
+            }
+            // If r.ok the user IS a merchant (stale session) — stay on page
+          })
+          .catch(() => {
+            // Network error — be permissive, don't redirect
+          });
+      } else {
+        router.push("/customer/dashboard");
       }
     }
-  }, [isLoaded, isLoggedIn, role, pathname, router]);
+  }, [isLoaded, isLoggedIn, role, authUser?.id, pathname, router]);
 
   if (!isLoaded) {
     return (

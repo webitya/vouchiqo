@@ -44,7 +44,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { signUp } from "@/lib/auth-client";
+import { authClient, signUp } from "@/lib/auth-client";
 import {
   INDIAN_CITIES,
   lookupByPincode,
@@ -387,16 +387,29 @@ export function MerchantOnboardingWizard() {
         gmapsLink: formData.googleUrl,
       };
 
-      await fetch("/api/merchants", {
+      const merchantRes = await fetch("/api/merchants", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(merchantPayload),
-      }).catch(() => {});
+      });
+
+      // Force-refresh the Better Auth client session so it picks up the
+      // newly written role:"merchant" from the DB, bypassing the 5-min cookie
+      // cache. Without this the client would still show role:"customer" and
+      // the user would land on the customer profile instead of merchant pages.
+      try {
+        await authClient.getSession({ query: { disableCookieCache: true } });
+      } catch (_) {
+        // non-fatal — page reload on redirect will re-fetch anyway
+      }
 
       toast.success(
-        "Application submitted successfully! Redirecting to tracking status...",
+        "Application submitted! Welcome to Vouchiqo for Merchants.",
       );
-      router.push("/merchant/application-status");
+
+      // Redirect to merchant dashboard (the "Under Review" banner shown there
+      // blocks access until admin approves — no need for a separate status page)
+      router.push("/merchant/dashboard");
     } catch (err) {
       toast.error(err.message || "Registration failed.");
     } finally {

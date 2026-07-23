@@ -8,7 +8,7 @@ import {
   PiggyBank,
   Wallet,
 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 // Layout & Global Components
@@ -71,7 +71,8 @@ function ConfettiOverlay({ active }) {
 }
 
 function ProfileContent() {
-  const { user: authUser } = useUser();
+  const { user: authUser, role, isLoaded } = useUser();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("savings");
   const [loading, setLoading] = useState(true);
   const [savingsData, setSavingsData] = useState(null);
@@ -96,6 +97,27 @@ function ProfileContent() {
 
   // Selected Saved coupon modal state
   const [selectedSavedCoupon, setSelectedSavedCoupon] = useState(null);
+
+  // ── Merchant Guard ──────────────────────────────────────────────────────────
+  // If a merchant lands on this customer profile page (e.g. via stale link or
+  // cached session redirect), immediately send them to their own dashboard.
+  useEffect(() => {
+    if (!isLoaded) return;
+    // Session role says merchant → redirect
+    if (role === "merchant") {
+      router.replace("/merchant/dashboard");
+      return;
+    }
+    // Session role is customer but user has a merchant record → redirect
+    if (authUser?.id) {
+      fetch("/api/merchants/me")
+        .then((r) => {
+          if (r.ok) router.replace("/merchant/dashboard");
+        })
+        .catch(() => {});
+    }
+  }, [isLoaded, role, authUser?.id, router]);
+  // ───────────────────────────────────────────────────────────────────────────
 
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");

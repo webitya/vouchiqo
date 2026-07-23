@@ -9,7 +9,8 @@ import {
   ShieldCheck,
   Ticket,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import ConfirmationModal from "@/components/shared/modals/ConfirmationModal";
 import CouponCard from "@/components/shared/cards/CouponCard";
@@ -17,12 +18,28 @@ import KPICard from "@/components/shared/cards/KPICard";
 import { useUser } from "@/hooks/use-user";
 
 export default function CustomerDashboard() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [selectedCoupon, setSelectedCoupon] = useState(null);
 
   // Fetch actual user session
-  const { user: authUser } = useUser();
+  const { user: authUser, role, isLoaded } = useUser();
   const user = authUser || { name: "Aditya Kumar", role: "customer" };
+
+  // ── Merchant Guard ────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (role === "merchant") {
+      router.replace("/merchant/dashboard");
+      return;
+    }
+    if (authUser?.id) {
+      fetch("/api/merchants/me")
+        .then((r) => { if (r.ok) router.replace("/merchant/dashboard"); })
+        .catch(() => {});
+    }
+  }, [isLoaded, role, authUser?.id, router]);
+  // ─────────────────────────────────────────────────────────────────────────
 
   // Fetch actual savings data
   const { data: savingsData } = useQuery({

@@ -11,14 +11,8 @@ import { asyncHandler } from "@/utils/async-handler";
 export const GET = asyncHandler(async (request) => {
   await connectDB();
   const { user } = await requireAuth(request);
-  try {
-    const merchant = await getMerchantByAuthId(user.id);
-    return ok(merchant);
-  } catch (err) {
-    if (err.statusCode === 404) {
-      // Return null rather than throwing 404 if profile doesn't exist yet
-      return ok(null);
-    }
-    throw err;
-  }
+  // Throws NotFoundError (404) if the user has no merchant profile,
+  // which is the correct signal for client-side guards.
+  const merchant = await getMerchantByAuthId(user.id);
+  return ok(merchant);
 });
