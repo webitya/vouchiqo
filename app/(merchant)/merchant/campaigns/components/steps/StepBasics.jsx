@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, MessageSquare, Sparkles, Target, Zap } from "lucide-react";
+import { FileText, MessageSquare, Tag, Target, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -48,7 +48,7 @@ export default function StepBasics({
         {/* Campaign Type Select */}
         <div className="space-y-1.5">
           <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-            <Zap className="w-3.5 h-3.5 text-orange-600" /> Campaign Type *
+            <Tag className="w-3.5 h-3.5 text-blue-600" /> Campaign Type *
           </Label>
           <Select
             value={campaignData.type}
@@ -73,7 +73,7 @@ export default function StepBasics({
         {campaignData.type === "festival" && (
           <div className="p-4 border border-purple-200 rounded-xl bg-purple-50/60 space-y-2">
             <Label className="flex items-center gap-1.5 font-bold text-xs text-purple-900">
-              <Sparkles className="w-3.5 h-3.5 text-purple-600" /> Target
+              <Tag className="w-3.5 h-3.5 text-purple-600" /> Target
               Festival Template *
             </Label>
             <Select
@@ -83,48 +83,33 @@ export default function StepBasics({
               }
             >
               <SelectTrigger className="w-full bg-white border-purple-200 rounded-xl text-xs h-10 px-3.5 font-bold text-purple-900">
-                <SelectValue placeholder="Select festival template" />
+                <SelectValue placeholder="Select festival..." />
               </SelectTrigger>
               <SelectContent className="z-[300]">
                 <SelectItem value="Diwali Grand Festival">
-                  Diwali Grand Festival (Pre-Diwali Renovation &amp; Shopping)
+                  🪔 Diwali Grand Festival (5 Days)
                 </SelectItem>
-                <SelectItem value="Chhath Puja Special">
-                  Chhath Puja Special (Jharkhand &amp; Bihar Peak Window)
+                <SelectItem value="Holi Festive Saver">
+                  🎨 Holi Festive Saver (3 Days)
                 </SelectItem>
-                <SelectItem value="Holi Color Festival">
-                  Holi Color Festival
+                <SelectItem value="Durga Puja Special">
+                  🌺 Durga Puja Special (4 Days)
                 </SelectItem>
-                <SelectItem value="Navratri &amp; Durga Puja">
-                  Navratri &amp; Durga Puja Grand Festival
+                <SelectItem value="Eid Special Offers">
+                  🌙 Eid Special Offers (3 Days)
                 </SelectItem>
-                <SelectItem value="Eid Mubarak Special">
-                  Eid Mubarak Festival
-                </SelectItem>
-                <SelectItem value="Christmas &amp; New Year">
-                  Christmas &amp; New Year Extravaganza
-                </SelectItem>
-                <SelectItem value="Independence &amp; Republic Day">
-                  Independence Day &amp; Republic Day Sales
-                </SelectItem>
-                <SelectItem value="Valentine's Day Special">
-                  Valentine's Day Special
-                </SelectItem>
-                <SelectItem value="Raksha Bandhan &amp; Bhai Dooj">
-                  Raksha Bandhan &amp; Bhai Dooj
-                </SelectItem>
-                <SelectItem value="Back-to-School Season">
-                  Back-to-School Season (July – August)
+                <SelectItem value="New Year Shopping Bash">
+                  🎆 New Year Shopping Bash (2 Days)
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
         )}
 
-        {/* Campaign Objective Radio Pills Row */}
-        <div className="space-y-2">
+        {/* Target Objective */}
+        <div className="space-y-1.5">
           <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-            <Target className="w-3.5 h-3.5 text-emerald-600" /> Campaign
+            <Target className="w-3.5 h-3.5 text-blue-600" /> Primary Campaign
             Objective *
           </Label>
           <div className="flex flex-wrap gap-2.5">
@@ -135,7 +120,7 @@ export default function StepBasics({
                   key={obj}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                     isSelected
-                      ? "bg-orange-50/70 border-[#e85d04] text-slate-900 shadow-2xs"
+                      ? "bg-blue-50/70 border-blue-600 text-slate-900 shadow-2xs"
                       : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
                   }`}
                 >
@@ -146,7 +131,7 @@ export default function StepBasics({
                     onChange={() =>
                       setCampaignData({ ...campaignData, objective: obj })
                     }
-                    className="accent-[#e85d04] w-3.5 h-3.5"
+                    className="accent-blue-600 w-3.5 h-3.5"
                   />
                   <span>{obj}</span>
                 </label>
@@ -158,7 +143,7 @@ export default function StepBasics({
         {/* Public Headline */}
         <div className="space-y-1.5">
           <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" /> Ticker Public
+            <FileText className="w-3.5 h-3.5 text-blue-600" /> Ticker Public
             Headline (Recommended)
           </Label>
           <Input
@@ -207,7 +192,7 @@ export default function StepBasics({
         </Button>
         <Button
           onClick={onNext}
-          className="bg-[#e85d04] hover:bg-orange-600 text-white text-xs font-bold py-2.5 px-6 rounded-xl cursor-pointer"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-6 rounded-xl cursor-pointer shadow-md shadow-blue-500/20"
         >
           Next &gt;
         </Button>

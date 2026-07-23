@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles, Store } from "lucide-react";
+import { Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,8 +25,7 @@ export default function WelcomeModal({
             <Store className="w-6 h-6 text-blue-400" />
           </div>
           <DialogTitle className="text-xl font-black tracking-tight text-white flex items-center gap-2">
-            Welcome to Vouchiqo, {merchantName || "Partner"}!{" "}
-            <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
+            Welcome to Vouchiqo, {merchantName || "Partner"}!
           </DialogTitle>
           <DialogDescription className="text-xs font-medium text-slate-300 leading-relaxed">
             Your merchant portal is ready. Take a quick 2-minute interactive
@@ -57,7 +56,7 @@ export default function WelcomeModal({
           <Button
             type="button"
             onClick={onStart}
-            className="bg-[#e85d04] hover:bg-orange-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl cursor-pointer shadow-lg shadow-orange-500/20"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl cursor-pointer shadow-lg shadow-blue-500/20"
           >
             Start Interactive Tour →
           </Button>

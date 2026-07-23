@@ -42,7 +42,7 @@ import { Button } from "@/components/ui/button";
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const DEMO_TRAFFIC_SOURCES = [
   { name: "Homepage Ticker & Banners", value: 38, color: "#2563eb" },
-  { name: "Category & Search Pages", value: 28, color: "#e85d04" },
+  { name: "Category & Search Pages", value: 28, color: "#0f2137" },
   { name: "Direct Referral Links", value: 22, color: "#10b981" },
   { name: "Social & Push Alerts", value: 12, color: "#8b5cf6" },
 ];
@@ -148,9 +148,9 @@ export default function MerchantAnalytics() {
     );
   }
 
+  // Compute whether merchant has active growth or pro plan
   const plan = merchant?.plan || "starter";
   const isGrowthPlus = plan !== "starter";
-  const isProPlus = plan === "pro" || plan === "enterprise";
 
   const overviewStats = analyticsData?.overview ?? {};
   const kpi = analyticsData?.kpi ?? {};
@@ -318,25 +318,28 @@ export default function MerchantAnalytics() {
     return (
       <DashboardLayout
         title="Store Analytics"
-        user={{ name: merchant?.businessName, role: "merchant" }}
+        user={{
+          name: merchant?.businessName || "Merchant Partner",
+          role: "merchant",
+        }}
       >
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-5 px-6">
-          <div className="w-16 h-16 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg">
-            <Lock className="w-7 h-7" />
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4 px-6 font-sans">
+          <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+            <Lock className="w-6 h-6" />
           </div>
-          <div className="space-y-2">
-            <h2 className="text-xl font-black text-slate-900 font-heading">
+          <div className="space-y-1.5 max-w-md">
+            <h2 className="text-xl font-black text-slate-900">
               Analytics Requires Growth Plan
             </h2>
-            <p className="text-sm text-slate-500 font-semibold max-w-md leading-relaxed">
-              Upgrade to Growth or above to unlock detailed analytics:
+            <p className="text-xs text-slate-500 font-medium leading-relaxed">
+              Upgrade to Growth Plan or above to unlock detailed real-time analytics:
               impressions, clicks, redemption rates, coupon performance tables,
               and audience insights.
             </p>
           </div>
           <Link
             href="/merchant/billing"
-            className="bg-[#e85d04] hover:bg-orange-600 text-white text-sm font-bold py-3 px-8 rounded-xl transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-6 rounded-xl transition-all shadow-md shadow-blue-500/20 border-0 cursor-pointer"
           >
             Upgrade to Growth — ₹1,499/mo
           </Link>
@@ -365,11 +368,11 @@ export default function MerchantAnalytics() {
         role: "merchant",
       }}
     >
-      <div className="space-y-6 text-left font-sans w-full">
+      <div className="space-y-4 text-left font-sans w-full">
         {/* Filter Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white border border-slate-200 p-4 rounded-2xl shadow-xs">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 bg-white border border-slate-200/90 p-3 rounded-2xl shadow-2xs">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 w-full sm:w-auto">
-            <Calendar className="w-4 h-4 text-blue-600" />
+            <Calendar className="w-3.5 h-3.5 text-blue-600" />
             <span>Report Interval:</span>
             <FormSelect
               value={timeRange}
@@ -379,14 +382,14 @@ export default function MerchantAnalytics() {
                 { value: "30", label: "Last 30 Days" },
                 { value: "90", label: "Last 90 Days" },
               ]}
-              triggerClassName="w-36 bg-slate-50 h-8 border-slate-200"
+              triggerClassName="w-36 bg-slate-50 h-8 border-slate-200 text-xs rounded-xl"
             />
           </div>
           <Button
             variant="outline"
-            className="text-xs py-2 px-4 font-bold flex items-center gap-1.5 border-slate-200 rounded-xl cursor-pointer shadow-none"
+            className="text-xs h-8 py-1.5 px-3.5 font-bold flex items-center gap-1.5 border-slate-200 rounded-xl cursor-pointer shadow-none text-slate-700 hover:bg-slate-50"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-3.5 h-3.5" />
             <span>Export CSV Report</span>
           </Button>
         </div>
@@ -441,13 +444,13 @@ export default function MerchantAnalytics() {
             value={aov > 0 ? `₹${aov}` : "—"}
             subtitle="revenue per order"
             icon={ShoppingBag}
-            iconClassName="bg-orange-50 border-orange-200/80 text-[#e85d04]"
+            iconClassName="bg-blue-50 border-blue-200/80 text-blue-600"
             change={5.7}
           />
         </div>
 
         {/* Chart Row 1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           {/* Clicks vs Redemptions Trend (58% width) */}
           <div className="lg:col-span-7 flex flex-col">
             <AnalyticsCard
@@ -501,7 +504,7 @@ export default function MerchantAnalytics() {
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-5 h-5 rounded-md bg-[#e85d04] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    <div className="w-5 h-5 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
                       <TicketCheck className="w-3 h-3 stroke-[2.5]" />
                     </div>
                     <span className="text-xs font-bold text-slate-800">
@@ -522,7 +525,7 @@ export default function MerchantAnalytics() {
                 </span>
               </div>
 
-              <div className="h-56 w-full">
+              <div className="h-52 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={enrichedTrend}
@@ -561,9 +564,9 @@ export default function MerchantAnalytics() {
                     <Line
                       type="monotone"
                       dataKey="redemptions"
-                      stroke="#e85d04"
+                      stroke="#0f2137"
                       strokeWidth={2.5}
-                      dot={{ r: 3, fill: "#e85d04" }}
+                      dot={{ r: 3, fill: "#0f2137" }}
                       activeDot={{ r: 5 }}
                       name="Redemptions"
                     />
@@ -646,7 +649,7 @@ export default function MerchantAnalytics() {
                       <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-500 ${
-                            idx === 0 ? "bg-[#e85d04]" : "bg-[#2563eb]"
+                            idx === 0 ? "bg-blue-600" : "bg-blue-400"
                           }`}
                           style={{ width: `${pct}%` }}
                         />
@@ -660,7 +663,7 @@ export default function MerchantAnalytics() {
         </div>
 
         {/* Chart Row 2 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <AnalyticsCard
             title="Traffic Source Breakdown"
             extra={
@@ -768,8 +771,8 @@ export default function MerchantAnalytics() {
                         key={i}
                         fill={
                           d.value === Math.max(...dayData.map((x) => x.value))
-                            ? "#e85d04"
-                            : "#2563eb"
+                            ? "#2563eb"
+                            : "#93c5fd"
                         }
                       />
                     ))}

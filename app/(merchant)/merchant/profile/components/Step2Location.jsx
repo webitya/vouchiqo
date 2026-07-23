@@ -1,10 +1,21 @@
 "use client";
 
-import { Image, Link2, MapPin, Upload } from "lucide-react";
+import {
+  Compass,
+  Crosshair,
+  Image,
+  Link2,
+  Loader2,
+  MapPin,
+  Navigation,
+  Upload,
+} from "lucide-react";
 import { useState } from "react";
 import { FormInput, FormSelect, FormTextarea } from "@/components/shared/form";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { showError, showSuccess } from "@/lib/toast";
 import {
   INDIAN_CITIES,
   lookupByPincode,
@@ -20,6 +31,66 @@ export default function Step2Location({
   uploadingBanner,
 }) {
   const [isGeoLoading, setIsGeoLoading] = useState(false);
+  const [isDetectingGps, setIsDetectingGps] = useState(false);
+
+  const handleDetectGps = () => {
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      showError("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    setIsDetectingGps(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude.toFixed(6);
+        const lng = position.coords.longitude.toFixed(6);
+        setFormData((prev) => ({
+          ...prev,
+          lat: lat,
+          lng: lng,
+        }));
+        setIsDetectingGps(false);
+        showSuccess(`Exact GPS location detected: ${lat}, ${lng}`);
+      },
+      (err) => {
+        setIsDetectingGps(false);
+        showError(
+          `GPS Detection: ${err.message || "Failed to fetch position"}. Please enter manually or check location permissions.`,
+        );
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
+    );
+  };
+
+  const parseGmapsCoordinates = (url) => {
+    if (!url) return null;
+    const atMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (atMatch) {
+      return { lat: atMatch[1], lng: atMatch[2] };
+    }
+    const queryMatch = url.match(/[?&](q|ll)=(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (queryMatch) {
+      return { lat: queryMatch[2], lng: queryMatch[3] };
+    }
+    return null;
+  };
+
+  const handleGmapsLinkChange = (url) => {
+    const parsed = parseGmapsCoordinates(url);
+    if (parsed) {
+      setFormData((prev) => ({
+        ...prev,
+        gmapsLink: url,
+        lat: parsed.lat,
+        lng: parsed.lng,
+      }));
+      showSuccess(
+        `Extracted GPS coordinates from Google Maps: ${parsed.lat}, ${parsed.lng}`,
+      );
+    } else {
+      setFormData((prev) => ({ ...prev, gmapsLink: url }));
+    }
+  };
 
   const handleCityChange = (cityName) => {
     const geo = lookupStateByCity(cityName);
@@ -174,14 +245,65 @@ export default function Step2Location({
 
         <FormInput
           name="gmapsLink"
-          label="Google Maps Business Location Link"
+          label="Google Maps Business Location Link (GMB)"
           icon={Link2}
-          placeholder="https://maps.app.goo.gl/..."
+          placeholder="https://maps.app.goo.gl/... or paste GMB link"
           value={formData.gmapsLink}
-          onChange={(e) =>
-            setFormData({ ...formData, gmapsLink: e.target.value })
-          }
+          onChange={(e) => handleGmapsLinkChange(e.target.value)}
+          hint="Pasting a Google Maps link will auto-extract latitude & longitude"
         />
+      </div>
+
+      {/* GPS & MAP COORDINATES SECTION */}
+      <div className="border border-blue-100 bg-blue-50/40 p-4 rounded-xl space-y-3">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <div>
+            <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+              <Crosshair className="w-4 h-4 text-blue-600" />
+              Exact Store GPS Coordinates (Latitude &amp; Longitude)
+            </span>
+            <p className="text-[11px] text-slate-500 font-medium">
+              Powers 100% accurate pin positioning and distance calculation on Nearby Offers map
+            </p>
+          </div>
+
+          <Button
+            type="button"
+            onClick={handleDetectGps}
+            disabled={isDetectingGps}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs h-8 px-3 rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5 shrink-0"
+          >
+            {isDetectingGps ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Navigation className="w-3.5 h-3.5" />
+            )}
+            <span>{isDetectingGps ? "Detecting GPS..." : "Detect Current GPS Location"}</span>
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <FormInput
+            name="lat"
+            label="Latitude (GPS)"
+            icon={Compass}
+            placeholder="e.g. 23.344102"
+            value={formData.lat}
+            onChange={(e) =>
+              setFormData({ ...formData, lat: e.target.value })
+            }
+          />
+          <FormInput
+            name="lng"
+            label="Longitude (GPS)"
+            icon={Compass}
+            placeholder="e.g. 85.309615"
+            value={formData.lng}
+            onChange={(e) =>
+              setFormData({ ...formData, lng: e.target.value })
+            }
+          />
+        </div>
       </div>
     </Card>
   );

@@ -57,13 +57,13 @@ const COLUMNS = [
  */
 export default function BillingHistoryTable({ invoices = [] }) {
   return (
-    <div className="bg-brand-bg border border-brand-border rounded-2xl shadow-sm overflow-hidden text-left">
-      <div className="p-5 border-b border-brand-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+    <div className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden text-left font-sans">
+      <div className="p-3.5 border-b border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h3 className="font-heading text-sm font-bold text-brand-text tracking-tight uppercase">
-            Invoice & Billing History (Last 12 Transactions)
+          <h3 className="font-heading text-xs font-extrabold text-slate-900 tracking-tight uppercase">
+            Invoice &amp; Billing History (Last 12 Transactions)
           </h3>
-          <p className="text-[11px] text-brand-subtext font-medium">
+          <p className="text-[11px] text-slate-500 font-medium mt-0.5">
             Download GST tax invoices with 18% GST breakdown
           </p>
         </div>
@@ -72,13 +72,13 @@ export default function BillingHistoryTable({ invoices = [] }) {
           onClick={() =>
             showSuccess("Downloading all 12 GST invoices in a ZIP archive…")
           }
-          className="text-xs font-bold rounded-xl border-brand-border flex items-center gap-1.5 cursor-pointer shrink-0 shadow-none"
+          className="text-xs h-8 py-1 px-3 font-bold rounded-xl border-slate-200 flex items-center gap-1.5 cursor-pointer shrink-0 shadow-none text-slate-700 hover:bg-slate-50"
         >
-          <Download className="w-3.5 h-3.5 text-[#e85d04]" />
+          <Download className="w-3.5 h-3.5 text-blue-600" />
           Download All Invoices
         </Button>
       </div>
-      <div className="p-4">
+      <div className="p-3">
         <DataTable
           columns={COLUMNS}
           data={invoices}

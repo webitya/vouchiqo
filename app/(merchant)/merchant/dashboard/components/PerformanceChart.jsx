@@ -75,13 +75,13 @@ export default function PerformanceChart({
   const totalClicksInView = chartData.reduce((s, c) => s + (c.clicks || 0), 0);
 
   return (
-    <Card className="col-span-full xl:col-span-8 bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col h-full hover:shadow-xs transition-all duration-200 p-0 gap-0">
-      <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-50/50 min-h-[56px]">
+    <Card className="col-span-full xl:col-span-8 bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full hover:shadow-md transition-all duration-200 p-0 gap-0 font-sans">
+      <CardHeader className="px-4 py-3 sm:px-4 sm:py-3 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-50/50 min-h-[48px]">
         <div>
-          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
+          <CardTitle className="font-sans text-xs sm:text-[12px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
             Clicks vs Redemptions
           </CardTitle>
-          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
+          <CardDescription className="text-[10px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Performance trend — last {activeRange ?? "30 Days"}
           </CardDescription>
         </div>
@@ -91,7 +91,7 @@ export default function PerformanceChart({
               key={range}
               type="button"
               onClick={() => setActiveRange(range)}
-              className={`text-[11px] font-bold px-3 py-1 rounded-md transition-all uppercase cursor-pointer border-0 ${
+              className={`text-[10px] font-bold px-2.5 py-0.5 rounded-md transition-all uppercase cursor-pointer border-0 ${
                 (activeRange ?? "30 Days") === range
                   ? "bg-white text-[#08214d] shadow-2xs"
                   : "text-slate-500 hover:text-slate-800 bg-transparent"
@@ -102,26 +102,26 @@ export default function PerformanceChart({
           ))}
         </div>
       </CardHeader>
-      <CardContent className="p-4 sm:p-5 pt-4 flex-1 flex flex-col justify-between">
+      <CardContent className="p-4 sm:p-4 pt-3 flex-1 flex flex-col justify-between">
         {/* Chart legend & summary */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <div className="w-5 h-5 rounded-md bg-[#2563eb] text-white flex items-center justify-center shrink-0 shadow-2xs">
-                <MousePointerClick className="w-3 h-3 stroke-[2.5]" />
+              <div className="w-4 h-4 rounded-md bg-[#2563eb] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <MousePointerClick className="w-2.5 h-2.5 stroke-[2.5]" />
               </div>
-              <span className="text-xs font-bold text-slate-800">Clicks</span>
+              <span className="text-[11px] font-bold text-slate-800">Clicks</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-5 h-5 rounded-md bg-[#e85d04] text-white flex items-center justify-center shrink-0 shadow-2xs">
-                <TicketCheck className="w-3 h-3 stroke-[2.5]" />
+              <div className="w-4 h-4 rounded-md bg-[#0f2137] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <TicketCheck className="w-2.5 h-2.5 stroke-[2.5]" />
               </div>
-              <span className="text-xs font-bold text-slate-800">
+              <span className="text-[11px] font-bold text-slate-800">
                 Redemptions
               </span>
             </div>
           </div>
-          <span className="text-xs font-semibold text-slate-500">
+          <span className="text-[11px] font-semibold text-slate-500">
             Period Clicks:{" "}
             <strong className="text-slate-900">
               {totalClicksInView.toLocaleString()}
@@ -130,7 +130,7 @@ export default function PerformanceChart({
         </div>
 
         {/* Full-Height Dynamic Chart Container */}
-        <div className="h-80 sm:h-96 w-full flex-1 pt-2">
+        <div className="h-56 sm:h-64 w-full flex-1 pt-1">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={chartData}
@@ -179,9 +179,9 @@ export default function PerformanceChart({
               <Line
                 type="monotone"
                 dataKey="redemptions"
-                stroke="#e85d04"
+                stroke="#0f2137"
                 strokeWidth={2.5}
-                dot={{ r: 3, fill: "#e85d04" }}
+                dot={{ r: 3, fill: "#0f2137" }}
                 activeDot={{ r: 5 }}
                 name="Redemptions"
               />

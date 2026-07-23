@@ -1,6 +1,6 @@
 "use client";
 
-import { FileCheck, FileText, Shield } from "lucide-react";
+import { CheckCircle2, FileCheck, FileImage, FileText, Loader2, Shield, Upload } from "lucide-react";
 import { FormInput, FormSelect } from "@/components/shared/form";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -23,7 +23,17 @@ const DOC_TYPES = [
   { value: "Owner PAN Card", label: "PAN Card of Business Owner" },
 ];
 
-export default function Step3KYC({ formData, setFormData }) {
+export default function Step3KYC({
+  formData,
+  setFormData,
+  handleImageUpload,
+  uploadingDoc,
+}) {
+  const selectedDocLabel =
+    DOC_TYPES.find((d) => d.value === formData.docType)?.label ||
+    formData.docType ||
+    "Primary Identity Document";
+
   return (
     <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-6 space-y-5 text-left font-sans">
       <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
@@ -50,9 +60,59 @@ export default function Step3KYC({ formData, setFormData }) {
           required
         />
 
+        {/* PRIMARY DOCUMENT IMAGE UPLOAD */}
+        <div className="space-y-2">
+          <span className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+            <FileImage className="w-4 h-4 text-purple-600" />
+            Upload Document Image ({formData.docType || "GST Certificate"})
+          </span>
+
+          <div className="relative group flex flex-col items-center justify-center border-2 border-dashed border-purple-200 rounded-xl p-4 bg-purple-50/30 hover:bg-purple-50/70 transition-all cursor-pointer min-h-[120px] overflow-hidden text-center">
+            {formData.docImage ? (
+              <div className="space-y-2 w-full flex flex-col items-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={formData.docImage}
+                  alt={selectedDocLabel}
+                  className="max-h-36 max-w-full object-contain rounded-lg border border-purple-200 shadow-2xs"
+                />
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Document Image Attached</span>
+                </span>
+                <span className="text-[10px] text-slate-500 font-medium underline">
+                  Click to replace or update document image
+                </span>
+              </div>
+            ) : (
+              <div className="space-y-1 py-2">
+                {uploadingDoc ? (
+                  <Loader2 className="w-6 h-6 text-purple-600 animate-spin mx-auto mb-1" />
+                ) : (
+                  <Upload className="w-6 h-6 text-purple-500 group-hover:text-purple-700 transition-colors mx-auto mb-1" />
+                )}
+                <span className="text-xs text-slate-800 font-bold block">
+                  {uploadingDoc ? "Uploading Document..." : `Click to Upload ${formData.docType || "Document Image"}`}
+                </span>
+                <span className="text-[10px] text-slate-500 font-medium block">
+                  Supports JPG, PNG, WEBP formats up to 10MB
+                </span>
+              </div>
+            )}
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e, "docImage")}
+              disabled={uploadingDoc}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            />
+          </div>
+        </div>
+
         <FormInput
           name="pan"
-          label="Permanent Account Number (PAN)"
+          label="Permanent Account Number (PAN) (Optional)"
           icon={FileText}
           maxLength={10}
           placeholder="10-digit alphanumeric (e.g. ABCDE1234F)"
@@ -61,13 +121,12 @@ export default function Step3KYC({ formData, setFormData }) {
             setFormData({ ...formData, pan: e.target.value.toUpperCase() })
           }
           className="font-mono uppercase font-bold"
-          required
         />
 
         <div className="space-y-3">
           <FormInput
             name="gstin"
-            label="GST Identification Number (GSTIN)"
+            label="GST Identification Number (GSTIN) (Optional)"
             icon={FileText}
             maxLength={15}
             placeholder="15-digit alphanumeric (e.g. 22AAAAA1111A1Z1)"

@@ -5,8 +5,7 @@ import {
   Clock,
   FileText,
   Mail,
-  Sparkles,
-  Star,
+  Tag,
   Trophy,
   Users,
   Zap,
@@ -81,7 +80,7 @@ export default function StepPromotion({
           <div className="p-4 border border-slate-200/80 rounded-2xl flex items-center justify-between bg-slate-50/50">
             <div>
               <span className="text-xs font-bold text-slate-900 block flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-orange-600" /> Countdown Timer
+                <Clock className="w-3.5 h-3.5 text-blue-600" /> Countdown Timer
               </span>
               <span className="text-[11px] text-slate-500 font-medium">
                 Show live ticking countdown timer
@@ -98,7 +97,7 @@ export default function StepPromotion({
           <div className="p-4 border border-slate-200/80 rounded-2xl flex items-center justify-between bg-slate-50/50">
             <div>
               <span className="text-xs font-bold text-slate-900 block flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-purple-600" /> Pre-Launch
+                <Clock className="w-3.5 h-3.5 text-blue-600" /> Pre-Launch
                 Teaser
               </span>
               <span className="text-[11px] text-slate-500 font-medium">
@@ -114,202 +113,219 @@ export default function StepPromotion({
           </div>
         </div>
 
-        {/* 5 Add-On Promotion Services Selection Cards */}
-        <div className="space-y-3 pt-2">
-          <Label className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
-            Add-On Promotion Services (Optional Boosts)
-          </Label>
+        {/* Paid Add-On Promotions Section */}
+        <div className="pt-2 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div>
+              <h4 className="text-sm font-bold text-slate-900">
+                Optional Promotion Boost Add-Ons
+              </h4>
+              <p className="text-[11px] text-slate-500 font-medium">
+                Amplify campaign reach with email blasts, push notifications &amp; ticker priority
+              </p>
+            </div>
+          </div>
 
-          {/* 1. Dedicated Email Blast - ₹799 */}
-          <div className="p-4 border border-slate-200/80 rounded-2xl space-y-3 bg-white hover:border-slate-300 transition-all">
-            <div className="flex items-center justify-between">
+          {/* Add-on Cards */}
+          <div className="space-y-3">
+            {/* 1. Targeted Email Blast */}
+            <div className="p-4 border border-slate-200/80 rounded-2xl space-y-3 bg-white hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold shrink-0">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block flex items-center gap-2">
+                      Targeted Email Blast
+                      <Badge className="bg-blue-50 text-blue-700 border-blue-200 font-bold text-[9px]">
+                        ₹1,499 / blast
+                      </Badge>
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      Send dedicated html offer email to verified Ranchi subscribers
+                    </span>
+                  </div>
+                </div>
+                <Switch
+                  checked={campaignData.hasEmailBlast}
+                  onCheckedChange={(val) =>
+                    setCampaignData({ ...campaignData, hasEmailBlast: val })
+                  }
+                />
+              </div>
+
+              {campaignData.hasEmailBlast && (
+                <div className="pt-2 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-[11px] font-bold text-slate-700">
+                      Target Audience Segment
+                    </Label>
+                    <Select
+                      value={campaignData.emailAudience}
+                      onValueChange={(val) =>
+                        setCampaignData({ ...campaignData, emailAudience: val })
+                      }
+                    >
+                      <SelectTrigger className="h-9 text-xs">
+                        <SelectValue placeholder="Select target segment" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {targetAudiences.map((aud) => (
+                          <SelectItem key={aud.value} value={aud.value}>
+                            {aud.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 2. Push Notification Alert */}
+            <div className="p-4 border border-slate-200/80 rounded-2xl space-y-3 bg-white hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold shrink-0">
+                    <Bell className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block flex items-center gap-2">
+                      Push Notification Broadcast
+                      <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200 font-bold text-[9px]">
+                        ₹799 / broadcast
+                      </Badge>
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      Instant mobile &amp; desktop web push alert to active users
+                    </span>
+                  </div>
+                </div>
+                <Switch
+                  checked={campaignData.hasPushNotif}
+                  onCheckedChange={(val) =>
+                    setCampaignData({ ...campaignData, hasPushNotif: val })
+                  }
+                />
+              </div>
+
+              {campaignData.hasPushNotif && (
+                <div className="pt-2 border-t border-slate-100 space-y-1.5">
+                  <Label className="text-[11px] font-bold text-slate-700">
+                    Push Broadcast Time (TRAI Allowed: 9:00 AM – 9:00 PM IST) *
+                  </Label>
+                  <Select
+                    value={campaignData.pushSendTime || "11:00 AM IST"}
+                    onValueChange={(val) =>
+                      setCampaignData({ ...campaignData, pushSendTime: val })
+                    }
+                  >
+                    <SelectTrigger className="w-full bg-white border-slate-200 rounded-xl text-xs h-9 px-3 font-bold text-slate-800">
+                      <SelectValue placeholder="Select send time window" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[300]">
+                      <SelectItem value="09:30 AM IST">
+                        09:30 AM IST (Morning Peak)
+                      </SelectItem>
+                      <SelectItem value="11:00 AM IST">
+                        11:00 AM IST (Late Morning)
+                      </SelectItem>
+                      <SelectItem value="01:30 PM IST">
+                        01:30 PM IST (Lunch Window)
+                      </SelectItem>
+                      <SelectItem value="05:00 PM IST">
+                        05:00 PM IST (Evening Return)
+                      </SelectItem>
+                      <SelectItem value="07:30 PM IST">
+                        07:30 PM IST (Prime Evening)
+                      </SelectItem>
+                      <SelectItem value="08:30 PM IST">
+                        08:30 PM IST (Last Call Before 9 PM)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+
+            {/* 3. Homepage Ticker Priority */}
+            <div className="p-4 border border-slate-200/80 rounded-2xl flex items-center justify-between bg-white hover:border-slate-300 transition-all">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold shrink-0">
-                  <Mail className="w-4 h-4" />
+                <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold shrink-0 border border-blue-100">
+                  <Tag className="w-4 h-4" />
                 </div>
                 <div>
                   <span className="text-xs font-bold text-slate-900 block flex items-center gap-2">
-                    Dedicated Email Blast
+                    Homepage Ticker Priority
                     <Badge className="bg-blue-50 text-blue-700 border-blue-200 font-bold text-[9px]">
+                      ₹999 / 3-day window
+                    </Badge>
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    Top 3 priority slot on homepage ticker banner for 72 hours
+                  </span>
+                </div>
+              </div>
+              <Switch
+                checked={campaignData.featuredSlot}
+                onCheckedChange={(val) =>
+                  setCampaignData({ ...campaignData, featuredSlot: val })
+                }
+              />
+            </div>
+
+            {/* 4. Festival Campaign Package - ₹2,999 */}
+            <div className="p-4 border border-slate-200/80 rounded-2xl flex items-center justify-between bg-white hover:border-slate-300 transition-all">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold shrink-0">
+                  <Trophy className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-slate-900 block flex items-center gap-2">
+                    Festival Campaign Package
+                    <Badge className="bg-purple-50 text-purple-700 border-purple-200 font-bold text-[9px]">
+                      ₹2,999
+                    </Badge>
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    Includes Ticker + Push + Email + Festival Hub placement
+                  </span>
+                </div>
+              </div>
+              <Switch
+                checked={campaignData.festivalPackage || false}
+                onCheckedChange={(val) =>
+                  setCampaignData({ ...campaignData, festivalPackage: val })
+                }
+              />
+            </div>
+
+            {/* 5. Performance Analytics Report - ₹799 */}
+            <div className="p-4 border border-slate-200/80 rounded-2xl flex items-center justify-between bg-white hover:border-slate-300 transition-all">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold shrink-0">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-slate-900 block flex items-center gap-2">
+                    Performance Analytics Report
+                    <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 font-bold text-[9px]">
                       ₹799
                     </Badge>
                   </span>
                   <span className="text-[11px] text-slate-500 font-medium">
-                    Send dedicated HTML email blast via SendGrid to active
-                    category shoppers
+                    Post-campaign PDF attribution report with ROI breakdown
                   </span>
                 </div>
               </div>
               <Switch
-                checked={campaignData.newsletterInclusion}
+                checked={campaignData.analyticsReport || false}
                 onCheckedChange={(val) =>
-                  setCampaignData({ ...campaignData, newsletterInclusion: val })
+                  setCampaignData({ ...campaignData, analyticsReport: val })
                 }
               />
             </div>
-            {campaignData.newsletterInclusion && (
-              <div className="space-y-1.5 pt-1 border-t border-slate-100">
-                <Label className="text-[11px] font-bold text-slate-700">
-                  Email Subject Line *
-                </Label>
-                <Input
-                  type="text"
-                  placeholder="e.g. Exclusive Weekend Deal: 20% OFF at Marbella!"
-                  value={campaignData.emailSubjectLine || ""}
-                  onChange={(e) =>
-                    setCampaignData({
-                      ...campaignData,
-                      emailSubjectLine: e.target.value,
-                    })
-                  }
-                  className="bg-white border-slate-200 text-xs h-9 rounded-xl font-medium"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* 2. Push Notification - ₹599 */}
-          <div className="p-4 border border-slate-200/80 rounded-2xl space-y-3 bg-white hover:border-slate-300 transition-all">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold shrink-0">
-                  <Bell className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-xs font-bold text-slate-900 block flex items-center gap-2">
-                    Push Notification
-                    <Badge className="bg-orange-50 text-orange-700 border-orange-200 font-bold text-[9px]">
-                      ₹599
-                    </Badge>
-                  </span>
-                  <span className="text-[11px] text-slate-500 font-medium">
-                    Instant MSG91 push alert to mobile app &amp; Web Push
-                    subscribers
-                  </span>
-                </div>
-              </div>
-              <Switch
-                checked={campaignData.pushNotification}
-                onCheckedChange={(val) =>
-                  setCampaignData({ ...campaignData, pushNotification: val })
-                }
-              />
-            </div>
-            {campaignData.pushNotification && (
-              <div className="space-y-1.5 pt-1 border-t border-slate-100">
-                <Label className="text-[11px] font-bold text-slate-700">
-                  Push Broadcast Time (TRAI Allowed: 9:00 AM – 9:00 PM IST) *
-                </Label>
-                <Select
-                  value={campaignData.pushSendTime || "11:00 AM IST"}
-                  onValueChange={(val) =>
-                    setCampaignData({ ...campaignData, pushSendTime: val })
-                  }
-                >
-                  <SelectTrigger className="w-full bg-white border-slate-200 rounded-xl text-xs h-9 px-3 font-bold text-slate-800">
-                    <SelectValue placeholder="Select send time window" />
-                  </SelectTrigger>
-                  <SelectContent className="z-[300]">
-                    <SelectItem value="09:30 AM IST">
-                      09:30 AM IST (Morning Peak)
-                    </SelectItem>
-                    <SelectItem value="11:00 AM IST">
-                      11:00 AM IST (Late Morning)
-                    </SelectItem>
-                    <SelectItem value="01:30 PM IST">
-                      01:30 PM IST (Lunch Window)
-                    </SelectItem>
-                    <SelectItem value="05:00 PM IST">
-                      05:00 PM IST (Evening Return)
-                    </SelectItem>
-                    <SelectItem value="07:30 PM IST">
-                      07:30 PM IST (Prime Evening)
-                    </SelectItem>
-                    <SelectItem value="08:30 PM IST">
-                      08:30 PM IST (Last Call Before 9 PM)
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-
-          {/* 3. Homepage Ticker Priority - ₹999/3-day window */}
-          <div className="p-4 border border-slate-200/80 rounded-2xl flex items-center justify-between bg-white hover:border-slate-300 transition-all">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold shrink-0">
-                <Star className="w-4 h-4" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-slate-900 block flex items-center gap-2">
-                  Homepage Ticker Priority
-                  <Badge className="bg-amber-50 text-amber-700 border-amber-200 font-bold text-[9px]">
-                    ₹999 / 3-day window
-                  </Badge>
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Top 3 priority slot on homepage ticker banner for 72 hours
-                </span>
-              </div>
-            </div>
-            <Switch
-              checked={campaignData.featuredSlot}
-              onCheckedChange={(val) =>
-                setCampaignData({ ...campaignData, featuredSlot: val })
-              }
-            />
-          </div>
-
-          {/* 4. Festival Campaign Package - ₹2,999 */}
-          <div className="p-4 border border-slate-200/80 rounded-2xl flex items-center justify-between bg-white hover:border-slate-300 transition-all">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold shrink-0">
-                <Trophy className="w-4 h-4" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-slate-900 block flex items-center gap-2">
-                  Festival Campaign Package
-                  <Badge className="bg-purple-50 text-purple-700 border-purple-200 font-bold text-[9px]">
-                    ₹2,999
-                  </Badge>
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Includes Ticker + Push + Email + Festival Hub placement
-                </span>
-              </div>
-            </div>
-            <Switch
-              checked={campaignData.festivalPackage || false}
-              onCheckedChange={(val) =>
-                setCampaignData({ ...campaignData, festivalPackage: val })
-              }
-            />
-          </div>
-
-          {/* 5. Performance Analytics Report - ₹799 */}
-          <div className="p-4 border border-slate-200/80 rounded-2xl flex items-center justify-between bg-white hover:border-slate-300 transition-all">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold shrink-0">
-                <FileText className="w-4 h-4" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-slate-900 block flex items-center gap-2">
-                  Performance Analytics Report
-                  <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 font-bold text-[9px]">
-                    ₹799
-                  </Badge>
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Post-campaign PDF attribution report with ROI breakdown
-                </span>
-              </div>
-            </div>
-            <Switch
-              checked={campaignData.analyticsReport || false}
-              onCheckedChange={(val) =>
-                setCampaignData({ ...campaignData, analyticsReport: val })
-              }
-            />
           </div>
         </div>
 

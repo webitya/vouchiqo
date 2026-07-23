@@ -161,25 +161,23 @@ export default function MerchantNotifications() {
         role: "merchant",
       }}
     >
-      <div className="space-y-6 text-left font-sans max-w-[1100px] mx-auto">
+      <div className="space-y-4 text-left font-sans w-full max-w-[1100px] mx-auto">
         {/* Header Controls */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border border-slate-200/80 p-5 rounded-2xl shadow-xs">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white border border-slate-200/90 p-3.5 rounded-2xl shadow-2xs">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#e85d04] flex items-center justify-center border border-orange-100 shrink-0">
-              <Bell className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shrink-0">
+              <Bell className="w-4 h-4" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-heading text-base font-bold text-slate-900">
-                  Notification Center
-                </h3>
+              <h1 className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                Merchant Notifications
                 {unreadCount > 0 && (
-                  <Badge className="bg-[#e85d04] text-white font-bold text-[10px] rounded-full px-2 py-0.5 border-0">
+                  <Badge className="bg-blue-600 text-white font-bold text-[9px] rounded-full px-2 py-0.5 border-0">
                     {unreadCount} Unread
                   </Badge>
                 )}
-              </div>
-              <p className="text-xs text-slate-500 font-medium">
+              </h1>
+              <p className="text-[11px] text-slate-500 font-medium">
                 Real-time alerts for approvals, campaigns, reports &amp; billing
               </p>
             </div>
@@ -189,50 +187,50 @@ export default function MerchantNotifications() {
             variant="outline"
             onClick={handleMarkAllRead}
             disabled={unreadCount === 0}
-            className="text-xs font-bold rounded-xl border-slate-200 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            className="text-xs h-8 font-bold rounded-xl border-slate-200 flex items-center gap-1.5 cursor-pointer disabled:opacity-50 text-slate-700 hover:bg-slate-50 shadow-none"
           >
-            <Check className="w-4 h-4 text-emerald-600 stroke-[3]" />
+            <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
             <span>Mark All as Read</span>
           </Button>
         </div>
 
         {/* 5 TABS: All, Unread, System, Campaign, Billing */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-slate-100 p-1 rounded-xl border border-slate-200 flex flex-wrap gap-1 justify-start h-auto w-full sm:w-auto">
+          <TabsList className="bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 flex flex-wrap gap-1 justify-start h-auto w-full sm:w-auto">
             <TabsTrigger
               value="all"
-              className="text-xs font-bold rounded-lg px-4 py-2 cursor-pointer"
+              className="text-[11px] font-bold rounded-lg px-3 py-1.5 cursor-pointer"
             >
               All ({notifications.length})
             </TabsTrigger>
             <TabsTrigger
               value="unread"
-              className="text-xs font-bold rounded-lg px-4 py-2 cursor-pointer"
+              className="text-[11px] font-bold rounded-lg px-3 py-1.5 cursor-pointer"
             >
               Unread ({unreadCount})
             </TabsTrigger>
             <TabsTrigger
               value="system"
-              className="text-xs font-bold rounded-lg px-4 py-2 cursor-pointer"
+              className="text-[11px] font-bold rounded-lg px-3 py-1.5 cursor-pointer"
             >
               System &amp; Verification
             </TabsTrigger>
             <TabsTrigger
               value="campaign"
-              className="text-xs font-bold rounded-lg px-4 py-2 cursor-pointer"
+              className="text-[11px] font-bold rounded-lg px-3 py-1.5 cursor-pointer"
             >
               Campaigns &amp; Reports
             </TabsTrigger>
             <TabsTrigger
               value="billing"
-              className="text-xs font-bold rounded-lg px-4 py-2 cursor-pointer"
+              className="text-[11px] font-bold rounded-lg px-3 py-1.5 cursor-pointer"
             >
               Billing &amp; Invoices
             </TabsTrigger>
           </TabsList>
 
-          <div className="pt-4">
-            <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white overflow-hidden divide-y divide-slate-100">
+          <div className="pt-3">
+            <Card className="border-slate-200/90 shadow-2xs rounded-2xl bg-white overflow-hidden divide-y divide-slate-100">
               {filteredNotifications.length > 0
                 ? filteredNotifications.map((item) => {
                     const Icon = item.icon;
@@ -240,22 +238,22 @@ export default function MerchantNotifications() {
                       <div
                         key={item.id}
                         onClick={() => handleMarkItemRead(item.id)}
-                        className={`p-5 flex items-start gap-4 transition-all cursor-pointer hover:bg-slate-50/70 ${
-                          !item.read ? "bg-orange-50/20" : "bg-white"
+                        className={`p-3.5 sm:p-4 flex items-start gap-3 transition-all cursor-pointer hover:bg-blue-50/30 ${
+                          !item.read ? "bg-blue-50/40" : "bg-white"
                         }`}
                       >
                         <div
-                          className={`p-2.5 rounded-xl border shrink-0 ${item.iconColor}`}
+                          className={`p-2 rounded-xl border shrink-0 ${item.iconColor}`}
                         >
-                          <Icon className="w-5 h-5" />
+                          <Icon className="w-4 h-4" />
                         </div>
 
-                        <div className="flex-1 space-y-1">
+                        <div className="flex-1 space-y-1 min-w-0">
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                            <span className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                            <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                               {item.title}
                               {!item.read && (
-                                <span className="w-2 h-2 rounded-full bg-[#e85d04] inline-block" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block" />
                               )}
                             </span>
                             <span className="text-[10px] font-medium text-slate-400">
@@ -263,14 +261,14 @@ export default function MerchantNotifications() {
                             </span>
                           </div>
 
-                          <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                          <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
                             {item.message}
                           </p>
 
-                          <div className="pt-1 flex items-center gap-2">
+                          <div className="pt-0.5 flex items-center gap-2">
                             <Badge
                               variant="outline"
-                              className="text-[9px] font-bold border-slate-200 text-slate-600 bg-slate-50"
+                              className="text-[9px] font-bold border-slate-200 text-slate-600 bg-slate-50 px-2 py-0.5 rounded-md"
                             >
                               {item.type}
                             </Badge>
@@ -279,9 +277,9 @@ export default function MerchantNotifications() {
                       </div>
                     );
                   })
-                : <div className="p-12 text-center text-slate-400 font-medium space-y-2">
-                    <Bell className="w-8 h-8 mx-auto text-slate-300" />
-                    <p>No notifications found in this category.</p>
+                : <div className="p-10 text-center text-slate-400 font-medium space-y-2">
+                    <Bell className="w-7 h-7 mx-auto text-slate-300" />
+                    <p className="text-xs">No notifications found in this category.</p>
                   </div>}
             </Card>
           </div>

@@ -58,18 +58,18 @@ export default function DashboardLayout({ title, user, children }) {
   return (
     <TooltipProvider>
       <SidebarProvider style={{ "--sidebar-width": "240px" }}>
-        <div className="min-h-screen flex bg-sidebar text-sidebar-foreground w-full pb-14 md:pb-0">
+        <div className="min-h-screen flex bg-white text-slate-900 font-sans w-full pb-14 md:pb-0">
           <AppSidebar />
-          <SidebarInset className="bg-sidebar flex-1 flex flex-col min-w-0">
+          <SidebarInset className="bg-white flex-1 flex flex-col min-w-0 font-sans">
             <Topbar title={title} user={user} />
 
-            {/* Plan Expiry / Notice Alert Banner (Amber/Red) for Merchants */}
+            {/* Plan Expiry / Notice Alert Banner for Merchants */}
             {isMerchant && showBanner && (
-              <div className="bg-amber-500/10 border-b border-amber-500/20 px-4 py-2.5 flex items-center justify-between text-xs font-semibold text-amber-900 dark:text-amber-300">
+              <div className="bg-blue-50/80 border-b border-blue-200/60 px-4 py-2.5 flex items-center justify-between text-xs font-semibold text-blue-900 font-sans">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 animate-pulse" />
+                  <AlertTriangle className="w-4 h-4 text-blue-600 flex-shrink-0 animate-pulse" />
                   <span>
-                    ⚡ <strong>Founding Merchant Program Active:</strong> Your
+                    <strong>Founding Merchant Program Active:</strong> Your
                     14-day free trial on Growth Partner plan is active.{" "}
                     <strong>11 days remaining</strong> — Rate lock guaranteed
                     for 6 months.
@@ -78,14 +78,14 @@ export default function DashboardLayout({ title, user, children }) {
                 <div className="flex items-center gap-2">
                   <Badge
                     onClick={() => router.push("/merchant/billing")}
-                    className="bg-[#e85d04] hover:bg-orange-600 text-white border-0 text-[10px] font-bold cursor-pointer px-2.5 py-0.5"
+                    className="bg-blue-600 hover:bg-blue-700 text-white border-0 text-[10px] font-bold cursor-pointer px-2.5 py-0.5 shadow-xs"
                   >
                     Manage Subscription
                   </Badge>
                   <button
                     type="button"
                     onClick={() => setShowBanner(false)}
-                    className="text-amber-700 dark:text-amber-400 hover:text-slate-900 p-0.5"
+                    className="text-blue-700 hover:text-blue-900 p-0.5 cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -93,7 +93,7 @@ export default function DashboardLayout({ title, user, children }) {
               </div>
             )}
 
-            <main className="p-4 space-y-6 w-full grow">{children}</main>
+            <main className="p-4 space-y-6 w-full grow bg-white">{children}</main>
           </SidebarInset>
         </div>
 

@@ -67,30 +67,30 @@ function KpiCard({
   return (
     <div
       data-slot="card"
-      className="rounded-xl border bg-card text-card-foreground shadow-sm group relative overflow-hidden transition-all duration-300 hover:shadow-md hover:border-primary/20"
+      className="rounded-2xl border border-slate-200/90 bg-white text-slate-900 shadow-xs group relative overflow-hidden transition-all duration-300 hover:shadow-sm hover:border-blue-300 font-sans"
     >
-      <div data-slot="card-content" className="p-5 pb-0">
+      <div data-slot="card-content" className="p-4 pb-0">
         <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold tracking-tight">{value}</p>
-            <div className="flex items-center gap-1.5">
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold text-slate-500">{title}</p>
+            <p className="text-xl font-extrabold tracking-tight text-slate-900">{value}</p>
+            <div className="flex items-center gap-1.5 pt-0.5">
               {trend !== null && trend !== undefined ? (
                 trend >= 0 ? (
-                  <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
+                  <TrendingUp className="h-3 w-3 text-blue-600" />
                 ) : (
-                  <TrendingDown className="h-3.5 w-3.5 text-rose-600" />
+                  <TrendingDown className="h-3 w-3 text-rose-600" />
                 )
               ) : null}
               {trend !== null && trend !== undefined && (
                 <span
-                  className={`text-xs font-semibold ${trend >= 0 ? "text-blue-600" : "text-rose-600"}`}
+                  className={`text-[11px] font-bold ${trend >= 0 ? "text-blue-600" : "text-rose-600"}`}
                 >
                   {trend >= 0 ? "+" : ""}
                   {trend}%
                 </span>
               )}
-              <span className="text-xs text-muted-foreground">
+              <span className="text-[11px] text-slate-400 font-medium">
                 {trend !== null && trend !== undefined
                   ? "vs last month"
                   : subtitle}
@@ -98,13 +98,13 @@ function KpiCard({
             </div>
           </div>
           <div
-            className={`flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${iconBg}`}
+            className={`flex h-8.5 w-8.5 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 shrink-0 ${iconBg}`}
           >
-            <Icon className={`h-5 w-5 ${iconColor}`} />
+            <Icon className={`h-4 w-4 ${iconColor}`} />
           </div>
         </div>
       </div>
-      <div className="h-12 w-full mt-3">
+      <div className="h-8 w-full mt-2">
         <RechartsSparkline
           data={sparkData}
           dataKey={sparkKey}
@@ -132,7 +132,7 @@ export default function KpiCards({
       : 0;
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
       {/* Card 1: Total Clicks (page views proxy) */}
       <KpiCard
         title="Total Clicks This Month"
@@ -165,56 +165,56 @@ export default function KpiCards({
         value={`₹${totalRevenue.toLocaleString("en-IN")}`}
         trend={revenueMoM}
         icon={IndianRupee}
-        iconBg="bg-[#e85d04]/10"
-        iconColor="text-[#e85d04]"
+        iconBg="bg-blue-50 border border-blue-100"
+        iconColor="text-blue-600"
         sparkData={trendData.map((t) => t.revenue)}
         sparkKey="revenue"
-        sparkColor="#e85d04"
+        sparkColor="#2563eb"
       />
 
       {/* Card 4: Active Listings with plan limit */}
       <div
         data-slot="card"
-        className="rounded-xl border bg-card text-card-foreground shadow-sm group relative overflow-hidden transition-all duration-300 hover:shadow-md hover:border-primary/20"
+        className="rounded-2xl border border-slate-200/90 bg-white text-slate-900 shadow-xs group relative overflow-hidden transition-all duration-300 hover:shadow-sm hover:border-blue-300 font-sans"
       >
-        <div data-slot="card-content" className="p-5 pb-0">
+        <div data-slot="card-content" className="p-4 pb-0">
           <div className="flex items-start justify-between">
-            <div className="space-y-2 w-full">
-              <p className="text-xs font-medium text-muted-foreground">
+            <div className="space-y-1 w-full">
+              <p className="text-[11px] font-semibold text-slate-500">
                 Active Listings
               </p>
-              <p className="text-2xl font-bold tracking-tight">
+              <p className="text-xl font-extrabold text-slate-900 tracking-tight">
                 {activeCoupons ?? 0}
                 {planLimit > 0 && (
-                  <span className="text-sm font-semibold text-muted-foreground ml-1">
+                  <span className="text-xs font-semibold text-slate-400 ml-1">
                     / {planLimit}
                   </span>
                 )}
               </p>
               {planLimit > 0 ? (
-                <div className="space-y-1 w-full">
+                <div className="space-y-0.5 w-full pt-0.5">
                   <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${listingPct >= 90 ? "bg-rose-500" : listingPct >= 70 ? "bg-amber-500" : "bg-[#2563eb]"}`}
+                      className={`h-full rounded-full transition-all duration-500 ${listingPct >= 90 ? "bg-rose-500" : "bg-blue-600"}`}
                       style={{ width: `${listingPct}%` }}
                     />
                   </div>
-                  <p className="text-[10px] text-muted-foreground font-medium">
+                  <p className="text-[10px] text-slate-400 font-semibold">
                     {listingPct}% of plan limit used
                   </p>
                 </div>
               ) : (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-[11px] text-slate-400 font-medium">
                   Live coupons &amp; deals
                 </span>
               )}
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-violet-100 ml-3 shrink-0">
-              <LayoutList className="h-5 w-5 text-violet-600" />
+            <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 bg-blue-50 border border-blue-100 ml-2.5 shrink-0">
+              <LayoutList className="h-4 w-4 text-blue-600" />
             </div>
           </div>
         </div>
-        <div className="h-12 w-full mt-3">
+        <div className="h-8 w-full mt-2">
           <RechartsSparkline
             data={trendData.map((t) => t.orders * 1.2 + 10)}
             dataKey="listings"

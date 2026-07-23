@@ -158,85 +158,85 @@ export default function MerchantAffiliates() {
         role: "merchant",
       }}
     >
-      <div className="space-y-6 text-left font-sans w-full">
+      <div className="space-y-4 text-left font-sans w-full">
         {/* TOP CARDS ROW */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
           {/* Card 1: Current Commission Model */}
-          <Card className="border-slate-200/80 shadow-xs rounded-2xl p-5 bg-white space-y-3">
+          <Card className="border border-slate-200/90 shadow-2xs rounded-2xl p-4 bg-white space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
                 Current Commission Model
               </span>
-              <div className="w-8 h-8 rounded-xl bg-orange-50 text-[#e85d04] flex items-center justify-center">
-                <Percent className="w-4 h-4" />
+              <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <Percent className="w-3.5 h-3.5" />
               </div>
             </div>
-            <div className="space-y-1">
-              <p className="text-2xl font-black text-slate-900">
+            <div className="space-y-0.5">
+              <p className="text-lg font-extrabold text-slate-900">
                 5.0% CPA / Hybrid
               </p>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-[11px] text-slate-500 font-medium">
                 Cost Per Action (CPA) on confirmed redemptions
               </p>
             </div>
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-600">
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] font-bold text-slate-600">
               <span>0% Commission for first 14 days</span>
-              <Badge className="bg-emerald-100 text-emerald-800 text-[9px] font-bold">
+              <Badge className="bg-emerald-100 text-emerald-800 text-[9px] font-bold py-0.5 px-2 border-0">
                 Founding Rate
               </Badge>
             </div>
           </Card>
 
           {/* Card 2: Bank & Payout Details */}
-          <Card className="border-slate-200/80 shadow-xs rounded-2xl p-5 bg-white space-y-3">
+          <Card className="border border-slate-200/90 shadow-2xs rounded-2xl p-4 bg-white space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
                 Bank / Payout Account
               </span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditPayoutOpen(true)}
-                className="text-xs font-bold text-blue-600 hover:text-blue-800 hover:bg-blue-50 h-7 rounded-lg cursor-pointer"
+                className="text-[11px] font-bold text-blue-600 hover:text-blue-800 hover:bg-blue-50 h-6 px-2 rounded-lg cursor-pointer"
               >
-                <Edit className="w-3.5 h-3.5 mr-1" /> Edit Payout Details
+                <Edit className="w-3 h-3 mr-1" /> Edit Payout Details
               </Button>
             </div>
-            <div className="space-y-1">
-              <p className="text-sm font-bold text-slate-900">
+            <div className="space-y-0.5">
+              <p className="text-xs font-bold text-slate-900">
                 {bankDetails.bankName}
               </p>
-              <p className="text-xs text-slate-500 font-mono">
+              <p className="text-[11px] text-slate-500 font-mono">
                 A/C: •••• •••• {bankDetails.accountNumber.slice(-4)} (
                 {bankDetails.ifscCode})
               </p>
             </div>
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-600">
-              <span>Holder: {bankDetails.accountHolder}</span>
-              <span className="text-emerald-600 font-bold">KYC Verified ✓</span>
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] font-semibold text-slate-600">
+              <span className="truncate max-w-[150px]">Holder: {bankDetails.accountHolder}</span>
+              <span className="text-emerald-600 font-bold shrink-0">KYC Verified ✓</span>
             </div>
           </Card>
 
           {/* Card 3: Payout Schedule */}
-          <Card className="border-slate-200/80 shadow-xs rounded-2xl p-5 bg-white space-y-3">
+          <Card className="border border-slate-200/90 shadow-2xs rounded-2xl p-4 bg-white space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
                 Payout Schedule
               </span>
-              <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                <Calendar className="w-4 h-4" />
+              <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <Calendar className="w-3.5 h-3.5" />
               </div>
             </div>
-            <div className="space-y-1">
-              <p className="text-2xl font-black text-slate-900">
+            <div className="space-y-0.5">
+              <p className="text-base font-extrabold text-slate-900">
                 1st &amp; 15th Monthly
               </p>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-[11px] text-slate-500 font-medium">
                 Next Payout Date:{" "}
                 <strong className="text-slate-900">August 1, 2026</strong>
               </p>
             </div>
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-600">
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] font-bold text-slate-600">
               <span>Pending Payout: ₹2,240.00</span>
               <span className="text-blue-600 font-bold">
                 Auto-Transfer Active
@@ -246,31 +246,31 @@ export default function MerchantAffiliates() {
         </div>
 
         {/* AFFILIATE NETWORK INTEGRATIONS ROW */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+        <div className="space-y-2.5">
+          <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
             Affiliate Network Syndication Status
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {affiliateNetworks.map((net) => {
               const Icon = net.icon;
               return (
                 <div
                   key={net.name}
-                  className="p-4 bg-white border border-slate-200/80 rounded-2xl space-y-2 shadow-xs"
+                  className="p-3 bg-white border border-slate-200/90 rounded-2xl space-y-1.5 shadow-2xs"
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`p-2 rounded-xl border ${net.color}`}>
-                      <Icon className="w-4 h-4" />
+                    <span className={`p-1.5 rounded-xl border ${net.color}`}>
+                      <Icon className="w-3.5 h-3.5" />
                     </span>
                     <Badge
                       variant="outline"
-                      className="text-[9px] font-bold border-slate-200"
+                      className="text-[9px] font-bold border-slate-200 px-1.5 py-0.2"
                     >
                       {net.rate}
                     </Badge>
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-slate-900 leading-snug">
+                    <h4 className="text-xs font-bold text-slate-900 leading-tight">
                       {net.name}
                     </h4>
                     <span className="text-[10px] font-bold text-emerald-600 block mt-0.5">
@@ -284,10 +284,10 @@ export default function MerchantAffiliates() {
         </div>
 
         {/* COMMISSION EARNINGS TABLE */}
-        <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white overflow-hidden text-left">
-          <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+        <Card className="border border-slate-200/90 shadow-2xs rounded-2xl bg-white overflow-hidden text-left">
+          <div className="p-3.5 border-b border-slate-100 flex items-center justify-between">
             <div>
-              <h3 className="font-heading text-sm font-bold text-slate-900 uppercase tracking-wider">
+              <h3 className="font-heading text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                 Commission Earnings &amp; Redemptions Breakdown
               </h3>
               <p className="text-[11px] text-slate-500 font-medium mt-0.5">
@@ -300,39 +300,39 @@ export default function MerchantAffiliates() {
               onClick={() =>
                 toast.success("Exporting earnings report to CSV...")
               }
-              className="text-xs font-bold rounded-xl border-slate-200 flex items-center gap-1.5 cursor-pointer"
+              className="text-xs h-8 font-bold rounded-xl border-slate-200 flex items-center gap-1.5 cursor-pointer shadow-none text-slate-700 hover:bg-slate-50"
             >
-              <Download className="w-3.5 h-3.5 text-[#e85d04]" />
+              <Download className="w-3.5 h-3.5 text-blue-600" />
               <span>Export CSV</span>
             </Button>
           </div>
 
           <div className="overflow-x-auto">
-            <Table className="w-full text-xs">
-              <TableHeader className="bg-slate-50 border-b border-slate-100">
+            <Table className="w-full text-xs font-sans">
+              <TableHeader className="bg-slate-50/70 border-b border-slate-200">
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="p-4 text-slate-500 font-bold uppercase">
+                  <TableHead className="py-2.5 px-3.5 text-slate-500 font-extrabold text-[10px] uppercase tracking-wider">
                     Transaction ID
                   </TableHead>
-                  <TableHead className="p-4 text-slate-500 font-bold uppercase">
+                  <TableHead className="py-2.5 px-3.5 text-slate-500 font-extrabold text-[10px] uppercase tracking-wider">
                     Date
                   </TableHead>
-                  <TableHead className="p-4 text-slate-500 font-bold uppercase">
+                  <TableHead className="py-2.5 px-3.5 text-slate-500 font-extrabold text-[10px] uppercase tracking-wider">
                     Listing / Campaign
                   </TableHead>
-                  <TableHead className="p-4 text-slate-500 font-bold uppercase">
+                  <TableHead className="py-2.5 px-3.5 text-slate-500 font-extrabold text-[10px] uppercase tracking-wider">
                     Model Type
                   </TableHead>
-                  <TableHead className="p-4 text-slate-500 font-bold uppercase text-right">
+                  <TableHead className="py-2.5 px-3.5 text-slate-500 font-extrabold text-[10px] uppercase tracking-wider text-right">
                     Quantity
                   </TableHead>
-                  <TableHead className="p-4 text-slate-500 font-bold uppercase text-right">
+                  <TableHead className="py-2.5 px-3.5 text-slate-500 font-extrabold text-[10px] uppercase tracking-wider text-right">
                     Rate
                   </TableHead>
-                  <TableHead className="p-4 text-slate-500 font-bold uppercase text-right">
+                  <TableHead className="py-2.5 px-3.5 text-slate-500 font-extrabold text-[10px] uppercase tracking-wider text-right">
                     Earnings (₹)
                   </TableHead>
-                  <TableHead className="p-4 text-slate-500 font-bold uppercase text-center">
+                  <TableHead className="py-2.5 px-3.5 text-slate-500 font-extrabold text-[10px] uppercase tracking-wider text-center">
                     Status
                   </TableHead>
                 </TableRow>
@@ -341,35 +341,35 @@ export default function MerchantAffiliates() {
                 {earningsData.map((row) => (
                   <TableRow
                     key={row.id}
-                    className="hover:bg-slate-50/60 transition-colors"
+                    className="hover:bg-blue-50/30 transition-colors"
                   >
-                    <TableCell className="p-4 font-mono text-[10px] text-slate-600 font-bold">
+                    <TableCell className="py-2.5 px-3.5 font-mono text-[9px] text-slate-500 font-bold">
                       {row.id}
                     </TableCell>
-                    <TableCell className="p-4 text-slate-600">
+                    <TableCell className="py-2.5 px-3.5 text-slate-500 text-xs">
                       {row.date}
                     </TableCell>
-                    <TableCell className="p-4 font-bold text-slate-900 max-w-[200px]">
+                    <TableCell className="py-2.5 px-3.5 font-bold text-slate-900 max-w-[200px]">
                       <span className="truncate block">{row.item}</span>
                     </TableCell>
-                    <TableCell className="p-4 text-slate-600">
+                    <TableCell className="py-2.5 px-3.5 text-slate-500">
                       {row.type}
                     </TableCell>
-                    <TableCell className="p-4 text-right font-mono">
+                    <TableCell className="py-2.5 px-3.5 text-right font-mono text-xs">
                       {row.quantity}
                     </TableCell>
-                    <TableCell className="p-4 text-right font-mono text-slate-600">
+                    <TableCell className="py-2.5 px-3.5 text-right font-mono text-slate-600 text-xs">
                       {row.rate}
                     </TableCell>
-                    <TableCell className="p-4 text-right font-black text-slate-900">
+                    <TableCell className="py-2.5 px-3.5 text-right font-extrabold text-slate-900 text-xs">
                       ₹{row.earnings.toLocaleString("en-IN")}
                     </TableCell>
-                    <TableCell className="p-4 text-center">
+                    <TableCell className="py-2.5 px-3.5 text-center">
                       <Badge
-                        className={`rounded px-2.5 py-0.5 border-0 text-[9px] font-bold shadow-none ${
+                        className={`rounded-full px-2 py-0.5 border-0 text-[9px] font-bold shadow-none ${
                           row.status === "Approved"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-emerald-100 text-emerald-700"
+                            ? "bg-blue-50 text-blue-700 border border-blue-200/80"
+                            : "bg-emerald-50 text-emerald-700 border border-emerald-200/80"
                         }`}
                       >
                         {row.status}

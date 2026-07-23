@@ -68,7 +68,7 @@ export default function CheckoutModal({
               </div>
               <div className="border-t border-slate-200 pt-2 flex justify-between font-black text-slate-900 text-sm">
                 <span>Total Payable:</span>
-                <span className="text-[#e85d04]">
+                <span className="text-blue-600">
                   ₹{totalPrice.toLocaleString("en-IN")}
                 </span>
               </div>
@@ -90,7 +90,7 @@ export default function CheckoutModal({
 
             <Button
               onClick={() => setCheckoutStep(2)}
-              className="bg-slate-900 hover:bg-slate-800 text-white w-full text-xs font-bold py-2.5 h-10 rounded-xl cursor-pointer flex items-center justify-center gap-1.5"
+              className="bg-blue-600 hover:bg-blue-700 text-white w-full text-xs font-bold py-2.5 h-10 rounded-xl cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20"
             >
               <span>Proceed to Razorpay Payment</span>
               <ArrowRight className="w-4 h-4" />
@@ -103,7 +103,7 @@ export default function CheckoutModal({
           <div className="space-y-4 font-semibold text-slate-700">
             {isPending ? (
               <div className="py-8 text-center space-y-3">
-                <Loader2 className="w-8 h-8 animate-spin text-[#e85d04] mx-auto" />
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto" />
                 <span className="text-xs font-bold text-slate-900 block">
                   Processing Secure Razorpay Transaction...
                 </span>
@@ -133,7 +133,7 @@ export default function CheckoutModal({
                         key={opt.id}
                         className={`flex items-center gap-3 p-3 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                           paymentMethod === opt.id
-                            ? "bg-orange-50/60 border-[#e85d04] text-slate-900"
+                            ? "bg-blue-50/60 border-blue-600 text-slate-900"
                             : "bg-white border-slate-200 text-slate-700"
                         }`}
                       >
@@ -142,7 +142,7 @@ export default function CheckoutModal({
                           name="payMethod"
                           checked={paymentMethod === opt.id}
                           onChange={() => setPaymentMethod(opt.id)}
-                          className="accent-[#e85d04]"
+                          className="accent-blue-600"
                         />
                         <span>{opt.label}</span>
                       </label>
@@ -152,7 +152,7 @@ export default function CheckoutModal({
 
                 <Button
                   onClick={executePayment}
-                  className="bg-[#e85d04] hover:bg-orange-600 text-white w-full text-xs font-bold py-2.5 h-10 rounded-xl cursor-pointer"
+                  className="bg-blue-600 hover:bg-blue-700 text-white w-full text-xs font-bold py-2.5 h-10 rounded-xl cursor-pointer shadow-md shadow-blue-500/20"
                 >
                   Pay ₹{totalPrice.toLocaleString("en-IN")} via Razorpay
                 </Button>

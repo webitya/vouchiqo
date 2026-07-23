@@ -132,7 +132,7 @@ export default function StepListings({
                       </span>
                     </div>
                   </div>
-                  <span className="text-xs font-bold text-[#e85d04]">
+                  <span className="text-xs font-bold text-blue-600">
                     {couponItem.discountType === "percentage"
                       ? `${couponItem.discountValue}% OFF`
                       : `₹${couponItem.discountValue} OFF`}
@@ -146,7 +146,7 @@ export default function StepListings({
         <Link
           href="/merchant/coupons"
           target="_blank"
-          className="inline-flex items-center gap-1 text-xs font-bold text-[#e85d04] hover:underline"
+          className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Create new coupon for this campaign</span>
@@ -164,7 +164,7 @@ export default function StepListings({
         </Button>
         <Button
           onClick={onNext}
-          className="bg-[#e85d04] hover:bg-orange-600 text-white text-xs font-bold py-2.5 px-6 rounded-xl cursor-pointer"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-6 rounded-xl cursor-pointer shadow-md shadow-blue-500/20"
         >
           Next &gt;
         </Button>

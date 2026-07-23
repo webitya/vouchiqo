@@ -29,7 +29,7 @@ export default function Step4Bank({ formData, setFormData }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormInput
           name="holderName"
-          label="Bank Account Legal Holder Name"
+          label="Account Holder Name (Optional)"
           icon={User}
           placeholder="Legal name in bank passbook"
           value={formData.bankDetails.holderName}
@@ -42,12 +42,11 @@ export default function Step4Bank({ formData, setFormData }) {
               },
             })
           }
-          required
         />
 
         <FormSelect
           name="accountType"
-          label="Account Typology"
+          label="Account Type (Optional)"
           icon={CreditCard}
           options={ACCOUNT_TYPES}
           value={formData.bankDetails.accountType || "current"}
@@ -57,12 +56,11 @@ export default function Step4Bank({ formData, setFormData }) {
               bankDetails: { ...formData.bankDetails, accountType: val },
             })
           }
-          required
         />
 
         <FormInput
           name="accountNumber"
-          label="Core Account Serial Number"
+          label="Account Number (Optional)"
           icon={CreditCard}
           maxLength={18}
           placeholder="9 to 18 digits account number"
@@ -77,12 +75,11 @@ export default function Step4Bank({ formData, setFormData }) {
             })
           }
           className="font-mono font-bold"
-          required
         />
 
         <FormInput
           name="ifsc"
-          label="Bank IFSC Code"
+          label="Bank IFSC Code (Optional)"
           icon={FileText}
           maxLength={11}
           placeholder="e.g. HDFC0000123"
@@ -97,7 +94,6 @@ export default function Step4Bank({ formData, setFormData }) {
             })
           }
           className="font-mono uppercase font-bold"
-          required
         />
       </div>
     </Card>

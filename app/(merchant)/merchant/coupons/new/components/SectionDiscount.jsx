@@ -50,13 +50,13 @@ export default function SectionDiscount({
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                <Ticket className="w-3.5 h-3.5 text-orange-600" /> Offer Code *
+                <Ticket className="w-3.5 h-3.5 text-blue-600" /> Offer Code *
                 (Uppercase, No Spaces)
               </Label>
               <button
                 type="button"
                 onClick={generateRandomCode}
-                className="text-[11px] font-bold text-[#e85d04] hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-[11px] font-bold text-blue-600 hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <RefreshCw className="w-3 h-3" /> Auto-generate Code
               </button>
@@ -199,7 +199,7 @@ export default function SectionDiscount({
             </div>
             <div className="space-y-1.5">
               <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                <Tag className="w-3.5 h-3.5 text-[#e85d04]" /> Sale Price (Deal
+                <Tag className="w-3.5 h-3.5 text-blue-600" /> Sale Price (Deal
                 ₹) *
               </Label>
               <Input

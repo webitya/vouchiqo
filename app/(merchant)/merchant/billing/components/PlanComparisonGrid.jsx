@@ -15,21 +15,21 @@ export default function PlanComparisonGrid({
   onOpenUpgrade,
 }) {
   return (
-    <div className="space-y-6 pt-2 text-left">
+    <div className="space-y-4 pt-1 text-left font-sans">
       {/* Header + billing toggle */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <div>
-          <h3 className="font-heading text-base font-bold text-brand-text uppercase tracking-wider">
+          <h3 className="font-heading text-xs font-extrabold text-slate-900 uppercase tracking-wider">
             Plan Comparison (All 4 Launch Tiers)
           </h3>
-          <p className="text-xs text-brand-subtext font-medium">
+          <p className="text-[11px] text-slate-500 font-medium mt-0.5">
             Select the best subscription tier for your business scale
           </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-brand-surface p-2 rounded-xl border border-brand-border shrink-0">
+        <div className="flex items-center gap-2.5 bg-slate-50/90 p-1.5 rounded-xl border border-slate-200/90 shrink-0 shadow-2xs">
           <span
-            className={`text-xs font-bold ${billingCycle === "monthly" ? "text-brand-text" : "text-brand-subtext"}`}
+            className={`text-xs font-bold ${billingCycle === "monthly" ? "text-slate-900" : "text-slate-500"}`}
           >
             Monthly
           </span>
@@ -40,7 +40,7 @@ export default function PlanComparisonGrid({
             }
           />
           <span
-            className={`text-xs font-bold flex items-center gap-1.5 ${billingCycle === "yearly" ? "text-brand-text" : "text-brand-subtext"}`}
+            className={`text-xs font-bold flex items-center gap-1.5 ${billingCycle === "yearly" ? "text-slate-900" : "text-slate-500"}`}
           >
             Annual
             <span className="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-0.5 rounded-full font-bold">
@@ -51,7 +51,7 @@ export default function PlanComparisonGrid({
       </div>
 
       {/* Plan cards grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {plans.map((plan) => {
           const displayPrice =
             billingCycle === "yearly" ? plan.priceYearly : plan.priceMonthly;

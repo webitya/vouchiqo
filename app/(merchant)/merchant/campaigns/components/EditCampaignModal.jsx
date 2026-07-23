@@ -64,8 +64,8 @@ export default function EditCampaignModal({
   };
 
   const typeOptions = [
-    { value: "flash", label: "Zap — Flash Sale (2hrs - 48hrs)" },
-    { value: "festival", label: "Sparkles — Festival Campaign (3 - 7 days)" },
+    { value: "flash", label: "Flash Sale (2hrs - 48hrs)" },
+    { value: "festival", label: "Festival — Festival Campaign (3 - 7 days)" },
     { value: "new-user", label: "Target — New Customer Acquisition" },
     { value: "seasonal", label: "Tag — Seasonal Clearance" },
     { value: "loyalty", label: "Users — Loyalty / Returning Customer" },
@@ -78,7 +78,7 @@ export default function EditCampaignModal({
         <form onSubmit={handleSave} className="space-y-4">
           <DialogHeader className="space-y-1 pb-3 border-b border-slate-100">
             <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Edit3 className="w-5 h-5 text-[#e85d04]" />
+              <Edit3 className="w-5 h-5 text-blue-600" />
               Edit Campaign Details
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-500 font-medium">
@@ -116,7 +116,7 @@ export default function EditCampaignModal({
             <Button
               type="submit"
               disabled={loading}
-              className="bg-[#e85d04] hover:bg-orange-600 text-white text-xs font-bold rounded-xl cursor-pointer shadow-none"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-md shadow-blue-500/20"
             >
               {loading ? "Saving..." : "Save Changes"}
             </Button>

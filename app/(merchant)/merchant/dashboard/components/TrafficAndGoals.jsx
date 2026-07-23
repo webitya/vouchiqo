@@ -42,28 +42,28 @@ export default function TrafficAndGoals({
       : 0;
 
   return (
-    <div className="col-span-full flex flex-col gap-5 xl:col-span-4">
+    <div className="col-span-full flex flex-col gap-4 xl:col-span-4">
       {/* Traffic Card */}
-      <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col hover:shadow-xs transition-all duration-200 p-0 gap-0">
-        <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 bg-slate-50/50 min-h-[52px]">
-          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
+      <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden flex flex-col hover:shadow-sm transition-all duration-200 p-0 gap-0 font-sans">
+        <CardHeader className="px-4 py-3 sm:px-4 sm:py-3 border-b border-slate-100 bg-slate-50/50 min-h-[48px]">
+          <CardTitle className="font-sans text-xs sm:text-[12px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
             Traffic Sources
           </CardTitle>
-          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
+          <CardDescription className="text-[10px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Where your visitors come from
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-4 sm:p-5 pt-4">
-          <div className="flex items-center gap-4">
-            <div className="relative h-36 w-36 shrink-0">
+        <CardContent className="p-3.5 sm:p-4">
+          <div className="flex items-center gap-3">
+            <div className="relative h-28 w-28 shrink-0">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={trafficData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={45}
-                    outerRadius={63}
+                    innerRadius={36}
+                    outerRadius={52}
                     paddingAngle={2}
                     dataKey="value"
                     isAnimationActive={true}
@@ -75,27 +75,27 @@ export default function TrafficAndGoals({
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
-                <span className="text-lg font-bold text-slate-800">
+                <span className="text-sm font-bold text-slate-800">
                   {pageViews > 0 ? `${(pageViews / 1000).toFixed(0)}K` : "—"}
                 </span>
-                <span className="text-[10px] text-muted-foreground">
+                <span className="text-[9px] text-slate-400">
                   Visits
                 </span>
               </div>
             </div>
-            <div className="flex-1 space-y-3">
+            <div className="flex-1 space-y-2">
               {trafficData.map((t) => (
                 <div key={t.name} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <div
-                      className="h-2.5 w-2.5 rounded-full"
+                      className="h-2 w-2 rounded-full"
                       style={{ backgroundColor: t.color }}
                     ></div>
-                    <span className="text-xs text-muted-foreground font-medium">
+                    <span className="text-[11px] text-slate-500 font-medium">
                       {t.name}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-slate-800">
+                  <span className="text-[11px] font-bold text-slate-800">
                     {t.value}%
                   </span>
                 </div>
@@ -106,32 +106,32 @@ export default function TrafficAndGoals({
       </Card>
 
       {/* Goals Card */}
-      <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col hover:shadow-xs transition-all duration-200 p-0 gap-0">
-        <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 bg-slate-50/50 min-h-[52px]">
-          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
+      <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden flex flex-col hover:shadow-sm transition-all duration-200 p-0 gap-0 font-sans">
+        <CardHeader className="px-4 py-3 sm:px-4 sm:py-3 border-b border-slate-100 bg-slate-50/50 min-h-[48px]">
+          <CardTitle className="font-sans text-xs sm:text-[12px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
             Monthly Goals
           </CardTitle>
-          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
+          <CardDescription className="text-[10px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Track progress toward targets
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-4 sm:p-5 pt-4 space-y-5">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-foreground">
+        <CardContent className="p-3.5 sm:p-4 space-y-3.5">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="font-semibold text-slate-800">
                 Monthly Revenue
               </span>
-              <span className="text-muted-foreground font-semibold">
+              <span className="text-slate-500 font-bold">
                 {revenueGoal > 0 ? `${revenuePct}%` : "—"}
               </span>
             </div>
-            <div className="relative h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
               <div
                 className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
                 style={{ width: revenueGoal > 0 ? `${revenuePct}%` : "0%" }}
               ></div>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
+            <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
               <span>₹{revenueActual.toLocaleString("en-IN")}</span>
               <span>
                 {revenueGoal > 0
@@ -140,20 +140,20 @@ export default function TrafficAndGoals({
               </span>
             </div>
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-foreground">Coupon Claims</span>
-              <span className="text-muted-foreground font-semibold">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="font-semibold text-slate-800">Coupon Claims</span>
+              <span className="text-slate-500 font-bold">
                 {claimsGoal > 0 ? `${claimsPct}%` : "—"}
               </span>
             </div>
-            <div className="relative h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
               <div
                 className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
                 style={{ width: claimsGoal > 0 ? `${claimsPct}%` : "0%" }}
               ></div>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
+            <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
               <span>{totalClaims.toLocaleString()}</span>
               <span>
                 {claimsGoal > 0
@@ -162,22 +162,22 @@ export default function TrafficAndGoals({
               </span>
             </div>
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-foreground">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="font-semibold text-slate-800">
                 Conversion Rate
               </span>
-              <span className="text-muted-foreground font-semibold">
+              <span className="text-slate-500 font-bold">
                 {totalClaims > 0 ? `${redemptionPct}%` : "—"}
               </span>
             </div>
-            <div className="relative h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
               <div
-                className="h-full rounded-full transition-all duration-500 ease-out bg-[#e85d04]"
+                className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
                 style={{ width: `${redemptionPct}%` }}
               ></div>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
+            <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
               <span>{totalRedemptions} redeemed</span>
               <span>of {totalClaims} claimed</span>
             </div>

@@ -18,15 +18,15 @@ import {
 const PLAN_COLORS = {
   starter: "bg-slate-200 text-slate-700",
   growth: "bg-blue-100 text-blue-700",
-  pro: "bg-violet-100 text-violet-700",
-  enterprise: "bg-orange-100 text-[#e85d04]",
+  pro: "bg-blue-100 text-blue-800",
+  enterprise: "bg-blue-100 text-blue-900",
 };
 
 function UsageBar({ label, icon: Icon, used, limit, color }) {
   const pct = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
   const isUnlimited = limit === -1;
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-1.5 font-sans">
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-1.5 font-semibold text-slate-600">
           <Icon className="w-3.5 h-3.5 text-slate-400" />
@@ -41,7 +41,7 @@ function UsageBar({ label, icon: Icon, used, limit, color }) {
           <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
-                pct >= 90 ? "bg-rose-500" : pct >= 70 ? "bg-amber-500" : color
+                pct >= 90 ? "bg-rose-500" : color
               }`}
               style={{ width: `${pct}%` }}
             />
@@ -72,13 +72,13 @@ export default function PlanUsageCard({
     plan === "starter" ? 0 : plan === "growth" ? 4 : -1;
 
   return (
-    <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col hover:shadow-xs transition-all duration-200 p-0 gap-0">
-      <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 flex flex-row items-center justify-between gap-3 bg-slate-50/50 min-h-[52px]">
+    <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden flex flex-col hover:shadow-sm transition-all duration-200 p-0 gap-0 font-sans">
+      <CardHeader className="px-4 py-3 sm:px-4 sm:py-3 border-b border-slate-100 flex flex-row items-center justify-between gap-3 bg-slate-50/50 min-h-[48px]">
         <div>
-          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
+          <CardTitle className="font-sans text-xs sm:text-[12px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
             Plan Usage
           </CardTitle>
-          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
+          <CardDescription className="text-[10px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Your current subscription limits
           </CardDescription>
         </div>
@@ -88,7 +88,7 @@ export default function PlanUsageCard({
           {planLabel}
         </span>
       </CardHeader>
-      <CardContent className="p-4 sm:p-5 pt-4 space-y-4">
+      <CardContent className="p-3.5 sm:p-4 pt-3 space-y-3">
         <UsageBar
           label="Listings"
           icon={LayoutList}
@@ -101,7 +101,7 @@ export default function PlanUsageCard({
           icon={Megaphone}
           used={campaignsUsed}
           limit={effectiveCampaignLimit}
-          color="bg-violet-500"
+          color="bg-blue-700"
         />
 
         {renewalDays !== null && (
@@ -119,7 +119,7 @@ export default function PlanUsageCard({
 
         <Link
           href="/merchant/billing"
-          className="flex items-center gap-1 text-[11px] font-black text-[#e85d04] hover:underline underline-offset-2 mt-1"
+          className="flex items-center gap-1 text-[11px] font-black text-blue-600 hover:text-blue-700 hover:underline underline-offset-2 mt-1"
         >
           <span>Upgrade Plan</span>
           <ArrowUpRight className="w-3.5 h-3.5" />

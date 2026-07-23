@@ -270,7 +270,7 @@ export default function MerchantSubscription() {
         role: "merchant",
       }}
     >
-      <div className="space-y-6 text-left font-sans w-full">
+      <div className="space-y-4 text-left font-sans w-full">
         <div data-tour="billing-plan">
           <CurrentPlanCard
             merchant={merchant}

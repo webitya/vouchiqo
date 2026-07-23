@@ -11,7 +11,7 @@ export default function LiveCampaignPreview({ campaignData, merchantName }) {
       <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <span className="flex items-center gap-1.5 text-xs font-bold text-slate-800 uppercase tracking-wider">
-            <Eye className="w-4 h-4 text-[#e85d04]" /> Live Deal Card Preview
+            <Eye className="w-4 h-4 text-blue-600" /> Live Deal Card Preview
           </span>
           <Badge
             variant="outline"
@@ -34,7 +34,7 @@ export default function LiveCampaignPreview({ campaignData, merchantName }) {
           >
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
             <div className="relative z-10 flex items-center justify-between w-full">
-              <Badge className="bg-[#e85d04] text-white font-bold text-[9px] uppercase px-2 py-0.5 border-0">
+              <Badge className="bg-blue-600 text-white font-bold text-[9px] uppercase px-2 py-0.5 border-0">
                 {campaignData.type?.toUpperCase()}
               </Badge>
               <span className="text-white text-[10px] font-bold bg-black/50 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20">
@@ -66,7 +66,7 @@ export default function LiveCampaignPreview({ campaignData, merchantName }) {
                   {campaignData.code || "SAVE20"}
                 </span>
               </span>
-              <span className="text-[#e85d04] font-black">
+              <span className="text-blue-600 font-black">
                 {campaignData.discountValue
                   ? `${campaignData.discountValue}% OFF`
                   : "SPECIAL DEAL"}
@@ -75,11 +75,11 @@ export default function LiveCampaignPreview({ campaignData, merchantName }) {
 
             {/* Live Urgency Countdown Widget */}
             {campaignData.hasCountdownTimer && (
-              <div className="p-2.5 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-center justify-between text-amber-900 text-xs font-bold">
+              <div className="p-2.5 bg-blue-50/70 border border-blue-200/80 rounded-xl flex items-center justify-between text-blue-900 text-xs font-bold">
                 <span className="flex items-center gap-1.5 text-[11px]">
-                  <Clock className="w-3.5 h-3.5 text-amber-600" /> Ends In:
+                  <Clock className="w-3.5 h-3.5 text-blue-600" /> Ends In:
                 </span>
-                <span className="font-mono text-amber-900 text-[11px]">
+                <span className="font-mono text-blue-900 text-[11px]">
                   23h : 59m : 45s
                 </span>
               </div>
@@ -94,7 +94,7 @@ export default function LiveCampaignPreview({ campaignData, merchantName }) {
             </div>
 
             {/* Action button preview */}
-            <Button className="w-full bg-slate-900 hover:bg-slate-900 text-white text-xs font-bold py-2.5 rounded-xl shadow-xs cursor-default">
+            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-xs cursor-default">
               Get In-Store Claim Code
             </Button>
           </div>

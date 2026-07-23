@@ -80,16 +80,12 @@ export function NavMain({ groups, isMerchant = false }) {
                 // CTA item (e.g. Post New Listing)
                 if (item.isCta) {
                   const ctaClass = isParentActive
-                    ? "bg-[#e85d04] text-white shadow-md font-bold"
-                    : isMerchant
-                      ? "border border-[#e85d04] text-[#ff7d26] hover:bg-[#e85d04] hover:text-white font-bold bg-[#e85d04]/10"
-                      : "border border-[#e85d04] text-[#e85d04] hover:bg-[#e85d04] hover:text-white font-bold bg-orange-50/50";
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 font-bold"
+                    : "border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold bg-blue-50/80 shadow-2xs";
 
                   const ctaIconClass = isParentActive
                     ? "text-white"
-                    : isMerchant
-                      ? "text-[#ff7d26]"
-                      : "text-[#e85d04]";
+                    : "text-blue-600";
 
                   return (
                     <SidebarMenuItem
@@ -120,45 +116,29 @@ export function NavMain({ groups, isMerchant = false }) {
 
                 // Expandable sub-items menu (e.g. My Listings, Merchants)
                 if (hasSubItems) {
-                  const parentBtnClass = isMerchant
-                    ? isParentActive
-                      ? "bg-white/10 text-white font-bold"
-                      : "text-slate-200 hover:bg-white/10 hover:text-white font-medium"
-                    : isParentActive
-                      ? "bg-orange-50/80 text-[#e85d04] font-bold"
-                      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-medium";
+                  const parentBtnClass = isParentActive
+                    ? "!bg-blue-600 !text-white font-bold shadow-md shadow-blue-500/20 hover:!bg-blue-700 rounded-xl"
+                    : "bg-blue-50/50 hover:bg-blue-100/70 text-slate-800 hover:text-blue-900 font-semibold border border-blue-100/60 rounded-xl transition-all shadow-2xs";
 
                   const parentIconClass = isParentActive
-                    ? isMerchant
-                      ? "text-white"
-                      : "text-[#e85d04]"
-                    : isMerchant
-                      ? "text-slate-200"
-                      : "text-slate-600";
+                    ? "!text-white"
+                    : "text-blue-600/80 group-hover:text-blue-700";
 
                   const parentTextClass = isParentActive
-                    ? isMerchant
-                      ? "text-white font-bold"
-                      : "text-[#e85d04] font-bold"
-                    : isMerchant
-                      ? "text-slate-200 font-medium"
-                      : "text-slate-700 font-medium";
+                    ? "!text-white font-bold"
+                    : "text-slate-800 font-semibold";
 
                   const chevronClass = isParentActive
-                    ? isMerchant
-                      ? "text-white"
-                      : "text-[#e85d04]"
-                    : isMerchant
-                      ? "text-slate-300"
-                      : "text-slate-500";
+                    ? "text-white"
+                    : "text-slate-500";
 
                   return (
-                    <SidebarMenuItem key={item.title} data-tour={item.tourId}>
+                    <SidebarMenuItem key={item.title} data-tour={item.tourId} className="my-0.5">
                       <SidebarMenuButton
                         onClick={() => toggleSubMenu(item.title)}
                         isActive={false}
                         tooltip={isCollapsed ? item.title : undefined}
-                        className={`w-full justify-between h-8.5 py-1 px-2.5 text-xs transition-all rounded-lg cursor-pointer ${parentBtnClass}`}
+                        className={`w-full justify-between h-9 py-1 px-2.5 text-xs transition-all cursor-pointer ${parentBtnClass}`}
                       >
                         <div className="flex items-center gap-2.5">
                           {Icon && (
@@ -181,9 +161,7 @@ export function NavMain({ groups, isMerchant = false }) {
 
                       {!isCollapsed && isSubOpen && (
                         <SidebarMenuSub
-                          className={`mt-0.5 space-y-0.5 pl-3 border-l ${
-                            isMerchant ? "border-white/20" : "border-slate-200"
-                          }`}
+                          className="mt-1 space-y-1 pl-3 border-l border-blue-200"
                         >
                           {item.subItems.map((sub) => {
                             const isSubActive = (() => {
@@ -218,29 +196,23 @@ export function NavMain({ groups, isMerchant = false }) {
                             const SubIcon = sub.icon;
 
                             const subBtnClass = isSubActive
-                              ? "!bg-[#e85d04] !text-white font-bold shadow-xs"
-                              : isMerchant
-                                ? "!text-slate-200 hover:!bg-white/10 hover:!text-white font-medium"
-                                : "!text-slate-700 hover:!bg-slate-100 hover:!text-slate-900 font-medium";
+                              ? "!bg-blue-600 !text-white font-bold shadow-xs rounded-lg"
+                              : "!bg-blue-50/40 hover:!bg-blue-100/70 !text-slate-700 hover:!text-blue-900 font-semibold border border-blue-100/50 rounded-lg shadow-2xs";
 
                             const subIconClass = isSubActive
                               ? "!text-white"
-                              : isMerchant
-                                ? "!text-slate-300"
-                                : "!text-slate-500";
+                              : "!text-blue-600/80";
 
                             const subTextClass = isSubActive
                               ? "!text-white font-bold"
-                              : isMerchant
-                                ? "!text-slate-200 font-medium"
-                                : "!text-slate-700 font-medium";
+                              : "!text-slate-700 font-semibold";
 
                             return (
                               <SidebarMenuSubItem key={sub.title}>
                                 <SidebarMenuSubButton
                                   asChild
                                   isActive={false}
-                                  className={`h-7 py-0.5 px-2 text-xs transition-all rounded-md ${subBtnClass}`}
+                                  className={`h-7 py-0.5 px-2 text-xs transition-all ${subBtnClass}`}
                                 >
                                   <Link
                                     href={sub.url}
@@ -267,22 +239,16 @@ export function NavMain({ groups, isMerchant = false }) {
 
                 // Normal sidebar navigation item
                 const singleBtnClass = isParentActive
-                  ? "!bg-[#e85d04] !text-white font-bold shadow-md hover:!bg-[#e85d04]"
-                  : isMerchant
-                    ? "text-slate-200 hover:bg-white/10 hover:text-white font-medium"
-                    : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-medium";
+                  ? "!bg-blue-600 !text-white font-bold shadow-md shadow-blue-500/20 hover:!bg-blue-700 rounded-xl"
+                  : "bg-blue-50/50 hover:bg-blue-100/70 text-slate-800 hover:text-blue-900 font-semibold border border-blue-100/60 rounded-xl transition-all shadow-2xs";
 
                 const singleIconClass = isParentActive
                   ? "!text-white"
-                  : isMerchant
-                    ? "text-slate-200 group-hover:text-white"
-                    : "text-slate-600 group-hover:text-slate-900";
+                  : "text-blue-600/80 group-hover:text-blue-700";
 
                 const singleTextClass = isParentActive
                   ? "!text-white font-bold"
-                  : isMerchant
-                    ? "text-slate-200 font-medium"
-                    : "text-slate-700 font-medium";
+                  : "text-slate-800 font-semibold";
 
                 const URL_TOUR_MAP = {
                   "/merchant/analytics": "tour-analytics",
@@ -296,12 +262,12 @@ export function NavMain({ groups, isMerchant = false }) {
                 const tourId = item.tourId || URL_TOUR_MAP[item.url];
 
                 return (
-                  <SidebarMenuItem key={item.title} data-tour={tourId}>
+                  <SidebarMenuItem key={item.title} data-tour={tourId} className="my-0.5">
                     <SidebarMenuButton
                       asChild
                       isActive={false}
                       tooltip={isCollapsed ? item.title : undefined}
-                      className={`h-8.5 py-1 px-2.5 text-xs transition-all rounded-lg group ${singleBtnClass}`}
+                      className={`h-9 py-1 px-2.5 text-xs transition-all cursor-pointer group ${singleBtnClass}`}
                     >
                       <Link
                         href={item.url}

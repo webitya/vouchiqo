@@ -84,6 +84,14 @@ export default function MerchantKycDialog({
               </div>
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                  Primary Document Type
+                </span>
+                <span className="font-bold text-purple-700">
+                  {merchant.docType || "GST Registration Certificate"}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">
                   Permanent Account Number (PAN)
                 </span>
                 <span className="font-mono font-bold text-slate-900">
@@ -100,6 +108,35 @@ export default function MerchantKycDialog({
                     : merchant.gstin || "N/A"}
                 </span>
               </div>
+            </div>
+
+            {/* PRIMARY IDENTITY DOCUMENT IMAGE PREVIEW */}
+            <div className="p-4 bg-purple-50/50 rounded-xl border border-purple-200 text-center space-y-2">
+              <span className="text-[10px] uppercase font-extrabold text-purple-800 block">
+                Primary Identity Document Image ({merchant.docType || "GST Certificate"})
+              </span>
+              {merchant.docImage ? (
+                <div className="space-y-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={merchant.docImage}
+                    alt={merchant.docType || "Primary Identity Document"}
+                    className="max-h-48 mx-auto object-contain rounded-lg border border-purple-200 shadow-2xs bg-white"
+                  />
+                  <a
+                    href={merchant.docImage}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-block text-[11px] font-bold text-purple-700 hover:underline"
+                  >
+                    ↗ Open Full Size High-Res Document Image
+                  </a>
+                </div>
+              ) : (
+                <span className="text-xs text-slate-400 font-medium block py-3">
+                  No primary identity document image uploaded by merchant
+                </span>
+              )}
             </div>
           </TabsContent>
 

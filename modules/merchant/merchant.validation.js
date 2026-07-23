@@ -72,6 +72,8 @@ export const createMerchantSchema = z.object({
     )
     .or(z.string().max(0))
     .optional(),
+  docType: z.string().optional(),
+  docImage: z.string().optional(),
   pan: z
     .string()
     .regex(

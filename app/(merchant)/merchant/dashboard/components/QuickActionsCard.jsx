@@ -16,7 +16,7 @@ const ACTIONS = [
     label: "+ Post New Offer",
     href: "/merchant/coupons/new",
     icon: Plus,
-    color: "bg-[#0f172a] hover:bg-slate-800 text-white",
+    color: "bg-blue-600 hover:bg-blue-700 text-white shadow-xs",
     locked: false,
   },
   {
@@ -24,7 +24,7 @@ const ACTIONS = [
     label: "+ Post New Deal",
     href: "/merchant/coupons/new?type=deal",
     icon: Tag,
-    color: "bg-[#0f172a] hover:bg-slate-800 text-white",
+    color: "bg-blue-600 hover:bg-blue-700 text-white shadow-xs",
     locked: false,
   },
   {
@@ -32,7 +32,7 @@ const ACTIONS = [
     label: "Launch Campaign",
     href: "/merchant/campaigns",
     icon: Rocket,
-    color: "bg-white border border-slate-200 hover:bg-slate-50 text-slate-700",
+    color: "bg-white border border-slate-200 hover:bg-blue-50/50 hover:border-blue-200 text-slate-800",
     lockedOnStarter: true,
   },
   {
@@ -40,7 +40,7 @@ const ACTIONS = [
     label: "Revive Expired Offers",
     href: "/merchant/coupons?status=expired",
     icon: RefreshCw,
-    color: "bg-white border border-slate-200 hover:bg-slate-50 text-slate-700",
+    color: "bg-white border border-slate-200 hover:bg-blue-50/50 hover:border-blue-200 text-slate-800",
     lockedOnStarter: true,
   },
 ];
@@ -49,19 +49,19 @@ export default function QuickActionsCard({ plan = "starter" }) {
   const isStarter = plan === "starter";
 
   return (
-    <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col hover:shadow-xs transition-all duration-200 p-0 gap-0">
-      <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 flex flex-row items-center justify-between gap-3 bg-slate-50/50 min-h-[52px]">
+    <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-all duration-200 p-0 gap-0 font-sans">
+      <CardHeader className="px-4 py-3 sm:px-4 sm:py-3 border-b border-slate-100 flex flex-row items-center justify-between gap-3 bg-slate-50/50 min-h-[48px]">
         <div>
-          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
+          <CardTitle className="font-sans text-xs sm:text-[12px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
             Quick Actions
           </CardTitle>
-          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
+          <CardDescription className="text-[10px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Common tasks to manage your listings
           </CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="p-4 sm:p-5 pt-4">
-        <div className="grid grid-cols-2 gap-3">
+      <CardContent className="p-3.5 sm:p-4 pt-3">
+        <div className="grid grid-cols-2 gap-2.5">
           {ACTIONS.map((action) => {
             const Icon = action.icon;
             const isLocked = isStarter && action.lockedOnStarter;
@@ -70,7 +70,7 @@ export default function QuickActionsCard({ plan = "starter" }) {
               return (
                 <div
                   key={action.id}
-                  className="relative flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-100 text-slate-400 cursor-not-allowed text-xs font-bold select-none"
+                  className="relative flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-100 text-slate-400 cursor-not-allowed text-xs font-bold select-none"
                   title="Upgrade to unlock"
                 >
                   <Icon className="w-3.5 h-3.5 shrink-0" />
@@ -84,7 +84,7 @@ export default function QuickActionsCard({ plan = "starter" }) {
               <Link
                 key={action.id}
                 href={action.href}
-                className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold transition-colors ${action.color}`}
+                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${action.color}`}
               >
                 <Icon className="w-3.5 h-3.5 shrink-0" />
                 <span className="truncate">{action.label}</span>
@@ -98,7 +98,7 @@ export default function QuickActionsCard({ plan = "starter" }) {
             Campaign &amp; Revival tools require{" "}
             <Link
               href="/merchant/billing"
-              className="text-[#e85d04] underline underline-offset-2 font-bold"
+              className="text-blue-600 hover:text-blue-700 underline underline-offset-2 font-bold"
             >
               Growth plan or above
             </Link>

@@ -443,7 +443,7 @@ export default function MerchantAccountSettings() {
                       window.location.href = "/merchant/dashboard";
                     }
                   }}
-                  className="bg-[#e85d04] hover:bg-orange-600 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer shadow-md shadow-orange-500/20 shrink-0"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer shadow-md shadow-blue-500/20 shrink-0"
                 >
                   Restart Tour →
                 </Button>

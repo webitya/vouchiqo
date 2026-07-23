@@ -3,7 +3,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Rocket,
-  Sparkles,
   Tag,
   Target,
   Trophy,
@@ -69,7 +68,7 @@ const CAMPAIGN_TYPES = [
   {
     id: "festival",
     name: "Festival Campaign",
-    icon: Sparkles,
+    icon: Tag,
     badge: "3 – 7 days",
     desc: "Tied to Indian festivals with pre-launch teaser option.",
   },
@@ -386,7 +385,7 @@ export default function MerchantCampaigns() {
         role: "merchant",
       }}
     >
-      <div className="flex flex-col gap-6 text-left font-sans w-full">
+      <div className="flex flex-col gap-4 text-left font-sans w-full">
         {/* Top Header / Stepper Bar */}
         {!isCreating
           ? <CampaignsHeader
@@ -420,8 +419,8 @@ export default function MerchantCampaigns() {
                 onDelete={handleDeleteClick}
               />
             </div>
-          : <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              <div className="lg:col-span-7 space-y-6">
+          : <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+              <div className="lg:col-span-7 space-y-4">
                 {currentStep === 1 && (
                   <StepBasics
                     campaignData={campaignData}

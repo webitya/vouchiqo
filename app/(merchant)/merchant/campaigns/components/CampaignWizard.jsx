@@ -3,7 +3,7 @@ import {
   ArrowRight,
   Calendar,
   FileText,
-  Sparkles,
+  Tag,
   Ticket,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import WizardStepper from "./WizardStepper";
 const STEPS = [
   { step: 1, label: "Details", icon: FileText },
   { step: 2, label: "Listings", icon: Ticket },
-  { step: 3, label: "Promotions", icon: Sparkles },
+  { step: 3, label: "Promotions", icon: Tag },
   { step: 4, label: "Schedule", icon: Calendar },
 ];
 

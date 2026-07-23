@@ -111,7 +111,7 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
       key: "discount",
       header: "Discount",
       cell: (row) => (
-        <span className="text-[10px] font-extrabold text-[#e85d04] bg-orange-50 px-2 py-0.5 rounded-full border border-orange-100">
+        <span className="text-[10px] font-extrabold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 font-sans">
           {row.discount}
         </span>
       ),
@@ -120,7 +120,7 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
       key: "category",
       header: "Category",
       cell: (row) => (
-        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-surface text-brand-subtext flex items-center gap-1">
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-surface text-brand-subtext flex items-center gap-1 font-sans">
           <Tag className="w-2.5 h-2.5" />
           {row.category}
         </span>
@@ -146,7 +146,7 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
       sortable: true,
       cell: (row) => (
         <span
-          className={`font-bold ${row.successRate >= 10 ? "text-emerald-600" : row.successRate >= 5 ? "text-amber-600" : "text-brand-subtext"}`}
+          className={`font-bold ${row.successRate >= 10 ? "text-emerald-600" : row.successRate >= 5 ? "text-blue-600" : "text-brand-subtext"}`}
         >
           {row.successRate}%
         </span>
@@ -172,7 +172,7 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
           <button
             type="button"
             onClick={() => handleToggleStatus(row.id || row._id)}
-            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-amber-50 text-brand-subtext hover:text-amber-600 transition-colors cursor-pointer"
+            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-blue-50 text-brand-subtext hover:text-blue-600 transition-colors cursor-pointer"
           >
             {row.status === "active" ? (
               <Pause className="w-3.5 h-3.5" />
@@ -193,13 +193,13 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
   ];
 
   return (
-    <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col hover:shadow-xs transition-all duration-200 p-0 gap-0 text-left">
-      <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 flex flex-row items-center justify-between gap-3 bg-slate-50/50 min-h-[52px]">
+    <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-all duration-200 p-0 gap-0 text-left font-sans">
+      <CardHeader className="px-4 py-3 sm:px-4 sm:py-3 border-b border-slate-100 flex flex-row items-center justify-between gap-3 bg-slate-50/50 min-h-[48px]">
         <div>
-          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
+          <CardTitle className="font-sans text-xs sm:text-[12px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
             Top Performing Coupons & Offers
           </CardTitle>
-          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
+          <CardDescription className="text-[10px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Your best listings ranked by redemptions and engagement
           </CardDescription>
         </div>
@@ -210,7 +210,7 @@ export default function TopCouponsTable({ coupons: initialCoupons = [] }) {
           View all →
         </Link>
       </CardHeader>
-      <CardContent className="p-4 sm:p-5 pt-4">
+      <CardContent className="p-3.5 sm:p-4 pt-3">
         <DataTable
           columns={columns}
           data={couponsList}

@@ -112,8 +112,8 @@ export default function CouponForm({
                     onClick={() => setListingType(t.id)}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                       listingType === t.id
-                        ? "border-[#e85d04] bg-orange-50/50 shadow-sm font-bold text-brand-text"
-                        : "border-brand-border bg-brand-bg hover:border-brand-subtext/40 text-brand-subtext"
+                        ? "border-blue-600 bg-blue-50/50 shadow-sm font-bold text-slate-900"
+                        : "border-slate-200 bg-white hover:border-slate-300 text-slate-600"
                     }`}
                   >
                     <span className="block text-xs font-bold">{t.label}</span>
@@ -287,7 +287,7 @@ export default function CouponForm({
         <Card className="border-brand-border shadow-sm rounded-2xl bg-brand-bg p-5 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-brand-border">
             <span className="flex items-center gap-1.5 text-xs font-bold text-brand-text uppercase tracking-wider">
-              <Eye className="w-4 h-4 text-[#e85d04]" /> Real-Time Card Preview
+              <Eye className="w-4 h-4 text-blue-600" /> Real-Time Card Preview
             </span>
             <Badge
               variant="outline"
@@ -343,7 +343,7 @@ export default function CouponForm({
                   <span className="block text-[10px] text-brand-subtext font-bold uppercase">
                     Discount
                   </span>
-                  <span className="text-[#e85d04] font-black">
+                  <span className="text-blue-600 font-black">
                     {discountLabel}
                   </span>
                 </div>

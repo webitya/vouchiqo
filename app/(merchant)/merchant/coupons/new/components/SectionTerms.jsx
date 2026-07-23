@@ -192,7 +192,7 @@ export default function SectionTerms({
         <Button
           onClick={onSubmit}
           disabled={isPending}
-          className="bg-[#e85d04] hover:bg-orange-600 text-white text-xs font-bold py-2.5 px-8 rounded-xl cursor-pointer shadow-xs"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-8 rounded-xl cursor-pointer shadow-md shadow-blue-500/20"
         >
           {isPending
             ? "Submitting for Verification..."

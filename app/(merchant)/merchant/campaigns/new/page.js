@@ -3,7 +3,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Rocket,
-  Sparkles,
   Tag,
   Target,
   Trophy,
@@ -33,7 +32,7 @@ const CAMPAIGN_TYPES = [
   {
     id: "festival",
     name: "Festival Campaign",
-    icon: Sparkles,
+    icon: Tag,
     badge: "3 – 7 days",
     desc: "Tied to Indian festivals (Diwali, Chhath, Holi, Navratri, Eid) with pre-launch teaser option.",
   },

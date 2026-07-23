@@ -6,7 +6,7 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
-  Sparkles,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -55,32 +55,28 @@ export function NavUser({ user, role = "admin" }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className={`w-full cursor-pointer transition-colors ${
-                isMerchant
-                  ? "hover:bg-white/10 text-white data-[state=open]:bg-white/15"
-                  : "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              }`}
+              className="w-full cursor-pointer transition-colors text-slate-900 hover:bg-slate-100/80 data-[state=open]:bg-slate-100 border border-slate-200/80 rounded-xl p-2 bg-slate-50/50 shadow-2xs"
             >
-              <Avatar className="h-8 w-8 rounded-lg shrink-0">
+              <Avatar className="h-8 w-8 rounded-lg shrink-0 border border-slate-200">
                 <AvatarImage
                   src={user?.image || user?.avatar}
                   alt={user?.name || "User"}
                 />
-                <AvatarFallback className="rounded-lg font-extrabold text-xs">
+                <AvatarFallback className="rounded-lg font-extrabold text-xs bg-blue-100 text-blue-800">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               {!isCollapsed && (
                 <>
                   <div className="grid flex-1 text-left text-xs leading-tight min-w-0">
-                    <span className="truncate font-semibold text-sm">
+                    <span className="truncate font-bold text-sm text-slate-900">
                       {user?.name || "User"}
                     </span>
-                    <span className="truncate text-xs opacity-70">
+                    <span className="truncate text-[11px] text-slate-500 font-medium">
                       {user?.email || "user@vouchiqo.com"}
                     </span>
                   </div>
-                  <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-60" />
+                  <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 text-slate-400" />
                 </>
               )}
             </SidebarMenuButton>
@@ -119,9 +115,9 @@ export function NavUser({ user, role = "admin" }) {
                   <DropdownMenuItem asChild>
                     <Link
                       href="/merchant/billing"
-                      className="flex items-center gap-2 text-xs font-bold text-amber-600 cursor-pointer"
+                      className="flex items-center gap-2 text-xs font-bold text-blue-600 cursor-pointer"
                     >
-                      <Sparkles className="h-4 w-4 text-amber-500" />
+                      <Zap className="h-4 w-4 text-blue-600" />
                       Upgrade Plan
                     </Link>
                   </DropdownMenuItem>

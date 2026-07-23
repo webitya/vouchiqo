@@ -274,7 +274,7 @@ export function AppSidebar({ ...props }) {
                   {
                     title: "Active Offers",
                     url: "/merchant/coupons?status=active",
-                    icon: Sparkles,
+                    icon: CheckSquare,
                   },
                   {
                     title: "Expired Offers",
@@ -393,20 +393,16 @@ export function AppSidebar({ ...props }) {
     <Sidebar
       collapsible="icon"
       side="left"
-      className={
-        isMerchant
-          ? "bg-[#1A3C5E] text-white border-r border-slate-700/60"
-          : "bg-white text-slate-900 border-r border-slate-200"
-      }
+      className="bg-white text-slate-900 border-r border-slate-200 shadow-sm font-sans"
       {...props}
     >
       <SidebarHeader
-        className={`h-16 flex items-center justify-center border-b px-3.5 py-0 ${isMerchant ? "border-slate-700/60 bg-[#1A3C5E]" : "border-slate-200 bg-white"}`}
+        className="h-16 flex items-center justify-center border-b border-slate-200 bg-white px-3.5 py-0"
       >
         <div
           className={`flex items-center gap-2.5 w-full ${isCollapsed ? "justify-center" : ""}`}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-[#e85d04] font-black text-sm shadow-xs overflow-hidden">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 font-black text-sm shadow-xs overflow-hidden border border-blue-100">
             <Image
               src="/favicon.ico"
               alt="VouchIQ Logo"
@@ -418,13 +414,13 @@ export function AppSidebar({ ...props }) {
           {!isCollapsed && (
             <div className="flex flex-col text-left leading-tight min-w-0 flex-1">
               <span
-                className={`text-sm font-black tracking-tight truncate ${isMerchant ? "text-white" : "text-slate-900"}`}
+                className="text-sm font-black tracking-tight truncate text-slate-900"
               >
                 {role === "admin" ? "Super Admin" : user.name}
               </span>
               <div className="flex items-center gap-1 mt-0.5">
                 <Badge
-                  className={`text-[8px] font-extrabold px-1.5 py-0 ${isMerchant ? "bg-orange-500/20 text-orange-300 border-orange-400/40" : "bg-orange-100 text-[#e85d04] border-orange-200"}`}
+                  className="bg-blue-50 text-blue-700 border-blue-200 text-[8px] font-extrabold px-1.5 py-0"
                 >
                   GROWTH PARTNER
                 </Badge>
@@ -434,12 +430,12 @@ export function AppSidebar({ ...props }) {
         </div>
       </SidebarHeader>
       <SidebarContent
-        className={`px-2 py-3 ${isMerchant ? "bg-[#1A3C5E] text-white" : "bg-white text-slate-900"}`}
+        className="px-2 py-3 bg-white text-slate-900"
       >
         <NavMain groups={groups} isMerchant={isMerchant} />
       </SidebarContent>
       <SidebarFooter
-        className={`border-t ${isMerchant ? "border-slate-700/60 bg-[#1A3C5E]" : "border-slate-200 bg-white"}`}
+        className="border-t border-slate-200 bg-white"
       >
         <NavUser user={user} role={role} />
       </SidebarFooter>

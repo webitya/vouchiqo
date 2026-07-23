@@ -142,6 +142,8 @@ const merchantSchema = new Schema(
       default: "ranchi",
     },
     gmapsLink: { type: String, trim: true },
+    docType: { type: String, trim: true },
+    docImage: { type: String }, // Cloudinary URL for primary identity document
     pan: { type: String, uppercase: true, trim: true },
     gstin: { type: String, uppercase: true, trim: true },
     isGstExempt: { type: Boolean, default: false },

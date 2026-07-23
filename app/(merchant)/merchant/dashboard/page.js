@@ -225,23 +225,23 @@ export default function MerchantDashboard() {
       title="Dashboard"
       user={{ name: merchant?.businessName || "Merchant", role: "merchant" }}
     >
-      <div className="space-y-6 text-left font-sans">
+      <div className="space-y-4 text-left font-sans">
         {/* Contextual Alert Cards */}
         {alerts.length > 0 && (
           <div className="space-y-2">
             {alerts.map((alert, idx) => {
               const Icon = alert.icon;
               const styles = {
-                amber: "bg-amber-50 border-amber-200 text-amber-800",
-                blue: "bg-blue-50 border-blue-200 text-blue-800",
-                orange: "bg-orange-50 border-orange-200 text-orange-800",
+                amber: "bg-blue-50 border-blue-200 text-blue-900",
+                blue: "bg-blue-50 border-blue-200 text-blue-900",
+                orange: "bg-blue-50 border-blue-200 text-blue-900",
               };
               return (
                 <div
                   key={idx}
-                  className={`flex items-start gap-2.5 border rounded-xl px-4 py-3 text-xs font-semibold ${styles[alert.type]}`}
+                  className={`flex items-start gap-2 border rounded-xl px-3.5 py-2.5 text-xs font-semibold font-sans ${styles[alert.type]}`}
                 >
-                  <Icon className="w-4 h-4 mt-0.5 shrink-0" />
+                  <Icon className="w-3.5 h-3.5 mt-0.5 shrink-0 text-blue-600" />
                   <span>{alert.msg}</span>
                 </div>
               );
@@ -272,7 +272,7 @@ export default function MerchantDashboard() {
         </div>
 
         {/* Main Chart + Right Sidebar */}
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
           {/* Dual Line Chart: Clicks vs Redemptions */}
           <PerformanceChart
             trendData={trendData}
@@ -296,7 +296,7 @@ export default function MerchantDashboard() {
         </div>
 
         {/* Bottom Row: Quick Actions + Plan Usage */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <QuickActionsCard plan={plan} />
           <PlanUsageCard
             plan={plan}

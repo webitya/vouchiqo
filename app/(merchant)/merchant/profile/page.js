@@ -36,12 +36,16 @@ const INITIAL_FORM = {
   city: "",
   state: "",
   country: "IN",
+  lat: "",
+  lng: "",
   contactPhone: "",
   constitution: "proprietorship",
   liaisonName: "",
   liaisonDesignation: "owner",
   liaisonPhone: "",
   gmapsLink: "",
+  docType: "GST Registration Certificate",
+  docImage: "",
   pan: "",
   gstin: "",
   isGstExempt: false,
@@ -65,6 +69,7 @@ export default function MerchantBusinessProfile() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   const [uploadingShop, setUploadingShop] = useState(false);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
 
   // Fetch current merchant profile
   const {
@@ -95,12 +100,16 @@ export default function MerchantBusinessProfile() {
         city: merchant.location?.city ?? "",
         state: merchant.location?.state ?? "",
         country: merchant.location?.country ?? "IN",
+        lat: merchant.location?.coordinates?.lat ?? "",
+        lng: merchant.location?.coordinates?.lng ?? "",
         contactPhone: merchant.contactPhone ?? "",
         constitution: merchant.constitution ?? "proprietorship",
         liaisonName: merchant.liaisonName ?? "",
         liaisonDesignation: merchant.liaisonDesignation ?? "owner",
         liaisonPhone: merchant.liaisonPhone ?? "",
         gmapsLink: merchant.gmapsLink ?? "",
+        docType: merchant.docType ?? "GST Registration Certificate",
+        docImage: merchant.docImage ?? "",
         pan: merchant.pan ?? "",
         gstin: merchant.gstin ?? "",
         isGstExempt: merchant.isGstExempt ?? false,
@@ -144,6 +153,7 @@ export default function MerchantBusinessProfile() {
     if (field === "logo") setUploadingLogo(true);
     if (field === "banner") setUploadingBanner(true);
     if (field === "shopImage") setUploadingShop(true);
+    if (field === "docImage") setUploadingDoc(true);
 
     try {
       const res = await fetch("/api/uploads", { method: "POST", body: data });
@@ -157,6 +167,7 @@ export default function MerchantBusinessProfile() {
       setUploadingLogo(false);
       setUploadingBanner(false);
       setUploadingShop(false);
+      setUploadingDoc(false);
     }
   };
 
@@ -171,19 +182,24 @@ export default function MerchantBusinessProfile() {
     }
     if (currStep === 3) {
       const panTrimmed = (formData.pan || "").trim().toUpperCase();
-      if (!panTrimmed || !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panTrimmed)) {
-        return "Valid 10-character PAN is required (e.g. ABCDE1234F).";
+      if (panTrimmed && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panTrimmed)) {
+        return "Please enter a valid 10-character PAN (e.g. ABCDE1234F) or leave it empty.";
       }
-      if (!formData.isGstExempt && !formData.gstin) {
-        return "GSTIN is required unless declared GST exempt.";
+      const gstinTrimmed = (formData.gstin || "").trim().toUpperCase();
+      if (
+        gstinTrimmed &&
+        !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(
+          gstinTrimmed,
+        )
+      ) {
+        return "Please enter a valid 15-character GSTIN (e.g. 22AAAAA1111A1Z1) or leave it empty.";
       }
     }
     if (currStep === 4) {
-      if (!formData.bankDetails.holderName)
-        return "Bank account holder name is required.";
-      if (!formData.bankDetails.accountNumber)
-        return "Account number is required.";
-      if (!formData.bankDetails.ifsc) return "IFSC code is required.";
+      const ifscTrimmed = (formData.bankDetails?.ifsc || "").trim().toUpperCase();
+      if (ifscTrimmed && !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscTrimmed)) {
+        return "Please enter a valid 11-character IFSC code (e.g. HDFC0000123) or leave it empty.";
+      }
     }
     return null;
   };
@@ -244,6 +260,16 @@ export default function MerchantBusinessProfile() {
         city: formData.city,
         state: formData.state,
         country: formData.country,
+        coordinates: {
+          lat:
+            formData.lat !== "" && formData.lat != null
+              ? Number(formData.lat)
+              : undefined,
+          lng:
+            formData.lng !== "" && formData.lng != null
+              ? Number(formData.lng)
+              : undefined,
+        },
       },
     });
   };
@@ -380,7 +406,7 @@ export default function MerchantBusinessProfile() {
                     className={`flex items-center gap-2 text-xs font-bold transition-all cursor-pointer ${isActive ? "text-slate-900" : isCompleted ? "text-emerald-600" : "text-slate-400"}`}
                   >
                     <span
-                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black ${isActive ? "bg-[#e85d04] text-white" : isCompleted ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black ${isActive ? "bg-blue-600 text-white" : isCompleted ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}
                     >
                       {isCompleted
                         ? <Check className="w-4 h-4 stroke-[3]" />
@@ -418,7 +444,12 @@ export default function MerchantBusinessProfile() {
             />
           )}
           {step === 3 && (
-            <Step3KYC formData={formData} setFormData={setFormData} />
+            <Step3KYC
+              formData={formData}
+              setFormData={setFormData}
+              handleImageUpload={handleImageUpload}
+              uploadingDoc={uploadingDoc}
+            />
           )}
           {step === 4 && (
             <Step4Bank formData={formData} setFormData={setFormData} />
@@ -441,7 +472,7 @@ export default function MerchantBusinessProfile() {
               ? <Button
                   type="button"
                   onClick={handleNext}
-                  className="bg-[#e85d04] hover:bg-orange-600 text-white text-xs h-10 px-6 flex items-center gap-1.5 font-bold rounded-xl cursor-pointer border-0 ml-auto"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-10 px-6 flex items-center gap-1.5 font-bold rounded-xl cursor-pointer border-0 ml-auto shadow-md shadow-blue-500/20"
                 >
                   <span>Continue</span>
                   <ChevronRight className="w-4 h-4" />
