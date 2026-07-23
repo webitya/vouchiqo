@@ -11,9 +11,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import ConfirmationModal from "@/components/shared/ConfirmationModal";
-import CouponCard from "@/components/shared/CouponCard";
-import KPICard from "@/components/shared/KPICard";
+import ConfirmationModal from "@/components/shared/modals/ConfirmationModal";
+import CouponCard from "@/components/shared/cards/CouponCard";
+import KPICard from "@/components/shared/cards/KPICard";
 import { useUser } from "@/hooks/use-user";
 
 export default function CustomerDashboard() {

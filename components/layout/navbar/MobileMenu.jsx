@@ -120,7 +120,7 @@ export const MobileMenu = () => {
           </div>
 
           {/* User Sign In / Profile Section */}
-          <div className="p-4 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] border-t border-slate-100 bg-slate-50/50">
+          <div className="p-4 border-t border-slate-100 bg-slate-50/50">
             {session ? (
               <div className="space-y-3.5">
                 {/* Profile menu links for mobile */}

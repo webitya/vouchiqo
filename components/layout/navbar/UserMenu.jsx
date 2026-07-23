@@ -12,8 +12,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { signOut, useSession } from "@/lib/auth-client";
+import LocationPromptModal from "@/components/shared/modals/LocationPromptModal";
 import { OnboardingModal } from "@/features/auth/components/onboarding-modal";
+import { signOut, useSession } from "@/lib/auth-client";
 
 export const UserMenu = () => {
   const { data: session, isPending } = useSession();
@@ -27,26 +28,35 @@ export const UserMenu = () => {
     setMounted(true);
   }, []);
 
+  const [userProfile, setUserProfile] = useState(null);
+
   useEffect(() => {
     if (!mounted || !session?.user) return;
-    const role = session.user.role ?? "";
-    // Never show onboarding to merchants or admins
-    if (role === "merchant" || role === "admin") return;
+
+    const userRole = session?.user?.role || "customer";
+    if (userRole === "admin" || userRole === "merchant") return;
 
     const storageKey = `vouchiqo_onboarded_${session.user.id}`;
-    if (localStorage.getItem(storageKey) === "true") return;
 
-    // Check database onboarding status
+    // Check database onboarding status & profile preferences (gender, interests)
     const checkOnboarding = async () => {
       try {
         const res = await fetch("/api/users");
         if (res.ok) {
           const json = await res.json();
           if (json.success) {
-            const isOnboarded = json.data?.profile?.isOnboarded;
-            if (isOnboarded) {
+            const profile = json.data?.profile;
+            setUserProfile(profile);
+
+            const hasGender = !!profile?.gender;
+            const hasInterests =
+              Array.isArray(profile?.interests) &&
+              profile.interests.length >= 2;
+
+            if (profile?.isOnboarded && hasGender && hasInterests) {
               localStorage.setItem(storageKey, "true");
             } else {
+              // Customer missing gender or interests -> Show Onboarding Popup!
               setShowOnboarding(true);
             }
           }
@@ -221,13 +231,21 @@ export const UserMenu = () => {
         <OnboardingModal
           isOpen={showOnboarding}
           onClose={() => setShowOnboarding(false)}
+          initialGender={userProfile?.gender || ""}
+          initialInterests={userProfile?.interests || []}
           onSaveComplete={() => {
+            setShowOnboarding(false);
             if (session?.user?.id) {
-              localStorage.setItem(`vouchiqo_onboarded_${session.user.id}`, "true");
+              localStorage.setItem(
+                `vouchiqo_onboarded_${session.user.id}`,
+                "true",
+              );
             }
           }}
         />
       )}
+
+      {mounted && <LocationPromptModal />}
     </div>
   );
 };

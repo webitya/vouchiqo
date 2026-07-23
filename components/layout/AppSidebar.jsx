@@ -15,12 +15,13 @@ import {
   Layers,
   LayoutDashboard,
   Link as LinkIcon,
+  Mail,
   MapPin,
   Megaphone,
   PiggyBank,
   PlusCircle,
-  RotateCcw,
   Settings,
+  ShieldCheck,
   Sliders,
   Sparkles,
   Store,
@@ -29,10 +30,13 @@ import {
   TrendingUp,
   Users,
   Wallet,
+  Zap,
 } from "lucide-react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { NavMain } from "@/components/layout/NavMain";
 import { NavUser } from "@/components/layout/NavUser";
+import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -49,7 +53,6 @@ export function AppSidebar({ ...props }) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
-  // Dynamically resolve role from pathname or user session
   const role = authUser
     ? authRole
     : pathname.startsWith("/admin")
@@ -58,48 +61,61 @@ export function AppSidebar({ ...props }) {
         ? "merchant"
         : "customer";
 
-  // User details based on the active session
+  const isMerchant = role === "merchant";
+
   const user = authUser
     ? {
-        name: authUser.name,
+        name: authUser.businessName || authUser.name,
         email: authUser.email,
         avatar: authUser.image || `/avatars/${role}.jpg`,
         image: authUser.image,
       }
     : {
-        name: "Admin User",
-        email: "admin@vouchiqo.com",
+        name: isMerchant ? "Marbella Tiles & Sanitary" : "Super Admin",
+        email: isMerchant ? "owner@marbella.in" : "admin@vouchiqo.com",
         avatar: `/avatars/${role}.jpg`,
         image: null,
       };
 
-  // Grouped Navigation Items categorized into logical sections
   const getNavGroups = () => {
     switch (role) {
       case "admin":
         return [
           {
-            title: "Overview",
+            title: "OVERVIEW",
             items: [
-              {
-                title: "Homepage",
-                url: "/",
-                icon: Home,
-              },
               {
                 title: "Dashboard",
                 url: "/admin/dashboard",
                 icon: LayoutDashboard,
               },
+            ],
+          },
+          {
+            title: "PENDING & APPROVALS",
+            items: [
               {
-                title: "Merchant Approvals",
+                title: "Pending Approvals",
                 url: "/admin/approvals/merchants",
-                icon: Store,
-              },
-              {
-                title: "Coupon Moderation",
-                url: "/admin/approvals/coupons",
-                icon: CheckSquare,
+                icon: ShieldCheck,
+                defaultOpen: true,
+                subItems: [
+                  {
+                    title: "Merchant Approvals",
+                    url: "/admin/approvals/merchants",
+                    icon: ShieldCheck,
+                  },
+                  {
+                    title: "Coupon Moderation",
+                    url: "/admin/approvals/coupons",
+                    icon: Tag,
+                  },
+                  {
+                    title: "Offer Verification",
+                    url: "/admin/offers",
+                    icon: CheckSquare,
+                  },
+                ],
               },
               {
                 title: "User Management",
@@ -107,44 +123,129 @@ export function AppSidebar({ ...props }) {
                 icon: Users,
               },
               {
-                title: "Demand Intelligence",
-                url: "/admin/merchant-demand",
-                icon: Building2,
+                title: "Merchant Directory",
+                url: "/admin/merchants",
+                icon: Store,
               },
             ],
           },
           {
-            title: "System & Content",
+            title: "CAMPAIGN MANAGEMENT",
             items: [
               {
-                title: "Featured Deals",
-                url: "/admin/featured",
-                icon: Tag,
+                title: "Campaign Hub",
+                url: "/admin/campaigns/queue",
+                icon: Megaphone,
+                subItems: [
+                  {
+                    title: "Campaign Queue",
+                    url: "/admin/campaigns/queue",
+                    icon: Megaphone,
+                  },
+                  {
+                    title: "Live Monitoring",
+                    url: "/admin/campaigns/live",
+                    icon: TrendingUp,
+                  },
+                  {
+                    title: "Campaign Calendar",
+                    url: "/admin/campaigns/calendar",
+                    icon: Clock,
+                  },
+                  {
+                    title: "Campaign Analytics",
+                    url: "/admin/campaigns/analytics",
+                    icon: BarChart2,
+                  },
+                ],
               },
+            ],
+          },
+          {
+            title: "CONTENT & MARKETING",
+            items: [
               {
-                title: "Homepage Ticker",
-                url: "/admin/ticker",
-                icon: TrendingUp,
-              },
-              {
-                title: "Homepage Banners",
+                title: "Banners & Highlights",
                 url: "/admin/banners",
                 icon: Sliders,
+                subItems: [
+                  {
+                    title: "Homepage Banners",
+                    url: "/admin/banners",
+                    icon: Sliders,
+                  },
+                  {
+                    title: "Featured Deals",
+                    url: "/admin/featured",
+                    icon: Tag,
+                  },
+                  {
+                    title: "Ticker Priority",
+                    url: "/admin/content/ticker",
+                    icon: Zap,
+                  },
+                ],
               },
               {
-                title: "Revival Requests",
-                url: "/admin/revivals",
-                icon: AlertCircle,
+                title: "Marketing Tools",
+                url: "/admin/campaigns/festival-wizard",
+                icon: Sparkles,
+                subItems: [
+                  {
+                    title: "Festival Wizard",
+                    url: "/admin/campaigns/festival-wizard",
+                    icon: Sparkles,
+                  },
+                  {
+                    title: "Email Blast Builder",
+                    url: "/admin/campaigns/email-blast-builder",
+                    icon: Mail,
+                  },
+                  {
+                    title: "Push Builder",
+                    url: "/admin/campaigns/push-builder",
+                    icon: Bell,
+                  },
+                ],
               },
               {
-                title: "Platform Revenue",
+                title: "Demand & Revivals",
+                url: "/admin/merchant-demand",
+                icon: Building2,
+                subItems: [
+                  {
+                    title: "Merchant Demand",
+                    url: "/admin/merchant-demand",
+                    icon: Building2,
+                  },
+                  {
+                    title: "Master Revivals",
+                    url: "/admin/revivals",
+                    icon: AlertCircle,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "FINANCIALS",
+            items: [
+              {
+                title: "Revenue & Earnings",
                 url: "/admin/revenue",
-                icon: CreditCard,
-              },
-              {
-                title: "Platform Content",
-                url: "/admin/content",
-                icon: Settings,
+                icon: Wallet,
+                subItems: [
+                  {
+                    title: "Platform Revenue",
+                    url: "/admin/revenue",
+                    icon: Wallet,
+                  },
+                  {
+                    title: "Campaign Revenue",
+                    url: "/admin/campaigns/revenue",
+                    icon: CreditCard,
+                  },
+                ],
               },
             ],
           },
@@ -152,52 +253,47 @@ export function AppSidebar({ ...props }) {
       case "merchant":
         return [
           {
-            title: "Overview",
+            title: "NAVIGATION",
             items: [
               {
-                title: "Dashboard",
+                title: "Dashboard Overview",
                 url: "/merchant/dashboard",
                 icon: Home,
               },
               {
-                title: "Analytics",
-                url: "/merchant/analytics",
-                icon: BarChart2,
-              },
-            ],
-          },
-          {
-            title: "Listings & Offers",
-            items: [
-              {
                 title: "My Listings",
                 url: "/merchant/coupons",
                 icon: Layers,
+                tourId: "tour-my-listings",
                 subItems: [
-                  { title: "Coupons", url: "/merchant/coupons", icon: Ticket },
                   {
-                    title: "Deals & Offers",
-                    url: "/merchant/coupons?type=deal",
+                    title: "All Listings",
+                    url: "/merchant/coupons",
+                    icon: Ticket,
+                  },
+                  {
+                    title: "Active Offers",
+                    url: "/merchant/coupons?status=active",
                     icon: Sparkles,
                   },
                   {
-                    title: "Expired Coupons",
+                    title: "Expired Offers",
                     url: "/merchant/coupons?status=expired",
                     icon: Clock,
                   },
                 ],
               },
               {
-                title: "Post New",
+                title: "Post New Listing",
                 url: "/merchant/coupons/new",
                 icon: PlusCircle,
                 isCta: true,
               },
-            ],
-          },
-          {
-            title: "Engagement",
-            items: [
+              {
+                title: "Analytics",
+                url: "/merchant/analytics",
+                icon: BarChart2,
+              },
               {
                 title: "Campaigns",
                 url: "/merchant/campaigns",
@@ -205,15 +301,10 @@ export function AppSidebar({ ...props }) {
               },
               {
                 title: "Notifications",
-                url: "/merchant/dashboard#notifications",
+                url: "/merchant/notifications",
                 icon: Bell,
                 badge: "4",
               },
-            ],
-          },
-          {
-            title: "Account & Billing",
-            items: [
               {
                 title: "Subscription & Billing",
                 url: "/merchant/billing",
@@ -221,26 +312,32 @@ export function AppSidebar({ ...props }) {
               },
               {
                 title: "Affiliate & Commission",
-                url: "/merchant/billing#affiliate",
+                url: "/merchant/affiliates",
                 icon: LinkIcon,
               },
               {
-                title: "Account Settings",
+                title: "Business Profile & KYC",
                 url: "/merchant/profile",
-                icon: Settings,
+                icon: Store,
               },
               {
-                title: "Help & Support",
-                url: "/faq",
-                icon: HelpCircle,
+                title: "Application Tracking",
+                url: "/merchant/application-status",
+                icon: ShieldCheck,
               },
+              {
+                title: "Account Settings",
+                url: "/merchant/settings",
+                icon: Settings,
+              },
+              { title: "Help & Support", url: "/faq", icon: HelpCircle },
             ],
           },
         ];
       default:
         return [
           {
-            title: "Main",
+            title: "MAIN",
             items: [
               {
                 title: "Dashboard",
@@ -265,7 +362,7 @@ export function AppSidebar({ ...props }) {
             ],
           },
           {
-            title: "Activity & Discovery",
+            title: "ACTIVITY & DISCOVERY",
             items: [
               {
                 title: "My Activity",
@@ -277,21 +374,13 @@ export function AppSidebar({ ...props }) {
                 url: "/profile?tab=nearby",
                 icon: MapPin,
               },
-              {
-                title: "My Coupons",
-                url: "/customer/claimed",
-                icon: Ticket,
-              },
+              { title: "My Coupons", url: "/customer/claimed", icon: Ticket },
               {
                 title: "Settings",
                 url: "/profile?tab=settings",
                 icon: Settings,
               },
-              {
-                title: "Homepage",
-                url: "/",
-                icon: Home,
-              },
+              { title: "Homepage", url: "/", icon: Home },
             ],
           },
         ];
@@ -301,30 +390,57 @@ export function AppSidebar({ ...props }) {
   const groups = getNavGroups();
 
   return (
-    <Sidebar collapsible="icon" side="left" {...props}>
-      <SidebarHeader className="h-15 flex items-center justify-center border-b border-sidebar-border px-3.5 py-0">
+    <Sidebar
+      collapsible="icon"
+      side="left"
+      className={
+        isMerchant
+          ? "bg-[#1A3C5E] text-white border-r border-slate-700/60"
+          : "bg-white text-slate-900 border-r border-slate-200"
+      }
+      {...props}
+    >
+      <SidebarHeader
+        className={`h-16 flex items-center justify-center border-b px-3.5 py-0 ${isMerchant ? "border-slate-700/60 bg-[#1A3C5E]" : "border-slate-200 bg-white"}`}
+      >
         <div
           className={`flex items-center gap-2.5 w-full ${isCollapsed ? "justify-center" : ""}`}
         >
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xs shadow-xs">
-            V
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-[#e85d04] font-black text-sm shadow-xs overflow-hidden">
+            <Image
+              src="/favicon.ico"
+              alt="VouchIQ Logo"
+              width={20}
+              height={20}
+              className="w-5 h-5 object-contain"
+            />
           </div>
           {!isCollapsed && (
-            <div className="flex flex-col text-left leading-tight min-w-0">
-              <span className="text-xs font-semibold tracking-tight text-sidebar-foreground truncate">
-                Vouchiqo
+            <div className="flex flex-col text-left leading-tight min-w-0 flex-1">
+              <span
+                className={`text-sm font-black tracking-tight truncate ${isMerchant ? "text-white" : "text-slate-900"}`}
+              >
+                {role === "admin" ? "Super Admin" : user.name}
               </span>
-              <span className="text-[9px] font-medium uppercase tracking-wider text-sidebar-foreground/60">
-                {role} Console
-              </span>
+              <div className="flex items-center gap-1 mt-0.5">
+                <Badge
+                  className={`text-[8px] font-extrabold px-1.5 py-0 ${isMerchant ? "bg-orange-500/20 text-orange-300 border-orange-400/40" : "bg-orange-100 text-[#e85d04] border-orange-200"}`}
+                >
+                  GROWTH PARTNER
+                </Badge>
+              </div>
             </div>
           )}
         </div>
       </SidebarHeader>
-      <SidebarContent className="px-2 py-2">
-        <NavMain groups={groups} />
+      <SidebarContent
+        className={`px-2 py-3 ${isMerchant ? "bg-[#1A3C5E] text-white" : "bg-white text-slate-900"}`}
+      >
+        <NavMain groups={groups} isMerchant={isMerchant} />
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border">
+      <SidebarFooter
+        className={`border-t ${isMerchant ? "border-slate-700/60 bg-[#1A3C5E]" : "border-slate-200 bg-white"}`}
+      >
         <NavUser user={user} role={role} />
       </SidebarFooter>
       <SidebarRail />

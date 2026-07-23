@@ -1,12 +1,12 @@
 "use client";
 
-import { Clock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 const ARTICLES = [
   {
     id: 1,
-    type: "guide",
     category: "Shopping Tips",
     title: "10 Proven Ways to Save More Using Coupon Codes in 2025",
     excerpt:
@@ -19,11 +19,10 @@ const ARTICLES = [
   },
   {
     id: 2,
-    type: "guide",
     category: "Fashion",
     title: "Best Myntra & AJIO Deals This Season — Up to 80% OFF",
     excerpt:
-      "We curated the top fashion offers live right now on Myntra and AJIO so you don't have to hunt through listings.",
+      "We curated the top fashion offers live right now on Myntra and AJIO so you don't have to hunt through thousands of listings.",
     image:
       "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600&auto=format&fit=crop",
     readTime: "4 min read",
@@ -32,11 +31,10 @@ const ARTICLES = [
   },
   {
     id: 3,
-    type: "review",
-    category: "Reviews",
-    title: "Swiggy vs Zomato: Detailed Service and Discount Review",
+    category: "Food & Dining",
+    title: "Swiggy vs Zomato: Which App Gives Better Discounts in 2025?",
     excerpt:
-      "A side-by-side comparison of promo codes, subscription perks, and delivery speeds from India's two biggest food apps.",
+      "A side-by-side comparison of promo codes, subscription perks, and cashback offers from India's two biggest food delivery apps.",
     image:
       "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=600&auto=format&fit=crop",
     readTime: "6 min read",
@@ -45,11 +43,10 @@ const ARTICLES = [
   },
   {
     id: 4,
-    type: "review",
-    category: "Reviews",
-    title: "Amazon vs Flipkart: Who Has the Real Deals on Electronics?",
+    category: "Electronics",
+    title: "Amazon vs Flipkart: Who Has the Real Deals on Gadgets?",
     excerpt:
-      "We tracked 50+ gadget prices for 30 days. Here's our comprehensive review of who actually saves you more money.",
+      "We tracked 50+ product prices across both platforms for 30 days. Here's who actually wins on laptops, phones, and accessories.",
     image:
       "https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=600&auto=format&fit=crop",
     readTime: "7 min read",
@@ -58,11 +55,10 @@ const ARTICLES = [
   },
   {
     id: 5,
-    type: "guide",
     category: "Travel",
     title: "How to Book Flights 40% Cheaper Using These Hidden Tricks",
     excerpt:
-      "From incognito mode myths to real airline coupon stacking, here's an honest guide to flying cheaper across India.",
+      "From incognito mode myths to real airline coupon stacking, here's an honest guide to flying cheaper across India and abroad.",
     image:
       "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=600&auto=format&fit=crop",
     readTime: "8 min read",
@@ -71,201 +67,373 @@ const ARTICLES = [
   },
   {
     id: 6,
-    type: "guide",
     category: "Beauty",
     title: "Nykaa Sale Guide: Best Skincare Deals Not to Miss",
     excerpt:
-      "Beauty enthusiasts rejoice — we break down every Nykaa sale category, what to buy first, and coupons that work.",
+      "Beauty enthusiasts rejoice — we break down every Nykaa sale category, what to buy first, and coupons that actually work.",
     image:
       "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=600&auto=format&fit=crop",
     readTime: "5 min read",
     date: "Jun 28, 2025",
     href: "/blog/nykaa-sale-guide",
   },
-  {
-    id: 7,
-    type: "review",
-    category: "Reviews",
-    title: "Zara Winter Collection Review: Is it Worth the Luxury Price?",
-    excerpt:
-      "We review quality, sizing, and styling options from the latest winter drop to see if the prices are truly justified.",
-    image:
-      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=600&auto=format&fit=crop",
-    readTime: "5 min read",
-    date: "Jun 24, 2025",
-    href: "/blog/zara-winter-review",
-  },
-  {
-    id: 8,
-    type: "review",
-    category: "Reviews",
-    title: "Samsung Galaxy S25 Review: Best Camera Value of the Year?",
-    excerpt:
-      "An in-depth review of Samsung's latest flagship. We test battery life, night photography, and processor performance.",
-    image:
-      "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?q=80&w=600&auto=format&fit=crop",
-    readTime: "6 min read",
-    date: "Jun 20, 2025",
-    href: "/blog/samsung-s25-review",
-  },
-  {
-    id: 9,
-    type: "review",
-    category: "Reviews",
-    title: "Lenskart Gold Membership: Real Savings or Marketing Hype?",
-    excerpt:
-      "We read the fine print and tested the 'Buy 1 Get 1' benefit for 6 months. Here is our honest member review.",
-    image:
-      "https://images.unsplash.com/photo-1574258495973-f010dfbb5371?q=80&w=600&auto=format&fit=crop",
-    readTime: "5 min read",
-    date: "Jun 15, 2025",
-    href: "/blog/lenskart-gold-review",
-  },
-  {
-    id: 10,
-    type: "guide",
-    category: "Finance",
-    title: "Best Credit Cards for Shopping & Cashback Benefits in India",
-    excerpt:
-      "We compare the top 5 shopping credit cards side-by-side to find which offers the best reward points and cashback.",
-    image:
-      "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=600&auto=format&fit=crop",
-    readTime: "6 min read",
-    date: "Jun 10, 2025",
-    href: "/blog/best-cashback-credit-cards",
-  },
 ];
 
-const CATEGORY_TEMPLATES = {
-  "Shopping Tips": "from-amber-50/70 to-orange-100/30",
-  Fashion: "from-pink-50/70 to-rose-100/30",
-  Reviews: "from-blue-50/70 to-indigo-100/30",
-  Travel: "from-sky-50/70 to-cyan-100/30",
-  Beauty: "from-fuchsia-50/70 to-pink-100/30",
-  Finance: "from-teal-50/70 to-green-100/30",
-};
-
-function getCategoryGradient(category) {
-  return CATEGORY_TEMPLATES[category] || "from-slate-50/70 to-zinc-100/30";
-}
-
-function CompactArticleCard({ article }) {
-  const gradient = getCategoryGradient(article.category);
+function ArticleCard({ article }) {
   return (
     <Link
       href={article.href}
-      className={`group block bg-gradient-to-br ${gradient} border border-slate-200 dark:border-zinc-800 rounded-[10px] overflow-hidden hover:border-blue-600 transition-colors duration-200 w-full shrink-0`}
+      className="art-card group flex-shrink-0 no-underline cursor-pointer"
+      style={{ width: "100%" }}
     >
-      <div className="flex flex-col h-full font-sans">
-        <div className="h-32 sm:h-36 overflow-hidden relative rounded-t-[10px]">
+      <div
+        className="art-card__inner flex flex-col rounded-2xl overflow-hidden bg-white"
+        style={{
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+          transition:
+            "transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease",
+          height: "100%",
+        }}
+      >
+        {/* Cover image */}
+        <div
+          style={{
+            height: "150px",
+            overflow: "hidden",
+            flexShrink: 0,
+            position: "relative",
+          }}
+        >
           <img
             src={article.image}
             alt={article.title}
-            className="w-full h-full object-cover transition-transform duration-550 group-hover:scale-102"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transition: "transform 0.5s ease",
+            }}
+            className="art-card__img"
           />
-          <span className="absolute top-3 left-3 bg-blue-600 text-white text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-[10px] tracking-wider">
+          {/* Category pill (unified brand blue color) */}
+          <span
+            className="bg-brand-blue"
+            style={{
+              position: "absolute",
+              top: "12px",
+              left: "12px",
+              color: "#fff",
+              fontSize: "10px",
+              fontWeight: 700,
+              padding: "3px 10px",
+              borderRadius: "999px",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+            }}
+          >
             {article.category}
           </span>
         </div>
-        <div className="p-4 flex-1 flex flex-col gap-1.5 text-left">
-          <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
+
+        {/* Content */}
+        <div className="flex flex-col gap-2 p-4 flex-1">
+          <h3
+            className="line-clamp-2"
+            style={{
+              fontSize: "13.5px",
+              fontWeight: 700,
+              color: "#0f172a",
+              lineHeight: 1.45,
+              margin: 0,
+            }}
+          >
             {article.title}
           </h3>
-          <p className="text-[11px] text-slate-550 dark:text-slate-400 line-clamp-2 leading-relaxed font-medium">
+          <p
+            className="line-clamp-2"
+            style={{
+              fontSize: "12px",
+              color: "#64748b",
+              lineHeight: 1.6,
+              margin: 0,
+              flex: 1,
+            }}
+          >
             {article.excerpt}
           </p>
-          <div className="flex items-center gap-2 mt-3 pt-2.5 border-t border-slate-200/50 dark:border-zinc-800 text-[10px] text-slate-400 font-bold">
-            <Clock className="w-3 h-3 text-slate-455 shrink-0" />
-            <span>{article.readTime}</span>
-            <span>•</span>
-            <span>{article.date}</span>
-            <span className="ml-auto text-blue-600 font-extrabold group-hover:translate-x-0.5 transition-transform">
+
+          {/* Meta row */}
+          <div
+            className="flex items-center gap-3 mt-auto pt-3"
+            style={{ borderTop: "1px solid #f1f5f9" }}
+          >
+            <span
+              className="flex items-center gap-1"
+              style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}
+            >
+              <Clock style={{ width: "11px", height: "11px" }} />
+              {article.readTime}
+            </span>
+            <span
+              style={{
+                width: "3px",
+                height: "3px",
+                borderRadius: "50%",
+                background: "#cbd5e1",
+              }}
+            />
+            <span
+              style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}
+            >
+              {article.date}
+            </span>
+            <span
+              className="ml-auto flex items-center gap-1 text-brand-blue"
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+              }}
+            >
               Read →
             </span>
           </div>
         </div>
       </div>
+
+      <style>{`
+        .art-card__inner:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 16px 36px rgba(0,0,0,0.11) !important;
+        }
+        .art-card:hover .art-card__img {
+          transform: scale(1.06);
+        }
+      `}</style>
     </Link>
   );
 }
 
 export function LatestArticles() {
-  const guideArticles = ARTICLES.filter((a) => a.type === "guide");
-  const reviewArticles = ARTICLES.filter((a) => a.type === "review");
+  const trackRef = useRef(null);
+  const [current, setCurrent] = useState(0);
+  const [cardWidth, setCardWidth] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(4);
+
+  const total = ARTICLES.length;
+  const maxIndex = Math.max(0, total - Math.ceil(visibleCount));
+
+  // Measure card width on mount & resize
+  useEffect(() => {
+    function measure() {
+      if (trackRef.current) {
+        const width = window.innerWidth;
+        let visible = 4;
+        if (width < 640) {
+          visible = 1.15; // Peek next card
+        } else if (width < 1024) {
+          visible = 2.2;
+        }
+        setVisibleCount(visible);
+
+        const gap = 20;
+        const containerW = trackRef.current.parentElement.offsetWidth;
+        setCardWidth((containerW - gap * (Math.ceil(visible) - 1)) / visible);
+      }
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // Auto-slide every 3.5s
+  useEffect(() => {
+    if (maxIndex <= 0) return;
+    const id = setInterval(() => {
+      setCurrent((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 3500);
+    return () => clearInterval(id);
+  }, [maxIndex]);
+
+  const goPrev = () => setCurrent((p) => (p <= 0 ? maxIndex : p - 1));
+  const goNext = () => setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
+
+  // Touch & drag gestures
+  const dragStart = useRef(0);
+  const isDragging = useRef(false);
+
+  const handleTouchStart = (e) => {
+    dragStart.current = e.touches[0].clientX;
+    isDragging.current = true;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!isDragging.current) return;
+    const dragEnd = e.changedTouches[0].clientX;
+    const diff = dragStart.current - dragEnd;
+    if (diff > 50) {
+      goNext();
+    } else if (diff < -50) {
+      goPrev();
+    }
+    isDragging.current = false;
+  };
+
+  const handleMouseDown = (e) => {
+    dragStart.current = e.clientX;
+    isDragging.current = true;
+  };
+
+  const handleMouseUp = (e) => {
+    if (!isDragging.current) return;
+    const dragEnd = e.clientX;
+    const diff = dragStart.current - dragEnd;
+    if (diff > 50) {
+      goNext();
+    } else if (diff < -50) {
+      goPrev();
+    }
+    isDragging.current = false;
+  };
+
+  const gap = 20;
+  const offset = current * (cardWidth + gap);
 
   return (
-    <section className="w-full bg-[#f8fafc] dark:bg-zinc-950/40 py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-100 dark:border-zinc-900/60 select-none text-left">
-      {/* Header Block */}
-      <div className="w-full mb-8 font-sans">
-        <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-          Latest Articles &amp; Guides
-        </h2>
-        <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold mt-1">
-          Tips, deals breakdowns &amp; shopping reviews
-        </p>
-      </div>
-
-      {/* Two-Column layout (Left: Guides, Right: Reviews) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2.5 w-full">
-        {/* COLUMN 1: GUIDES */}
-        <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider font-sans">
-            Guides &amp; Shopping Tips
-          </h3>
-          <div className="relative overflow-hidden rounded-[10px] border border-slate-300 bg-gradient-to-br from-blue-50/30 to-indigo-50/15 dark:from-zinc-900/10 dark:to-zinc-900/20 p-2.5 mx-0">
-            <div className="flex gap-2.5 animate-marquee-horizontal-ltr hover:[animation-play-state:paused] w-max">
-              {/* Loop 1 */}
-              {guideArticles.map((article) => (
-                <div
-                  key={`g1-${article.id}`}
-                  className="w-[270px] sm:w-[285px] shrink-0 animate-none"
-                >
-                  <CompactArticleCard article={article} />
-                </div>
-              ))}
-              {/* Loop 2 */}
-              {guideArticles.map((article) => (
-                <div
-                  key={`g2-${article.id}`}
-                  className="w-[270px] sm:w-[285px] shrink-0 animate-none"
-                >
-                  <CompactArticleCard article={article} />
-                </div>
-              ))}
-            </div>
-          </div>
+    <section className="text-left w-full overflow-hidden select-none px-4 md:px-0">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2
+            className="font-bold leading-tight"
+            style={{ fontSize: "clamp(18px,2.5vw,22px)", color: "#0f172a" }}
+          >
+            Latest Articles &amp; Guides
+          </h2>
+          <p
+            style={{
+              fontSize: "11px",
+              color: "#64748b",
+              fontWeight: 500,
+              margin: "2px 0 0",
+            }}
+          >
+            Tips, deals breakdowns &amp; shopping guides
+          </p>
         </div>
 
-        {/* COLUMN 2: REVIEWS */}
-        <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider font-sans">
-            Brand &amp; Product Reviews
-          </h3>
-          <div className="relative overflow-hidden rounded-[10px] border border-slate-300 bg-gradient-to-br from-amber-50/30 to-yellow-50/15 dark:from-zinc-900/10 dark:to-zinc-900/20 p-2.5 mx-0">
-            <div className="flex gap-2.5 animate-marquee-horizontal-ltr hover:[animation-play-state:paused] w-max">
-              {/* Loop 1 */}
-              {reviewArticles.map((article) => (
-                <div
-                  key={`r1-${article.id}`}
-                  className="w-[270px] sm:w-[285px] shrink-0 animate-none"
-                >
-                  <CompactArticleCard article={article} />
-                </div>
-              ))}
-              {/* Loop 2 */}
-              {reviewArticles.map((article) => (
-                <div
-                  key={`r2-${article.id}`}
-                  className="w-[270px] sm:w-[285px] shrink-0 animate-none"
-                >
-                  <CompactArticleCard article={article} />
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Nav arrows */}
+        <div className="hidden md:flex items-center gap-2">
+          <button
+            type="button"
+            onClick={goPrev}
+            aria-label="Previous"
+            className="art-nav-btn"
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "50%",
+              border: "1.5px solid #e2e8f0",
+              background: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+            }}
+          >
+            <ChevronLeft
+              style={{ width: "18px", height: "18px", color: "#334155" }}
+            />
+          </button>
+          <button
+            type="button"
+            onClick={goNext}
+            aria-label="Next"
+            className="art-nav-btn"
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "50%",
+              border: "1.5px solid #e2e8f0",
+              background: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+            }}
+          >
+            <ChevronRight
+              style={{ width: "18px", height: "18px", color: "#334155" }}
+            />
+          </button>
         </div>
       </div>
 
+      {/* Slider track */}
+      <div
+        className="cursor-grab active:cursor-grabbing"
+        style={{ overflow: "hidden" }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
+        <div
+          ref={trackRef}
+          style={{
+            display: "flex",
+            gap: `${gap}px`,
+            transition: "transform 0.5s cubic-bezier(0.4,0,0.2,1)",
+            transform: `translateX(-${offset}px)`,
+          }}
+        >
+          {ARTICLES.map((article) => (
+            <div
+              key={article.id}
+              style={{
+                width: cardWidth > 0 ? `${cardWidth}px` : "calc(25% - 15px)",
+                flexShrink: 0,
+              }}
+            >
+              <ArticleCard article={article} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Dot indicators */}
+      <div className="flex justify-center gap-2 mt-6">
+        {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setCurrent(i)}
+            aria-label={`Go to slide ${i + 1}`}
+            style={{
+              width: i === current ? "20px" : "7px",
+              height: "7px",
+              borderRadius: "999px",
+              background: i === current ? "#2563eb" : "#cbd5e1",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              padding: 0,
+            }}
+          />
+        ))}
+      </div>
+
+      <style>{`
+        .art-nav-btn:hover {
+          background: #f8fafc !important;
+          border-color: #94a3b8 !important;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.10) !important;
+        }
+      `}</style>
     </section>
   );
 }

@@ -30,7 +30,7 @@ const promoBannerSchema = new Schema(
     },
     slot: {
       type: String,
-      enum: ["left-hero", "right-promo"],
+      enum: ["left-hero", "right-promo", "top-right", "bottom-right"],
       required: true,
       index: true,
     },
@@ -75,8 +75,10 @@ const promoBannerSchema = new Schema(
   },
 );
 
-const PromoBanner =
-  mongoose.models.PromoBanner ??
-  mongoose.model("PromoBanner", promoBannerSchema);
+if (mongoose.models.PromoBanner) {
+  delete mongoose.models.PromoBanner;
+}
+
+const PromoBanner = mongoose.model("PromoBanner", promoBannerSchema);
 
 export default PromoBanner;

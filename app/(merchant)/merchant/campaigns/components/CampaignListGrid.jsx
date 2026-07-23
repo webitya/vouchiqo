@@ -1,20 +1,20 @@
 "use client";
 
-import {
-  BarChart3,
-  Calendar,
-  Copy,
-  Edit3,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { BarChart3, Calendar, Copy, Edit3, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-export default function CampaignListGrid({ campaigns = [], onCreateClick }) {
+export default function CampaignListGrid({
+  campaigns = [],
+  onCreateClick,
+  onEdit,
+  onDuplicate,
+  onReport,
+  onDelete,
+}) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left font-sans">
       {/* Dashed Create Card */}
       <div
         onClick={onCreateClick}
@@ -34,7 +34,7 @@ export default function CampaignListGrid({ campaigns = [], onCreateClick }) {
       {/* Campaign Cards */}
       {campaigns.map((camp) => (
         <Card
-          key={camp._id}
+          key={camp._id || camp.name}
           className="border-slate-200/80 shadow-xs hover:shadow-md transition-all rounded-2xl overflow-hidden bg-white p-5 space-y-4 flex flex-col justify-between"
         >
           <div className="space-y-3">
@@ -44,7 +44,10 @@ export default function CampaignListGrid({ campaigns = [], onCreateClick }) {
                   <h3 className="text-base font-bold text-slate-900 leading-tight">
                     {camp.name}
                   </h3>
-                  <Badge variant="secondary" className="text-[10px] font-bold bg-slate-100 text-slate-700 capitalize">
+                  <Badge
+                    variant="secondary"
+                    className="text-[10px] font-bold bg-slate-100 text-slate-700 capitalize"
+                  >
                     {camp.type}
                   </Badge>
                 </div>
@@ -60,11 +63,13 @@ export default function CampaignListGrid({ campaigns = [], onCreateClick }) {
                   camp.status === "live"
                     ? "bg-emerald-100 text-emerald-700"
                     : camp.status === "pending_review"
-                    ? "bg-amber-100 text-amber-800"
-                    : "bg-slate-200 text-slate-700"
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-slate-200 text-slate-700"
                 }`}
               >
-                {camp.status === "live" ? "● Live" : camp.status.replace("_", " ")}
+                {camp.status === "live"
+                  ? "● Live"
+                  : (camp.status || "pending_review").replace("_", " ")}
               </Badge>
             </div>
 
@@ -72,7 +77,7 @@ export default function CampaignListGrid({ campaigns = [], onCreateClick }) {
             <div className="grid grid-cols-3 gap-2 py-3 bg-slate-50/70 rounded-xl border border-slate-100 text-center">
               <div>
                 <span className="text-base font-black text-slate-900 block">
-                  {camp.stats?.clicks || "12,840"}
+                  {camp.stats?.clicks ?? "12,840"}
                 </span>
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
                   CLICKS
@@ -80,7 +85,7 @@ export default function CampaignListGrid({ campaigns = [], onCreateClick }) {
               </div>
               <div className="border-x border-slate-200/60">
                 <span className="text-base font-black text-slate-900 block">
-                  {camp.stats?.redemptions || "1,820"}
+                  {camp.stats?.redemptions ?? "1,820"}
                 </span>
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
                   REDEMPTIONS
@@ -88,7 +93,7 @@ export default function CampaignListGrid({ campaigns = [], onCreateClick }) {
               </div>
               <div>
                 <span className="text-base font-black text-slate-900 block">
-                  {camp.stats?.revenue || "₹482K"}
+                  {camp.stats?.revenue ?? "₹482K"}
                 </span>
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
                   REVENUE
@@ -98,17 +103,40 @@ export default function CampaignListGrid({ campaigns = [], onCreateClick }) {
           </div>
 
           {/* Bottom Actions Row */}
-          <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs">
-            <Button variant="outline" size="sm" className="h-8 rounded-xl text-slate-700 border-slate-200 hover:bg-slate-50 text-[11px] font-bold gap-1">
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 text-xs">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onEdit?.(camp)}
+              className="h-8 rounded-xl text-slate-700 border-slate-200 hover:bg-slate-50 text-[11px] font-bold gap-1 cursor-pointer"
+            >
               <Edit3 className="w-3 h-3 text-slate-500" /> Edit
             </Button>
-            <Button variant="outline" size="sm" className="h-8 rounded-xl text-slate-700 border-slate-200 hover:bg-slate-50 text-[11px] font-bold gap-1">
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onDuplicate?.(camp)}
+              className="h-8 rounded-xl text-slate-700 border-slate-200 hover:bg-slate-50 text-[11px] font-bold gap-1 cursor-pointer"
+            >
               <Copy className="w-3 h-3 text-slate-500" /> Duplicate
             </Button>
-            <Button variant="outline" size="sm" className="h-8 rounded-xl text-slate-700 border-slate-200 hover:bg-slate-50 text-[11px] font-bold gap-1">
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onReport?.(camp)}
+              className="h-8 rounded-xl text-slate-700 border-slate-200 hover:bg-slate-50 text-[11px] font-bold gap-1 cursor-pointer"
+            >
               <BarChart3 className="w-3 h-3 text-slate-500" /> Report
             </Button>
-            <Button variant="outline" size="sm" className="h-8 rounded-xl text-rose-600 border-rose-100 hover:bg-rose-50 text-[11px] font-bold gap-1 ml-auto">
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onDelete?.(camp)}
+              className="h-8 rounded-xl text-rose-600 border-rose-200 bg-rose-50/50 hover:bg-rose-100 text-[11px] font-bold gap-1 ml-auto cursor-pointer"
+            >
               <Trash2 className="w-3 h-3 text-rose-500" /> Delete
             </Button>
           </div>

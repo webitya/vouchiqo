@@ -4,8 +4,8 @@ import { Check, Copy, History, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
-import EmptyState from "@/components/shared/EmptyState";
+import DashboardSkeleton from "@/components/shared/feedback/DashboardSkeleton";
+import EmptyState from "@/components/shared/feedback/EmptyState";
 import {
   Table,
   TableBody,

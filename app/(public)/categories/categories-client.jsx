@@ -5,7 +5,6 @@ import {
   Car,
   CreditCard,
   Dumbbell,
-  Flower2,
   Gamepad2,
   Gem,
   Gift,
@@ -19,13 +18,16 @@ import {
   Shirt,
   ShoppingCart,
   Smartphone,
+  Sparkles,
   Store,
   Tag,
   Utensils,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import DirectoryLayout from "@/components/layout/DirectoryLayout";
 import { POPULAR_CATEGORIES } from "@/lib/mock/mock-data";
+import { POPULAR_MERCHANTS_SIDEBAR } from "@/utils/shared-navigation";
 
 const SIDEBAR_ICONS = {
   Categories: LayoutGrid,
@@ -35,120 +37,41 @@ const SIDEBAR_ICONS = {
   "Cities Deals": MapPin,
 };
 
-function SidebarIcon({ label, isActive }) {
+function getSidebarIcon(label, isActive) {
   const IconComponent = SIDEBAR_ICONS[label] || Tag;
   return (
     <IconComponent
-      className={`w-4 h-4 shrink-0 transition-colors ${
-        isActive ? "text-white" : "text-slate-500"
-      }`}
+      style={{
+        width: 16,
+        height: 16,
+        color: isActive ? "#ffffff" : "#4b5563",
+        flexShrink: 0,
+      }}
     />
   );
 }
 
-// Category Lucide Icon components and premium accent colors (blue theme compatibility)
+// Category Lucide Icon components and premium accent colors (blue/black theme compatibility)
 const CATEGORY_ICONS = {
-  fashion: {
-    Icon: Shirt,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-pink-50 to-rose-100",
-  },
-  food: {
-    Icon: Utensils,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-amber-50 to-orange-100",
-  },
-  electronics: {
-    Icon: Smartphone,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-blue-50 to-cyan-100",
-  },
-  beauty: {
-    Icon: Flower2,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-purple-50 to-pink-100",
-  },
-  travel: {
-    Icon: Plane,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-sky-50 to-teal-100",
-  },
-  home: {
-    Icon: Home,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-stone-50 to-amber-100",
-  },
-  "home-improvement": {
-    Icon: Hammer,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-slate-50 to-zinc-200",
-  },
-  fitness: {
-    Icon: Dumbbell,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-emerald-50 to-teal-100",
-  },
-  education: {
-    Icon: GraduationCap,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-indigo-50 to-purple-100",
-  },
-  "kids-baby": {
-    Icon: Baby,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-sky-50 to-yellow-100",
-  },
-  jewellery: {
-    Icon: Gem,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-amber-50 to-yellow-200",
-  },
-  automotive: {
-    Icon: Car,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-slate-100 to-slate-200",
-  },
-  entertainment: {
-    Icon: Gamepad2,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-fuchsia-50 to-indigo-100",
-  },
-  grocery: {
-    Icon: ShoppingCart,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-green-50 to-emerald-100",
-  },
-  finance: {
-    Icon: CreditCard,
-    bg: "#eff6ff",
-    color: "#2563eb",
-    gradient: "from-teal-50 to-green-100",
-  },
+  fashion: { Icon: Shirt, bg: "#eff6ff", color: "#2563eb" },
+  food: { Icon: Utensils, bg: "#eff6ff", color: "#2563eb" },
+  electronics: { Icon: Smartphone, bg: "#eff6ff", color: "#2563eb" },
+  beauty: { Icon: Sparkles, bg: "#eff6ff", color: "#2563eb" },
+  travel: { Icon: Plane, bg: "#eff6ff", color: "#2563eb" },
+  home: { Icon: Home, bg: "#eff6ff", color: "#2563eb" },
+  "home-improvement": { Icon: Hammer, bg: "#eff6ff", color: "#2563eb" },
+  fitness: { Icon: Dumbbell, bg: "#eff6ff", color: "#2563eb" },
+  education: { Icon: GraduationCap, bg: "#eff6ff", color: "#2563eb" },
+  "kids-baby": { Icon: Baby, bg: "#eff6ff", color: "#2563eb" },
+  jewellery: { Icon: Gem, bg: "#eff6ff", color: "#2563eb" },
+  automotive: { Icon: Car, bg: "#eff6ff", color: "#2563eb" },
+  entertainment: { Icon: Gamepad2, bg: "#eff6ff", color: "#2563eb" },
+  grocery: { Icon: ShoppingCart, bg: "#eff6ff", color: "#2563eb" },
+  finance: { Icon: CreditCard, bg: "#eff6ff", color: "#2563eb" },
 };
 
 function getCategoryIcon(slug) {
-  return (
-    CATEGORY_ICONS[slug] || {
-      Icon: Tag,
-      bg: "#eff6ff",
-      color: "#2563eb",
-      gradient: "from-blue-50 to-indigo-100",
-    }
-  );
+  return CATEGORY_ICONS[slug] || { Icon: Tag, bg: "#eff6ff", color: "#2563eb" };
 }
 
 const CATEGORY_DESCRIPTIONS = {
@@ -183,6 +106,23 @@ export default function CategoriesClient({
   totalCoupons,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showAllMerchants, setShowAllMerchants] = useState(false);
+  const [showMoreAbout, setShowMoreAbout] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const formattedDate = useMemo(() => {
+    if (!mounted) return "";
+    return new Date().toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      weekday: "short",
+    });
+  }, [mounted]);
 
   const filteredCategories = useMemo(() => {
     let list = categories;
@@ -194,46 +134,299 @@ export default function CategoriesClient({
     return list;
   }, [categories, searchQuery]);
 
-  return (
-    <main className="w-full bg-[#f8fafc] min-h-[80vh] pb-16 font-sans">
-      {/* ── BREADCRUMB ── */}
-      <div className="w-full bg-white border-b border-slate-100">
-        <div className="w-full px-4 md:px-8 py-3.5 flex gap-2 text-xs font-semibold text-slate-500">
-          <Link href="/" className="text-blue-600 hover:underline">
-            Home
-          </Link>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-800">Categories</span>
-        </div>
-      </div>
+  const visibleSidebarMerchants = showAllMerchants
+    ? POPULAR_MERCHANTS_SIDEBAR
+    : POPULAR_MERCHANTS_SIDEBAR.slice(0, 8);
 
-      {/* ── MAIN CONTENT GRID ── */}
-      <div className="w-full px-4 md:px-8 pt-3.5 pb-8 flex flex-col gap-6">
-        {/* Popular Categories Grid */}
-        <section className="w-full">
-          <h2 className="text-base font-extrabold text-slate-900 mb-4 tracking-tight">
-            Popular Categories
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {POPULAR_CATEGORIES.map((cat) => {
-              const { Icon, gradient } = getCategoryIcon(cat.slug);
-              return (
-                <Link key={cat.title} href={`/category/${cat.slug}`}>
-                  <div className="border border-slate-200 rounded-xl overflow-hidden bg-white flex flex-col h-full hover:border-blue-500 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
-                    <div
-                      className={`h-20 w-full relative overflow-hidden bg-gradient-to-br ${gradient} flex items-center justify-center border-b border-slate-200`}
+  return (
+    <DirectoryLayout
+      activeKey="Categories"
+      title="Categories"
+      icon={LayoutGrid}
+      stat1={{
+        count: totalCategories || 172,
+        label: "Total Categories",
+        shortLabel: "Categories",
+      }}
+      stat2={{
+        count: ((totalCoupons || 0) + 98142).toLocaleString(),
+        label: "Total Coupons & Offers",
+      }}
+      aboutTitle="About Categories"
+      aboutText="If there's a deal out there, we've already found it. Vouchiqo brings you verified offers across fashion, electronics, food, travel, beauty and more — all from real physical stores near you."
+    >
+      {/* Popular Categories */}
+      <section
+        style={{
+          background: "#ffffff",
+          borderRadius: 6,
+          border: "1px solid #e5e7eb",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+          padding: "16px 20px 20px",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: 16,
+            fontWeight: 800,
+            color: "#000000",
+            marginBottom: 16,
+            letterSpacing: "-0.2px",
+          }}
+        >
+          Popular Categories
+        </h2>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+            gap: 12,
+          }}
+        >
+          {POPULAR_CATEGORIES.map((cat) => {
+            const { Icon, bg, color } = getCategoryIcon(cat.slug);
+            return (
+              <Link
+                key={cat.slug}
+                href={`/category/${cat.slug}`}
+                style={{ textDecoration: "none" }}
+              >
+                <div
+                  style={{
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 6,
+                    background: "#ffffff",
+                    padding: "16px 10px 12px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 8,
+                    transition: "all 0.2s ease-in-out",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
+                    textAlign: "center",
+                    height: "100%",
+                  }}
+                  className="brand-card-hover"
+                >
+                  <div
+                    style={{
+                      width: 52,
+                      height: 52,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: bg,
+                      borderRadius: 8,
+                    }}
+                  >
+                    <Icon style={{ width: 24, height: 24, color: color }} />
+                  </div>
+                  <div>
+                    <p
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: "#000000",
+                        margin: "0 0 3px",
+                      }}
                     >
-                      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:10px_10px]" />
-                      <div className="w-10 h-10 rounded-lg bg-white/90 shadow-xs flex items-center justify-center relative z-10 backdrop-blur-xs">
-                        <Icon className="w-5 h-5 text-blue-600" />
-                      </div>
+                      {cat.title}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 10,
+                        color: color,
+                        fontWeight: 600,
+                        margin: "0 0 4px",
+                      }}
+                    >
+                      {(cat.coupons || 0) + (cat.offers || 0)} Offers
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 10,
+                        color: "#6b7280",
+                        margin: 0,
+                        lineHeight: 1.3,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {getCategoryDescription(cat.slug)}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* All Categories */}
+      <section
+        style={{
+          background: "#ffffff",
+          borderRadius: 6,
+          border: "1px solid #e5e7eb",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+          padding: "16px 20px 20px",
+        }}
+      >
+        {/* All Categories Header: Title + Search aligned on right */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 20,
+            flexWrap: "wrap",
+            gap: 12,
+            paddingBottom: 14,
+            borderBottom: "1px solid #f3f4f6",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <h2
+              style={{
+                fontSize: 16,
+                fontWeight: 800,
+                color: "#000000",
+                margin: 0,
+                letterSpacing: "-0.2px",
+              }}
+            >
+              All Categories
+            </h2>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: "#2563eb",
+                background: "#eff6ff",
+                padding: "3px 10px",
+                borderRadius: 12,
+                border: "1px solid #dbeafe",
+              }}
+            >
+              {filteredCategories.length} Categories
+            </span>
+          </div>
+
+          {/* Search Box on Right Side of Header */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              border: "1px solid #e5e7eb",
+              borderRadius: 6,
+              padding: "6px 12px",
+              background: "#ffffff",
+              minWidth: 240,
+            }}
+          >
+            <Search style={{ width: 14, height: 14, color: "#9ca3af" }} />
+            <input
+              placeholder="Search by category name"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                border: "none",
+                background: "transparent",
+                fontSize: 12,
+                color: "#000000",
+                outline: "none",
+                width: "100%",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* All Categories Evenly Aligned 3-Column Grid */}
+        {filteredCategories.length > 0 ? (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: "14px",
+            }}
+          >
+            {filteredCategories.map((cat) => {
+              const { Icon, bg, color } = getCategoryIcon(cat.slug);
+              return (
+                <Link
+                  key={cat.slug}
+                  href={`/category/${cat.slug}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <div
+                    style={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 6,
+                      background: "#ffffff",
+                      padding: "16px 12px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 8,
+                      transition: "all 0.2s ease-in-out",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
+                      textAlign: "center",
+                      height: "100%",
+                    }}
+                    className="brand-card-hover"
+                  >
+                    <div
+                      style={{
+                        width: 48,
+                        height: 48,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: bg,
+                        borderRadius: 8,
+                      }}
+                    >
+                      <Icon style={{ width: 22, height: 22, color: color }} />
                     </div>
-                    <div className="p-4 flex-1 flex flex-col justify-between text-center">
-                      <p className="text-xs font-bold text-slate-800 truncate">
+                    <div>
+                      <p
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: "#000000",
+                          margin: "0 0 3px",
+                        }}
+                      >
                         {cat.title}
                       </p>
-                      <p className="text-[10px] text-blue-600 font-bold mt-2">
-                        {cat.offersCount}+ Offers
+                      <p
+                        style={{
+                          fontSize: 10,
+                          color: color,
+                          fontWeight: 600,
+                          margin: "0 0 4px",
+                        }}
+                      >
+                        {cat.total > 0
+                          ? `${cat.total} Offers`
+                          : "Offers Available"}
+                      </p>
+                      <p
+                        style={{
+                          fontSize: 10,
+                          color: "#6b7280",
+                          margin: 0,
+                          lineHeight: 1.3,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {getCategoryDescription(cat.slug)}
                       </p>
                     </div>
                   </div>
@@ -241,78 +434,38 @@ export default function CategoriesClient({
               );
             })}
           </div>
-        </section>
-
-        {/* All Categories Grid */}
-        <section className="w-full">
-          {/* Title Bar + Search Box */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-4 mb-5">
-            <h2 className="text-base font-extrabold text-slate-900 tracking-tight">
-              All Categories
-            </h2>
-
-            <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 bg-white w-full sm:max-w-[240px]">
-              <Search className="w-4 h-4 text-slate-400 shrink-0" />
-              <input
-                placeholder="Search categories..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="border-0 bg-transparent text-xs text-slate-900 placeholder-slate-450 outline-none w-full"
-              />
-            </div>
+        ) : (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "48px 0",
+              color: "#9ca3af",
+            }}
+          >
+            <p style={{ fontSize: 13 }}>
+              No categories found for &quot;{searchQuery}&quot;
+            </p>
+            <button
+              onClick={() => {
+                setSearchQuery("");
+              }}
+              style={{
+                marginTop: 12,
+                padding: "6px 12px",
+                borderRadius: 4,
+                border: "none",
+                background: "#2563eb",
+                color: "#ffffff",
+                fontSize: 12,
+                cursor: "pointer",
+                fontWeight: 700,
+              }}
+            >
+              Clear Filter
+            </button>
           </div>
-
-          {/* Grid list */}
-          {filteredCategories.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {filteredCategories.map((cat) => {
-                const { Icon, gradient } = getCategoryIcon(cat.slug);
-                return (
-                  <Link key={cat.slug} href={`/category/${cat.slug}`}>
-                    <div className="border border-slate-200 rounded-xl overflow-hidden bg-white flex flex-col h-full hover:border-blue-500 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
-                      <div
-                        className={`h-20 w-full relative overflow-hidden bg-gradient-to-br ${gradient} flex items-center justify-center border-b border-slate-200`}
-                      >
-                        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:10px_10px]" />
-                        <div className="w-10 h-10 rounded-lg bg-white/90 shadow-xs flex items-center justify-center relative z-10 backdrop-blur-xs">
-                          <Icon className="w-5 h-5 text-blue-600" />
-                        </div>
-                      </div>
-                      <div className="p-4 flex-1 flex flex-col justify-between text-center">
-                        <div>
-                          <p className="text-xs font-bold text-slate-800 truncate w-full">
-                            {cat.title}
-                          </p>
-                          <p className="text-[10px] text-slate-400 mt-2 leading-relaxed hidden sm:line-clamp-2">
-                            {getCategoryDescription(cat.slug)}
-                          </p>
-                        </div>
-                        <p className="text-[10px] text-blue-600 font-bold mt-2">
-                          {cat.total > 0
-                            ? `${cat.total} Offers`
-                            : "Offers Available"}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-12 text-slate-400 flex flex-col items-center">
-              <p className="text-xs">
-                No categories found matching &quot;{searchQuery}&quot;
-              </p>
-              <button
-                onClick={() => setSearchQuery("")}
-                className="mt-3 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold cursor-pointer transition-colors shadow-sm"
-              >
-                Clear Filters
-              </button>
-            </div>
-          )}
-        </section>
-      </div>
-    </main>
+        )}
+      </section>
+    </DirectoryLayout>
   );
 }

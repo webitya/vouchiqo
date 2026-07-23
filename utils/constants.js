@@ -96,8 +96,80 @@ export const HTTP = {
 };
 
 // ─────────────────────────────────────────────
-// Redis
+// Razorpay Plan IDs & Subscription Matrix (Task 6)
 // ─────────────────────────────────────────────
+export const RAZORPAY_PLANS = {
+  GROWTH_MONTHLY: "vouchiqo_growth_monthly",
+  GROWTH_ANNUAL: "vouchiqo_growth_annual",
+  PRO_MONTHLY: "vouchiqo_pro_monthly",
+  PRO_ANNUAL: "vouchiqo_pro_annual",
+};
+
+export const SUBSCRIPTION_MATRIX = {
+  starter: {
+    name: "Starter (Free)",
+    priceMonthly: 0,
+    priceYearly: 0,
+    razorpayPlanId: null, // Free plan (no Razorpay plan needed)
+    activeListingsLimit: 3,
+    campaignsLimit: 0, // Campaign Manager disabled
+    revivalCredits: 0,
+    apiAccess: false,
+    supportSla: "72hr email",
+  },
+  growth: {
+    name: "Growth Partner",
+    priceMonthly: 1499,
+    priceYearly: 14900,
+    razorpayPlanId: {
+      monthly: RAZORPAY_PLANS.GROWTH_MONTHLY,
+      yearly: RAZORPAY_PLANS.GROWTH_ANNUAL,
+    },
+    activeListingsLimit: 15,
+    campaignsLimit: 1, // 1/quarter
+    revivalCredits: 0, // Add-on only
+    apiAccess: false,
+    supportSla: "48hr email",
+  },
+  pro: {
+    name: "Pro Partner",
+    priceMonthly: 3999,
+    priceYearly: 39990,
+    razorpayPlanId: {
+      monthly: RAZORPAY_PLANS.PRO_MONTHLY,
+      yearly: RAZORPAY_PLANS.PRO_ANNUAL,
+    },
+    activeListingsLimit: 999, // Unlimited
+    campaignsLimit: 4, // 4/year
+    revivalCredits: 50, // 50/month
+    featuredSlotDays: 2,
+    pushNotifications: 1,
+    apiAccess: false,
+    supportSla: "24hr priority",
+  },
+  enterprise: {
+    name: "Enterprise Partner",
+    priceMonthly: null, // Custom
+    priceYearly: null, // Negotiable / Manual Invoice
+    razorpayPlanId: null, // Manual invoice
+    activeListingsLimit: 999, // Unlimited
+    campaignsLimit: 999, // Unlimited
+    revivalCredits: 999999, // Unlimited
+    apiAccess: "Full Read/Write",
+    supportSla: "4hr dedicated",
+  },
+};
+
+export const ADDONS_PRICING = [
+  { id: "revival_pack", name: "Expired Offer Revival Pack", price: 499, unit: "25 revivals" },
+  { id: "campaign_boost", name: "Flash Campaign Boost", price: 799, unit: "Single campaign" },
+  { id: "featured_slot", name: "Homepage Featured Slot", price: 999, unit: "3 days" },
+  { id: "push_notification", name: "Push Notification", price: 599, unit: "Single send" },
+  { id: "festival_package", name: "Festival Campaign Package", price: 2999, unit: "All channels + teaser" },
+  { id: "analytics_report", name: "Performance Analytics Report", price: 799, unit: "Deep report PDF" },
+  { id: "email_blast", name: "Dedicated Email Blast", price: 799, unit: "Send to category subscribers" },
+  { id: "ticker_priority", name: "Homepage Ticker Priority", price: 999, unit: "3-day window" },
+];
 export const REDIS_TTL = {
   SESSION: 86400, // 24 hours
   OTP: 300, // 5 minutes
@@ -130,6 +202,12 @@ export const QUEUE_NAMES = {
 export const JOB_NAMES = {
   SEND_EMAIL: "send-email",
   RECORD_VIEW: "record-view",
+  RECORD_IMPRESSION: "record-impression",
+  RECORD_CLICK: "record-click",
+  RECORD_COPY_CODE: "record-copy-code",
+  RECORD_STORE_VIEW: "record-store-view",
+  RECORD_BANNER_CLICK: "record-banner-click",
+  RECORD_UNIQUE_CODE_GEN: "record-unique-code-gen",
   EXPIRE_COUPON: "expire-coupon",
   CHECK_REVIVALS: "check-expired",
 };

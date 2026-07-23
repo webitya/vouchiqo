@@ -8,12 +8,16 @@ import { ROLES } from "@/utils/constants";
 /**
  * GET /api/analytics
  * Get analytics for the authenticated merchant's business.
- * Returns: overview stats, 30-day trend, top-performing coupons.
+ * Supports ?period=7d|30d|90d|12m query parameter.
+ * Returns: overview stats, trend data, traffic sources, top coupons.
  */
 export const GET = asyncHandler(async (request) => {
   await connectDB();
   const { user } = await requireRole(request, ROLES.MERCHANT, ROLES.ADMIN);
 
-  const analytics = await getMerchantAnalytics(user.id);
+  const { searchParams } = new URL(request.url);
+  const period = searchParams.get("period") || "30d";
+
+  const analytics = await getMerchantAnalytics(user.id, period);
   return ok(analytics);
 });

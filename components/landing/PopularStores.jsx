@@ -1,10 +1,10 @@
 // components/landing/PopularStores.jsx
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Percent, Tag } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import BrandGridItem from "../shared/BrandGridItem";
+import BrandGridItem from "@/components/shared/cards/BrandGridItem";
 import EmblaCarouselControls from "../shared/EmblaCarouselControls";
 
 const POPULAR_STORES_LIST = [
@@ -197,8 +197,22 @@ export default function PopularStores({ merchants = [] }) {
       (firstDbMerchant.totalRedemptions || 0)
     : 71;
 
-  // Group into pages of 12 stores (3 rows of 4 columns)
-  const itemsPerPage = 12;
+  // Group into pages of stores (3 rows x 3 cols = 9 on mobile, 3 rows x 4 cols = 12 on desktop)
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setItemsPerPage(9);
+      } else {
+        setItemsPerPage(12);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const totalSlides = Math.ceil(finalStoresList.length / itemsPerPage);
 
   // Auto-rotation effect for slides (5 seconds interval, infinite loop)
@@ -277,7 +291,7 @@ export default function PopularStores({ merchants = [] }) {
             onPrev={handlePrev}
             onNext={handleNext}
             onDotClick={setSelectedIndex}
-            className="hidden md:flex"
+            className="flex"
           />
           <Link
             href="/deals"
@@ -293,178 +307,62 @@ export default function PopularStores({ merchants = [] }) {
 
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
         {/* ── Store of the Month Card ── */}
-        <div className="lg:w-1/4">
+        <div className="w-full lg:w-1/4 shrink-0">
           <Link
             href={somHref}
-            className="gp-feat block relative no-underline cursor-pointer rounded-md"
+            className="block relative no-underline cursor-pointer rounded-2xl overflow-hidden border border-slate-800 bg-[#090d16] shadow-md group transition-all duration-300 hover:shadow-xl hover:border-slate-700"
           >
-            {/* ── LAYER 1: Background photo — FIXED, does NOT move on hover ── */}
+            {/* Background photo + scrim */}
             <div
-              className="gp-feat__banner"
+              className="absolute inset-0 bg-cover bg-center opacity-30 group-hover:scale-105 transition-transform duration-700 pointer-events-none"
               style={{ backgroundImage: `url(${somBanner})` }}
-              role="img"
-              aria-label="Store of the Month background"
             />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/60 to-slate-950/95 pointer-events-none" />
 
-            {/* ── LAYER 2: Gradient scrim over photo for text readability ── */}
-            <div className="gp-feat__scrim" />
+            {/* Content Wrapper */}
+            <div className="relative z-10 p-4 sm:p-5 flex flex-col justify-between h-full min-h-[175px] md:min-h-[380px]">
+              {/* Top Title & Logo Box */}
+              <div className="flex md:flex-col items-center md:items-start justify-between gap-4">
+                {/* Logo Box */}
+                <div className="w-28 h-16 md:w-full md:h-24 bg-[#111827] border border-[#1f2937] rounded-xl p-2.5 flex items-center justify-center shrink-0 shadow-inner group-hover:border-slate-700 transition-colors">
+                  <img
+                    src={somLogo}
+                    alt="Store Logo"
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </div>
 
-            {/* ── LAYER 3: Title text — FIXED at top, overlays the photo ── */}
-            <div className="gp-feat__title">
-              <p
-                style={{
-                  color: "#60a5fa",
-                  fontWeight: 700,
-                  fontSize: "13px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.12em",
-                  margin: "0 0 4px",
-                  lineHeight: 1,
-                }}
-              >
-                Most Popular
-              </p>
-              <h3
-                style={{
-                  color: "#ffffff",
-                  fontWeight: 700,
-                  fontSize: "17px",
-                  lineHeight: 1.25,
-                  margin: 0,
-                }}
-              >
-                Store Of The Month
-              </h3>
-            </div>
-
-            {/* ── LAYER 4: Blue and White themed sliding box ── */}
-            <div
-              className="gp-feat__box border-t border-slate-100 shadow-md"
-              style={{ backgroundColor: "#ffffff" }}
-            >
-              {/* Brand logo image */}
-              <div
-                className="gp-feat__logo-img border border-slate-200 shadow-sm"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <img
-                  src={somLogo}
-                  alt="Brand Logo"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    padding: "10px",
-                    display: "block",
-                  }}
-                />
+                {/* Title Text */}
+                <div className="text-right md:text-left flex-1 min-w-0">
+                  <span className="text-[10px] sm:text-[12px] font-extrabold text-[#a3e635] tracking-widest uppercase block mb-0.5">
+                    Most Popular
+                  </span>
+                  <h3 className="text-[15px] sm:text-[19px] font-black text-white leading-tight tracking-tight">
+                    Store Of The Month
+                  </h3>
+                </div>
               </div>
 
-              {/* Stats row */}
-              <div className="gp-feat__desc-wrap">
-                <ul className="gp-feat__stats-ul">
-                  <li>
-                    <svg
-                      width="15"
-                      height="15"
-                      fill="none"
-                      stroke="#2563eb"
-                      strokeWidth="2.2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581a1.44 1.44 0 002.036 0l4.319-4.319a1.44 1.44 0 000-2.037L10.159 3.658A2.25 2.25 0 009.568 3z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 7.5h.008v.008H6V7.5z"
-                      />
-                    </svg>
-                    <p
-                      style={{
-                        color: "#334155",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        margin: "4px 0 0",
-                      }}
-                    >
-                      {somCoupons} Deals
-                    </p>
-                  </li>
-                  <li>
-                    <svg
-                      width="15"
-                      height="15"
-                      fill="none"
-                      stroke="#2563eb"
-                      strokeWidth="2.2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 9l6 6m0-6L9 15m12-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <p
-                      style={{
-                        color: "#334155",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        margin: "4px 0 0",
-                      }}
-                    >
-                      {somOffers} Offers
-                    </p>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Mobile-only claim button */}
-              <div className="gp-feat__grab-label">
-                <span
-                  className="block w-full text-center text-white bg-[#2563eb] rounded-lg py-2 text-[12px] font-semibold uppercase tracking-wider hover:bg-blue-700 transition-colors"
-                  style={{
-                    boxShadow: "0 2px 10px rgba(37,99,235,0.2)",
-                  }}
-                >
-                  Claim Now
-                </span>
-              </div>
-
-              {/* Visit Store button */}
-              <div className="gp-feat__extra">
-                <button
-                  type="button"
-                  aria-label="Visit Store"
-                  className="hover:bg-blue-700 transition-colors"
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    backgroundColor: "#2563eb",
-                    color: "#ffffff",
-                    fontWeight: 700,
-                    fontSize: "13px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    padding: "11px 0",
-                    borderRadius: "8px",
-                    border: "none",
-                    cursor: "pointer",
-                    boxShadow: "0 2px 10px rgba(37,99,235,0.2)",
-                  }}
-                >
-                  Visit Store
-                </button>
+              {/* Bottom Stats Bar with Dotted Divider */}
+              <div className="mt-4 pt-3 border-t border-slate-800/80 grid grid-cols-2 text-center divide-x divide-dashed divide-slate-700">
+                <div className="flex items-center justify-center gap-1.5 px-2">
+                  <Tag className="w-3.5 h-3.5 text-[#a3e635] shrink-0" />
+                  <span className="text-[12px] font-bold text-white whitespace-nowrap">
+                    {somCoupons} Coupons
+                  </span>
+                </div>
+                <div className="flex items-center justify-center gap-1.5 px-2">
+                  <Percent className="w-3.5 h-3.5 text-[#a3e635] shrink-0" />
+                  <span className="text-[12px] font-bold text-white whitespace-nowrap">
+                    {somOffers} Offers
+                  </span>
+                </div>
               </div>
             </div>
           </Link>
         </div>
 
-        {/* ── Sliding Grid of 12 Partner Stores per page (3 rows) ── */}
+        {/* ── Sliding Grid of Partner Stores (3 cols on mobile, 4 cols on desktop) ── */}
         <div className="gp-store-wrap lg:w-3/4 overflow-hidden">
           <div
             className="vouchiqo-carousel-viewport h-full cursor-grab active:cursor-grabbing"
@@ -483,7 +381,7 @@ export default function PopularStores({ merchants = [] }) {
                   className="vouchiqo-carousel-slide h-full w-full flex-shrink-0"
                 >
                   <div
-                    className="gp-store-grid grid grid-cols-2 md:grid-cols-4 gap-3 h-full"
+                    className="gp-store-grid grid grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3.5 h-full"
                     style={{ gridTemplateRows: "repeat(3, 1fr)" }}
                   >
                     {slideStores.map((store, idx) => (

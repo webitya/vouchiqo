@@ -1,6 +1,6 @@
 "use client";
 
-import { Tag, Ticket } from "lucide-react";
+import { Tag } from "lucide-react";
 import Link from "next/link";
 
 /**

@@ -1,6 +1,13 @@
 "use client";
 
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function TrafficAndGoals({
   pageViews,
@@ -13,7 +20,7 @@ export default function TrafficAndGoals({
     { name: "Direct", value: 35, color: "#3e80dd" },
     { name: "Organic", value: 28, color: "#2563eb" },
     { name: "Referral", value: 22, color: "#0a2e6e" },
-    { name: "Social", value: 15, color: "#2563eb" },
+    { name: "Social", value: 15, color: "#8b5cf6" },
   ];
 
   const revenueGoal = analyticsData?.goals?.revenueTarget ?? 0;
@@ -35,24 +42,18 @@ export default function TrafficAndGoals({
       : 0;
 
   return (
-    <div className="col-span-full flex flex-col gap-4 xl:col-span-4">
+    <div className="col-span-full flex flex-col gap-5 xl:col-span-4">
       {/* Traffic Card */}
-      <div
-        data-slot="card"
-        className="rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow duration-200"
-      >
-        <div
-          data-slot="card-header"
-          className="flex flex-col space-y-1.5 p-6 pb-2"
-        >
-          <div className="tracking-tight text-base font-semibold">
+      <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col hover:shadow-xs transition-all duration-200 p-0 gap-0">
+        <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 bg-slate-50/50 min-h-[52px]">
+          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
             Traffic Sources
-          </div>
-          <p className="text-xs text-muted-foreground">
+          </CardTitle>
+          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Where your visitors come from
-          </p>
-        </div>
-        <div data-slot="card-content" className="p-6 pt-0">
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-4 sm:p-5 pt-4">
           <div className="flex items-center gap-4">
             <div className="relative h-36 w-36 shrink-0">
               <ResponsiveContainer width="100%" height="100%">
@@ -90,53 +91,47 @@ export default function TrafficAndGoals({
                       className="h-2.5 w-2.5 rounded-full"
                       style={{ backgroundColor: t.color }}
                     ></div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground font-medium">
                       {t.name}
                     </span>
                   </div>
-                  <span className="text-xs font-semibold text-slate-700">
+                  <span className="text-xs font-bold text-slate-800">
                     {t.value}%
                   </span>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Goals Card */}
-      <div
-        data-slot="card"
-        className="rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow duration-200"
-      >
-        <div
-          data-slot="card-header"
-          className="flex flex-col space-y-1.5 p-6 pb-2"
-        >
-          <div className="tracking-tight text-base font-semibold">
+      <Card className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col hover:shadow-xs transition-all duration-200 p-0 gap-0">
+        <CardHeader className="px-4 py-3.5 sm:px-5 sm:py-3.5 border-b border-slate-100 bg-slate-50/50 min-h-[52px]">
+          <CardTitle className="font-heading text-xs sm:text-[13px] font-bold text-[#08214d] tracking-wider uppercase m-0 leading-none">
             Monthly Goals
-          </div>
-          <p className="text-xs text-muted-foreground">
+          </CardTitle>
+          <CardDescription className="text-[11px] font-semibold text-slate-500 mt-1 leading-none font-sans normal-case tracking-normal">
             Track progress toward targets
-          </p>
-        </div>
-        <div data-slot="card-content" className="p-6 pt-0 space-y-5">
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-4 sm:p-5 pt-4 space-y-5">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="font-medium text-foreground">
                 Monthly Revenue
               </span>
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground font-semibold">
                 {revenueGoal > 0 ? `${revenuePct}%` : "—"}
               </span>
             </div>
-            <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
+            <div className="relative h-2 w-full overflow-hidden rounded-full bg-slate-100">
               <div
                 className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
                 style={{ width: revenueGoal > 0 ? `${revenuePct}%` : "0%" }}
               ></div>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
               <span>₹{revenueActual.toLocaleString("en-IN")}</span>
               <span>
                 {revenueGoal > 0
@@ -148,17 +143,17 @@ export default function TrafficAndGoals({
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="font-medium text-foreground">Coupon Claims</span>
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground font-semibold">
                 {claimsGoal > 0 ? `${claimsPct}%` : "—"}
               </span>
             </div>
-            <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
+            <div className="relative h-2 w-full overflow-hidden rounded-full bg-slate-100">
               <div
                 className="h-full rounded-full transition-all duration-500 ease-out bg-[#2563eb]"
                 style={{ width: claimsGoal > 0 ? `${claimsPct}%` : "0%" }}
               ></div>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
               <span>{totalClaims.toLocaleString()}</span>
               <span>
                 {claimsGoal > 0
@@ -172,23 +167,23 @@ export default function TrafficAndGoals({
               <span className="font-medium text-foreground">
                 Conversion Rate
               </span>
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground font-semibold">
                 {totalClaims > 0 ? `${redemptionPct}%` : "—"}
               </span>
             </div>
-            <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/15">
+            <div className="relative h-2 w-full overflow-hidden rounded-full bg-slate-100">
               <div
-                className="h-full rounded-full transition-all duration-500 ease-out bg-[#3e80dd]"
+                className="h-full rounded-full transition-all duration-500 ease-out bg-[#e85d04]"
                 style={{ width: `${redemptionPct}%` }}
               ></div>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
               <span>{totalRedemptions} redeemed</span>
               <span>of {totalClaims} claimed</span>
             </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

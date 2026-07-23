@@ -2,40 +2,28 @@
 
 import {
   Calendar as CalendarIcon,
-  Check,
   Eye,
   FileText,
-  FolderOpen,
   IndianRupee,
   Layers,
-  Loader2,
-  Lock,
-  MapPin,
   MessageSquare,
   Percent,
-  Plus,
-  Save,
   Settings,
-  ShieldCheck,
   Tag,
   Ticket,
   Users,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { DatePicker } from "@/components/ui/date-picker";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  FormActions,
+  FormDatePicker,
+  FormInput,
+  FormSection,
+  FormSelect,
+  FormTextarea,
+} from "@/components/shared/form";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 
 const CATEGORIES = [
   { id: "fashion", label: "Fashion & Clothing" },
@@ -55,6 +43,28 @@ const CATEGORIES = [
   { id: "finance", label: "Finance & Insurance" },
 ];
 
+const DISCOUNT_TYPES = [
+  { value: "percentage", label: "% Percentage Off" },
+  { value: "fixed", label: "Flat ₹ Amount Off" },
+  { value: "freebie", label: "Free Gift / Freebie" },
+];
+
+const STATUS_OPTIONS = [
+  { value: "active", label: "Active / Enabled" },
+  { value: "paused", label: "Paused / Suspended" },
+  { value: "expired", label: "Expired / Closed" },
+];
+
+const LISTING_TYPES = [
+  { id: "coupon", label: "Promo Code", desc: "Code for checkout / in-store" },
+  { id: "deal", label: "Sale / Flat Offer", desc: "Discounted price link" },
+  { id: "special", label: "Special / Gift", desc: "BOGO or Freebie package" },
+];
+
+/**
+ * CouponForm — create / edit a coupon listing.
+ * Fully refactored to use the shared form component library.
+ */
 export default function CouponForm({
   formData,
   setFormData,
@@ -67,293 +77,230 @@ export default function CouponForm({
   merchantPlan = "starter",
   merchantName = "Store Name",
 }) {
-  const selectedCategoryObj = CATEGORIES.find(
-    (c) => c.id === formData.category || c.label === formData.category
-  ) || CATEGORIES[0];
+  const update = (key, val) => setFormData((prev) => ({ ...prev, [key]: val }));
+
+  const selectedCategory =
+    CATEGORIES.find(
+      (c) => c.id === formData.category || c.label === formData.category,
+    ) ?? CATEGORIES[0];
+
+  const canFeature = merchantPlan === "pro" || merchantPlan === "enterprise";
+
+  const discountLabel =
+    formData.discountType === "percentage"
+      ? `${formData.discountValue || "0"}% OFF`
+      : formData.discountType === "fixed"
+        ? `₹${formData.discountValue || "0"} OFF`
+        : "Free Gift";
 
   return (
     <form
       onSubmit={handleSubmit}
       className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-left items-start"
     >
-      {/* LEFT COLUMN: FORM CARDS (7 COLS) */}
+      {/* LEFT COLUMN */}
       <div className="lg:col-span-7 space-y-6">
-        {/* Listing Format Selector (only if not editing) */}
+        {/* Listing Format Selector */}
         {!isEdit && setListingType && (
-          <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 space-y-3">
-            <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800 uppercase tracking-wider">
-              <Settings className="w-3.5 h-3.5 text-blue-600" /> Choose Listing Format
-            </Label>
-            <div className="grid grid-cols-3 gap-2.5">
-              {[
-                { id: "coupon", label: "Promo Code", desc: "Code for checkout / in-store" },
-                { id: "deal", label: "Sale / Flat Offer", desc: "Discounted price link" },
-                { id: "special", label: "Special / Gift", desc: "BOGO or Freebie package" },
-              ].map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => setListingType(t.id)}
-                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
-                    listingType === t.id
-                      ? "border-[#e85d04] bg-orange-50/50 shadow-2xs font-bold text-slate-900"
-                      : "border-slate-200 bg-white hover:border-slate-300 text-slate-600"
-                  }`}
-                >
-                  <span className="block text-xs font-bold">{t.label}</span>
-                  <span className="block text-[10px] text-slate-400 font-medium mt-0.5 leading-snug">
-                    {t.desc}
-                  </span>
-                </button>
-              ))}
-            </div>
+          <Card className="border-brand-border shadow-sm rounded-2xl bg-brand-bg p-5 space-y-3">
+            <FormSection title="Choose Listing Format" icon={Settings} noBorder>
+              <div className="grid grid-cols-3 gap-2.5">
+                {LISTING_TYPES.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setListingType(t.id)}
+                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                      listingType === t.id
+                        ? "border-[#e85d04] bg-orange-50/50 shadow-sm font-bold text-brand-text"
+                        : "border-brand-border bg-brand-bg hover:border-brand-subtext/40 text-brand-subtext"
+                    }`}
+                  >
+                    <span className="block text-xs font-bold">{t.label}</span>
+                    <span className="block text-[10px] text-brand-subtext font-medium mt-0.5 leading-snug">
+                      {t.desc}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </FormSection>
           </Card>
         )}
 
         {/* Card 1: Main Offer Details */}
-        <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-6 space-y-5">
-          <div className="border-b border-slate-100 pb-3">
-            <h3 className="text-base font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <FileText className="w-4 h-4 text-blue-600" /> Edit Campaign Details
-            </h3>
-          </div>
+        <Card className="border-brand-border shadow-sm rounded-2xl bg-brand-bg p-6 space-y-5">
+          <FormSection title="Edit Campaign Details" icon={FileText} noBorder>
+            <FormInput
+              name="title"
+              label="Offer Title / Headline"
+              icon={Tag}
+              placeholder="e.g. Free Drink with Meal"
+              value={formData.title}
+              onChange={(e) => update("title", e.target.value)}
+              maxLength={70}
+              required
+            />
 
-          <div className="space-y-4">
-            {/* Offer Title */}
-            <div className="space-y-1.5">
-              <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                <Tag className="w-3.5 h-3.5 text-blue-600" /> Offer Title / Headline *
-              </Label>
-              <Input
-                type="text"
-                maxLength={70}
-                placeholder="e.g. Free Drink with Meal"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="bg-white border-slate-200 text-xs h-10 rounded-xl font-medium"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormSelect
+                name="category"
+                label="Category"
+                icon={Layers}
+                options={CATEGORIES.map((c) => ({
+                  value: c.id,
+                  label: c.label,
+                }))}
+                value={selectedCategory.id}
+                onValueChange={(val) => update("category", val)}
+                required
+              />
+              <FormInput
+                name="code"
+                label="Promo Code"
+                icon={Ticket}
+                placeholder="FREEDRINK"
+                value={formData.code}
+                onChange={(e) =>
+                  update(
+                    "code",
+                    e.target.value.toUpperCase().replace(/\s/g, ""),
+                  )
+                }
                 required
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Category */}
-              <div className="space-y-1.5">
-                <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                  <Layers className="w-3.5 h-3.5 text-purple-600" /> Category *
-                </Label>
-                <Select
-                  value={selectedCategoryObj.id}
-                  onValueChange={(val) => setFormData({ ...formData, category: val })}
-                >
-                  <SelectTrigger className="w-full bg-white border-slate-200 rounded-xl text-xs h-10 px-3.5 font-bold text-slate-800">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent className="z-[300]">
-                    {CATEGORIES.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
-                        {cat.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Promo Code */}
-              <div className="space-y-1.5">
-                <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                  <Ticket className="w-3.5 h-3.5 text-orange-600" /> Promo Code *
-                </Label>
-                <Input
-                  type="text"
-                  placeholder="FREEDRINK"
-                  value={formData.code}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      code: e.target.value.toUpperCase().replace(/\s/g, ""),
-                    })
-                  }
-                  className="bg-white border-slate-200 text-xs h-10 rounded-xl font-mono uppercase font-bold"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Discount Type */}
-              <div className="space-y-1.5">
-                <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                  <Percent className="w-3.5 h-3.5 text-blue-600" /> Discount Type *
-                </Label>
-                <Select
-                  value={formData.discountType || "percentage"}
-                  onValueChange={(val) => setFormData({ ...formData, discountType: val })}
-                >
-                  <SelectTrigger className="w-full bg-white border-slate-200 rounded-xl text-xs h-10 px-3.5 font-bold text-slate-800">
-                    <SelectValue placeholder="Discount format" />
-                  </SelectTrigger>
-                  <SelectContent className="z-[300]">
-                    <SelectItem value="percentage">% Percentage Off</SelectItem>
-                    <SelectItem value="fixed">Flat ₹ Amount Off</SelectItem>
-                    <SelectItem value="freebie">Free Gift / Freebie</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Discount Value */}
-              <div className="space-y-1.5">
-                <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                  <IndianRupee className="w-3.5 h-3.5 text-emerald-600" /> Discount Value (₹ or %)
-                </Label>
-                <Input
-                  type="number"
-                  placeholder="0"
-                  value={formData.discountValue}
-                  onChange={(e) => setFormData({ ...formData, discountValue: e.target.value })}
-                  className="bg-white border-slate-200 text-xs h-10 rounded-xl font-medium"
-                />
-              </div>
-            </div>
-
-            {/* Description / Terms */}
-            <div className="space-y-1.5">
-              <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                <MessageSquare className="w-3.5 h-3.5 text-slate-600" /> Terms / Description *
-              </Label>
-              <Textarea
-                rows={3}
-                placeholder="Enjoy great deals and savings on your order..."
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="bg-white border-slate-200 text-xs leading-relaxed rounded-xl font-medium"
+              <FormSelect
+                name="discountType"
+                label="Discount Type"
+                icon={Percent}
+                options={DISCOUNT_TYPES}
+                value={formData.discountType || "percentage"}
+                onValueChange={(val) => update("discountType", val)}
                 required
               />
+              <FormInput
+                name="discountValue"
+                label="Discount Value (₹ or %)"
+                icon={IndianRupee}
+                type="number"
+                placeholder="0"
+                value={formData.discountValue}
+                onChange={(e) => update("discountValue", e.target.value)}
+              />
             </div>
-          </div>
+
+            <FormTextarea
+              name="description"
+              label="Terms / Description"
+              icon={MessageSquare}
+              rows={3}
+              placeholder="Enjoy great deals and savings on your order..."
+              value={formData.description}
+              onChange={(e) => update("description", e.target.value)}
+              maxLength={300}
+              showCounter
+              required
+            />
+          </FormSection>
         </Card>
 
-        {/* Card 2: Limits & Expiry Details */}
-        <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-6 space-y-5">
-          <div className="border-b border-slate-100 pb-3">
-            <h3 className="text-base font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <CalendarIcon className="w-4 h-4 text-rose-600" /> Limits &amp; Expiry Details
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Expiry Date DatePicker */}
-            <div className="space-y-1.5">
-              <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                <CalendarIcon className="w-3.5 h-3.5 text-blue-600" /> Expiry Date *
-              </Label>
-              <DatePicker
+        {/* Card 2: Limits & Expiry */}
+        <Card className="border-brand-border shadow-sm rounded-2xl bg-brand-bg p-6 space-y-5">
+          <FormSection
+            title="Limits & Expiry Details"
+            icon={CalendarIcon}
+            noBorder
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <FormDatePicker
+                name="expiresAt"
+                label="Expiry Date"
+                icon={CalendarIcon}
                 value={formData.expiresAt}
-                onChange={(val) => setFormData({ ...formData, expiresAt: val })}
-                placeholder="Select expiry date"
-                iconColor="text-blue-600"
+                onChange={(val) => update("expiresAt", val)}
+                minDate={new Date()}
+                required
               />
-            </div>
-
-            {/* Claims Limit */}
-            <div className="space-y-1.5">
-              <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                <Users className="w-3.5 h-3.5 text-purple-600" /> Claims Limit
-              </Label>
-              <Input
+              <FormInput
+                name="maxClaims"
+                label="Claims Limit"
+                icon={Users}
                 type="number"
                 placeholder="e.g. 500"
                 value={formData.maxClaims}
-                onChange={(e) => setFormData({ ...formData, maxClaims: e.target.value })}
-                className="bg-white border-slate-200 text-xs h-10 rounded-xl"
+                onChange={(e) => update("maxClaims", e.target.value)}
               />
+              {isEdit && (
+                <FormSelect
+                  name="status"
+                  label="Campaign Status"
+                  icon={Settings}
+                  options={STATUS_OPTIONS}
+                  value={formData.status}
+                  onValueChange={(val) => update("status", val)}
+                />
+              )}
             </div>
 
-            {/* Campaign Status (if editing) */}
-            {isEdit && (
-              <div className="space-y-1.5">
-                <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-                  <Settings className="w-3.5 h-3.5 text-slate-600" /> Campaign Status
-                </Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(val) => setFormData({ ...formData, status: val })}
-                >
-                  <SelectTrigger className="w-full bg-white border-slate-200 rounded-xl text-xs h-10 px-3.5 font-bold text-slate-800">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="z-[300]">
-                    <SelectItem value="active" className="text-emerald-700 font-bold">
-                      Active / Enabled
-                    </SelectItem>
-                    <SelectItem value="paused" className="text-amber-700 font-bold">
-                      Paused / Suspended
-                    </SelectItem>
-                    <SelectItem value="expired" className="text-rose-700 font-bold">
-                      Expired / Closed
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            {/* Featured Placement Switch */}
-            <div className="sm:col-span-3 border-t border-slate-100 pt-4 mt-2">
+            {/* Featured placement toggle */}
+            <div className="border-t border-brand-border pt-4 mt-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-bold text-slate-900 block">
+                  <span className="text-xs font-bold text-brand-text block">
                     Featured Homepage Placement
                   </span>
-                  <span className="text-[11px] text-slate-500 font-medium">
+                  <span className="text-[11px] text-brand-subtext font-medium">
                     Pin this deal to the homepage hero grid for 5x visibility.
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  {!(merchantPlan === "pro" || merchantPlan === "enterprise") && (
-                    <Badge variant="outline" className="bg-amber-50 text-amber-800 border-amber-200 text-[10px] font-bold">
+                  {!canFeature && (
+                    <Badge
+                      variant="outline"
+                      className="bg-amber-50 text-amber-800 border-amber-200 text-[10px] font-bold"
+                    >
                       Pro/Enterprise Only
                     </Badge>
                   )}
                   <Switch
-                    disabled={!(merchantPlan === "pro" || merchantPlan === "enterprise")}
+                    disabled={!canFeature}
                     checked={formData.isFeatured}
-                    onCheckedChange={(val) => setFormData({ ...formData, isFeatured: val })}
+                    onCheckedChange={(val) => update("isFeatured", val)}
                   />
                 </div>
               </div>
             </div>
-          </div>
 
-          <Button
-            type="submit"
-            disabled={isPending}
-            className="w-full bg-[#e85d04] hover:bg-orange-600 text-white text-xs font-bold py-3 rounded-xl shadow-xs cursor-pointer flex items-center justify-center gap-2 mt-4"
-          >
-            {isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Save className="w-4 h-4" />
-            )}
-            <span>{isPending ? "Saving..." : submitText}</span>
-          </Button>
+            <FormActions
+              submitText={submitText}
+              loading={isPending}
+              align="end"
+            />
+          </FormSection>
         </Card>
       </div>
 
-      {/* RIGHT COLUMN: REAL-TIME CARD PREVIEW (5 COLS) */}
+      {/* RIGHT COLUMN: Real-Time Card Preview */}
       <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-6">
-        <Card className="border-slate-200/80 shadow-xs rounded-2xl bg-white p-5 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <span className="flex items-center gap-1.5 text-xs font-bold text-slate-800 uppercase tracking-wider">
+        <Card className="border-brand-border shadow-sm rounded-2xl bg-brand-bg p-5 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-brand-border">
+            <span className="flex items-center gap-1.5 text-xs font-bold text-brand-text uppercase tracking-wider">
               <Eye className="w-4 h-4 text-[#e85d04]" /> Real-Time Card Preview
             </span>
-            <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200/60 text-[10px] font-bold">
+            <Badge
+              variant="outline"
+              className="bg-emerald-50 text-emerald-700 border-emerald-200/60 text-[10px] font-bold"
+            >
               Live Preview
             </Badge>
           </div>
 
-          {/* Live Preview Item */}
-          <div className="border border-slate-200/80 rounded-2xl overflow-hidden bg-white shadow-xs">
+          <div className="border border-brand-border rounded-2xl overflow-hidden bg-brand-bg shadow-sm">
+            {/* Image hero */}
             <div
-              className="h-32 bg-slate-900 relative flex items-end p-4 bg-cover bg-center"
+              className="h-32 bg-brand-navy relative flex items-end p-4 bg-cover bg-center"
               style={{
                 backgroundImage: formData.image
                   ? `url(${formData.image})`
@@ -362,8 +309,8 @@ export default function CouponForm({
             >
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
               <div className="relative z-10 flex items-center justify-between w-full">
-                <Badge className="bg-blue-600 text-white font-bold text-[9px] uppercase px-2 py-0.5 border-0">
-                  {selectedCategoryObj.label}
+                <Badge className="bg-brand-blue text-white font-bold text-[9px] uppercase px-2 py-0.5 border-0">
+                  {selectedCategory.label}
                 </Badge>
                 <span className="text-white text-[10px] font-bold bg-black/50 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20">
                   {merchantName}
@@ -373,44 +320,43 @@ export default function CouponForm({
 
             <div className="p-4 space-y-3.5">
               <div>
-                <h4 className="text-sm font-black text-slate-900 leading-snug">
+                <h4 className="text-sm font-black text-brand-text leading-snug">
                   {formData.title || "Free Drink with Meal"}
                 </h4>
-                <p className="text-[11px] text-slate-500 font-medium mt-1 line-clamp-2">
-                  {formData.description || "Enjoy great deals and savings on Free Drink with Meal."}
+                <p className="text-[11px] text-brand-subtext font-medium mt-1 line-clamp-2">
+                  {formData.description ||
+                    "Enjoy great deals and savings on Free Drink with Meal."}
                 </p>
               </div>
 
-              {/* Monospace Code box */}
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-center space-y-0.5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <div className="p-3 bg-brand-surface rounded-xl border border-brand-border text-center space-y-0.5">
+                <span className="text-[10px] font-bold text-brand-subtext uppercase tracking-wider block">
                   Use Promo Code
                 </span>
-                <span className="font-mono text-base font-black text-slate-900 uppercase tracking-widest block">
+                <span className="font-mono text-base font-black text-brand-text uppercase tracking-widest block">
                   {formData.code || "FREEDRINK"}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-500 border-t border-slate-100 pt-3">
+              <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-brand-subtext border-t border-brand-border pt-3">
                 <div>
-                  <span className="block text-[10px] text-slate-400 font-bold uppercase">Discount</span>
+                  <span className="block text-[10px] text-brand-subtext font-bold uppercase">
+                    Discount
+                  </span>
                   <span className="text-[#e85d04] font-black">
-                    {formData.discountType === "percentage"
-                      ? `${formData.discountValue || "0"}% OFF`
-                      : formData.discountType === "fixed"
-                      ? `₹${formData.discountValue || "0"} OFF`
-                      : "Free Gift"}
+                    {discountLabel}
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-slate-400 font-bold uppercase">Valid Until</span>
-                  <span className="text-slate-900 font-bold">
+                  <span className="block text-[10px] text-brand-subtext font-bold uppercase">
+                    Valid Until
+                  </span>
+                  <span className="text-brand-text font-bold">
                     {formData.expiresAt
-                      ? new Date(formData.expiresAt).toLocaleDateString("en-US", {
-                          month: "numeric",
-                          day: "numeric",
-                          year: "numeric",
-                        })
+                      ? new Date(formData.expiresAt).toLocaleDateString(
+                          "en-US",
+                          { month: "numeric", day: "numeric", year: "numeric" },
+                        )
                       : "Select Date"}
                   </span>
                 </div>

@@ -40,7 +40,7 @@ export default function StatsEditor({
                 onChange={(e) =>
                   setStatsForm({
                     ...statsForm,
-                    totalRequests: parseInt(e.target.value) || 0,
+                    totalRequests: parseInt(e.target.value, 10) || 0,
                   })
                 }
                 className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9 shadow-none px-3"
@@ -60,7 +60,7 @@ export default function StatsEditor({
                 onChange={(e) =>
                   setStatsForm({
                     ...statsForm,
-                    thisMonthRequests: parseInt(e.target.value) || 0,
+                    thisMonthRequests: parseInt(e.target.value, 10) || 0,
                   })
                 }
                 className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9 shadow-none px-3"
@@ -83,7 +83,7 @@ export default function StatsEditor({
                 onChange={(e) =>
                   setStatsForm({
                     ...statsForm,
-                    recoveredAmount: parseInt(e.target.value) || 0,
+                    recoveredAmount: parseInt(e.target.value, 10) || 0,
                   })
                 }
                 className="bg-brand-surface text-xs focus:ring-brand-blue border-brand-border h-9 shadow-none pl-7 pr-3"

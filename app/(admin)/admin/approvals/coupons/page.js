@@ -1,9 +1,9 @@
 "use client";
 
 import { AlertTriangle, Check, RefreshCw, Tag, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import EmptyState from "@/components/shared/EmptyState";
+import EmptyState from "@/components/shared/feedback/EmptyState";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -37,7 +37,7 @@ export default function CouponModeration() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [isRejectOpen, setIsRejectOpen] = useState(false);
 
-  const fetchPendingCoupons = async () => {
+  const fetchPendingCoupons = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminFetchPendingCoupons();
@@ -47,11 +47,11 @@ export default function CouponModeration() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchPendingCoupons();
-  }, []);
+  }, [fetchPendingCoupons]);
 
   const handleApprove = async (couponId) => {
     try {

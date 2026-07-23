@@ -315,7 +315,12 @@ export function HeroSection({ banners = [] }) {
   }, [banners]);
 
   const rightSlides = useMemo(() => {
-    const dbBanners = (banners || []).filter((b) => b.slot === "right-promo");
+    const dbBanners = (banners || []).filter(
+      (b) =>
+        b.slot === "right-promo" ||
+        b.slot === "top-right" ||
+        b.slot === "bottom-right",
+    );
     return dbBanners.length > 0
       ? dbBanners.map((b, idx) => ({ id: b._id || idx, ...b }))
       : RIGHT_BRANDS;

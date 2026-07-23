@@ -24,7 +24,17 @@ export function useLogin() {
       // Invalidate session cache so dashboard reads fresh data
       await queryClient.invalidateQueries({ queryKey: ["session"] });
 
-      if (role === "admin") {
+      // Check for callbackUrl in window location
+      let callbackUrl = null;
+      if (typeof window !== "undefined") {
+        callbackUrl = new URLSearchParams(window.location.search).get(
+          "callbackUrl",
+        );
+      }
+
+      if (callbackUrl && callbackUrl.startsWith("/")) {
+        router.replace(callbackUrl);
+      } else if (role === "admin") {
         router.replace("/admin/dashboard");
       } else if (role === "merchant") {
         router.replace("/merchant/dashboard");

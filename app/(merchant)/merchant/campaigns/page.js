@@ -13,16 +13,50 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
-import CampaignsHeader from "./components/CampaignsHeader";
+import DashboardSkeleton from "@/components/shared/feedback/DashboardSkeleton";
+import DeleteConfirmDialog from "@/components/shared/modals/DeleteConfirmDialog";
+import { showError, showSuccess } from "@/lib/toast";
 
 import CampaignListGrid from "./components/CampaignListGrid";
+import CampaignReportModal from "./components/CampaignReportModal";
 import CampaignStepper from "./components/CampaignStepper";
+import CampaignsHeader from "./components/CampaignsHeader";
+import EditCampaignModal from "./components/EditCampaignModal";
 import LiveCampaignPreview from "./components/LiveCampaignPreview";
 import StepBasics from "./components/steps/StepBasics";
 import StepListings from "./components/steps/StepListings";
 import StepPromotion from "./components/steps/StepPromotion";
 import StepReview from "./components/steps/StepReview";
+
+const DEMO_CAMPAIGNS = [
+  {
+    _id: "demo-camp-1",
+    name: "ffsf",
+    type: "new-user",
+    status: "pending_review",
+    startDate: "2026-07-24",
+    endDate: "2026-07-25",
+    stats: { clicks: "12,840", redemptions: "1,820", revenue: "₹482K" },
+  },
+  {
+    _id: "demo-camp-2",
+    name: "tesing campaign",
+    type: "festival",
+    status: "pending_review",
+    startDate: "2026-07-22",
+    endDate: "2026-07-24",
+    stats: { clicks: "12,840", redemptions: "1,820", revenue: "₹482K" },
+  },
+  {
+    _id: "demo-camp-3",
+    name: "fggg",
+    type: "seasonal",
+    status: "live",
+    startDate: "2026-07-16",
+    endDate: "2026-07-17",
+    stats: { clicks: "12,840", redemptions: "1,820", revenue: "₹482K" },
+  },
+];
 
 const CAMPAIGN_TYPES = [
   {
@@ -30,49 +64,49 @@ const CAMPAIGN_TYPES = [
     name: "Flash Sale",
     icon: Zap,
     badge: "2hrs – 48hrs",
-    desc: "A deep discount for a very short window with a live countdown timer for maximum urgency.",
+    desc: "Deep discount for a short window with live countdown timer.",
   },
   {
     id: "festival",
     name: "Festival Campaign",
     icon: Sparkles,
     badge: "3 – 7 days",
-    desc: "Tied to Indian festivals (Diwali, Chhath, Holi, Navratri, Eid) with pre-launch teaser option.",
+    desc: "Tied to Indian festivals with pre-launch teaser option.",
   },
   {
     id: "new-user",
     name: "New Customer Acquisition",
     icon: Target,
     badge: "3 – 14 days",
-    desc: "Targets users who haven't visited your brand page before. Displays 'First-Time Offer' badge.",
+    desc: "Targets users who haven't visited your brand page before.",
   },
   {
     id: "seasonal",
     name: "Seasonal / Clearance",
     icon: Tag,
     badge: "7 – 21 days",
-    desc: "Stock clearance or seasonal changes (Monsoon Sale, End-of-Summer, Back-to-School).",
+    desc: "Stock clearance or seasonal changes.",
   },
   {
     id: "loyalty",
     name: "Loyalty / Returning Customer",
     icon: Users,
     badge: "7 – 14 days",
-    desc: "Targets users who previously redeemed your offers with a 'Welcome Back' alert.",
+    desc: "Targets users who previously redeemed your offers.",
   },
   {
     id: "bundle",
     name: "Bundle / BOGO Campaign",
     icon: Trophy,
     badge: "3 – 14 days",
-    desc: "Built around Buy 1 Get 1 Free, combo packages, or value-add free gifts.",
+    desc: "Built around Buy 1 Get 1 Free or combo packages.",
   },
   {
     id: "revival",
     name: "Revival Campaign",
     icon: Rocket,
     badge: "24 – 48hrs",
-    desc: "Re-activates multiple expired offers at once ('Second Chance Sale') with a revival badge.",
+    desc: "Re-activates multiple expired offers at once.",
   },
 ];
 
@@ -104,9 +138,15 @@ export default function MerchantCampaigns() {
   const [currentStep, setCurrentStep] = useState(1);
   const [listingSearch, setListingSearch] = useState("");
 
+  // Modal States
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   // Form State
   const [campaignData, setCampaignData] = useState({
-    // Step 1: Basics
     name: "",
     type: "flash",
     festivalName: "Diwali Grand Festival",
@@ -115,8 +155,6 @@ export default function MerchantCampaigns() {
     subHeadline: "",
     description: "",
     bannerUrl: "",
-
-    // Step 2: Listings & Offer
     offerType: "Percentage Discount (% off)",
     discountValue: "",
     maxCap: "",
@@ -125,8 +163,6 @@ export default function MerchantCampaigns() {
     redemptionInstructions: "",
     termsAndConditions: "",
     couponIds: [],
-
-    // Step 3: Promotion Settings
     startDate: "",
     endDate: "",
     hasCountdownTimer: true,
@@ -139,8 +175,6 @@ export default function MerchantCampaigns() {
     pushSendTime: "",
     audience: "all",
     targetCity: "Ranchi",
-
-    // Step 4: Review & Compliance
     staffReady: "yes",
     stockConfirmation: "yes",
     internalNote: "",
@@ -163,18 +197,21 @@ export default function MerchantCampaigns() {
   });
 
   // Fetch campaigns
-  const { data: campaigns = [], isLoading: loadingCampaigns } = useQuery({
+  const { data: dbCampaigns = [], isLoading: loadingCampaigns } = useQuery({
     queryKey: ["merchant-campaigns"],
     queryFn: async () => {
       const res = await fetch("/api/campaigns");
-      if (!res.ok) throw new Error();
+      if (!res.ok) return [];
       const json = await res.json();
       return json.data || [];
     },
-    enabled: merchant?.plan !== "starter",
   });
 
-  // Fetch coupons
+  // Display DB campaigns or fallback to demo list if DB is empty
+  const displayCampaigns =
+    dbCampaigns.length > 0 ? dbCampaigns : DEMO_CAMPAIGNS;
+
+  // Fetch coupons for wizard
   const { data: coupons = [] } = useQuery({
     queryKey: ["merchant-coupons-for-campaign"],
     queryFn: async () => {
@@ -184,7 +221,8 @@ export default function MerchantCampaigns() {
       const json = await res.json();
       const list = json.data?.coupons || [];
       return list.filter(
-        (c) => c.merchantId?._id === merchant._id || c.merchantId === merchant._id,
+        (c) =>
+          c.merchantId?._id === merchant._id || c.merchantId === merchant._id,
       );
     },
     enabled: !!merchant && isCreating,
@@ -206,16 +244,66 @@ export default function MerchantCampaigns() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["merchant-campaigns"] });
-      toast.success("Campaign submitted successfully!");
+      showSuccess("Campaign submitted for review successfully!");
       setIsCreating(false);
       setCurrentStep(1);
     },
     onError: (err) => {
-      toast.error(err.message || "Something went wrong.");
+      showError(err.message || "Something went wrong.");
     },
   });
 
-  if (loadingProfile || (loadingCampaigns && merchant?.plan !== "starter")) {
+  // Action Handlers
+  const handleEditClick = (camp) => {
+    setSelectedCampaign(camp);
+    setEditModalOpen(true);
+  };
+
+  const handleReportClick = (camp) => {
+    setSelectedCampaign(camp);
+    setReportModalOpen(true);
+  };
+
+  const handleDeleteClick = (camp) => {
+    setSelectedCampaign(camp);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedCampaign) return;
+    try {
+      setDeleting(true);
+      if (selectedCampaign._id && !selectedCampaign._id.startsWith("demo-")) {
+        await fetch(`/api/campaigns?id=${selectedCampaign._id}`, {
+          method: "DELETE",
+        });
+        queryClient.invalidateQueries({ queryKey: ["merchant-campaigns"] });
+      }
+      showSuccess(`Campaign "${selectedCampaign.name}" deleted successfully!`);
+      setDeleteModalOpen(false);
+    } catch (err) {
+      showError("Failed to delete campaign.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleDuplicateClick = async (camp) => {
+    try {
+      mutation.mutate({
+        name: `${camp.name} (Copy)`,
+        type: camp.type || "flash",
+        objective: camp.objective || "Maximize Sales",
+        headline: camp.headline || camp.name,
+        status: "pending_review",
+      });
+      showSuccess(`Duplicated "${camp.name}"!`);
+    } catch (err) {
+      showError("Failed to duplicate campaign.");
+    }
+  };
+
+  if (loadingProfile || loadingCampaigns) {
     return (
       <DashboardLayout title="Campaign Manager" user={{ role: "merchant" }}>
         <DashboardSkeleton mode="dashboard" />
@@ -251,22 +339,16 @@ export default function MerchantCampaigns() {
 
   const handleNextStep = () => {
     if (currentStep === 1) {
-      if (!campaignData.name.trim()) {
-        toast.error("Please enter a Campaign Name");
-        return;
-      }
+      if (!campaignData.name.trim())
+        return toast.error("Please enter a Campaign Name");
       setCurrentStep(2);
     } else if (currentStep === 2) {
-      if (!campaignData.code.trim()) {
-        toast.error("Please enter a Promo Code for this campaign");
-        return;
-      }
+      if (!campaignData.code.trim())
+        return toast.error("Please enter a Promo Code");
       setCurrentStep(3);
     } else if (currentStep === 3) {
-      if (!campaignData.startDate || !campaignData.endDate) {
-        toast.error("Please select Start and End Dates");
-        return;
-      }
+      if (!campaignData.startDate || !campaignData.endDate)
+        return toast.error("Please select Start and End Dates");
       setCurrentStep(4);
     }
   };
@@ -286,45 +368,10 @@ export default function MerchantCampaigns() {
     mutation.mutate({
       name: campaignData.name,
       type: campaignData.type,
-      festivalName: campaignData.festivalName,
       objective: campaignData.objective,
       headline: campaignData.headline || campaignData.name,
       subHeadline: campaignData.subHeadline,
       description: campaignData.description,
-      bannerUrl: campaignData.bannerUrl,
-      offerDetails: {
-        offerType: campaignData.offerType,
-        discountValue: Number(campaignData.discountValue) || 0,
-        maxCap: Number(campaignData.maxCap) || 0,
-        minOrderValue: Number(campaignData.minOrderValue) || 0,
-        code: campaignData.code,
-        redemptionInstructions: campaignData.redemptionInstructions,
-        termsAndConditions: campaignData.termsAndConditions,
-      },
-      timing: {
-        startDate: campaignData.startDate,
-        endDate: campaignData.endDate,
-        hasCountdownTimer: campaignData.hasCountdownTimer,
-        hasPreTeaser: campaignData.hasPreTeaser,
-        preTeaserHeadline: campaignData.preTeaserHeadline,
-      },
-      targeting: {
-        audience: campaignData.audience,
-        targetCity: campaignData.targetCity,
-        addOns: [
-          ...(campaignData.featuredSlot ? ["ticker_priority"] : []),
-          ...(campaignData.pushNotification ? ["push"] : []),
-          ...(campaignData.newsletterInclusion ? ["email"] : []),
-        ],
-        pushSendTime: campaignData.pushSendTime,
-      },
-      readiness: {
-        staffReady: campaignData.staffReady,
-        stockConfirmation: campaignData.stockConfirmation,
-        internalNote: campaignData.internalNote,
-        checkpointsConfirmed: true,
-      },
-      couponIds: campaignData.couponIds,
       status: "pending_review",
       startDate: campaignData.startDate,
       endDate: campaignData.endDate,
@@ -339,94 +386,118 @@ export default function MerchantCampaigns() {
         role: "merchant",
       }}
     >
-      <div className="flex flex-col gap-6 text-left font-sans w-full max-w-[1300px] mx-auto">
+      <div className="flex flex-col gap-6 text-left font-sans w-full">
         {/* Top Header / Stepper Bar */}
-        {!isCreating ? (
-          <CampaignsHeader
-            campaignsCount={campaigns.length}
-            isPro={isPro}
-            planName={merchant?.plan}
-            onCreateClick={() => {
-              setIsCreating(true);
-              setCurrentStep(1);
-            }}
-          />
-        ) : (
-          <CampaignStepper
-            steps={WIZARD_STEPS}
-            currentStep={currentStep}
-            setCurrentStep={setCurrentStep}
-            onCancel={() => setIsCreating(false)}
-          />
-        )}
+        {!isCreating
+          ? <CampaignsHeader
+              campaignsCount={displayCampaigns.length}
+              isPro={isPro}
+              planName={merchant?.plan}
+              onCreateClick={() => {
+                setIsCreating(true);
+                setCurrentStep(1);
+              }}
+            />
+          : <CampaignStepper
+              steps={WIZARD_STEPS}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+              onCancel={() => setIsCreating(false)}
+            />}
 
         {/* MAIN BODY CONTENT */}
-        {!isCreating ? (
-          <CampaignListGrid
-            campaigns={campaigns}
-            onCreateClick={() => {
-              setIsCreating(true);
-              setCurrentStep(1);
-            }}
-          />
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* LEFT COLUMN: ACTIVE STEP FORM */}
-            <div className="lg:col-span-7 space-y-6">
-              {currentStep === 1 && (
-                <StepBasics
-                  campaignData={campaignData}
-                  setCampaignData={setCampaignData}
-                  campaignTypes={CAMPAIGN_TYPES}
-                  objectives={OBJECTIVES}
-                  onCancel={() => setIsCreating(false)}
-                  onNext={handleNextStep}
-                />
-              )}
-
-              {currentStep === 2 && (
-                <StepListings
-                  campaignData={campaignData}
-                  setCampaignData={setCampaignData}
-                  filteredCoupons={filteredCoupons}
-                  listingSearch={listingSearch}
-                  setListingSearch={setListingSearch}
-                  toggleCouponAttachment={toggleCouponAttachment}
-                  onBack={() => setCurrentStep(1)}
-                  onNext={handleNextStep}
-                />
-              )}
-
-              {currentStep === 3 && (
-                <StepPromotion
-                  campaignData={campaignData}
-                  setCampaignData={setCampaignData}
-                  targetAudiences={TARGET_AUDIENCES}
-                  onBack={() => setCurrentStep(2)}
-                  onNext={handleNextStep}
-                />
-              )}
-
-              {currentStep === 4 && (
-                <StepReview
-                  campaignData={campaignData}
-                  setCampaignData={setCampaignData}
-                  calculateAddOnTotal={calculateAddOnTotal}
-                  onSubmit={handleSubmitCampaign}
-                  isPending={mutation.isPending}
-                  onBack={() => setCurrentStep(3)}
-                />
-              )}
+        {!isCreating
+          ? <div data-tour="campaigns-list">
+              <CampaignListGrid
+                campaigns={displayCampaigns}
+                onCreateClick={() => {
+                  setIsCreating(true);
+                  setCurrentStep(1);
+                }}
+                onEdit={handleEditClick}
+                onDuplicate={handleDuplicateClick}
+                onReport={handleReportClick}
+                onDelete={handleDeleteClick}
+              />
             </div>
+          : <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="lg:col-span-7 space-y-6">
+                {currentStep === 1 && (
+                  <StepBasics
+                    campaignData={campaignData}
+                    setCampaignData={setCampaignData}
+                    campaignTypes={CAMPAIGN_TYPES}
+                    objectives={OBJECTIVES}
+                    onCancel={() => setIsCreating(false)}
+                    onNext={handleNextStep}
+                  />
+                )}
+                {currentStep === 2 && (
+                  <StepListings
+                    campaignData={campaignData}
+                    setCampaignData={setCampaignData}
+                    filteredCoupons={filteredCoupons}
+                    listingSearch={listingSearch}
+                    setListingSearch={setListingSearch}
+                    toggleCouponAttachment={toggleCouponAttachment}
+                    onBack={() => setCurrentStep(1)}
+                    onNext={handleNextStep}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <StepPromotion
+                    campaignData={campaignData}
+                    setCampaignData={setCampaignData}
+                    targetAudiences={TARGET_AUDIENCES}
+                    onBack={() => setCurrentStep(2)}
+                    onNext={handleNextStep}
+                  />
+                )}
+                {currentStep === 4 && (
+                  <StepReview
+                    campaignData={campaignData}
+                    setCampaignData={setCampaignData}
+                    calculateAddOnTotal={calculateAddOnTotal}
+                    onSubmit={handleSubmitCampaign}
+                    isPending={mutation.isPending}
+                    onBack={() => setCurrentStep(3)}
+                  />
+                )}
+              </div>
 
-            {/* RIGHT COLUMN: LIVE INTERACTIVE PREVIEW */}
-            <LiveCampaignPreview
-              campaignData={campaignData}
-              merchantName={merchant?.businessName}
-            />
-          </div>
-        )}
+              <LiveCampaignPreview
+                campaignData={campaignData}
+                merchantName={merchant?.businessName}
+              />
+            </div>}
       </div>
+
+      {/* Edit Campaign Modal */}
+      <EditCampaignModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        campaign={selectedCampaign}
+        onSaveSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: ["merchant-campaigns"] });
+        }}
+      />
+
+      {/* Campaign Analytics Report Modal */}
+      <CampaignReportModal
+        open={reportModalOpen}
+        onOpenChange={setReportModalOpen}
+        campaign={selectedCampaign}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmDialog
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Campaign"
+        description={`Are you sure you want to delete "${selectedCampaign?.name}"? This action cannot be undone.`}
+        isPending={deleting}
+      />
     </DashboardLayout>
   );
 }

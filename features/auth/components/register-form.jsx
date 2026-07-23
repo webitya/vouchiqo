@@ -58,7 +58,13 @@ export function RegisterForm() {
       return toast.error("Please enter a valid mobile number (10–15 digits).");
     }
     if (!agreed) return toast.error("Please agree to the Terms of Service.");
-    register({ email, password, name, phoneNumber: cleanPhone, role: "customer" });
+    register({
+      email,
+      password,
+      name,
+      phoneNumber: cleanPhone,
+      role: "customer",
+    });
   };
 
   return (

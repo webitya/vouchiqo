@@ -1,4 +1,4 @@
-import CollectionCard from "@/components/shared/CollectionCard";
+import CollectionCard from "@/components/shared/cards/CollectionCard";
 import { COLLECTIONS_LIST } from "./constants";
 
 export const VouchiqoCollections = () => (

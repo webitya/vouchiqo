@@ -13,8 +13,8 @@ import { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 // Layout & Global Components
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import ConfirmationModal from "@/components/shared/ConfirmationModal";
-import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
+import ConfirmationModal from "@/components/shared/modals/ConfirmationModal";
+import DashboardSkeleton from "@/components/shared/feedback/DashboardSkeleton";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/use-user";
 import ActivityTab from "./components/ActivityTab";

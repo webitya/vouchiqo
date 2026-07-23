@@ -1,7 +1,6 @@
 import { Geist, Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import QueryProvider from "@/components/shared/QueryProvider";
 
 const inter = Inter({
@@ -29,12 +28,11 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <body
-        className="min-h-full flex flex-col bg-brand-surface text-brand-text pb-16 md:pb-0"
+        className="min-h-full flex flex-col bg-brand-surface text-brand-text"
         suppressHydrationWarning
       >
         <QueryProvider>
           {children}
-          <MobileBottomNav />
           <Toaster
             position="bottom-right"
             toastOptions={{

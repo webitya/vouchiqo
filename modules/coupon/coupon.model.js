@@ -81,6 +81,10 @@ const couponSchema = new Schema(
     totalClaims: { type: Number, default: 0 },
     totalRedemptions: { type: Number, default: 0 },
     viewCount: { type: Number, default: 0 },
+    clickCount: { type: Number, default: 0 },
+    impressionCount: { type: Number, default: 0 },
+    copyCodeCount: { type: Number, default: 0 },
+    uniqueCodeGenCount: { type: Number, default: 0 },
 
     expiresAt: {
       type: Date,

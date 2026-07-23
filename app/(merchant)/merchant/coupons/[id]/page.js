@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
+import DashboardSkeleton from "@/components/shared/feedback/DashboardSkeleton";
 import { Button } from "@/components/ui/button";
 import {
   useCoupon,
@@ -14,7 +14,6 @@ import {
   validateExpiryDate,
 } from "@/hooks/use-coupons";
 import { useMerchantProfile } from "@/hooks/use-merchant";
-import { COUPON_CATEGORIES } from "@/utils/constants";
 import CouponForm from "../components/CouponForm";
 
 export default function EditCouponPage() {
@@ -180,7 +179,7 @@ export default function EditCouponPage() {
         role: "merchant",
       }}
     >
-      <div className="flex flex-col gap-6 text-left font-sans w-full max-w-[1300px] mx-auto">
+      <div className="flex flex-col gap-6 text-left font-sans w-full">
         {/* Top Header Bar */}
         <div className="flex items-center justify-between py-1">
           <Button
@@ -188,7 +187,10 @@ export default function EditCouponPage() {
             asChild
             className="p-1.5 h-auto text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 rounded-xl cursor-pointer"
           >
-            <Link href="/merchant/coupons" className="flex items-center gap-2 text-xs font-bold">
+            <Link
+              href="/merchant/coupons"
+              className="flex items-center gap-2 text-xs font-bold"
+            >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Listings</span>
             </Link>

@@ -30,65 +30,39 @@ export default function Sidebar({ role = "customer" }) {
     switch (role) {
       case "admin":
         return [
-          {
-            name: "Dashboard",
-            href: "/admin/dashboard",
-            icon: LayoutDashboard,
-          },
-          {
-            name: "Merchant Approvals",
-            href: "/admin/approvals/merchants",
-            icon: Store,
-          },
-          {
-            name: "Coupon Moderation",
-            href: "/admin/approvals/coupons",
-            icon: CheckSquare,
-          },
+          { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+          { name: "Merchant Management", href: "/admin/merchants", icon: Store },
+          { name: "Offer Verification Queue", href: "/admin/offers", icon: CheckSquare },
+          { name: "Campaign Review Queue", href: "/admin/campaigns/queue", icon: Megaphone },
+          { name: "Campaign Calendar", href: "/admin/campaigns/calendar", icon: Clock },
+          { name: "Live Campaign Monitoring", href: "/admin/campaigns/live", icon: TrendingUp },
+          { name: "Campaign Analytics", href: "/admin/campaigns/analytics", icon: BarChart2 },
+          { name: "Campaign Revenue", href: "/admin/campaigns/revenue", icon: CreditCard },
+          { name: "Festival Package Wizard", href: "/admin/campaigns/festival-wizard", icon: Sparkles },
+          { name: "Email Blast Builder", href: "/admin/campaigns/email-blast-builder", icon: Mail },
+          { name: "Push Notification Builder", href: "/admin/campaigns/push-builder", icon: Bell },
+          { name: "Merchant Demand Report", href: "/admin/merchant-demand", icon: Building2 },
+          { name: "Master Revival Queue", href: "/admin/revivals", icon: AlertCircle },
+          { name: "Ticker Management", href: "/admin/content/ticker", icon: Zap },
           { name: "User Management", href: "/admin/users", icon: Users },
           { name: "Featured Deals", href: "/admin/featured", icon: Tag },
-          { name: "Homepage Ticker", href: "/admin/ticker", icon: TrendingUp },
           { name: "Homepage Banners", href: "/admin/banners", icon: Sliders },
-          {
-            name: "Revival Requests",
-            href: "/admin/revivals",
-            icon: AlertCircle,
-          },
-          {
-            name: "Platform Revenue",
-            href: "/admin/revenue",
-            icon: CreditCard,
-          },
-          {
-            name: "Platform Content",
-            href: "/admin/content",
-            icon: Settings,
-          },
+          { name: "Platform Revenue", href: "/admin/revenue", icon: CreditCard },
         ];
       case "merchant":
         return [
-          {
-            name: "Dashboard",
-            href: "/merchant/dashboard",
-            icon: LayoutDashboard,
-          },
-          { name: "My Coupons", href: "/merchant/coupons", icon: Tag },
-          {
-            name: "Create Coupon",
-            href: "/merchant/coupons/new",
-            icon: PlusCircle,
-          },
-          {
-            name: "Business Analytics",
-            href: "/merchant/analytics",
-            icon: TrendingUp,
-          },
+          { name: "Dashboard", href: "/merchant/dashboard", icon: LayoutDashboard },
+          { name: "My Listings", href: "/merchant/coupons", icon: Tag },
+          { name: "Post New Listing", href: "/merchant/coupons/new", icon: PlusCircle },
+          { name: "Campaigns", href: "/merchant/campaigns", icon: Megaphone },
+          { name: "Create Campaign", href: "/merchant/campaigns/new", icon: PlusCircle },
+          { name: "Revival Queue", href: "/merchant/revivals", icon: AlertCircle },
+          { name: "Analytics", href: "/merchant/analytics", icon: TrendingUp },
           { name: "Business Profile", href: "/merchant/profile", icon: Store },
-          {
-            name: "Billing & Plans",
-            href: "/merchant/billing",
-            icon: CreditCard,
-          },
+          { name: "Billing & Plans", href: "/merchant/billing", icon: CreditCard },
+          { name: "Affiliates", href: "/merchant/affiliates", icon: LinkIcon },
+          { name: "Notifications", href: "/merchant/notifications", icon: Bell },
+          { name: "Account Settings", href: "/merchant/settings", icon: Settings },
         ];
       default:
         return [
@@ -136,15 +110,15 @@ export default function Sidebar({ role = "customer" }) {
             <Link
               key={link.name}
               href={link.href}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold transition-all group ${
+              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all group ${
                 isActive
-                  ? "bg-brand-blue text-white shadow-sm"
-                  : "hover:bg-white/5 hover:text-white"
+                  ? "bg-[#e85d04] text-white shadow-xs"
+                  : "text-slate-300 hover:bg-white/10 hover:text-white font-semibold"
               }`}
             >
               <div className="flex items-center gap-3">
                 <Icon
-                  className={`w-4 h-4 transition-colors ${isActive ? "text-brand-warning" : "text-slate-400 group-hover:text-slate-200"}`}
+                  className={`w-4 h-4 transition-colors ${isActive ? "text-white" : "text-slate-400 group-hover:text-slate-200"}`}
                 />
                 <span>{link.name}</span>
               </div>

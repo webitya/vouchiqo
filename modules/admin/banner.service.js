@@ -71,12 +71,34 @@ export async function getAllBanners() {
     .lean();
 }
 
+function cleanBannerPayload(data) {
+  const cleaned = { ...data };
+  if (
+    !cleaned.merchantId ||
+    String(cleaned.merchantId).trim() === "" ||
+    cleaned.merchantId === "undefined"
+  ) {
+    delete cleaned.merchantId;
+  }
+  if (
+    !cleaned.campaignId ||
+    String(cleaned.campaignId).trim() === "" ||
+    cleaned.campaignId === "undefined"
+  ) {
+    delete cleaned.campaignId;
+  }
+  if (cleaned.logo === "") delete cleaned.logo;
+  if (cleaned.subtitle === "") delete cleaned.subtitle;
+  return cleaned;
+}
+
 /**
  * Create a new banner slide.
  * Invalidates redis cache.
  */
 export async function createBanner(data) {
-  const banner = await PromoBanner.create(data);
+  const payload = cleanBannerPayload(data);
+  const banner = await PromoBanner.create(payload);
   await invalidateBannersCache();
   return banner;
 }
@@ -86,9 +108,10 @@ export async function createBanner(data) {
  * Invalidates redis cache.
  */
 export async function updateBanner(id, data) {
+  const payload = cleanBannerPayload(data);
   const banner = await PromoBanner.findByIdAndUpdate(
     id,
-    { $set: data },
+    { $set: payload },
     { new: true, runValidators: true },
   );
   await invalidateBannersCache();

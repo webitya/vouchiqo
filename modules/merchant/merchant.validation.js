@@ -112,8 +112,6 @@ export const createMerchantSchema = z.object({
     })
     .optional(),
   shopImage: z.string().optional(),
-  docType: z.string().optional(),
-  docFileUrl: z.string().optional(),
 });
 
 export const updateMerchantSchema = createMerchantSchema.partial();

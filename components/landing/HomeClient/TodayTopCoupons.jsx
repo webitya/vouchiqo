@@ -21,7 +21,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import FlatCouponCard from "@/components/shared/FlatCouponCard";
+import FlatCouponCard from "@/components/shared/cards/FlatCouponCard";
 
 export const TodayTopCoupons = ({
   couponTab,

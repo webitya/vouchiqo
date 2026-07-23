@@ -1,7 +1,6 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
 
@@ -15,21 +14,6 @@ export function AuthCard({
   maxWidth = "max-w-4xl",
   children,
 }) {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slides = [
-    "/auth-slide-1.png",
-    "/auth-slide-2.png",
-    "/auth-slide-3.png",
-    "/auth-slide-4.png",
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
-
   const getSubtitles = (title) => {
     switch (title) {
       case "Log In":
@@ -87,20 +71,11 @@ export function AuthCard({
         <div
           className={`w-full ${maxWidth} bg-white dark:bg-zinc-950 border border-brand-border dark:border-zinc-800 rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px] md:min-h-[500px]`}
         >
-          {/* Left Visual Panel: Automatic Fading Slides with NO navigation */}
-          <div className="hidden md:block md:col-span-5 relative overflow-hidden bg-slate-900 select-none">
-            {slides.map((src, index) => (
-              <div
-                key={src}
-                className={`absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out ${
-                  index === currentSlide
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-105 pointer-events-none"
-                }`}
-                style={{ backgroundImage: `url('${src}')` }}
-              />
-            ))}
-          </div>
+          {/* Left Visual Panel: Blue & White theme, clean with NO text overlays */}
+          <div
+            className="hidden md:flex md:col-span-5 relative overflow-hidden bg-cover bg-center select-none"
+            style={{ backgroundImage: "url('/auth-blue-bg.png')" }}
+          />
 
           {/* Right Form Panel: Compact, clean sans typography */}
           <div className="col-span-1 md:col-span-7 bg-white dark:bg-zinc-950 p-6 md:p-8 flex flex-col">

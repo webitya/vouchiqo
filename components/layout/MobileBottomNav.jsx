@@ -1,94 +1,78 @@
 "use client";
 
-import { Flame, Home, LayoutGrid, MapPin, Store } from "lucide-react";
+import { LayoutDashboard, Layers, PlusCircle, Megaphone, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
 
-  // Paths where the mobile bottom navigation should be hidden
-  const excludedPrefixes = [
-    "/admin",
-    "/merchant",
-    "/login",
-    "/register",
-    "/reset-password",
-  ];
-  const isExcluded = excludedPrefixes.some((prefix) =>
-    pathname.startsWith(prefix),
-  );
+  // Only render on merchant routes
+  if (!pathname.startsWith("/merchant")) {
+    return null;
+  }
 
-  if (isExcluded) return null;
-
-  const navItems = [
+  const tabs = [
     {
-      href: "/brands",
-      icon: Store,
-      label: "Brands",
-      isActive:
-        pathname.startsWith("/brands") || pathname.startsWith("/brand/"),
+      label: "Dashboard",
+      url: "/merchant/dashboard",
+      icon: LayoutDashboard,
     },
     {
-      href: "/categories",
-      icon: LayoutGrid,
-      label: "Categories",
-      isActive:
-        pathname.startsWith("/categories") || pathname.startsWith("/category/"),
+      label: "My Listings",
+      url: "/merchant/coupons",
+      icon: Layers,
     },
     {
-      href: "/",
-      icon: Home,
-      label: "Home",
-      isActive: pathname === "/",
+      label: "Post New",
+      url: "/merchant/coupons/new",
+      icon: PlusCircle,
+      isCta: true,
     },
     {
-      href: "/campaigns",
-      icon: Flame,
-      label: "Trending",
-      isActive: pathname.startsWith("/campaigns"),
+      label: "Campaigns",
+      url: "/merchant/campaigns",
+      icon: Megaphone,
     },
     {
-      href: "/nearby-offers",
-      icon: MapPin,
-      label: "Nearby",
-      isActive: pathname.startsWith("/nearby-offers"),
+      label: "Settings",
+      url: "/merchant/profile",
+      icon: Settings,
     },
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200/80 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] pb-[env(safe-area-inset-bottom,0px)]">
-      <div className="flex h-16 items-center justify-around px-2">
-        {navItems.map((item, idx) => {
-          const Icon = item.icon;
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1A3C5E] border-t border-slate-700/60 shadow-2xl px-2 py-1.5 flex items-center justify-around">
+      {tabs.map((t) => {
+        const Icon = t.icon;
+        const isActive = pathname === t.url || (t.url !== "/merchant/dashboard" && pathname.startsWith(t.url));
+
+        if (t.isCta) {
           return (
             <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center justify-center flex-1 h-full select-none transition-all duration-200 ${
-                item.isActive
-                  ? "text-slate-800 font-semibold"
-                  : "text-slate-400 font-medium hover:text-slate-600"
-              }`}
+              key={t.label}
+              href={t.url}
+              className="flex flex-col items-center justify-center p-1.5 rounded-xl bg-[#e85d04] text-white shadow-md active:scale-95 transition-all -mt-3"
             >
-              <div className="relative flex items-center justify-center">
-                <Icon
-                  className={`h-5 w-5 stroke-[1.8] transition-all duration-200 ${
-                    item.isActive ? "scale-110" : ""
-                  } ${item.label === "Trending" ? "animate-trending-glow" : ""}`}
-                />
-              </div>
-              <span
-                className={`text-[10px] mt-1 tracking-tight ${
-                  item.label === "Trending" ? "animate-trending-glow" : ""
-                }`}
-              >
-                {item.label}
-              </span>
+              <Icon className="w-5 h-5 stroke-[2.5]" />
+              <span className="text-[10px] font-black tracking-tight">{t.label}</span>
             </Link>
           );
-        })}
-      </div>
+        }
+
+        return (
+          <Link
+            key={t.label}
+            href={t.url}
+            className={`flex flex-col items-center justify-center p-1 rounded-lg transition-all ${
+              isActive ? "text-orange-400 font-bold" : "text-slate-300 hover:text-white"
+            }`}
+          >
+            <Icon className="w-4.5 h-4.5" />
+            <span className="text-[10px] font-semibold mt-0.5">{t.label}</span>
+          </Link>
+        );
+      })}
     </div>
   );
 }

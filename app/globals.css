@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -53,7 +53,7 @@
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
 
-  /* â”€â”€â”€ GrabOn Design System Variables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ─── GrabOn Design System Variables ───────────────────────────────────── */
   /* Colors */
   --_g-default-bg: #f7f7f8;
   --_base-white: #fff;
@@ -206,11 +206,31 @@
 body {
   background-color: var(--brand-surface);
   color: var(--brand-text);
-  /* GrabOn primary font â€” Nunito Sans with Inter as fallback */
+  /* GrabOn primary font — Nunito Sans with Inter as fallback */
   font-family: "Nunito Sans", var(--font-sans), sans-serif;
 }
 
 /* Signature Gradient Utilities */
+
+/* ─── Merchant Tour Utilities ─────────────────────────────────────────────── */
+
+/* Highlighted SIDEBAR item during tour */
+[data-tour-active="sidebar"] {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-radius: 8px !important;
+  position: relative;
+  z-index: 61 !important;
+}
+
+/* Highlighted CONTENT element during tour — orange outline glow */
+[data-tour-active="content"] {
+  outline: 2px solid rgba(232, 93, 4, 0.65) !important;
+  outline-offset: 6px !important;
+  border-radius: 12px !important;
+  position: relative;
+  z-index: 61 !important;
+}
+
 .bg-brand-gradient {
   background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
   background-size: 200% auto;
@@ -506,7 +526,7 @@ body {
   }
 }
 
-/* â”€â”€â”€ Premium UX UI Animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ─── Premium UX UI Animations ─────────────────── */
 
 /* 1. Keyframes */
 @keyframes fadeInUp {
@@ -779,7 +799,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* â”€â”€â”€ GrabOn Header Replication Styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ─── GrabOn Header Replication Styles ─────────────────── */
 
 .top-header-banner {
   display: flex;
@@ -878,7 +898,7 @@ body {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
-/* â”€â”€â”€ Search Overlay Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ─── Search Overlay Modal ─────────────────── */
 .g-search-open {
   position: fixed;
   top: 0;
@@ -1045,7 +1065,7 @@ body {
   color: #e11d48;
 }
 
-/* â”€â”€â”€ Predefined Offers Grid â”€â”€â”€ */
+/* ─── Predefined Offers Grid ─── */
 .fresh-offer-grid {
   display: flex;
   flex-direction: column;
@@ -1135,7 +1155,7 @@ body {
   overflow: hidden;
 }
 
-/* â”€â”€â”€ Flag & Notification Dropdowns â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ─── Flag & Notification Dropdowns ─────────────────── */
 #countryflag,
 #countryflagmobile {
   position: relative;
@@ -1300,7 +1320,7 @@ body {
   font-weight: 500;
 }
 
-/* â”€â”€â”€ Login Button â”€â”€â”€ */
+/* ─── Login Button ─── */
 .g-login {
   display: flex;
   align-items: center;
@@ -1328,7 +1348,7 @@ body {
   align-items: center;
 }
 
-/* â”€â”€â”€ Mobile Bell Notification Badge â”€â”€â”€ */
+/* ─── Mobile Bell Notification Badge ─── */
 .g-notify {
   display: flex;
   align-items: center;
@@ -1361,7 +1381,7 @@ body {
   border: 1.5px solid #fff;
 }
 
-/* â”€â”€â”€ Responsive Media Queries for hidden-lg / visible-lg â”€â”€â”€ */
+/* ─── Responsive Media Queries for hidden-lg / visible-lg ─── */
 @media (min-width: 1024px) {
   .hidden-lg {
     display: none !important;
@@ -1400,7 +1420,7 @@ body {
   transition: all 0.2s;
 }
 
-/* â”€â”€â”€ Secondary Nav menu â”€â”€â”€ */
+/* ─── Secondary Nav menu ─── */
 .g-nav-menu {
   width: 100%;
   background: #fff;
@@ -1441,7 +1461,7 @@ body {
   border-bottom-color: #2563eb;
 }
 
-/* â”€â”€â”€ Mobile drawer navigation â”€â”€â”€ */
+/* ─── Mobile drawer navigation ─── */
 .g-login-m {
   position: fixed;
   top: 0;
@@ -1610,7 +1630,7 @@ body {
   background: #f8fafc;
 }
 
-/* â”€â”€â”€ Reusable Sliding Carousel CSS â”€â”€â”€ */
+/* ─── Reusable Sliding Carousel CSS ─── */
 .vouchiqo-carousel-viewport {
   overflow: hidden;
   width: 100%;
@@ -1642,33 +1662,4 @@ body {
   background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
   background-size: 200% 100%;
   animation: shimmer-shine 1.5s infinite linear;
-}
-
-/* Custom infinite glow and color shifting animation for Trending icon */
-@keyframes trending-glow-shift {
-  0% {
-    color: #f97316; /* orange-500 */
-  }
-  33% {
-    color: #ef4444; /* red-500 */
-  }
-  66% {
-    color: #ec4899; /* pink-500 */
-  }
-  100% {
-    color: #f97316;
-  }
-}
-
-.animate-trending-glow {
-  animation: trending-glow-shift 2.5s infinite linear;
-}
-
-/* ── Marquee scroll animation (LatestArticles) ─────────────────── */
-@keyframes marquee-horizontal-ltr {
-  0%   { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-}
-.animate-marquee-horizontal-ltr {
-  animation: marquee-horizontal-ltr 30s linear infinite;
 }

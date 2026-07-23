@@ -1,7 +1,7 @@
 "use client";
 
 import { RefreshCw, Search, Star, StarOff } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ export default function FeaturedDeals() {
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchCoupons = async () => {
+  const fetchCoupons = useCallback(async () => {
     try {
       setLoading(true);
       const res = await fetch("/api/admin/coupons");
@@ -37,11 +37,11 @@ export default function FeaturedDeals() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchCoupons();
-  }, []);
+  }, [fetchCoupons]);
 
   const handleToggleFeatured = async (couponId, isFeatured) => {
     try {

@@ -118,16 +118,10 @@ function PopularOfferCard({ coupon }) {
           </p>
         </div>
 
-        {/* "CLAIM NOW" button — only visible on SM/MD, hidden on desktop */}
-        <div className="po-card__grab md:hidden mt-2">
-          <span
-            className="block w-full rounded-md py-1.5 text-center text-[11px] font-bold uppercase tracking-wider text-white hover:brightness-110 transition-all"
-            style={{
-              backgroundColor: "#3E80DD",
-              boxShadow: "0 2px 8px rgba(62,128,221,0.3)",
-            }}
-          >
-            Claim now
+        {/* "GRAB NOW" text link — only visible on mobile/small screens (< md) */}
+        <div className="po-card__grab md:hidden mt-1.5 pt-1">
+          <span className="text-left text-[12px] font-black uppercase tracking-wider text-[#3E80DD] hover:underline block">
+            GRAB NOW
           </span>
         </div>
 
@@ -139,13 +133,13 @@ function PopularOfferCard({ coupon }) {
             <button
               type="button"
               aria-label="Redeem Now"
-              className="po-card__redeem-btn w-full rounded-md py-2 text-center text-[12px] font-bold uppercase tracking-wider text-white hover:brightness-110 transition-all"
+              className="po-card__redeem-btn w-full rounded-md py-2 text-center text-[12px] font-bold uppercase tracking-wider text-white hover:brightness-110 transition-all cursor-pointer"
               style={{
                 backgroundColor: "#3E80DD",
                 boxShadow: "0 2px 8px rgba(62,128,221,0.3)",
               }}
             >
-              Redeem now
+              Claim now
             </button>
           </div>
         </div>

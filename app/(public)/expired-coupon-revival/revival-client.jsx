@@ -371,8 +371,13 @@ export default function ExpiredCouponRevival() {
                         </div>
                       )}
                       <div>
-                        <label className={labelCls}>Offer Description *</label>
-                        <input className={inputCls} placeholder="e.g. 20% off all bathroom tiles, BOGO coffee" value={form.description} onChange={(e) => f("description", e.target.value)} />
+                        <div className="flex justify-between items-center mb-1">
+                          <label className={labelCls}>Offer Description * (Max 100 Characters)</label>
+                          <span className="text-[10px] text-gray-400 font-medium">
+                            {form.description.length}/100
+                          </span>
+                        </div>
+                        <input className={inputCls} maxLength={100} placeholder="e.g. 20% off all bathroom tiles, BOGO coffee" value={form.description} onChange={(e) => f("description", e.target.value)} />
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
@@ -448,7 +453,10 @@ export default function ExpiredCouponRevival() {
                             className="w-3.5 h-3.5 mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 flex-shrink-0"
                           />
                           <span className="text-[11px] text-gray-600 leading-relaxed font-normal">
-                            I understand Vouchiqo will try to get this offer reactivated, but cannot guarantee a working code. If unavailable, I'll be notified and may be offered a similar active offer instead.
+                            I understand Vouchiqo will attempt to negotiate with the merchant to revive or replace this offer. Revival is not guaranteed, and I may receive an alternative offer if the original cannot be restored. See our{" "}
+                            <a href="/privacy#revival-data-clause" target="_blank" className="text-blue-600 underline font-semibold">
+                              Privacy Policy (Section 6: Merchant Demand Data Usage)
+                            </a>.
                           </span>
                         </label>
                       </div>

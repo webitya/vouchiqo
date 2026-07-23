@@ -28,7 +28,7 @@ export const GET = asyncHandler(async (request) => {
 
 /**
  * POST /api/campaigns
- * Creates a campaign for the authenticated merchant following the 6-section spec.
+ * Creates a campaign for the authenticated merchant.
  */
 export const POST = asyncHandler(async (request) => {
   await connectDB();
@@ -37,7 +37,6 @@ export const POST = asyncHandler(async (request) => {
   const merchant = await Merchant.findOne({ authId: user.id });
   if (!merchant) throw new NotFoundError("Merchant profile");
 
-  // Gate campaigns to Growth+ plans unless add-on is present
   const body = await request.json();
   if (merchant.plan === "starter" && !body.isAddonPurchased) {
     throw new ForbiddenError(
@@ -96,4 +95,42 @@ export const POST = asyncHandler(async (request) => {
   });
 
   return created(campaign, "Campaign submitted for review successfully");
+});
+
+/**
+ * PUT /api/campaigns?id=...
+ * Updates an existing campaign.
+ */
+export const PUT = asyncHandler(async (request) => {
+  await connectDB();
+  await requireRole(request, ROLES.MERCHANT, ROLES.ADMIN);
+
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
+  if (!id) throw new Error("Campaign ID is required");
+
+  const body = await request.json();
+  const campaign = await Campaign.findByIdAndUpdate(
+    id,
+    { $set: body },
+    { new: true }
+  );
+
+  return ok(campaign, "Campaign updated successfully");
+});
+
+/**
+ * DELETE /api/campaigns?id=...
+ * Deletes a campaign by ID.
+ */
+export const DELETE = asyncHandler(async (request) => {
+  await connectDB();
+  await requireRole(request, ROLES.MERCHANT, ROLES.ADMIN);
+
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
+  if (!id) throw new Error("Campaign ID is required");
+
+  await Campaign.deleteOne({ _id: id });
+  return ok(null, "Campaign deleted successfully");
 });

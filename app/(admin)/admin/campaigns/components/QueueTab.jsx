@@ -1,20 +1,6 @@
 "use client";
 
-import {
-  AlertTriangle,
-  Calendar,
-  Check,
-  CheckCircle2,
-  Clock,
-  Eye,
-  FileText,
-  Filter,
-  Layers,
-  MessageSquare,
-  ShieldCheck,
-  Sparkles,
-  Zap,
-} from "lucide-react";
+import { Eye, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Table,
@@ -53,14 +38,17 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
   const calculatePriorityScore = (c) => {
     let score = 0;
     if (c.type === "festival") score += 30;
-    if (c.targeting?.addOns?.length > 0) score += c.targeting.addOns.length * 10;
-    if (c.startDate && new Date(c.startDate) - new Date() < 72 * 3600 * 1000) score += 25;
-    if (c.merchantId?.plan === "pro" || c.merchantId?.plan === "enterprise") score += 15;
+    if (c.targeting?.addOns?.length > 0)
+      score += c.targeting.addOns.length * 10;
+    if (c.startDate && new Date(c.startDate) - Date.now() < 72 * 3600 * 1000)
+      score += 25;
+    if (c.merchantId?.plan === "pro" || c.merchantId?.plan === "enterprise")
+      score += 15;
     return score;
   };
 
   const sortedCampaigns = [...campaigns].sort(
-    (a, b) => calculatePriorityScore(b) - calculatePriorityScore(a)
+    (a, b) => calculatePriorityScore(b) - calculatePriorityScore(a),
   );
 
   const openReviewModal = (camp) => {
@@ -74,11 +62,16 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
   };
 
   const isChecklistComplete =
-    chkCodeValidity && chkTermsAccuracy && chkMerchantLegitimacy && chkCompliance;
+    chkCodeValidity &&
+    chkTermsAccuracy &&
+    chkMerchantLegitimacy &&
+    chkCompliance;
 
   const handleApprove = () => {
     if (!isChecklistComplete) {
-      toast.error("You must complete all 4 Verification Checkpoints before approving");
+      toast.error(
+        "You must complete all 4 Verification Checkpoints before approving",
+      );
       return;
     }
     onUpdateStatus(selectedCamp._id, "Approved — Scheduling", actionNotes);
@@ -88,7 +81,9 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
 
   const handleRequestChanges = () => {
     if (actionNotes.trim().length < 30) {
-      toast.error("Requesting changes requires feedback of at least 30 characters");
+      toast.error(
+        "Requesting changes requires feedback of at least 30 characters",
+      );
       return;
     }
     onUpdateStatus(selectedCamp._id, "Changes Requested", actionNotes);
@@ -115,30 +110,49 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
               Campaign Review Queue
             </h3>
             <p className="text-xs text-slate-500 font-medium mt-0.5">
-              Review incoming submissions, complete 4-point verification &amp; decide
+              Review incoming submissions, complete 4-point verification &amp;
+              decide
             </p>
           </div>
           <Badge className="bg-orange-50 text-[#e85d04] border-orange-200 font-bold text-xs px-2.5 py-1">
-            {campaigns.filter((c) => c.status === "pending_review").length} Pending
+            {campaigns.filter((c) => c.status === "pending_review").length}{" "}
+            Pending
           </Badge>
         </div>
 
         <Table>
           <TableHeader>
             <TableRow className="border-slate-100 bg-slate-50/60">
-              <TableHead className="text-[11px] font-extrabold text-slate-600">Priority</TableHead>
-              <TableHead className="text-[11px] font-extrabold text-slate-600">Merchant</TableHead>
-              <TableHead className="text-[11px] font-extrabold text-slate-600">Campaign Name</TableHead>
-              <TableHead className="text-[11px] font-extrabold text-slate-600">Type</TableHead>
-              <TableHead className="text-[11px] font-extrabold text-slate-600">Plan</TableHead>
-              <TableHead className="text-[11px] font-extrabold text-slate-600">Status</TableHead>
-              <TableHead className="text-[11px] font-extrabold text-slate-600 text-right">Action</TableHead>
+              <TableHead className="text-[11px] font-extrabold text-slate-600">
+                Priority
+              </TableHead>
+              <TableHead className="text-[11px] font-extrabold text-slate-600">
+                Merchant
+              </TableHead>
+              <TableHead className="text-[11px] font-extrabold text-slate-600">
+                Campaign Name
+              </TableHead>
+              <TableHead className="text-[11px] font-extrabold text-slate-600">
+                Type
+              </TableHead>
+              <TableHead className="text-[11px] font-extrabold text-slate-600">
+                Plan
+              </TableHead>
+              <TableHead className="text-[11px] font-extrabold text-slate-600">
+                Status
+              </TableHead>
+              <TableHead className="text-[11px] font-extrabold text-slate-600 text-right">
+                Action
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {sortedCampaigns.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-xs text-slate-400 font-medium">
+                <TableCell
+                  colSpan={7}
+                  className="text-center py-8 text-xs text-slate-400 font-medium"
+                >
                   No campaign submissions currently in queue.
                 </TableCell>
               </TableRow>
@@ -146,7 +160,10 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
               sortedCampaigns.map((camp) => {
                 const priority = calculatePriorityScore(camp);
                 return (
-                  <TableRow key={camp._id} className="border-slate-100 hover:bg-slate-50/50">
+                  <TableRow
+                    key={camp._id}
+                    className="border-slate-100 hover:bg-slate-50/50"
+                  >
                     <TableCell>
                       <Badge className="bg-violet-50 text-violet-700 border-violet-200 font-black text-[10px]">
                         +{priority} pts
@@ -159,7 +176,10 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
                       {camp.name}
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className="capitalize text-[10px] font-bold">
+                      <Badge
+                        variant="secondary"
+                        className="capitalize text-[10px] font-bold"
+                      >
                         {camp.type}
                       </Badge>
                     </TableCell>
@@ -172,8 +192,8 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
                           camp.status === "pending_review"
                             ? "bg-amber-100 text-amber-800"
                             : camp.status === "Approved — Scheduling"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-emerald-100 text-emerald-800"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-emerald-100 text-emerald-800"
                         }`}
                       >
                         {camp.status}
@@ -201,7 +221,8 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
         <DialogContent className="max-w-4xl p-0 overflow-hidden rounded-2xl bg-white border-0 z-[400]">
           <DialogHeader className="p-4 bg-slate-900 text-white flex flex-row items-center justify-between">
             <DialogTitle className="text-sm font-bold flex items-center gap-2">
-              <Eye className="w-4 h-4 text-[#e85d04]" /> Review Campaign Submission
+              <Eye className="w-4 h-4 text-[#e85d04]" /> Review Campaign
+              Submission
             </DialogTitle>
           </DialogHeader>
 
@@ -214,30 +235,103 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
                 </h4>
 
                 <div className="space-y-2">
-                  <p><span className="font-semibold text-slate-500">Merchant:</span> <strong className="text-slate-900">{selectedCamp.merchantId?.businessName}</strong></p>
-                  <p><span className="font-semibold text-slate-500">Campaign Name:</span> <strong className="text-slate-900">{selectedCamp.name}</strong></p>
-                  <p><span className="font-semibold text-slate-500">Type &amp; Objective:</span> <strong className="text-slate-900 uppercase">{selectedCamp.type} ({selectedCamp.objective})</strong></p>
-                  <p><span className="font-semibold text-slate-500">Promo Code:</span> <strong className="font-mono text-[#e85d04] font-black">{selectedCamp.offerDetails?.code || selectedCamp.code}</strong></p>
-                  <p><span className="font-semibold text-slate-500">Headline:</span> <span className="text-slate-800">{selectedCamp.headline || selectedCamp.name}</span></p>
-                  <p><span className="font-semibold text-slate-500">Description:</span> <span className="text-slate-800">{selectedCamp.description || "N/A"}</span></p>
-                  <p><span className="font-semibold text-slate-500">Schedule:</span> <span className="text-slate-800">{selectedCamp.startDate} to {selectedCamp.endDate}</span></p>
+                  <p>
+                    <span className="font-semibold text-slate-500">
+                      Merchant:
+                    </span>{" "}
+                    <strong className="text-slate-900">
+                      {selectedCamp.merchantId?.businessName}
+                    </strong>
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-500">
+                      Campaign Name:
+                    </span>{" "}
+                    <strong className="text-slate-900">
+                      {selectedCamp.name}
+                    </strong>
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-500">
+                      Type &amp; Objective:
+                    </span>{" "}
+                    <strong className="text-slate-900 uppercase">
+                      {selectedCamp.type} ({selectedCamp.objective})
+                    </strong>
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-500">
+                      Promo Code:
+                    </span>{" "}
+                    <strong className="font-mono text-[#e85d04] font-black">
+                      {selectedCamp.offerDetails?.code || selectedCamp.code}
+                    </strong>
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-500">
+                      Headline:
+                    </span>{" "}
+                    <span className="text-slate-800">
+                      {selectedCamp.headline || selectedCamp.name}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-500">
+                      Description:
+                    </span>{" "}
+                    <span className="text-slate-800">
+                      {selectedCamp.description || "N/A"}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-500">
+                      Schedule:
+                    </span>{" "}
+                    <span className="text-slate-800">
+                      {selectedCamp.startDate} to {selectedCamp.endDate}
+                    </span>
+                  </p>
                 </div>
               </div>
 
               {/* RIGHT PANEL: ADMIN ACTION PANEL (45%) */}
               <div className="md:col-span-5 p-6 space-y-5 bg-white text-xs">
                 <h4 className="font-bold text-slate-900 uppercase tracking-wider text-xs border-b border-slate-100 pb-2 flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Mandatory 4-Point Checklist
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Mandatory
+                  4-Point Checklist
                 </h4>
 
                 <div className="space-y-2.5">
                   {[
-                    { id: "code", label: "Check 1: Code Validity (tested)", state: chkCodeValidity, set: setChkCodeValidity },
-                    { id: "terms", label: "Check 2: Terms & Cap Accuracy", state: chkTermsAccuracy, set: setChkTermsAccuracy },
-                    { id: "legit", label: "Check 3: Merchant Legitimacy Active", state: chkMerchantLegitimacy, set: setChkMerchantLegitimacy },
-                    { id: "comp", label: "Check 4: Compliance & Claims True", state: chkCompliance, set: setChkCompliance },
+                    {
+                      id: "code",
+                      label: "Check 1: Code Validity (tested)",
+                      state: chkCodeValidity,
+                      set: setChkCodeValidity,
+                    },
+                    {
+                      id: "terms",
+                      label: "Check 2: Terms & Cap Accuracy",
+                      state: chkTermsAccuracy,
+                      set: setChkTermsAccuracy,
+                    },
+                    {
+                      id: "legit",
+                      label: "Check 3: Merchant Legitimacy Active",
+                      state: chkMerchantLegitimacy,
+                      set: setChkMerchantLegitimacy,
+                    },
+                    {
+                      id: "comp",
+                      label: "Check 4: Compliance & Claims True",
+                      state: chkCompliance,
+                      set: setChkCompliance,
+                    },
                   ].map((chk) => (
-                    <label key={chk.id} className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-slate-50/50 cursor-pointer font-bold text-slate-800">
+                    <label
+                      key={chk.id}
+                      className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-slate-50/50 cursor-pointer font-bold text-slate-800"
+                    >
                       <Checkbox
                         checked={chk.state}
                         onCheckedChange={(val) => chk.set(!!val)}
@@ -248,7 +342,9 @@ export default function QueueTab({ campaigns = [], onUpdateStatus }) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label className="font-bold text-xs text-slate-800">Admin Notes / Feedback (Required for Changes)</Label>
+                  <Label className="font-bold text-xs text-slate-800">
+                    Admin Notes / Feedback (Required for Changes)
+                  </Label>
                   <Textarea
                     rows={3}
                     placeholder="Min 30 chars for requested changes..."

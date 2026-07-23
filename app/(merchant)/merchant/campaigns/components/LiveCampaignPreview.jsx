@@ -13,7 +13,10 @@ export default function LiveCampaignPreview({ campaignData, merchantName }) {
           <span className="flex items-center gap-1.5 text-xs font-bold text-slate-800 uppercase tracking-wider">
             <Eye className="w-4 h-4 text-[#e85d04]" /> Live Deal Card Preview
           </span>
-          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200/60 text-[10px] font-bold">
+          <Badge
+            variant="outline"
+            className="bg-emerald-50 text-emerald-700 border-emerald-200/60 text-[10px] font-bold"
+          >
             Live Preview
           </Badge>
         </div>
@@ -44,20 +47,29 @@ export default function LiveCampaignPreview({ campaignData, merchantName }) {
             {/* Title & Sub-headline */}
             <div>
               <h4 className="text-sm font-black text-slate-900 leading-snug">
-                {campaignData.headline || campaignData.name || "🔥 Flat 20% off all orders during Summer Sale"}
+                {campaignData.headline ||
+                  campaignData.name ||
+                  "🔥 Flat 20% off all orders during Summer Sale"}
               </h4>
               <p className="text-[11px] text-slate-500 font-medium mt-1 line-clamp-2">
-                {campaignData.subHeadline || campaignData.description || "Valid on all in-store billing. Show claim code at counter."}
+                {campaignData.subHeadline ||
+                  campaignData.description ||
+                  "Valid on all in-store billing. Show claim code at counter."}
               </p>
             </div>
 
             {/* Promo Code & Discount Pill */}
             <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
               <span className="text-slate-500 font-semibold">
-                Code: <span className="font-mono text-slate-900 font-bold uppercase">{campaignData.code || "SAVE20"}</span>
+                Code:{" "}
+                <span className="font-mono text-slate-900 font-bold uppercase">
+                  {campaignData.code || "SAVE20"}
+                </span>
               </span>
               <span className="text-[#e85d04] font-black">
-                {campaignData.discountValue ? `${campaignData.discountValue}% OFF` : "SPECIAL DEAL"}
+                {campaignData.discountValue
+                  ? `${campaignData.discountValue}% OFF`
+                  : "SPECIAL DEAL"}
               </span>
             </div>
 
@@ -67,14 +79,18 @@ export default function LiveCampaignPreview({ campaignData, merchantName }) {
                 <span className="flex items-center gap-1.5 text-[11px]">
                   <Clock className="w-3.5 h-3.5 text-amber-600" /> Ends In:
                 </span>
-                <span className="font-mono text-amber-900 text-[11px]">23h : 59m : 45s</span>
+                <span className="font-mono text-amber-900 text-[11px]">
+                  23h : 59m : 45s
+                </span>
               </div>
             )}
 
             {/* Attached Listings Badge */}
             <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 font-semibold">
               <span>Attached Offers:</span>
-              <span className="text-slate-800 font-bold">{campaignData.couponIds?.length || 0} listings</span>
+              <span className="text-slate-800 font-bold">
+                {campaignData.couponIds?.length || 0} listings
+              </span>
             </div>
 
             {/* Action button preview */}

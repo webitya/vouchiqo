@@ -84,42 +84,85 @@ export async function createCoupon(authId, data) {
  * @param {string} couponId
  */
 export async function getCouponById(couponId) {
-  // If it's a mock coupon ID, construct it dynamically to prevent CastError and allow mock brand navigation!
+  // If it's a mock or demo coupon ID, construct/return it dynamically to prevent CastError
   if (typeof couponId === "string" && !mongoose.isValidObjectId(couponId)) {
-    if (couponId.startsWith("mock_cpn_")) {
+    const demoMap = {
+      "cpn-1": {
+        _id: "cpn-1",
+        title: "20% OFF Mega Festive Sale",
+        code: "FESTIVE20",
+        discountValue: 20,
+        discountType: "percentage",
+        category: "food",
+        description: "20% discount on all mega festive menu orders.",
+        status: "active",
+        expiresAt: new Date(Date.now() + 86400000 * 30),
+      },
+      "cpn-2": {
+        _id: "cpn-2",
+        title: "Flat ₹500 Cashback on Dining",
+        code: "DINING500",
+        discountValue: 500,
+        discountType: "fixed",
+        category: "food",
+        description: "Get flat ₹500 off on total dining bill above ₹2,000.",
+        status: "active",
+        expiresAt: new Date(Date.now() + 86400000 * 45),
+      },
+      "cpn-3": {
+        _id: "cpn-3",
+        title: "Buy 1 Get 1 Free Appetizers",
+        code: "BOGOAPP",
+        discountValue: 100,
+        discountType: "freebie",
+        category: "food",
+        description: "Buy any main course and get 1 appetizer free.",
+        status: "inactive",
+        expiresAt: new Date(Date.now() + 86400000 * 15),
+      },
+    };
+
+    if (demoMap[couponId]) {
+      return demoMap[couponId];
+    }
+
+    if (couponId.startsWith("mock_cpn_") || couponId.startsWith("cpn-")) {
       let slug = "";
       let isExpired = false;
       let couponIndex = 1;
-      
+
       if (couponId.startsWith("mock_cpn_exp_")) {
         isExpired = true;
         const parts = couponId.substring("mock_cpn_exp_".length).split("_");
-        couponIndex = parseInt(parts.pop()) || 1;
+        couponIndex = parseInt(parts.pop(), 10) || 1;
         slug = parts.join("_");
       } else {
         const parts = couponId.substring("mock_cpn_".length).split("_");
-        couponIndex = parseInt(parts.pop()) || 1;
+        couponIndex = parseInt(parts.pop(), 10) || 1;
         slug = parts.join("_");
       }
-      
+
       // Construct a mock merchant with a mock ID
       let hexMerchantId = "";
       for (let i = 0; i < Math.min(slug.length, 12); i++) {
         hexMerchantId += slug.charCodeAt(i).toString(16).padStart(2, "0");
       }
       hexMerchantId = hexMerchantId.padEnd(24, "0").slice(0, 24);
-      
+
       const titleName = slug
         .split("-")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(" ");
-        
+
       const mockMerchant = {
         _id: hexMerchantId,
         businessName: titleName,
         slug: slug,
         logo: "",
-        website: slug.toLowerCase() === "oneplus" ? "" : `https://www.${slug.toLowerCase()}.com`,
+        website:
+          slug.toLowerCase() === "oneplus"
+            ? ""
+            : `https://www.${slug.toLowerCase()}.com`,
         isVerified: true,
         location: {
           address: "Shop 12, Ground Floor, DLF Mall of India",
@@ -127,7 +170,7 @@ export async function getCouponById(couponId) {
           state: "Uttar Pradesh",
           pincode: "201301",
           country: "IN",
-        }
+        },
       };
 
       const tomorrow = new Date();
@@ -140,7 +183,7 @@ export async function getCouponById(couponId) {
       let couponCode = "";
       let discVal = 15;
       let discType = "percentage";
-      
+
       if (isExpired) {
         couponTitle = `Expired Offer: Flat 20% OFF Sitewide`;
         couponDesc = `Grab flat 20% discount on all purchases during the special weekend flash deal.`;
@@ -210,7 +253,7 @@ export async function getCouponById(couponId) {
         status: isExpired ? "expired" : "active",
       };
     }
-    
+
     throw new NotFoundError("Coupon");
   }
 
@@ -373,6 +416,10 @@ export async function getTrendingCoupons() {
 export async function updateCoupon(couponId, authId, data) {
   const merchant = await Merchant.findOne({ authId });
   if (!merchant) throw new ForbiddenError("Merchant profile not found");
+
+  if (typeof couponId === "string" && !mongoose.isValidObjectId(couponId)) {
+    return { _id: couponId, ...data };
+  }
 
   const coupon = await Coupon.findOne({
     _id: couponId,
