@@ -157,9 +157,9 @@ export function OnboardingModal({
     if (!gender) {
       return toast.error("Please select a gender preference to continue.");
     }
-    if (selectedInterests.length < 2) {
+    if (selectedInterests.length < 3) {
       return toast.error(
-        "Please select two or more category interests to proceed.",
+        "Please select three or more category interests to proceed.",
       );
     }
 
@@ -195,7 +195,7 @@ export function OnboardingModal({
     }
   };
 
-  const isContinueEnabled = gender && selectedInterests.length >= 2;
+  const isContinueEnabled = gender && selectedInterests.length >= 3;
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
@@ -203,19 +203,13 @@ export function OnboardingModal({
         showCloseButton={false}
         className="w-[calc(100%-1.5rem)] sm:max-w-[540px] md:max-w-[620px] lg:max-w-[700px] border border-slate-200 bg-white p-4 sm:p-5 rounded-2xl shadow-xl overflow-y-auto max-h-[92vh] transition-all outline-none text-left font-sans z-[350]"
       >
-        {/* Header with Welcome Banner */}
+        {/* Header with Welcome Message */}
         <DialogHeader className="space-y-1 text-center pb-1">
-          <Badge
-            variant="outline"
-            className="bg-orange-50 text-[#e85d04] border-orange-200 text-[10px] font-semibold px-2.5 py-0.5 mx-auto rounded-full w-fit flex items-center gap-1"
-          >
-            <Sparkles className="w-3 h-3 text-[#e85d04]" /> Welcome to Vouchiqo!
-          </Badge>
           <DialogTitle className="text-lg sm:text-xl font-bold tracking-tight text-slate-900">
-            Personalize Your Deals Feed
+            Welcome to Vouchiqo!
           </DialogTitle>
           <DialogDescription className="text-xs text-slate-500 font-normal max-w-md mx-auto leading-tight">
-            Select your shopping preferences to discover customized discounts &amp; regional deals.
+            Welcome to Vouchiqo! Select your shopping preferences to discover customized discounts &amp; regional deals.
           </DialogDescription>
         </DialogHeader>
 
@@ -223,8 +217,8 @@ export function OnboardingModal({
           {/* Section 1: Shopping Preference (Gender) using Lucide Icons */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label className="flex items-center gap-1.5 text-xs font-semibold text-slate-900 uppercase tracking-wider">
-                <User className="w-3.5 h-3.5 text-[#e85d04]" /> 1. Who are you shopping for? *
+              <Label className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
+                1. WHO ARE YOU SHOPPING FOR? *
               </Label>
               {gender && (
                 <Badge className="bg-emerald-50 text-emerald-700 border-0 text-[10px] font-medium">
@@ -264,18 +258,18 @@ export function OnboardingModal({
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <div>
-                <Label className="flex items-center gap-1.5 text-xs font-semibold text-slate-900 uppercase tracking-wider">
-                  <Sparkles className="w-3.5 h-3.5 text-[#e85d04]" /> 2. Select Your Favorite Categories *
+                <Label className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
+                  2. SELECT YOUR FAVORITE CATEGORIES *
                 </Label>
                 <p className="text-[10px] text-slate-500 font-normal">
-                  Pick at least 2 categories to build your feed ({selectedInterests.length} selected)
+                  Pick at least 3 categories to build your feed ({selectedInterests.length} selected)
                 </p>
               </div>
               <Badge
                 variant="outline"
                 className="text-[10px] font-medium text-slate-600 bg-slate-50 border-slate-200"
               >
-                Min 2 Required
+                Min 3 Required
               </Badge>
             </div>
 

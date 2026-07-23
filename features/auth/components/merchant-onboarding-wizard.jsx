@@ -1,14 +1,30 @@
 "use client";
 
 import {
+  Briefcase,
+  Building,
+  Building2,
   Check,
   ChevronRight,
+  CreditCard,
   FileCheck,
+  FileText,
   Globe,
+  Hash,
   Image as ImageIcon,
+  Landmark,
   Loader2,
+  Lock,
+  Mail,
+  Map,
   MapPin,
+  Phone,
+  PhoneCall,
+  ShieldCheck,
+  Store,
+  Tag,
   Upload,
+  User,
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -484,30 +500,36 @@ export function MerchantOnboardingWizard() {
                 <Label className="text-xs font-medium text-slate-700">
                   Registered Business Name <span className="text-rose-500">*</span>
                 </Label>
-                <Input
-                  type="text"
-                  placeholder="Marbella Tiles & Sanitary Pvt Ltd"
-                  value={formData.registeredName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, registeredName: e.target.value })
-                  }
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition-all"
-                />
+                <div className="relative">
+                  <Building2 className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="text"
+                    placeholder="Marbella Tiles & Sanitary Pvt Ltd"
+                    value={formData.registeredName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, registeredName: e.target.value })
+                    }
+                    className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition-all shadow-2xs"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">
                 <Label className="text-xs font-medium text-slate-700">
                   Brand / Store Display Name <span className="text-slate-400 font-normal">(Optional)</span>
                 </Label>
-                <Input
-                  type="text"
-                  placeholder="Marbella"
-                  value={formData.tradingName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, tradingName: e.target.value })
-                  }
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition-all"
-                />
+                <div className="relative">
+                  <Store className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="text"
+                    placeholder="Marbella"
+                    value={formData.tradingName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, tradingName: e.target.value })
+                    }
+                    className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition-all shadow-2xs"
+                  />
+                </div>
               </div>
             </div>
 
@@ -522,7 +544,7 @@ export function MerchantOnboardingWizard() {
                     setFormData({ ...formData, constitution: val })
                   }
                 >
-                  <SelectTrigger className="w-full bg-white border-slate-200 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none">
+                  <SelectTrigger className="w-full bg-white border-slate-300 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs">
                     <SelectValue placeholder="Select constitution" />
                   </SelectTrigger>
                   <SelectContent className="z-[300]">
@@ -545,7 +567,7 @@ export function MerchantOnboardingWizard() {
                     setFormData({ ...formData, category: val })
                   }
                 >
-                  <SelectTrigger className="w-full bg-white border-slate-200 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none">
+                  <SelectTrigger className="w-full bg-white border-slate-300 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent className="z-[300]">
@@ -596,11 +618,11 @@ export function MerchantOnboardingWizard() {
               <Label className="text-xs font-medium text-slate-700">
                 Sub-Category Tags Chips (Press Enter)
               </Label>
-              <div className="flex flex-wrap gap-1.5 p-2 bg-slate-50 border border-slate-200 rounded-lg min-h-[38px] items-center">
+              <div className="flex flex-wrap gap-1.5 p-2 bg-slate-50 border border-slate-300 rounded-lg min-h-[38px] items-center shadow-2xs">
                 {subCategoryTags.map((tag) => (
                   <Badge
                     key={tag}
-                    className="bg-white text-slate-800 border-slate-200 text-xs font-medium py-0.5 px-2 flex items-center gap-1 shadow-2xs"
+                    className="bg-white text-slate-800 border-slate-300 text-xs font-medium py-0.5 px-2 flex items-center gap-1 shadow-2xs"
                   >
                     {tag}
                     <button
@@ -636,7 +658,7 @@ export function MerchantOnboardingWizard() {
                   onChange={(e) =>
                     setFormData({ ...formData, address: e.target.value })
                   }
-                  className="bg-white border-slate-200 text-xs rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition-all"
+                  className="bg-white border-slate-300 text-xs rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition-all shadow-2xs"
                 />
               </div>
 
@@ -651,7 +673,7 @@ export function MerchantOnboardingWizard() {
                   onChange={(e) =>
                     setFormData({ ...formData, googleUrl: e.target.value })
                   }
-                  className="bg-white border-slate-200 text-xs rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition-all"
+                  className="bg-white border-slate-300 text-xs rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition-all shadow-2xs"
                 />
               </div>
             </div>
@@ -661,27 +683,30 @@ export function MerchantOnboardingWizard() {
                 <Label className="text-xs font-medium text-slate-700">
                   PIN Code <span className="text-rose-500">*</span>
                 </Label>
-                <Input
-                  type="text"
-                  maxLength={6}
-                  placeholder="834001"
-                  value={formData.pincode}
-                  onChange={async (e) => {
-                    const pin = e.target.value;
-                    setFormData((prev) => ({ ...prev, pincode: pin }));
-                    if (pin.length === 6) {
-                      const geo = await lookupByPincode(pin);
-                      if (geo) {
-                        setFormData((prev) => ({
-                          ...prev,
-                          city: geo.city || prev.city,
-                          state: geo.state || prev.state,
-                        }));
+                <div className="relative">
+                  <Hash className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="text"
+                    maxLength={6}
+                    placeholder="834001"
+                    value={formData.pincode}
+                    onChange={async (e) => {
+                      const pin = e.target.value;
+                      setFormData((prev) => ({ ...prev, pincode: pin }));
+                      if (pin.length === 6) {
+                        const geo = await lookupByPincode(pin);
+                        if (geo) {
+                          setFormData((prev) => ({
+                            ...prev,
+                            city: geo.city || prev.city,
+                            state: geo.state || prev.state,
+                          }));
+                        }
                       }
-                    }
-                  }}
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-mono font-medium focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                />
+                    }}
+                    className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-mono font-medium focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">
@@ -700,7 +725,7 @@ export function MerchantOnboardingWizard() {
                     }));
                   }}
                 >
-                  <SelectTrigger className="w-full bg-white border-slate-200 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none">
+                  <SelectTrigger className="w-full bg-white border-slate-300 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs">
                     <SelectValue placeholder="Select City" />
                   </SelectTrigger>
                   <SelectContent className="z-[300]">
@@ -715,14 +740,17 @@ export function MerchantOnboardingWizard() {
 
               <div className="space-y-1">
                 <Label className="text-xs font-medium text-slate-700">State</Label>
-                <Input
-                  type="text"
-                  value={formData.state}
-                  onChange={(e) =>
-                    setFormData({ ...formData, state: e.target.value })
-                  }
-                  className="bg-slate-50 border-slate-200 text-xs h-9 rounded-lg font-medium text-slate-900"
-                />
+                <div className="relative">
+                  <Map className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="text"
+                    value={formData.state}
+                    onChange={(e) =>
+                      setFormData({ ...formData, state: e.target.value })
+                    }
+                    className="pl-8 bg-slate-50 border-slate-300 text-xs h-9 rounded-lg font-medium text-slate-900 shadow-2xs"
+                  />
+                </div>
               </div>
             </div>
 
@@ -793,20 +821,23 @@ export function MerchantOnboardingWizard() {
                 <Label className="text-xs font-medium text-slate-700">
                   Authorized Liaison Name <span className="text-rose-500">*</span>
                 </Label>
-                <Input
-                  type="text"
-                  placeholder="Rajan Kumar Singh"
-                  value={formData.contactName}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setFormData((prev) => ({
-                      ...prev,
-                      contactName: val,
-                      signatoryName: val,
-                    }));
-                  }}
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                />
+                <div className="relative">
+                  <User className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="text"
+                    placeholder="Rajan Kumar Singh"
+                    value={formData.contactName}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setFormData((prev) => ({
+                        ...prev,
+                        contactName: val,
+                        signatoryName: val,
+                      }));
+                    }}
+                    className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">
@@ -819,7 +850,7 @@ export function MerchantOnboardingWizard() {
                     setFormData({ ...formData, designation: val })
                   }
                 >
-                  <SelectTrigger className="w-full bg-white border-slate-200 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none">
+                  <SelectTrigger className="w-full bg-white border-slate-300 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs">
                     <SelectValue placeholder="Select Designation" />
                   </SelectTrigger>
                   <SelectContent className="z-[300]">
@@ -839,16 +870,19 @@ export function MerchantOnboardingWizard() {
                 <Label className="text-xs font-medium text-slate-700">
                   Primary Mobile Number <span className="text-rose-500">*</span>
                 </Label>
-                <Input
-                  type="tel"
-                  maxLength={10}
-                  placeholder="9876543210"
-                  value={formData.mobile}
-                  onChange={(e) =>
-                    setFormData({ ...formData, mobile: e.target.value })
-                  }
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                />
+                <div className="relative">
+                  <Phone className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="tel"
+                    maxLength={10}
+                    placeholder="9876543210"
+                    value={formData.mobile}
+                    onChange={(e) =>
+                      setFormData({ ...formData, mobile: e.target.value })
+                    }
+                    className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">
@@ -871,16 +905,19 @@ export function MerchantOnboardingWizard() {
                     ✓ Same as Primary Mobile
                   </button>
                 </div>
-                <Input
-                  type="tel"
-                  maxLength={10}
-                  placeholder="9876543210"
-                  value={formData.whatsapp}
-                  onChange={(e) =>
-                    setFormData({ ...formData, whatsapp: e.target.value })
-                  }
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                />
+                <div className="relative">
+                  <PhoneCall className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="tel"
+                    maxLength={10}
+                    placeholder="9876543210"
+                    value={formData.whatsapp}
+                    onChange={(e) =>
+                      setFormData({ ...formData, whatsapp: e.target.value })
+                    }
+                    className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                  />
+                </div>
               </div>
             </div>
 
@@ -890,29 +927,35 @@ export function MerchantOnboardingWizard() {
                 <Label className="text-xs font-medium text-slate-700">
                   Business Email (Login ID) <span className="text-rose-500">*</span>
                 </Label>
-                <Input
-                  type="email"
-                  placeholder="info@marbella.in"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                />
+                <div className="relative">
+                  <Mail className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="email"
+                    placeholder="info@marbella.in"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                  />
+                </div>
               </div>
               <div className="space-y-1">
                 <Label className="text-xs font-medium text-slate-700">
                   Create Password <span className="text-rose-500">*</span>
                 </Label>
-                <Input
-                  type="password"
-                  placeholder="Min 6 characters"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                />
+                <div className="relative">
+                  <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="password"
+                    placeholder="Min 6 characters"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                  />
+                </div>
               </div>
             </div>
 
@@ -924,39 +967,48 @@ export function MerchantOnboardingWizard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div className="space-y-1">
                   <Label className="text-[11px] font-medium text-slate-600">Website URL</Label>
-                  <Input
-                    type="url"
-                    placeholder="https://www.marbella.in"
-                    value={formData.websiteUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, websiteUrl: e.target.value })
-                    }
-                    className="bg-white border-slate-200 text-xs h-8.5 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <Globe className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Input
+                      type="url"
+                      placeholder="https://www.marbella.in"
+                      value={formData.websiteUrl}
+                      onChange={(e) =>
+                        setFormData({ ...formData, websiteUrl: e.target.value })
+                      }
+                      className="pl-8 bg-white border-slate-300 text-xs h-8.5 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-[11px] font-medium text-slate-600">Instagram Handle</Label>
-                  <Input
-                    type="text"
-                    placeholder="@marbellatiles"
-                    value={formData.instagramHandle}
-                    onChange={(e) =>
-                      setFormData({ ...formData, instagramHandle: e.target.value })
-                    }
-                    className="bg-white border-slate-200 text-xs h-8.5 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <User className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Input
+                      type="text"
+                      placeholder="@marbellatiles"
+                      value={formData.instagramHandle}
+                      onChange={(e) =>
+                        setFormData({ ...formData, instagramHandle: e.target.value })
+                      }
+                      className="pl-8 bg-white border-slate-300 text-xs h-8.5 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-[11px] font-medium text-slate-600">Facebook URL</Label>
-                  <Input
-                    type="url"
-                    placeholder="https://facebook.com/marbellatiles"
-                    value={formData.facebookUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, facebookUrl: e.target.value })
-                    }
-                    className="bg-white border-slate-200 text-xs h-8.5 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <Globe className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Input
+                      type="url"
+                      placeholder="https://facebook.com/marbellatiles"
+                      value={formData.facebookUrl}
+                      onChange={(e) =>
+                        setFormData({ ...formData, facebookUrl: e.target.value })
+                      }
+                      className="pl-8 bg-white border-slate-300 text-xs h-8.5 rounded-lg font-normal placeholder:text-slate-400 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1010,7 +1062,7 @@ export function MerchantOnboardingWizard() {
                   setFormData({ ...formData, docType: val })
                 }
               >
-                <SelectTrigger className="w-full bg-white border-slate-200 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none">
+                <SelectTrigger className="w-full bg-white border-slate-300 rounded-lg text-xs h-9 px-3 font-normal text-slate-900 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="z-[300]">
@@ -1352,15 +1404,18 @@ export function MerchantOnboardingWizard() {
 
           <div className="space-y-1 pt-1">
             <Label className="text-xs font-medium text-slate-700">Referral Code (Optional)</Label>
-            <Input
-              type="text"
-              placeholder="FOUNDING100"
-              value={formData.referralCode}
-              onChange={(e) =>
-                setFormData({ ...formData, referralCode: e.target.value })
-              }
-              className="bg-white border-slate-200 text-xs h-9 rounded-lg font-mono uppercase font-normal focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-            />
+            <div className="relative">
+              <Hash className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Input
+                type="text"
+                placeholder="FOUNDING100"
+                value={formData.referralCode}
+                onChange={(e) =>
+                  setFormData({ ...formData, referralCode: e.target.value })
+                }
+                className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-mono uppercase font-normal focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+              />
+            </div>
           </div>
 
           <div className="flex justify-between pt-3 border-t border-slate-100">
@@ -1433,27 +1488,33 @@ export function MerchantOnboardingWizard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label className="text-xs font-medium text-slate-700">Opening Time</Label>
-                  <Input
-                    type="text"
-                    placeholder="10:00 AM"
-                    value={formData.openingTime}
-                    onChange={(e) =>
-                      setFormData({ ...formData, openingTime: e.target.value })
-                    }
-                    className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <Building className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Input
+                      type="text"
+                      placeholder="10:00 AM"
+                      value={formData.openingTime}
+                      onChange={(e) =>
+                        setFormData({ ...formData, openingTime: e.target.value })
+                      }
+                      className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-normal focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs font-medium text-slate-700">Closing Time</Label>
-                  <Input
-                    type="text"
-                    placeholder="08:00 PM"
-                    value={formData.closingTime}
-                    onChange={(e) =>
-                      setFormData({ ...formData, closingTime: e.target.value })
-                    }
-                    className="bg-white border-slate-200 text-xs h-9 rounded-lg font-normal focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <Building className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Input
+                      type="text"
+                      placeholder="08:00 PM"
+                      value={formData.closingTime}
+                      onChange={(e) =>
+                        setFormData({ ...formData, closingTime: e.target.value })
+                      }
+                      className="pl-8 bg-white border-slate-300 text-xs h-9 rounded-lg font-normal focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-2xs"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1559,12 +1620,15 @@ export function MerchantOnboardingWizard() {
                     ✓ Auto-synced from Authorized Liaison Name (Section B)
                   </span>
                 </div>
-                <Input
-                  type="text"
-                  readOnly
-                  value={formData.contactName || formData.signatoryName || "Fill Authorized Liaison Name in Section B"}
-                  className="bg-slate-100 border-slate-200 text-xs h-9 rounded-lg font-medium text-slate-800 cursor-not-allowed"
-                />
+                <div className="relative">
+                  <User className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Input
+                    type="text"
+                    readOnly
+                    value={formData.contactName || formData.signatoryName || "Fill Authorized Liaison Name in Section B"}
+                    className="pl-8 bg-slate-100 border-slate-300 text-xs h-9 rounded-lg font-medium text-slate-800 cursor-not-allowed shadow-2xs"
+                  />
+                </div>
               </div>
             </div>
 
