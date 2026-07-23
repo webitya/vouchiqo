@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 /**
- * ProgressBar — clean single-color progress bar matching Shadcn styling.
+ * ProgressBar — compact progress bar using black, blue, and white theme.
  */
 export default function ProgressBar({
   percentage = 66,
@@ -14,49 +14,41 @@ export default function ProgressBar({
   const isComplete = percentage >= 100;
 
   return (
-    <Card className="border-brand-border bg-brand-bg rounded-2xl p-5 shadow-xs space-y-2.5">
-      <div className="flex items-center justify-between text-xs font-bold text-brand-text">
+    <Card className="border-slate-200/80 bg-white rounded-xl p-4 shadow-xs space-y-2 font-sans text-left">
+      <div className="flex items-center justify-between text-xs font-normal text-slate-800">
         <span className="flex items-center gap-2">
-          <span>Overall Application Progress</span>
+          <span>Overall Verification Progress</span>
           {isComplete && (
-            <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-              Complete
+            <span className="text-[10px] bg-blue-50 text-blue-700 font-normal px-2 py-0.5 rounded-full border border-blue-200">
+              Verified
             </span>
           )}
         </span>
         <span
           className={cn(
-            "font-mono font-black text-sm",
-            isError
-              ? "text-brand-error"
-              : isComplete
-                ? "text-emerald-600"
-                : "text-[#e85d04]",
+            "font-mono font-medium text-xs",
+            isError ? "text-red-600" : isComplete ? "text-blue-600" : "text-blue-600",
           )}
         >
-          {percentage}% Complete
+          {percentage}% Completed
         </span>
       </div>
 
       {/* Progress Track */}
-      <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200/80 relative">
+      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/80 relative">
         <div
           className={cn(
-            "h-full rounded-full transition-all duration-700 ease-out",
-            isError
-              ? "bg-brand-error"
-              : isComplete
-                ? "bg-emerald-500"
-                : "bg-[#e85d04]",
+            "h-full rounded-full transition-all duration-500 ease-out",
+            isError ? "bg-red-500" : "bg-blue-600",
           )}
           style={{ width: `${Math.min(100, Math.max(5, percentage))}%` }}
         />
       </div>
 
-      <div className="flex justify-between text-[10px] font-semibold text-brand-subtext pt-0.5">
+      <div className="flex justify-between text-[10px] font-normal text-slate-400 pt-0.5">
         <span>Step 1: Submitted (33%)</span>
         <span>Step 2: Verification (66%)</span>
-        <span>Step 3: Activation (100%)</span>
+        <span>Step 3: Account Active (100%)</span>
       </div>
     </Card>
   );

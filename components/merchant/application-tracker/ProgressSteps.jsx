@@ -70,12 +70,12 @@ export default function ProgressSteps({
   ];
 
   return (
-    <Card className="border-brand-border bg-brand-bg rounded-2xl p-6 shadow-xs space-y-4">
-      <h3 className="font-heading text-xs font-bold uppercase tracking-wider text-brand-text">
-        Application Progress Pipeline
+    <Card className="border-slate-200/80 bg-white rounded-xl p-4 shadow-xs space-y-3 font-sans text-left">
+      <h3 className="text-xs font-medium text-slate-800 tracking-normal">
+        Verification Stage Progress
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {steps.map((step) => {
           const Icon = step.icon;
           const isComp = step.state === "completed";
@@ -86,64 +86,60 @@ export default function ProgressSteps({
             <div
               key={step.id}
               className={cn(
-                "rounded-xl p-4 border transition-all flex flex-col justify-between h-full space-y-3",
+                "rounded-lg p-3 border transition-all flex flex-col justify-between h-full space-y-2 text-left",
                 isComp
-                  ? "border-emerald-200 bg-emerald-50/40 text-slate-900"
+                  ? "border-blue-200 bg-blue-50/30 text-slate-900"
                   : isActive
-                    ? "border-orange-300 bg-orange-50/50 text-slate-900 shadow-xs"
+                    ? "border-blue-600 bg-blue-50/60 text-slate-900 shadow-2xs"
                     : isRej
                       ? "border-red-200 bg-red-50/40 text-slate-900"
-                      : "border-slate-200/80 bg-slate-50/40 opacity-70 text-slate-700",
+                      : "border-slate-200/80 bg-slate-50/40 text-slate-600",
               )}
             >
               {/* Top row */}
               <div className="flex items-start justify-between gap-2">
                 <div
                   className={cn(
-                    "w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm",
-                    isComp
-                      ? "bg-emerald-500 text-white"
-                      : isActive
-                        ? "bg-[#e85d04] text-white"
-                        : isRej
-                          ? "bg-red-600 text-white"
-                          : "bg-slate-200 text-slate-500",
+                    "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-medium",
+                    isComp || isActive
+                      ? "bg-blue-600 text-white"
+                      : isRej
+                        ? "bg-red-600 text-white"
+                        : "bg-slate-200 text-slate-500",
                   )}
                 >
-                  <Icon className="w-5 h-5 stroke-[2.2]" />
+                  <Icon className="w-4 h-4" />
                 </div>
 
                 <span
                   className={cn(
-                    "text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider",
-                    isComp
-                      ? "bg-emerald-100 text-emerald-800"
-                      : isActive
-                        ? "bg-orange-100 text-[#e85d04]"
-                        : isRej
-                          ? "bg-red-100 text-red-800"
-                          : "bg-slate-100 text-slate-600 border border-slate-200",
+                    "text-[10px] font-normal px-2 py-0.5 rounded border",
+                    isComp || isActive
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : isRej
+                        ? "bg-red-100 text-red-800 border-red-200"
+                        : "bg-slate-100 text-slate-500 border-slate-200",
                   )}
                 >
                   {isComp
-                    ? "Completed ✓"
+                    ? "Completed"
                     : isActive
-                      ? "In Progress ⏳"
+                      ? "In Progress"
                       : isRej
-                        ? "Rejected ✕"
-                        : "Pending 🔒"}
+                        ? "Rejected"
+                        : "Pending"}
                 </span>
               </div>
 
               {/* Step info */}
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                <span className="text-[10px] font-normal text-slate-500 block">
                   {step.name}
                 </span>
-                <h4 className="font-heading text-sm font-bold text-slate-900 mt-0.5">
+                <h4 className="text-xs font-medium text-slate-900 mt-0.5">
                   {step.statusText}
                 </h4>
-                <p className="text-xs text-slate-500 mt-1 leading-snug font-normal">
+                <p className="text-xs text-slate-500 mt-0.5 leading-snug font-normal">
                   {step.detail}
                 </p>
               </div>

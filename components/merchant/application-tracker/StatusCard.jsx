@@ -22,13 +22,13 @@ export default function StatusCard({
 }) {
   const {
     applicationId = "VQ-2026-89421",
-    businessName = "Marbella Tiles & Sanitaryware",
-    category = "Home Improvement",
+    businessName = "Merchant Partner",
+    category = "Retail Deals",
     city = "Ranchi",
     state = "Jharkhand",
     status = "under_review",
     submittedAt,
-    estimatedCompletion = "27 Oct 2026, 2:30 PM",
+    estimatedCompletion = "Within 2-4 hours",
   } = application;
 
   const formatDate = (d) => {
@@ -47,55 +47,54 @@ export default function StatusCard({
   };
 
   return (
-    <Card className="border-brand-border bg-brand-bg rounded-2xl shadow-xs overflow-hidden text-left">
-      <CardHeader className="pb-3 border-b border-brand-border flex flex-row items-center justify-between">
+    <Card className="border-slate-200/80 bg-white rounded-xl shadow-xs overflow-hidden text-left font-sans">
+      <CardHeader className="pb-3 border-b border-slate-100 flex flex-row items-center justify-between p-4 sm:p-5">
         <div>
-          <CardTitle className="text-sm font-bold text-brand-text uppercase tracking-wider flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[#e85d04]" /> Application Status
-            Card
+          <CardTitle className="text-xs font-medium text-slate-900 flex items-center gap-2">
+            <FileText className="w-4 h-4 text-blue-600" /> Application Summary
           </CardTitle>
-          <CardDescription className="text-xs text-brand-subtext mt-0.5 font-normal">
-            Real-time verification status for your merchant profile
+          <CardDescription className="text-xs text-slate-500 mt-0.5 font-normal">
+            Real-time verification details for your merchant profile
           </CardDescription>
         </div>
-        <StatusBadge status={status} size="md" />
+        <StatusBadge status={status} size="sm" />
       </CardHeader>
 
-      <CardContent className="p-6 space-y-5">
+      <CardContent className="p-4 sm:p-5 space-y-4">
         {/* Grid Specs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
           <div className="space-y-0.5">
-            <span className="text-[10px] uppercase font-bold text-brand-subtext block">
+            <span className="text-[10px] font-normal text-slate-400 block">
               Application ID
             </span>
-            <span className="font-mono font-bold text-brand-navy text-sm">
+            <span className="font-mono font-medium text-blue-600 text-xs">
               #{applicationId}
             </span>
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[10px] uppercase font-bold text-brand-subtext block">
+            <span className="text-[10px] font-normal text-slate-400 block">
               Business Name
             </span>
-            <span className="font-bold text-brand-text truncate block">
+            <span className="font-medium text-slate-900 truncate block">
               {businessName}
             </span>
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[10px] uppercase font-bold text-brand-subtext block">
+            <span className="text-[10px] font-normal text-slate-400 block">
               Submitted On
             </span>
-            <span className="font-medium text-brand-text">
+            <span className="font-normal text-slate-700">
               {formatDate(submittedAt)}
             </span>
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[10px] uppercase font-bold text-brand-subtext block">
+            <span className="text-[10px] font-normal text-slate-400 block">
               Est. Completion
             </span>
-            <span className="font-bold text-emerald-600">
+            <span className="font-normal text-blue-600">
               {estimatedCompletion}
             </span>
           </div>
@@ -105,27 +104,27 @@ export default function StatusCard({
         <div className="flex flex-wrap items-center gap-2 pt-1">
           <Badge
             variant="outline"
-            className="bg-slate-50 text-slate-700 border-slate-200 text-xs font-semibold px-2.5 py-1 flex items-center gap-1"
+            className="bg-slate-50 text-slate-700 border-slate-200 text-xs font-normal px-2.5 py-0.5 flex items-center gap-1"
           >
-            <Building2 className="w-3.5 h-3.5 text-brand-blue" /> {category}
+            <Building2 className="w-3.5 h-3.5 text-blue-600" /> {category}
           </Badge>
           {city && (
             <Badge
               variant="outline"
-              className="bg-slate-50 text-slate-700 border-slate-200 text-xs font-semibold px-2.5 py-1 flex items-center gap-1"
+              className="bg-slate-50 text-slate-700 border-slate-200 text-xs font-normal px-2.5 py-0.5 flex items-center gap-1"
             >
-              <MapPin className="w-3.5 h-3.5 text-amber-500" /> {city}, {state}
+              <MapPin className="w-3.5 h-3.5 text-blue-600" /> {city}, {state}
             </Badge>
           )}
         </div>
 
         {/* Action Triggers */}
-        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-brand-border">
+        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100">
           <Button
             variant="outline"
             size="sm"
             onClick={onViewDetails}
-            className="text-xs font-bold rounded-xl cursor-pointer border-brand-border shadow-none"
+            className="text-xs font-normal rounded-lg cursor-pointer border-slate-200 shadow-none text-slate-800 hover:bg-slate-50"
           >
             View Submitted Details
           </Button>
@@ -133,7 +132,7 @@ export default function StatusCard({
             variant="ghost"
             size="sm"
             onClick={onContactSupport}
-            className="text-xs font-bold text-brand-blue hover:text-blue-800 hover:bg-blue-50 rounded-xl cursor-pointer"
+            className="text-xs font-normal text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg cursor-pointer"
           >
             <HelpCircle className="w-3.5 h-3.5 mr-1" /> Contact Support
           </Button>

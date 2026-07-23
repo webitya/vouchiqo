@@ -80,7 +80,7 @@ export default function ApplicationTracker({ initialData }) {
   } = data;
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto text-left font-sans pb-12">
+    <div className="space-y-4 max-w-6xl mx-auto text-left font-sans pb-8">
       {/* 1. Hero Banner */}
       <SuccessHero
         applicationId={applicationId}
@@ -102,8 +102,8 @@ export default function ApplicationTracker({ initialData }) {
       <ProgressSteps status={status} submittedAt={submittedAt} />
 
       {/* 5. Application Status Card & Actions Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div className="lg:col-span-8 space-y-4">
           {/* Main Status Summary Card */}
           <StatusCard
             application={data}

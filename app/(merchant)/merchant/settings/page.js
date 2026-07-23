@@ -129,53 +129,50 @@ export default function MerchantAccountSettings() {
         role: "merchant",
       }}
     >
-      <div className="space-y-6 text-left font-sans w-full">
+      <div className="space-y-4 text-left font-sans w-full pb-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-brand-surface p-1.5 rounded-2xl border border-brand-border flex flex-wrap gap-1 justify-start h-auto w-full">
+          <TabsList className="bg-slate-100 p-1 rounded-xl border border-slate-200 flex flex-wrap gap-1 justify-start h-auto w-full">
             <TabsTrigger
               value="profile"
-              className="text-xs font-bold rounded-xl px-4 py-2.5 cursor-pointer flex items-center gap-1.5"
+              className="text-xs font-normal rounded-lg px-3.5 py-2 cursor-pointer flex items-center gap-1.5 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-700"
             >
-              <Store className="w-3.5 h-3.5 text-brand-blue" /> Business Profile
+              <Store className="w-3.5 h-3.5" /> Business Profile
             </TabsTrigger>
             <TabsTrigger
               value="security"
-              className="text-xs font-bold rounded-xl px-4 py-2.5 cursor-pointer flex items-center gap-1.5"
+              className="text-xs font-normal rounded-lg px-3.5 py-2 cursor-pointer flex items-center gap-1.5 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-700"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Account &
-              Security
+              <ShieldCheck className="w-3.5 h-3.5" /> Account &amp; Security
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              className="text-xs font-bold rounded-xl px-4 py-2.5 cursor-pointer flex items-center gap-1.5"
+              className="text-xs font-normal rounded-lg px-3.5 py-2 cursor-pointer flex items-center gap-1.5 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-700"
             >
-              <Bell className="w-3.5 h-3.5 text-amber-600" /> Notification
-              Preferences
+              <Bell className="w-3.5 h-3.5" /> Notification Preferences
             </TabsTrigger>
             <TabsTrigger
               value="api"
-              className="text-xs font-bold rounded-xl px-4 py-2.5 cursor-pointer flex items-center gap-1.5"
+              className="text-xs font-normal rounded-lg px-3.5 py-2 cursor-pointer flex items-center gap-1.5 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-700"
             >
-              <Code className="w-3.5 h-3.5 text-purple-600" /> API Access
+              <Code className="w-3.5 h-3.5" /> API Access
             </TabsTrigger>
             <TabsTrigger
               value="danger"
-              className="text-xs font-bold rounded-xl px-4 py-2.5 cursor-pointer flex items-center gap-1.5 text-brand-error"
+              className="text-xs font-normal rounded-lg px-3.5 py-2 cursor-pointer flex items-center gap-1.5 data-[state=active]:bg-red-600 data-[state=active]:text-white text-red-600 hover:text-red-700"
             >
-              <AlertTriangle className="w-3.5 h-3.5 text-brand-error" /> Danger
-              Zone
+              <AlertTriangle className="w-3.5 h-3.5" /> Danger Zone
             </TabsTrigger>
           </TabsList>
 
           {/* ── TAB 1: BUSINESS PROFILE ─────────────────────────────────── */}
-          <TabsContent value="profile" className="pt-4">
-            <Card className="border-brand-border shadow-sm rounded-2xl bg-brand-bg p-6 space-y-6">
+          <TabsContent value="profile" className="pt-3">
+            <Card className="border-slate-200/80 shadow-xs rounded-xl bg-white p-4 sm:p-5 space-y-4">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   showSuccess("Business profile & logo saved successfully!");
                 }}
-                className="space-y-6"
+                className="space-y-4"
               >
                 <FormSection
                   title="Business Profile & Branding"
@@ -184,8 +181,8 @@ export default function MerchantAccountSettings() {
                   noBorder
                 >
                   {/* Logo Upload */}
-                  <div className="flex items-center gap-6 p-4 bg-brand-surface rounded-2xl border border-brand-border">
-                    <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-brand-border shadow-sm bg-brand-surface shrink-0">
+                  <div className="flex items-center gap-4 p-4 bg-slate-50/60 rounded-xl border border-slate-200">
+                    <div className="relative w-16 h-16 rounded-full overflow-hidden border border-slate-200 shadow-2xs bg-white shrink-0">
                       {/* biome-ignore lint/performance/noImgElement: logo preview blob/url */}
                       <img
                         src={logoUrl}
@@ -204,7 +201,7 @@ export default function MerchantAccountSettings() {
                         placeholder="https://example.com/logo.png"
                         hint="Recommended: 300×300px square PNG/JPG with transparent background."
                       />
-                      <label className="inline-flex items-center gap-1.5 bg-brand-navy hover:bg-brand-navy/90 text-white text-xs font-bold px-3 py-2 rounded-xl cursor-pointer">
+                      <label className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-normal px-3 py-1.5 rounded-lg cursor-pointer">
                         <Upload className="w-3 h-3" /> Upload File
                         <input
                           type="file"
@@ -236,7 +233,7 @@ export default function MerchantAccountSettings() {
 
                   {/* Social Links */}
                   <FormSection title="Official Social Media Profiles" noBorder>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <FormInput
                         name="instagram"
                         label="Instagram Profile URL"
@@ -287,8 +284,8 @@ export default function MerchantAccountSettings() {
           </TabsContent>
 
           {/* ── TAB 2: ACCOUNT & SECURITY ────────────────────────────────── */}
-          <TabsContent value="security" className="pt-4">
-            <Card className="border-brand-border shadow-sm rounded-2xl bg-brand-bg p-6 space-y-6">
+          <TabsContent value="security" className="pt-3">
+            <Card className="border-slate-200/80 shadow-xs rounded-xl bg-white p-4 sm:p-5 space-y-4">
               <FormSection
                 title="Account & Security Settings"
                 icon={ShieldCheck}
@@ -296,19 +293,19 @@ export default function MerchantAccountSettings() {
                 noBorder
               >
                 {/* 2FA Toggle */}
-                <div className="p-4 border border-brand-border rounded-2xl flex items-center justify-between bg-brand-surface">
+                <div className="p-3.5 border border-slate-200 rounded-xl flex items-center justify-between bg-blue-50/30">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                      <ShieldCheck className="w-5 h-5" />
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                      <ShieldCheck className="w-4 h-4 text-blue-600" />
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-brand-text flex items-center gap-2">
+                      <span className="text-xs font-medium text-slate-900 flex items-center gap-2">
                         Two-Factor Authentication (2FA)
-                        <Badge className="bg-emerald-100 text-emerald-800 font-bold text-[9px]">
+                        <Badge className="bg-blue-50 text-blue-700 border-blue-200 font-normal text-[9px]">
                           Recommended
                         </Badge>
                       </span>
-                      <span className="text-[11px] text-brand-subtext font-medium">
+                      <span className="text-xs text-slate-500 font-normal">
                         Require SMS / Authenticator app OTP code on every login
                       </span>
                     </div>
@@ -325,7 +322,7 @@ export default function MerchantAccountSettings() {
                 {/* Active Sessions */}
                 <div className="space-y-3 pt-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-brand-text uppercase tracking-wider">
+                    <span className="text-xs font-medium text-slate-800">
                       Active Login Sessions ({sessions.length})
                     </span>
                     <Button
@@ -335,7 +332,7 @@ export default function MerchantAccountSettings() {
                         setSessions((p) => p.filter((s) => s.current));
                         showSuccess("Revoked all other active sessions.");
                       }}
-                      className="text-[11px] font-bold text-brand-error hover:bg-red-50 h-7 cursor-pointer"
+                      className="text-xs font-normal text-red-600 hover:bg-red-50 h-7 cursor-pointer"
                     >
                       Revoke All Other Sessions
                     </Button>
@@ -345,22 +342,22 @@ export default function MerchantAccountSettings() {
                     {sessions.map((sess) => (
                       <div
                         key={sess.id}
-                        className="p-4 border border-brand-border rounded-2xl flex items-center justify-between bg-brand-bg"
+                        className="p-3 border border-slate-200/80 rounded-xl flex items-center justify-between bg-white"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-brand-surface text-brand-subtext flex items-center justify-center shrink-0">
+                          <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
                             <Laptop className="w-4 h-4" />
                           </div>
                           <div>
-                            <span className="text-xs font-bold text-brand-text flex items-center gap-2">
+                            <span className="text-xs font-medium text-slate-900 flex items-center gap-2">
                               {sess.device}
                               {sess.current && (
-                                <Badge className="bg-blue-100 text-blue-800 text-[9px] font-bold">
-                                  This Session
+                                <Badge className="bg-blue-600 text-white text-[9px] font-normal">
+                                  Current Device
                                 </Badge>
                               )}
                             </span>
-                            <span className="text-[11px] text-brand-subtext font-medium">
+                            <span className="text-xs text-slate-500 font-normal">
                               {sess.location} • IP: {sess.ip}
                             </span>
                           </div>
@@ -370,7 +367,7 @@ export default function MerchantAccountSettings() {
                             variant="outline"
                             size="sm"
                             onClick={() => handleRevokeSession(sess.id)}
-                            className="text-xs font-bold text-brand-error border-red-200 hover:bg-red-50 h-8 rounded-xl cursor-pointer shadow-none"
+                            className="text-xs font-normal text-red-600 border-red-200 hover:bg-red-50 h-7 rounded-lg cursor-pointer shadow-none"
                           >
                             Revoke
                           </Button>
@@ -384,10 +381,10 @@ export default function MerchantAccountSettings() {
           </TabsContent>
 
           {/* ── TAB 3: NOTIFICATIONS ─────────────────────────────────────── */}
-          <TabsContent value="notifications" className="pt-4 space-y-4">
+          <TabsContent value="notifications" className="pt-3 space-y-3">
             <Card
               data-tour="settings-notifications"
-              className="border-brand-border shadow-sm rounded-2xl bg-brand-bg p-6 space-y-6"
+              className="border-slate-200/80 shadow-xs rounded-xl bg-white p-4 sm:p-5 space-y-4"
             >
               <FormSection
                 title="Notification Preferences"
@@ -395,21 +392,21 @@ export default function MerchantAccountSettings() {
                 description="Configure alert channels across email, SMS, and push notifications"
                 noBorder
               >
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {NOTIF_ROWS.map((row) => (
                     <div
                       key={row.key}
-                      className="p-4 border border-brand-border rounded-2xl flex items-center justify-between bg-brand-bg"
+                      className="p-3 border border-slate-200/80 rounded-xl flex items-center justify-between bg-white"
                     >
                       <div>
-                        <span className="text-xs font-bold text-brand-text block">
+                        <span className="text-xs font-medium text-slate-900 block">
                           {row.label}
                         </span>
-                        <span className="text-[11px] text-brand-subtext font-medium">
+                        <span className="text-xs text-slate-500 font-normal">
                           {row.desc}
                         </span>
                       </div>
-                      <label className="flex items-center gap-2 text-xs font-bold text-brand-text cursor-pointer">
+                      <label className="flex items-center gap-2 text-xs font-normal text-slate-800 cursor-pointer">
                         <Switch
                           checked={notifMatrix[row.key]}
                           onCheckedChange={(val) =>
@@ -425,13 +422,13 @@ export default function MerchantAccountSettings() {
             </Card>
 
             {/* Guided Tour Reset Card */}
-            <Card className="border-blue-200 bg-blue-50/40 shadow-sm rounded-2xl p-6 space-y-3">
+            <Card className="border-blue-200 bg-blue-50/30 shadow-xs rounded-xl p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900 block font-heading">
+                  <h4 className="text-xs font-medium text-slate-900 block">
                     Interactive Dashboard Tour
                   </h4>
-                  <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                  <p className="text-xs text-slate-500 font-normal mt-0.5">
                     Revisit the 12-step guided walkthrough to explore all
                     features of your merchant dashboard.
                   </p>
@@ -443,7 +440,7 @@ export default function MerchantAccountSettings() {
                       window.location.href = "/merchant/dashboard";
                     }
                   }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer shadow-md shadow-blue-500/20 shrink-0"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-normal px-3 py-1.5 rounded-lg cursor-pointer shadow-none shrink-0"
                 >
                   Restart Tour →
                 </Button>
@@ -452,20 +449,20 @@ export default function MerchantAccountSettings() {
           </TabsContent>
 
           {/* ── TAB 4: API ACCESS ─────────────────────────────────────────── */}
-          <TabsContent value="api" className="pt-4">
-            <Card className="border-brand-border shadow-sm rounded-2xl bg-brand-bg p-6 space-y-4">
+          <TabsContent value="api" className="pt-3">
+            <Card className="border-slate-200/80 shadow-xs rounded-xl bg-white p-4 sm:p-5 space-y-3">
               <FormSection
-                title="API Access & Webhooks"
+                title="API Access &amp; Webhooks"
                 icon={Code}
                 description="Integrate Vouchiqo Smart Code validation directly with your POS counter billing software"
                 noBorder
               >
-                <div className="p-4 bg-brand-surface border border-brand-border rounded-2xl space-y-3">
+                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-brand-text">
+                    <span className="text-xs font-medium text-slate-900">
                       Live API Key
                     </span>
-                    <Badge className="bg-purple-100 text-purple-800 font-mono text-[9px] font-bold">
+                    <Badge className="bg-blue-50 text-blue-700 border-blue-200 font-mono text-[9px] font-normal">
                       Pro Partner Feature
                     </Badge>
                   </div>
@@ -479,7 +476,7 @@ export default function MerchantAccountSettings() {
                   <Button
                     variant="outline"
                     onClick={() => showSuccess("API key copied to clipboard!")}
-                    className="text-xs font-bold rounded-xl border-brand-border cursor-pointer shadow-none"
+                    className="text-xs font-normal rounded-lg border-slate-200 cursor-pointer shadow-none text-slate-800"
                   >
                     Copy Key
                   </Button>
@@ -489,8 +486,8 @@ export default function MerchantAccountSettings() {
           </TabsContent>
 
           {/* ── TAB 5: DANGER ZONE ────────────────────────────────────────── */}
-          <TabsContent value="danger" className="pt-4">
-            <Card className="border-red-200 bg-red-50/40 shadow-sm rounded-2xl p-6 space-y-4 text-left">
+          <TabsContent value="danger" className="pt-3">
+            <Card className="border-red-200 bg-red-50/20 shadow-xs rounded-xl p-4 sm:p-5 space-y-3 text-left">
               <FormSection
                 title="Danger Zone — Deactivate Account"
                 icon={AlertTriangle}
@@ -504,7 +501,7 @@ export default function MerchantAccountSettings() {
                         "Account deactivation requires super admin approval.",
                       )
                     }
-                    className="bg-brand-error hover:bg-red-700 text-white text-xs font-bold rounded-xl py-2.5 px-6 cursor-pointer shadow-none"
+                    className="bg-red-600 hover:bg-red-700 text-white text-xs font-normal rounded-lg py-2 px-4 cursor-pointer shadow-none"
                   >
                     <Trash2 className="w-3.5 h-3.5 mr-1.5" />
                     Deactivate Merchant Account

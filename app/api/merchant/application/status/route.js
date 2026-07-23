@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+import Merchant from "@/modules/merchant/merchant.model";
 import MerchantApplication from "@/modules/merchant/merchant-application.model";
+import { requireAuth } from "@/modules/auth/auth.middleware";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -11,107 +13,137 @@ async function connectDB() {
   }
 }
 
-// Demo initial application payload if DB item doesn't exist yet
-const DEMO_APPLICATION = {
-  applicationId: "VQ-2026-89421",
-  businessName: "Marbella Tiles & Sanitaryware",
-  ownerName: "Rahul Sharma",
-  email: "rahul@marbellatiles.com",
-  phone: "+91 98765 43210",
-  category: "Home Improvement & Marble",
-  city: "Ranchi",
-  state: "Jharkhand",
-  gstin: "20AAAAA0000A1Z5",
-  panNumber: "ABCDE1234F",
-  status: "under_review", // "pending" | "under_review" | "document_verified" | "approved" | "rejected"
-  progressPercentage: 66,
-  adminIsReviewing: true,
-  adminReviewerName: "Vouchiqo Verification Desk #4",
-  estimatedCompletion: "27 Oct 2026, 2:30 PM",
-  activationWindow: "Within 2 hours after verification",
-  rejectionReason: "",
-  submittedAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-  lastUpdatedAt: new Date(Date.now() - 1800000).toISOString(),
-  documents: [
-    {
-      name: "GST Certificate (Form REG-06)",
-      type: "GST Registration",
-      status: "verified",
-      verifiedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-    },
-    {
-      name: "Business PAN Card",
-      type: "Tax Identity",
-      status: "verified",
-      verifiedAt: new Date(Date.now() - 3600000 * 1.5).toISOString(),
-    },
-    {
-      name: "Trade License / Municipality Permis",
-      type: "Commercial License",
-      status: "under_review",
-      verifiedAt: null,
-    },
-    {
-      name: "Cancelled Bank Cheque / Passbook",
-      type: "Banking Verification",
-      status: "under_review",
-      verifiedAt: null,
-    },
-  ],
-  timeline: [
-    {
-      title: "Application Submitted Successfully",
-      detail:
-        "Merchant profile submitted with 4 business verification documents",
-      timestamp: new Date(Date.now() - 3600000 * 3).toISOString(),
-      type: "success",
-    },
-    {
-      title: "Confirmation Email Sent",
-      detail: "Sent acknowledgment letter to rahul@marbellatiles.com",
-      timestamp: new Date(Date.now() - 3600000 * 2.8).toISOString(),
-      type: "info",
-    },
-    {
-      title: "Admin Officer Assigned",
-      detail: "Assigned to Vouchiqo Compliance Officer Desk #4",
-      timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
-      type: "info",
-    },
-    {
-      title: "GST & Tax Credentials Verified",
-      detail: "GSTIN 20AAAAA0000A1Z5 verified via Govt Portal",
-      timestamp: new Date(Date.now() - 3600000 * 1.5).toISOString(),
-      type: "success",
-    },
-    {
-      title: "Document Verification In Progress",
-      detail: "Admin is reviewing Trade License and Bank passbook details",
-      timestamp: new Date(Date.now() - 1800000).toISOString(),
-      type: "warning",
-    },
-  ],
-};
-
 export async function GET(req) {
   try {
     await connectDB();
 
-    // Check if an application exists in DB
+    let merchant = null;
+    try {
+      const { user } = await requireAuth(req);
+      if (user?.id) {
+        merchant = await Merchant.findOne({ userId: user.id }).lean();
+      }
+    } catch {
+      // Fallback if unauthenticated request
+    }
+
+    if (!merchant && mongoose.connection.readyState >= 1) {
+      merchant = await Merchant.findOne().sort({ updatedAt: -1 }).lean();
+    }
+
     let appData = null;
     if (mongoose.connection.readyState >= 1) {
-      appData = await MerchantApplication.findOne()
-        .sort({ createdAt: -1 })
-        .lean();
+      appData = await MerchantApplication.findOne().sort({ createdAt: -1 }).lean();
     }
 
-    if (!appData) {
-      appData = DEMO_APPLICATION;
+    if (merchant) {
+      const isApproved = merchant.status === "approved";
+      const isRejected = merchant.status === "rejected";
+      const isPending = merchant.status === "pending";
+      const progressPercentage = isApproved ? 100 : isRejected ? 50 : isPending ? 33 : 66;
+
+      const docs = [
+        {
+          name: merchant.docType || "Primary Statutory Document (GST/MSME/License)",
+          type: "Statutory Identity Proof",
+          status: merchant.docImage ? (isApproved ? "verified" : "under_review") : "verified",
+          verifiedAt: merchant.updatedAt,
+        },
+        {
+          name: "Store Front & Location Photograph",
+          type: "Physical Business Location",
+          status: merchant.shopImage ? "verified" : "under_review",
+          verifiedAt: merchant.updatedAt,
+        },
+        {
+          name: "Settlement Bank Particulars",
+          type: "Payout Verification",
+          status: merchant.bankDetails?.accountNumber ? "verified" : "under_review",
+          verifiedAt: merchant.updatedAt,
+        },
+      ];
+
+      const formattedApp = {
+        applicationId: `VQ-2026-${String(merchant._id).slice(-5).toUpperCase()}`,
+        businessName: merchant.businessName || "Registered Merchant Enterprise",
+        ownerName: merchant.liaisonName || merchant.contactEmail?.split("@")[0] || "Merchant Partner",
+        email: merchant.contactEmail || "merchant@vouchiqo.com",
+        phone: merchant.contactPhone || "+91 98765 43210",
+        category: merchant.category || "Retail & Offers",
+        city: merchant.location?.city || "Ranchi",
+        state: merchant.location?.state || "Jharkhand",
+        gstin: merchant.gstin || "Exempt / Micro-Merchant",
+        panNumber: merchant.pan || "Optional",
+        status: merchant.status || "under_review",
+        progressPercentage,
+        adminIsReviewing: !isApproved && !isRejected,
+        adminReviewerName: "Vouchiqo Compliance Desk #4",
+        estimatedCompletion: isApproved ? "Completed & Activated" : "Within 2-4 hours",
+        activationWindow: "Within 2 hours after verification",
+        rejectionReason: merchant.rejectionReason || "",
+        submittedAt: merchant.createdAt || new Date(Date.now() - 3600000 * 3).toISOString(),
+        lastUpdatedAt: merchant.updatedAt || new Date().toISOString(),
+        documents: docs,
+        timeline: [
+          {
+            title: "Application Submitted Successfully",
+            detail: `Merchant profile submitted for ${merchant.businessName}`,
+            timestamp: merchant.createdAt || new Date(Date.now() - 3600000 * 3).toISOString(),
+            type: "success",
+          },
+          {
+            title: "Compliance Officer Assigned",
+            detail: "Assigned to Vouchiqo Verification Desk #4",
+            timestamp: merchant.createdAt || new Date(Date.now() - 3600000 * 2).toISOString(),
+            type: "info",
+          },
+          {
+            title: isApproved ? "Account Approved & Active" : "Document Audit In Progress",
+            detail: isApproved
+              ? "All statutory documents verified. Merchant profile is live."
+              : "Admin compliance desk is inspecting store and document credentials.",
+            timestamp: merchant.updatedAt || new Date().toISOString(),
+            type: isApproved ? "success" : "warning",
+          },
+        ],
+      };
+
+      return NextResponse.json({ success: true, data: formattedApp });
     }
 
+    // Fallback if DB empty
     return NextResponse.json({
       success: true,
-      data: appData,
+      data: appData || {
+        applicationId: "VQ-2026-89421",
+        businessName: "Merchant Partner Enterprise",
+        ownerName: "Merchant Partner",
+        email: "merchant@vouchiqo.com",
+        phone: "+91 98765 43210",
+        category: "Retail Deals & Offers",
+        city: "Ranchi",
+        state: "Jharkhand",
+        gstin: "20AAAAA0000A1Z5",
+        panNumber: "ABCDE1234F",
+        status: "under_review",
+        progressPercentage: 66,
+        adminIsReviewing: true,
+        adminReviewerName: "Vouchiqo Compliance Desk #4",
+        estimatedCompletion: "Within 2-4 hours",
+        activationWindow: "Within 2 hours after verification",
+        rejectionReason: "",
+        submittedAt: new Date(Date.now() - 3600000 * 3).toISOString(),
+        lastUpdatedAt: new Date().toISOString(),
+        documents: [
+          { name: "Primary Statutory Document (GST/MSME/License)", type: "Statutory Proof", status: "verified", verifiedAt: new Date().toISOString() },
+          { name: "Store Front Photograph", type: "Location Proof", status: "verified", verifiedAt: new Date().toISOString() },
+          { name: "Settlement Bank Details", type: "Banking Proof", status: "under_review", verifiedAt: null },
+        ],
+        timeline: [
+          { title: "Application Submitted", detail: "Merchant profile submitted for review", timestamp: new Date(Date.now() - 3600000 * 3).toISOString(), type: "success" },
+          { title: "Document Audit In Progress", detail: "Admin is actively reviewing credentials", timestamp: new Date().toISOString(), type: "warning" },
+        ],
+      },
     });
   } catch (error) {
     console.error("[application-status] Error fetching status:", error);
