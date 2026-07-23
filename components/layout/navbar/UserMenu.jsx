@@ -24,21 +24,47 @@ export const UserMenu = () => {
   const [mounted, setMounted] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
+  // Effective role — starts from session, may be upgraded to "merchant" after DB check
+  const [effectiveRole, setEffectiveRole] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const [userProfile, setUserProfile] = useState(null);
-
+  // Resolve the effective role: session role is the primary source but may be
+  // stale (Better Auth caches cookies for 5 min). If session says "customer",
+  // verify against /api/merchants/me to catch newly-registered merchants.
   useEffect(() => {
     if (!mounted || !session?.user) return;
 
-    const userRole = session?.user?.role || "customer";
+    const sessionRole = session?.user?.role || "customer";
+
+    if (sessionRole === "admin" || sessionRole === "merchant") {
+      setEffectiveRole(sessionRole);
+      return;
+    }
+
+    // Session says customer — do a quick DB check in case they just registered
+    // as a merchant and the session cookie hasn't refreshed yet
+    fetch("/api/merchants/me")
+      .then((r) => {
+        setEffectiveRole(r.ok ? "merchant" : "customer");
+      })
+      .catch(() => {
+        setEffectiveRole("customer");
+      });
+  }, [mounted, session]);
+
+  // Customer onboarding check — only run for confirmed customers
+  useEffect(() => {
+    if (!mounted || !session?.user) return;
+
+    const userRole = effectiveRole || session?.user?.role || "customer";
     if (userRole === "admin" || userRole === "merchant") return;
 
     const storageKey = `vouchiqo_onboarded_${session.user.id}`;
 
-    // Check database onboarding status & profile preferences (gender, interests)
     const checkOnboarding = async () => {
       try {
         const res = await fetch("/api/users");
@@ -56,7 +82,6 @@ export const UserMenu = () => {
             if (profile?.isOnboarded && hasGender && hasInterests) {
               localStorage.setItem(storageKey, "true");
             } else {
-              // Customer missing gender or interests -> Show Onboarding Popup!
               setShowOnboarding(true);
             }
           }
@@ -67,7 +92,7 @@ export const UserMenu = () => {
     };
 
     checkOnboarding();
-  }, [mounted, session]);
+  }, [mounted, session, effectiveRole]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -115,7 +140,8 @@ export const UserMenu = () => {
     );
   }
 
-  const role = session.user.role ?? "customer";
+  // Use effectiveRole (DB-verified) if resolved, fall back to session role
+  const role = effectiveRole ?? session.user.role ?? "customer";
 
   const getMenuItems = () => {
     switch (role) {
@@ -153,7 +179,6 @@ export const UserMenu = () => {
 
   const menuItems = getMenuItems();
 
-  // Authenticated State: Render User Icon & Dropdown Menu
   const getInitials = (name) => {
     if (!name) return "U";
     const parts = name.split(" ").filter(Boolean);
@@ -162,6 +187,16 @@ export const UserMenu = () => {
     }
     return name.slice(0, 2).toUpperCase();
   };
+
+  // Role badge shown in dropdown header
+  const roleBadgeLabel =
+    role === "admin" ? "Admin" : role === "merchant" ? "Merchant" : "Customer";
+  const roleBadgeColor =
+    role === "admin"
+      ? "bg-purple-100 text-purple-700"
+      : role === "merchant"
+        ? "bg-blue-100 text-blue-700"
+        : "bg-slate-100 text-slate-600";
 
   return (
     <div className="relative shrink-0" ref={ref}>
@@ -194,10 +229,17 @@ export const UserMenu = () => {
         <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 overflow-hidden text-left">
           {/* User Profile Header */}
           <div className="px-4 py-2.5 border-b border-slate-100 bg-[#f8fafc]">
-            <p className="text-[12px] font-black text-brand-navy truncate">
-              {session.user.name || "Member"}
-            </p>
-            <p className="text-[10px] text-slate-400 font-semibold truncate mt-0.5">
+            <div className="flex items-center justify-between gap-2 mb-0.5">
+              <p className="text-[12px] font-black text-brand-navy truncate">
+                {session.user.name || "Member"}
+              </p>
+              <span
+                className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${roleBadgeColor}`}
+              >
+                {roleBadgeLabel}
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-400 font-semibold truncate">
               {session.user.email}
             </p>
           </div>
