@@ -2,21 +2,22 @@
 
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { forgetPassword } from "@/lib/auth-client";
+import { requestPasswordReset } from "@/lib/auth-client";
 
-export function useForgotPassword() {
+export function useForgotPassword({ redirectTo = "/reset-password" } = {}) {
   return useMutation({
-    mutationFn: ({ email }) =>
-      forgetPassword({
+    mutationFn: async ({ email }) => {
+      const res = await requestPasswordReset({
         email,
-        redirectTo: "/auth/reset-password",
-      }),
-
-    onSuccess: ({ error }) => {
-      if (error) {
-        toast.error(error.message ?? "Failed to send reset link");
-        return;
+        redirectTo,
+      });
+      if (res?.error) {
+        throw new Error(res.error.message ?? "Failed to send reset link");
       }
+      return res?.data;
+    },
+
+    onSuccess: () => {
       toast.success("Reset link sent! Check your inbox.");
     },
 

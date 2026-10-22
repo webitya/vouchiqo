@@ -57,16 +57,27 @@ const backendForgotPasswordSchema = z.object({
   email: z
     .string({ required_error: "Email is required" })
     .email("Invalid email format"),
+  redirectTo: z.string().optional(),
 });
 
-const backendResetPasswordSchema = z.object({
-  password: z
-    .string({ required_error: "Password is required" })
-    .min(8, "Password must be at least 8 characters"),
-  token: z
-    .string({ required_error: "Token is required" })
-    .min(1, "Token is required"),
-});
+const backendResetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .optional(),
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .optional(),
+    token: z
+      .string({ required_error: "Token is required" })
+      .min(1, "Token is required"),
+  })
+  .refine((data) => data.password || data.newPassword, {
+    message: "Password is required and must be at least 8 characters",
+    path: ["password"],
+  });
 
 export async function POST(request) {
   const url = new URL(request.url);
@@ -79,6 +90,8 @@ export async function POST(request) {
       pathname.endsWith("/sign-in/email") ||
       pathname.endsWith("/sign-up/email") ||
       pathname.endsWith("/forget-password") ||
+      pathname.endsWith("/forgot-password") ||
+      pathname.endsWith("/request-password-reset") ||
       pathname.endsWith("/reset-password")
     ) {
       const clone = request.clone();
@@ -90,7 +103,11 @@ export async function POST(request) {
         result = backendSignInSchema.safeParse(body);
       } else if (pathname.endsWith("/sign-up/email")) {
         result = backendSignUpSchema.safeParse(body);
-      } else if (pathname.endsWith("/forget-password")) {
+      } else if (
+        pathname.endsWith("/forget-password") ||
+        pathname.endsWith("/forgot-password") ||
+        pathname.endsWith("/request-password-reset")
+      ) {
         result = backendForgotPasswordSchema.safeParse(body);
       } else if (pathname.endsWith("/reset-password")) {
         result = backendResetPasswordSchema.safeParse(body);

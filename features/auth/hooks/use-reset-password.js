@@ -5,22 +5,24 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { resetPassword } from "@/lib/auth-client";
 
-export function useResetPassword() {
+export function useResetPassword({ loginHref = "/login" } = {}) {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: ({ password, token }) =>
-      resetPassword({ newPassword: password, token }),
-
-    onSuccess: ({ error }) => {
-      if (error) {
-        toast.error(
-          error.message ?? "Failed to reset password. Link may have expired.",
+    mutationFn: async ({ password, token }) => {
+      const res = await resetPassword({ newPassword: password, token });
+      if (res?.error) {
+        throw new Error(
+          res.error.message ??
+            "Failed to reset password. Link may have expired.",
         );
-        return;
       }
+      return res?.data;
+    },
+
+    onSuccess: () => {
       toast.success("Password updated! Please sign in.");
-      router.push("/login");
+      router.push(loginHref);
     },
 
     onError: (err) =>

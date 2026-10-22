@@ -55,10 +55,21 @@ export const ProductOfferCard = memo(function ProductOfferCard({ product }) {
     typeof originalPrice === "number"
       ? originalPrice
       : Number(originalPrice) || 0;
-  const numDisc =
+  let numDisc =
     typeof discountPrice === "number"
       ? discountPrice
       : Number(discountPrice) || 0;
+
+  // Extract price from discountText if discountPrice is missing (e.g. "Starts @ ₹999")
+  if (numDisc === 0 && discountText) {
+    const match = discountText.match(
+      /(?:starts?\s*(?:at|@)?\s*|under\s*|price\s*:\s*)?(?:₹|rs\.?)\s*(\d[\d,]*)/i,
+    );
+    if (match?.[1]) {
+      const parsed = Number(match[1].replace(/,/g, ""));
+      if (parsed > 0) numDisc = parsed;
+    }
+  }
   const savings =
     numOrig > 0 && numDisc > 0 ? Math.max(0, numOrig - numDisc) : 0;
   const computedPercent =

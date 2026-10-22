@@ -44,10 +44,21 @@ export default function AffiliateDealCard({ product, merchant }) {
     typeof originalPrice === "number"
       ? originalPrice
       : Number(originalPrice) || 0;
-  const numDisc =
+  let numDisc =
     typeof discountPrice === "number"
       ? discountPrice
       : Number(discountPrice) || 0;
+
+  // Extract price from discountText if discountPrice is missing (e.g. "Starts @ ₹999")
+  if (numDisc === 0 && discountText) {
+    const match = discountText.match(
+      /(?:starts?\s*(?:at|@)?\s*|under\s*|price\s*:\s*)?(?:₹|rs\.?)\s*(\d[\d,]*)/i,
+    );
+    if (match?.[1]) {
+      const parsed = Number(match[1].replace(/,/g, ""));
+      if (parsed > 0) numDisc = parsed;
+    }
+  }
 
   const hasExactPricing = numOrig > 0 && numDisc > 0;
   const savings = hasExactPricing ? Math.max(0, numOrig - numDisc) : 0;
@@ -66,7 +77,7 @@ export default function AffiliateDealCard({ product, merchant }) {
   }
 
   if (!discountBadge && calculatedPercent > 0) {
-    discountBadge = `UPTO ${calculatedPercent}% OFF`;
+    discountBadge = `${calculatedPercent}% OFF`;
   }
 
   const categoryName =
@@ -105,48 +116,53 @@ export default function AffiliateDealCard({ product, merchant }) {
     <>
       <article
         onClick={() => setIsDetailsOpen(true)}
-        className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-row items-center gap-3 sm:gap-5 font-sans select-none cursor-pointer group"
+        className="bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-3 md:p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-row items-center gap-3 sm:gap-4 font-sans select-none cursor-pointer group"
       >
-        {/* ── 1. Clean 3:2 Landscape Banner (Zero Cropping) ── */}
-        <div className="relative w-28 sm:w-44 md:w-52 aspect-[3/2] rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100 flex items-center justify-center">
+        {/* ── 1. Clean Landscape Banner (Compact Proportional Fit) ── */}
+        <div className="relative w-24 sm:w-36 md:w-44 aspect-[3/2] rounded-lg sm:rounded-xl overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center">
           {imageUrl && !imageFailed ? (
             <SafeImage
               src={imageUrl}
               alt={displayTitle}
               fill
-              sizes="(max-width: 640px) 112px, (max-width: 768px) 176px, 208px"
+              sizes="(max-width: 640px) 96px, (max-width: 768px) 144px, 176px"
               className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
               onError={() => setImageFailed(true)}
             />
           ) : (
-            <ShoppingBag className="w-8 h-8 text-slate-300" />
+            <ShoppingBag className="w-6 h-6 text-slate-300" />
           )}
         </div>
 
-        {/* ── 2. Middle Content Column: Strict Proximity & Clear Hierarchy ── */}
-        <div className="flex-1 min-w-0 flex flex-col justify-center gap-1 sm:gap-1.5 py-0.5">
+        {/* ── 2. Middle Content Column: Live Database Data Only ── */}
+        <div className="flex-1 min-w-0 flex flex-col justify-center gap-1 py-0.5">
           {/* Top: Category Pill + Verified Pill */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] sm:text-[11px] font-semibold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-md border border-purple-100/80 capitalize truncate max-w-[130px]">
-              {categoryName}
-            </span>
-            <span className="text-[10.5px] sm:text-[11px] text-emerald-600 font-medium hidden sm:inline-flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Verified Deal</span>
-            </span>
-          </div>
+          {(categoryName || merchant?.isVerified) && (
+            <div className="flex items-center gap-2 flex-wrap">
+              {categoryName && (
+                <span className="text-[10px] sm:text-[11px] font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100/80 capitalize truncate max-w-[130px]">
+                  {categoryName}
+                </span>
+              )}
+              {merchant?.isVerified && (
+                <span className="text-[10px] sm:text-[11px] text-emerald-600 font-medium hidden sm:inline-flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Verified Deal</span>
+                </span>
+              )}
+            </div>
+          )}
 
-          {/* Middle: Title & Description */}
+          {/* Middle: Title & Live Description (Only rendered if present in DB) */}
           <div className="min-w-0">
-            <h4 className="text-xs sm:text-base md:text-lg font-bold text-slate-900 leading-snug line-clamp-1 group-hover:text-blue-600 transition-colors">
+            <h4 className="text-xs sm:text-base md:text-[15.5px] font-bold text-slate-900 leading-snug line-clamp-1 group-hover:text-blue-600 transition-colors">
               {displayTitle}
             </h4>
-            <p className="text-[11px] sm:text-xs md:text-[13px] text-slate-500 font-normal line-clamp-1 sm:line-clamp-2 mt-0.5 leading-relaxed">
-              {description ||
-                `Exclusive verified promotional offer on ${
-                  merchant?.businessName || "partner store"
-                } products. Limited time savings.`}
-            </p>
+            {description && description.trim() !== "" ? (
+              <p className="text-[11px] sm:text-xs text-slate-500 font-normal line-clamp-1 sm:line-clamp-2 mt-0.5 leading-relaxed">
+                {description}
+              </p>
+            ) : null}
           </div>
 
           {/* Bottom: Pricing / Deal Badge */}
@@ -154,24 +170,21 @@ export default function AffiliateDealCard({ product, merchant }) {
             {numDisc > 0 || numOrig > 0 ? (
               <>
                 <span className="text-sm sm:text-base md:text-lg font-extrabold text-emerald-600 tracking-tight">
-                  ₹
-                  {numDisc > 0
-                    ? numDisc.toLocaleString()
-                    : numOrig.toLocaleString()}
+                  ₹{(numDisc > 0 ? numDisc : numOrig).toLocaleString("en-IN")}
                 </span>
                 {numOrig > 0 && numOrig > numDisc && (
                   <span className="text-[11px] sm:text-xs text-slate-400 line-through">
-                    ₹{numOrig.toLocaleString()}
+                    ₹{numOrig.toLocaleString("en-IN")}
                   </span>
                 )}
                 {discountBadge && (
-                  <span className="bg-emerald-50 text-emerald-700 text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 rounded-full border border-emerald-100/80 whitespace-nowrap">
+                  <span className="bg-emerald-50 text-emerald-700 text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full border border-emerald-100/80 whitespace-nowrap">
                     {discountBadge}
                   </span>
                 )}
               </>
             ) : (
-              <span className="bg-emerald-50 text-emerald-700 text-[11px] sm:text-xs font-bold px-2.5 py-0.5 rounded-md border border-emerald-200/80 inline-flex items-center gap-1">
+              <span className="bg-emerald-50 text-emerald-700 text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-md border border-emerald-200/80 inline-flex items-center gap-1">
                 {discountBadge || "Special Offer"}
               </span>
             )}
@@ -179,7 +192,7 @@ export default function AffiliateDealCard({ product, merchant }) {
         </div>
 
         {/* ── 3. Dedicated Action Section (Anchored on the right) ── */}
-        <div className="w-[110px] sm:w-[150px] md:w-[165px] shrink-0 flex flex-col justify-between items-end self-stretch pl-2 sm:pl-4 md:pl-5 border-l border-slate-100 py-0.5">
+        <div className="w-[100px] sm:w-[130px] md:w-[145px] shrink-0 flex flex-col justify-between items-end self-stretch pl-2 sm:pl-3 md:pl-4 border-l border-slate-100 py-0.5">
           {/* Wishlist Heart Button */}
           <button
             type="button"
@@ -187,14 +200,14 @@ export default function AffiliateDealCard({ product, merchant }) {
             aria-label={
               isWishlisted ? "Remove from wishlist" : "Add to wishlist"
             }
-            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center transition-all cursor-pointer ${
+            className={`w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full border flex items-center justify-center transition-all cursor-pointer ${
               isWishlisted
                 ? "bg-rose-50 border-rose-200 text-rose-500 shadow-2xs"
                 : "bg-white border-slate-200/80 text-slate-400 hover:text-rose-500 hover:border-rose-200"
             }`}
           >
             <Heart
-              className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${
+              className={`w-3.5 h-3.5 ${
                 isWishlisted ? "fill-rose-500 text-rose-500" : ""
               }`}
             />
@@ -205,7 +218,7 @@ export default function AffiliateDealCard({ product, merchant }) {
             <button
               type="button"
               onClick={handleClaimClick}
-              className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-xs sm:text-sm py-1.5 sm:py-2.5 px-3 sm:px-4 rounded-xl flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+              className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-xs sm:text-sm py-1.5 sm:py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer whitespace-nowrap"
             >
               <span>Claim Deal</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -243,7 +256,9 @@ export default function AffiliateDealCard({ product, merchant }) {
               {displayTitle}
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-500">
-              Verified Merchant Partner Deal
+              {merchant?.businessName
+                ? `Official Deal via ${merchant.businessName}`
+                : "Verified Store Offer"}
             </DialogDescription>
           </DialogHeader>
 
@@ -271,11 +286,14 @@ export default function AffiliateDealCard({ product, merchant }) {
                   {numDisc > 0 || numOrig > 0 ? (
                     <>
                       <span className="text-xl font-extrabold text-emerald-600">
-                        ₹{numDisc > 0 ? numDisc : numOrig}
+                        ₹
+                        {(numDisc > 0 ? numDisc : numOrig).toLocaleString(
+                          "en-IN",
+                        )}
                       </span>
                       {numOrig > 0 && numOrig > numDisc && (
                         <span className="text-xs text-slate-400 line-through">
-                          ₹{numOrig}
+                          ₹{numOrig.toLocaleString("en-IN")}
                         </span>
                       )}
                     </>

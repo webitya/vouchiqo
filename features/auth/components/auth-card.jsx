@@ -30,6 +30,12 @@ export function AuthCard({
         return "Log in to manage your coupon campaigns and analytics";
       case "Merchant Partner Registration":
         return "Partner with Vouchiqo to boost your brand visibility";
+      case "Recover Merchant Password":
+      case "Merchant Partner Password Recovery":
+        return "Enter your registered merchant email to receive recovery instructions";
+      case "Set Merchant Password":
+      case "Set New Merchant Password":
+        return "Create a strong new password for your merchant partner account";
       case "Admin Log In":
         return "Secure access to the administration dashboard";
       default:
@@ -45,8 +51,14 @@ export function AuthCard({
         return "Create Account";
       case "Recover your password":
         return "Recover Password";
+      case "Recover Merchant Password":
+      case "Merchant Partner Password Recovery":
+        return "Merchant Recovery";
       case "Set a new password":
         return "Set New Password";
+      case "Set Merchant Password":
+      case "Set New Merchant Password":
+        return "Set Merchant Password";
       case "Enter Verification Code":
         return "Verify OTP";
       case "Merchant Partner Log In":

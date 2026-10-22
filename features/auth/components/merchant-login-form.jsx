@@ -36,7 +36,7 @@ export function MerchantLoginForm() {
               Password
             </span>
             <Link
-              href="/forgot-password"
+              href="/merchant-forgot-password"
               className="text-xs text-brand-blue font-semibold hover:underline"
             >
               Forgot Password?

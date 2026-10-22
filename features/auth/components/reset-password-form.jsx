@@ -14,11 +14,20 @@ import { Label } from "@/components/ui/label";
 import { useResetPassword } from "@/features/auth/hooks/use-reset-password";
 import { AuthCard } from "./auth-card";
 
-// No auth guard here — user arrives via email link, likely not logged in
-export function ResetPasswordForm({ token }) {
+export function ResetPasswordForm({
+  token,
+  title = "Set a new password",
+  loginHref = "/login",
+}) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const { mutate: reset, isPending, isSuccess } = useResetPassword();
+  const {
+    mutate: reset,
+    isPending,
+    isSuccess,
+  } = useResetPassword({
+    loginHref,
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,7 +36,7 @@ export function ResetPasswordForm({ token }) {
   };
 
   return (
-    <AuthCard title="Set a new password">
+    <AuthCard title={title}>
       {isSuccess ? (
         <div className="text-center space-y-4 py-4">
           <div className="mx-auto w-12 h-12 bg-brand-success/10 text-brand-success rounded-full flex items-center justify-center border border-brand-success/20">
@@ -42,7 +51,7 @@ export function ResetPasswordForm({ token }) {
             </p>
           </div>
           <Link
-            href="/login"
+            href={loginHref}
             className="btn-primary text-xs py-2.5 px-6 flex items-center justify-center gap-1.5 w-full border-0 h-auto cursor-pointer shadow-none"
           >
             Go to Sign In <ArrowRight className="w-3.5 h-3.5" />
@@ -59,6 +68,8 @@ export function ResetPasswordForm({ token }) {
                 <Lock className="w-4 h-4 text-brand-subtext" />
               </InputGroupAddon>
               <InputGroupInput
+                id="reset-password-new"
+                name="newPassword"
                 type="password"
                 placeholder="••••••••"
                 value={password}
@@ -79,6 +90,8 @@ export function ResetPasswordForm({ token }) {
                 <Lock className="w-4 h-4 text-brand-subtext" />
               </InputGroupAddon>
               <InputGroupInput
+                id="reset-password-confirm"
+                name="confirmPassword"
                 type="password"
                 placeholder="••••••••"
                 value={confirm}
@@ -90,6 +103,7 @@ export function ResetPasswordForm({ token }) {
             </InputGroup>
           </div>
           <Button
+            id="reset-password-submit"
             type="submit"
             disabled={isPending}
             className="btn-primary w-full py-2.5 text-xs font-semibold flex items-center justify-center gap-1 border-0 h-auto cursor-pointer shadow-none"

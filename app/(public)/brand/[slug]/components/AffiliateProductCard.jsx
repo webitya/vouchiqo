@@ -26,13 +26,24 @@ export default function AffiliateProductCard({ product }) {
     typeof originalPrice === "number"
       ? originalPrice
       : Number(originalPrice) || 0;
-  const numDisc =
+  let numDisc =
     typeof discountPrice === "number"
       ? discountPrice
       : Number(discountPrice) || 0;
 
-  const hasExactPricing = numOrig > 0 && numDisc > 0;
-  const hasFixedPrice = numDisc > 0 && numOrig === 0;
+  // Extract price from discountText if discountPrice is missing (e.g. "Starts @ ₹999")
+  if (numDisc === 0 && discountText) {
+    const match = discountText.match(
+      /(?:starts?\s*(?:at|@)?\s*|under\s*|price\s*:\s*)?(?:₹|rs\.?)\s*(\d[\d,]*)/i,
+    );
+    if (match?.[1]) {
+      const parsed = Number(match[1].replace(/,/g, ""));
+      if (parsed > 0) numDisc = parsed;
+    }
+  }
+
+  const effectivePrice = numDisc > 0 ? numDisc : numOrig > 0 ? numOrig : null;
+  const hasExactPricing = numOrig > 0 && numDisc > 0 && numOrig > numDisc;
   const savings = hasExactPricing ? Math.max(0, numOrig - numDisc) : 0;
   const percentOff = hasExactPricing
     ? Math.round((savings / numOrig) * 100)
@@ -50,9 +61,7 @@ export default function AffiliateProductCard({ product }) {
 
   if (!displayDiscount) {
     if (percentOff > 0) {
-      displayDiscount = `UPTO ${percentOff}% OFF`;
-    } else if (hasFixedPrice) {
-      displayDiscount = `₹${numDisc}`;
+      displayDiscount = `${percentOff}% OFF`;
     } else {
       displayDiscount = "Special Offer";
     }
@@ -133,31 +142,35 @@ export default function AffiliateProductCard({ product }) {
           {displayTitle}
         </h4>
 
-        {/* Real Deal / Price Row */}
-        <div className="pt-0.5">
-          {numDisc > 0 ? (
+        {/* Real Deal / Price Row - Consistent height & structure for all cards */}
+        <div className="pt-0.5 min-h-[24px] flex items-center">
+          {effectivePrice ? (
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-xs sm:text-sm font-bold text-slate-900">
-                ₹{numDisc.toLocaleString()}
+              <span className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight">
+                ₹{effectivePrice.toLocaleString("en-IN")}
               </span>
-              {numOrig > numDisc && (
+              {hasExactPricing && (
                 <span className="text-[10px] sm:text-[11px] text-slate-400 line-through">
-                  ₹{numOrig.toLocaleString()}
+                  ₹{numOrig.toLocaleString("en-IN")}
                 </span>
               )}
-              {displayDiscount && (
-                <span className="text-[9.5px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100/80 px-1.5 py-0.5 rounded-full">
+              {displayDiscount && displayDiscount !== `₹${effectivePrice}` && (
+                <span className="text-[9.5px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100/80 px-1.5 py-0.5 rounded-full whitespace-nowrap">
                   {displayDiscount}
                 </span>
               )}
             </div>
           ) : (
-            <span
-              className="text-xs sm:text-[13px] font-semibold text-emerald-600 truncate block"
-              title={displayDiscount}
-            >
-              {displayDiscount}
-            </span>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-xs sm:text-sm font-bold text-slate-900">
+                Special Deal
+              </span>
+              {displayDiscount && (
+                <span className="text-[9.5px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100/80 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                  {displayDiscount}
+                </span>
+              )}
+            </div>
           )}
         </div>
       </div>
