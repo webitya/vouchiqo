@@ -127,7 +127,10 @@ export function HomeClient({
           {/* Trending Offer Banner */}
           <Suspense
             fallback={
-              <div className="w-full h-48 bg-slate-100/60 rounded-2xl animate-pulse" />
+              <div
+                className="w-full bg-slate-100/70 rounded-xl sm:rounded-2xl border border-slate-200/80 animate-pulse"
+                style={{ aspectRatio: "2048 / 768", minHeight: "130px" }}
+              />
             }
           >
             <TrendingOffer banners={banners} />

@@ -2,8 +2,8 @@
 
 import {
   ArrowDown,
-  ArrowUp,
   ArrowRight,
+  ArrowUp,
   ArrowUpToLine,
   Check,
   CheckCircle2,
@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import MobileTableCard from "@/components/shared/data/MobileTableCard";
 import StatusBadge from "@/components/shared/data/StatusBadge";
 import ConfirmDeleteModal from "@/components/shared/modals/ConfirmDeleteModal";
 import { Badge } from "@/components/ui/badge";
@@ -41,10 +42,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { uploadFile } from "@/lib/fetcher";
-import { showError, showSuccess } from "@/lib/toast";
-import { cn } from "@/lib/utils";
-import MobileTableCard from "@/components/shared/data/MobileTableCard";
 import {
   useAdminBanners,
   useCreateBanner,
@@ -52,6 +49,9 @@ import {
   useReorderBanners,
   useUpdateBanner,
 } from "@/hooks/use-admin";
+import { uploadFile } from "@/lib/fetcher";
+import { showError, showSuccess } from "@/lib/toast";
+import { cn } from "@/lib/utils";
 
 const SLOTS = [
   {
@@ -77,12 +77,13 @@ const SLOTS = [
   {
     id: "trending",
     label: "Trending Offers",
-    width: 1400,
-    height: 300,
-    aspectRatio: "4.6:1 (Panoramic)",
-    recommendedSize: "1400 x 300 px (~4.6:1)",
+    width: 2048,
+    height: 768,
+    aspectRatio: "8:3 (~2.67:1)",
+    recommendedSize: "2048 x 768 px (~8:3 / 16:6)",
     format: "WebP, JPG, PNG",
-    maxSize: "2 MB",
+    maxSize: "3 MB",
+    aiPromptTip: "--ar 8:3 (Midjourney) | 2048x768 (SDXL/Flux)",
     aliases: ["trending", "trending-offer"],
     badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
     activeTabBg: "bg-purple-600 text-white shadow-2xs",
@@ -92,7 +93,8 @@ const SLOTS = [
     submitBtn: "bg-purple-600 hover:bg-purple-700 text-white",
     accentText: "text-purple-600",
     subCardBg: "bg-purple-50/30 border-purple-100/80",
-    description: "Mid-page wide banner highlighting trending curated deals",
+    description:
+      "Mid-page AI-ready 8:3 widescreen banner (Midjourney --ar 8:3 / 2048x768)",
   },
   {
     id: "popup",
@@ -299,7 +301,10 @@ export default function BannerManagement() {
   const handleToggleSponsored = async (bannerId, currentIsPaid) => {
     const nextIsPaid = !currentIsPaid;
     try {
-      await updateBannerMutation.mutateAsync({ id: bannerId, isPaid: nextIsPaid });
+      await updateBannerMutation.mutateAsync({
+        id: bannerId,
+        isPaid: nextIsPaid,
+      });
       showSuccess(
         `Placement updated to ${nextIsPaid ? "Sponsored" : "Standard"}.`,
       );
@@ -311,7 +316,10 @@ export default function BannerManagement() {
   const handleToggleStatus = async (bannerId, currentStatus) => {
     const nextStatus = currentStatus === "active" ? "inactive" : "active";
     try {
-      await updateBannerMutation.mutateAsync({ id: bannerId, status: nextStatus });
+      await updateBannerMutation.mutateAsync({
+        id: bannerId,
+        status: nextStatus,
+      });
       showSuccess(`Banner status updated to ${nextStatus}.`);
     } catch {
       showError("Failed to update status.");
@@ -630,8 +638,7 @@ export default function BannerManagement() {
                       side="top"
                       className="text-[10.5px] font-normal py-1 px-2 bg-slate-900 text-white rounded-md shadow-md"
                     >
-                      {slot.description} • Optimal ratio:{" "}
-                      {slot.recommendedSize}
+                      {slot.description} • Optimal ratio: {slot.recommendedSize}
                     </TooltipContent>
                   </Tooltip>
                 );
@@ -644,16 +651,32 @@ export default function BannerManagement() {
                 <span>Upload Specs:</span>
               </div>
               <span className="font-semibold text-slate-800 bg-white px-2 py-0.5 rounded-md border border-slate-200/80 shadow-2xs">
-                {currentSlotConfig.width || 1200} x {currentSlotConfig.height || 430} px
+                {currentSlotConfig.width || 1200} x{" "}
+                {currentSlotConfig.height || 430} px
               </span>
               <span className="text-slate-300 font-normal">|</span>
               <span className="text-slate-600 font-medium">
-                Ratio: <span className="font-semibold text-slate-800">{currentSlotConfig.aspectRatio || "2.8:1"}</span>
+                Ratio:{" "}
+                <span className="font-semibold text-slate-800">
+                  {currentSlotConfig.aspectRatio || "2.8:1"}
+                </span>
               </span>
               <span className="text-slate-300 font-normal">|</span>
               <span className="text-slate-500 text-[10px]">
-                {currentSlotConfig.format || "WebP, JPG, PNG"} (Max {currentSlotConfig.maxSize || "2 MB"})
+                {currentSlotConfig.format || "WebP, JPG, PNG"} (Max{" "}
+                {currentSlotConfig.maxSize || "2 MB"})
               </span>
+              {currentSlotConfig.aiPromptTip && (
+                <>
+                  <span className="text-slate-300 font-normal">|</span>
+                  <span className="text-purple-700 font-medium bg-purple-100/70 border border-purple-200/90 px-1.5 py-0.2 rounded text-[10px]">
+                    ✨ AI:{" "}
+                    <span className="font-semibold">
+                      {currentSlotConfig.aiPromptTip}
+                    </span>
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
@@ -702,7 +725,13 @@ export default function BannerManagement() {
                         Banner Image <span className="text-rose-500">*</span>
                       </label>
                       <span className="ml-2 text-[10px] text-slate-400 font-normal hidden sm:inline">
-                        (Recommended: {currentSlotConfig.width || 1200} x {currentSlotConfig.height || 430} px, {currentSlotConfig.aspectRatio || "2.8:1"})
+                        (Recommended: {currentSlotConfig.width || 1200} x{" "}
+                        {currentSlotConfig.height || 430} px,{" "}
+                        {currentSlotConfig.aspectRatio || "2.8:1"}
+                        {currentSlotConfig.aiPromptTip
+                          ? ` • AI: ${currentSlotConfig.aiPromptTip}`
+                          : ""}
+                        )
                       </span>
                     </div>
                     <input
@@ -1018,7 +1047,17 @@ export default function BannerManagement() {
                         </div>
 
                         {(form.image || form.title || form.buttonText) && (
-                          <div className="relative w-full sm:w-60 h-10 rounded-md overflow-hidden border border-slate-300 bg-slate-950 shrink-0">
+                          <div
+                            className="relative w-full sm:w-56 rounded-md overflow-hidden border border-slate-300 bg-slate-950 shrink-0 shadow-2xs"
+                            style={{
+                              aspectRatio:
+                                currentSlotConfig.width &&
+                                currentSlotConfig.height
+                                  ? `${currentSlotConfig.width} / ${currentSlotConfig.height}`
+                                  : "2048 / 768",
+                              maxHeight: "84px",
+                            }}
+                          >
                             {form.image
                               ? // biome-ignore lint/performance/noImgElement: banner preview
                                 <img
@@ -1352,9 +1391,25 @@ export default function BannerManagement() {
                                       <img
                                         src={r.image}
                                         alt={r.title || "Banner"}
-                                        className="w-14 h-8 object-cover rounded-md border border-slate-200 bg-white shadow-2xs shrink-0"
+                                        className={cn(
+                                          "object-cover rounded-md border border-slate-200 bg-white shadow-2xs shrink-0",
+                                          activeTab === "trending"
+                                            ? "w-16 h-6"
+                                            : activeTab === "popup"
+                                              ? "w-12 h-8"
+                                              : "w-14 h-7",
+                                        )}
                                       />
-                                    : <div className="w-14 h-8 bg-white rounded-md flex items-center justify-center text-slate-400 text-[9px] shrink-0 border border-slate-200">
+                                    : <div
+                                        className={cn(
+                                          "bg-white rounded-md flex items-center justify-center text-slate-400 text-[9px] shrink-0 border border-slate-200",
+                                          activeTab === "trending"
+                                            ? "w-16 h-6"
+                                            : activeTab === "popup"
+                                              ? "w-12 h-8"
+                                              : "w-14 h-7",
+                                        )}
+                                      >
                                         No Image
                                       </div>}
                                   <div className="min-w-0 flex-1">

@@ -17,8 +17,8 @@ export default function PublicLoading() {
       {/* Hero Banner Skeleton */}
       <main className="w-full px-1 sm:px-1.5 pt-1.5 pb-1">
         <div
-          className="w-full bg-slate-200 rounded-2xl overflow-hidden relative"
-          style={{ aspectRatio: "1400 / 300" }}
+          className="w-full bg-slate-200 rounded-xl sm:rounded-2xl overflow-hidden relative"
+          style={{ aspectRatio: "1200 / 430" }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 animate-shimmer" />
         </div>
