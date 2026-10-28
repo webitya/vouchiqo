@@ -4,15 +4,21 @@ import {
   Calendar as CalendarIcon,
   Eye,
   FileText,
+  Image as ImageIcon,
   IndianRupee,
   Layers,
+  Loader2,
   MessageSquare,
   Percent,
   Settings,
   Tag,
   Ticket,
+  Trash2,
+  Upload,
   Users,
 } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import {
   FormActions,
   FormDatePicker,
@@ -21,8 +27,10 @@ import {
   FormSelect,
   FormTextarea,
 } from "@/components/shared/form";
+import SafeImage from "@/components/shared/SafeImage";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 const CATEGORIES = [
@@ -78,7 +86,55 @@ export default function CouponForm({
   merchantPlan = "starter",
   merchantName = "Store Name",
 }) {
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   const update = (key, val) => setFormData((prev) => ({ ...prev, [key]: val }));
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file (PNG, JPG, WEBP).");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be under 5MB.");
+      return;
+    }
+
+    const data = new FormData();
+    data.append("file", file);
+    data.append("folder", "coupons");
+
+    setUploadingImage(true);
+    try {
+      const res = await fetch("/api/uploads", {
+        method: "POST",
+        body: data,
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.message || "Upload failed");
+      }
+
+      const json = await res.json();
+      const imageUrl = json.data?.secure_url || json.data?.url || json.url;
+
+      if (!imageUrl) throw new Error("No URL returned from upload");
+
+      update("image", imageUrl);
+      toast.success("Offer photo updated successfully!");
+    } catch (err) {
+      console.error("Image upload error:", err);
+      toast.error(err.message || "Failed to upload image. Please try again.");
+    } finally {
+      setUploadingImage(false);
+      e.target.value = "";
+    }
+  };
 
   const selectedCategory =
     CATEGORIES.find(
@@ -223,6 +279,142 @@ export default function CouponForm({
               showCounter
               required
             />
+
+            {/* Offer Banner Photo / Image Section */}
+            <div className="space-y-3 pt-3 border-t border-slate-100">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <Label className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
+                  <ImageIcon className="w-4 h-4 text-blue-600" />
+                  <span>Offer Photo / Banner</span>
+                  <span className="text-[10px] text-slate-400 font-normal">
+                    (Optional)
+                  </span>
+                </Label>
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-700 bg-blue-50 border border-blue-200/80 px-2 py-0.5 rounded-md shadow-2xs">
+                  <span>Aspect Ratio: 2:1</span>
+                  <span className="text-slate-400">•</span>
+                  <span>800×400px</span>
+                </span>
+              </div>
+
+              {/* If an image exists, show thumbnail preview and change/remove controls */}
+              {formData.image ? (
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
+                  <div className="relative w-full sm:w-44 h-22 rounded-lg overflow-hidden border border-slate-200 bg-slate-900 shrink-0 shadow-2xs">
+                    <SafeImage
+                      src={formData.image}
+                      alt="Offer banner"
+                      width={176}
+                      height={88}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="flex-1 min-w-0 space-y-1.5 w-full">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-800 truncate block">
+                        Current Offer Photo
+                      </span>
+                      <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">
+                        Active
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-mono truncate">
+                      {formData.image}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      {/* Change / Upload Button */}
+                      <label className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3 h-8 rounded-lg cursor-pointer transition-colors shadow-2xs">
+                        {uploadingImage ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-3.5 h-3.5" />
+                            <span>Change Photo</span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          disabled={uploadingImage}
+                          className="hidden"
+                        />
+                      </label>
+
+                      {/* Remove Button */}
+                      <button
+                        type="button"
+                        onClick={() => update("image", "")}
+                        disabled={uploadingImage}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700 bg-white hover:bg-red-50 border border-red-200 px-2.5 h-8 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove Photo</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* No image yet: show upload box & URL input */
+                <div className="space-y-2.5 p-3.5 bg-slate-50/80 rounded-xl border border-dashed border-slate-300">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    <FormInput
+                      name="image"
+                      type="text"
+                      placeholder="Paste image URL (https://...) or upload below"
+                      value={formData.image || ""}
+                      onChange={(e) => update("image", e.target.value)}
+                      className="flex-1 bg-white h-9 text-xs"
+                    />
+
+                    <label className="flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs px-3.5 h-9 rounded-lg cursor-pointer shrink-0 transition-colors shadow-2xs">
+                      {uploadingImage ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Uploading...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Upload Photo (2:1)</span>
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={uploadingImage}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {/* Expandable direct URL editor when image is already set */}
+              {formData.image && (
+                <details className="text-[11px] text-slate-500 pt-0.5">
+                  <summary className="hover:text-blue-600 font-medium select-none cursor-pointer">
+                    Or edit direct image URL
+                  </summary>
+                  <div className="mt-1.5">
+                    <FormInput
+                      name="image"
+                      type="text"
+                      placeholder="https://..."
+                      value={formData.image || ""}
+                      onChange={(e) => update("image", e.target.value)}
+                      className="bg-white h-8 text-xs"
+                    />
+                  </div>
+                </details>
+              )}
+            </div>
           </FormSection>
         </Card>
 
