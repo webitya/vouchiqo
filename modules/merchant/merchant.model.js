@@ -60,6 +60,10 @@ const merchantSchema = new Schema(
       trim: true,
     },
 
+    // Sub-Category Tags / Chips added during onboarding or profile editing
+    subCategoryTags: [{ type: String, trim: true }],
+    tags: [{ type: String, trim: true }],
+
     location: {
       address: { type: String, trim: true },
       pincode: { type: String, trim: true },
@@ -333,6 +337,8 @@ merchantSchema.index({
   createdAt: -1,
 });
 merchantSchema.index({ "location.city": 1, status: 1 });
+merchantSchema.index({ tags: 1 });
+merchantSchema.index({ subCategoryTags: 1 });
 merchantSchema.index({ contactEmail: 1 }, { unique: true, sparse: true });
 merchantSchema.index({ contactPhone: 1 }, { unique: true, sparse: true });
 merchantSchema.index({ liaisonPhone: 1 }, { unique: true, sparse: true });

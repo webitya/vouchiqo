@@ -52,6 +52,8 @@ const merchantApplicationSchema = new Schema(
       type: String,
       trim: true,
     },
+    subCategoryTags: [{ type: String, trim: true }],
+    tags: [{ type: String, trim: true }],
 
     // Status Flow: "pending" | "under_review" | "document_verified" | "approved" | "rejected"
     status: {

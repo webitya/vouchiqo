@@ -570,6 +570,8 @@ export function MerchantOnboardingWizard() {
             .slice(0, 50) || "merchant",
         category: formData.category,
         customCategoryNotes: formData.customCategoryNotes,
+        subCategoryTags: subCategoryTags || [],
+        tags: subCategoryTags || [],
         constitution: formData.constitution,
         location: {
           address: formData.address,

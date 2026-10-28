@@ -27,6 +27,8 @@ export const createMerchantSchema = z.object({
     z.enum(COUPON_CATEGORIES),
   ),
   customCategoryNotes: z.string().optional(),
+  subCategoryTags: z.array(z.string()).optional(),
+  tags: z.array(z.string()).optional(),
 
   location: z
     .object({

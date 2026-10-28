@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   ArrowUpDown,
@@ -22,9 +23,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import { apiFetch } from "@/lib/fetcher";
-
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/navbar";
 import { TwitterVerifiedBadge } from "@/components/shared/TwitterVerifiedBadge";
@@ -46,6 +44,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { apiFetch } from "@/lib/fetcher";
 
 const CURATED_CATEGORIES = [
   { name: "Food & Dining", slug: "food", emoji: "🍔" },
@@ -98,6 +97,7 @@ export default function SearchClient() {
   });
 
   const searchData = rawSearchData || {
+    tags: [],
     brands: [],
     coupons: [],
     categories: [],
@@ -110,9 +110,15 @@ export default function SearchClient() {
   // Available Categories in Results
   const availableCategories = useMemo(() => {
     const set = new Set();
-    searchData.brands?.forEach((b) => b.category && set.add(b.category));
-    searchData.coupons?.forEach((c) => c.category && set.add(c.category));
-    searchData.products?.forEach((p) => p.category && set.add(p.category));
+    searchData.brands?.forEach((b) => {
+      if (b.category) set.add(b.category);
+    });
+    searchData.coupons?.forEach((c) => {
+      if (c.category) set.add(c.category);
+    });
+    searchData.products?.forEach((p) => {
+      if (p.category) set.add(p.category);
+    });
     return Array.from(set).sort();
   }, [searchData]);
 
@@ -167,7 +173,7 @@ export default function SearchClient() {
     }
     if (selectedCategory !== "all") {
       list = list.filter(
-        (b) => b.category?.toLowerCase() === selectedCategory.toLowerCase()
+        (b) => b.category?.toLowerCase() === selectedCategory.toLowerCase(),
       );
     }
     return list;
@@ -186,13 +192,14 @@ export default function SearchClient() {
 
     if (selectedCategory !== "all") {
       list = list.filter(
-        (c) => c.category?.toLowerCase() === selectedCategory.toLowerCase()
+        (c) => c.category?.toLowerCase() === selectedCategory.toLowerCase(),
       );
     }
 
     if (sortBy === "discount") {
       list.sort(
-        (a, b) => (Number(b.discountValue) || 0) - (Number(a.discountValue) || 0)
+        (a, b) =>
+          (Number(b.discountValue) || 0) - (Number(a.discountValue) || 0),
       );
     }
 
@@ -212,7 +219,7 @@ export default function SearchClient() {
 
     if (selectedCategory !== "all") {
       list = list.filter(
-        (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase()
+        (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase(),
       );
     }
 
@@ -227,19 +234,19 @@ export default function SearchClient() {
       list.sort(
         (a, b) =>
           (Number(b.discountPercentage) || 0) -
-          (Number(a.discountPercentage) || 0)
+          (Number(a.discountPercentage) || 0),
       );
     } else if (sortBy === "price-asc") {
       list.sort(
         (a, b) =>
           (Number(a.discountPrice || a.originalPrice) || 0) -
-          (Number(b.discountPrice || b.originalPrice) || 0)
+          (Number(b.discountPrice || b.originalPrice) || 0),
       );
     } else if (sortBy === "price-desc") {
       list.sort(
         (a, b) =>
           (Number(b.discountPrice || b.originalPrice) || 0) -
-          (Number(a.discountPrice || a.originalPrice) || 0)
+          (Number(a.discountPrice || a.originalPrice) || 0),
       );
     }
 
@@ -255,12 +262,14 @@ export default function SearchClient() {
 
   // Total results
   const totalResults =
+    (searchData.tags?.length || 0) +
     (searchData.brands?.length || 0) +
     (searchData.coupons?.length || 0) +
     (searchData.categories?.length || 0) +
     (searchData.products?.length || 0);
 
   const filteredTotal =
+    (searchData.tags?.length || 0) +
     filteredBrands.length +
     filteredCoupons.length +
     (searchData.categories?.length || 0) +
@@ -289,11 +298,17 @@ export default function SearchClient() {
               {activeQuery ? (
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-slate-600">Showing</span>
-                  <Badge variant="secondary" className="font-bold text-xs bg-blue-50 text-blue-700 border border-blue-200/60">
+                  <Badge
+                    variant="secondary"
+                    className="font-bold text-xs bg-blue-50 text-blue-700 border border-blue-200/60"
+                  >
                     {filteredTotal} results
                   </Badge>
                   <span className="text-xs text-slate-600">for</span>
-                  <Badge variant="outline" className="font-semibold text-slate-900 border-slate-300 bg-slate-50 text-xs">
+                  <Badge
+                    variant="outline"
+                    className="font-semibold text-slate-900 border-slate-300 bg-slate-50 text-xs"
+                  >
                     &ldquo;{activeQuery}&rdquo;
                   </Badge>
                 </div>
@@ -369,6 +384,32 @@ export default function SearchClient() {
                   {filteredTotal}
                 </Badge>
               </Button>
+
+              {searchData.tags?.length > 0 && (
+                <Button
+                  variant={activeTab === "tags" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveTab("tags")}
+                  className={`gap-2 text-xs font-semibold transition-all h-8 rounded-lg cursor-pointer ${
+                    activeTab === "tags"
+                      ? "bg-indigo-600 text-white shadow-xs hover:bg-indigo-700"
+                      : "text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50"
+                  }`}
+                >
+                  <Tag className="w-3.5 h-3.5" />
+                  <span>Sub-Category Tags</span>
+                  <Badge
+                    variant={activeTab === "tags" ? "secondary" : "outline"}
+                    className={`text-[10px] h-4.5 px-1.5 font-bold ${
+                      activeTab === "tags"
+                        ? "bg-white/20 text-white border-transparent"
+                        : "bg-indigo-50 text-indigo-700 border-indigo-200"
+                    }`}
+                  >
+                    {searchData.tags.length}
+                  </Badge>
+                </Button>
+              )}
 
               <Button
                 variant={activeTab === "brands" ? "default" : "ghost"}
@@ -455,7 +496,9 @@ export default function SearchClient() {
                 >
                   <span>🏷️ Categories</span>
                   <Badge
-                    variant={activeTab === "categories" ? "secondary" : "outline"}
+                    variant={
+                      activeTab === "categories" ? "secondary" : "outline"
+                    }
                     className={`text-[10px] h-4.5 px-1.5 font-bold ${
                       activeTab === "categories"
                         ? "bg-white/20 text-white border-transparent"
@@ -526,7 +569,9 @@ export default function SearchClient() {
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div className="flex items-center gap-2">
                       <Filter className="w-4 h-4 text-blue-600" />
-                      <h3 className="text-sm font-bold text-slate-900">Filters</h3>
+                      <h3 className="text-sm font-bold text-slate-900">
+                        Filters
+                      </h3>
                     </div>
                     {isFiltered ? (
                       <Button
@@ -704,8 +749,9 @@ export default function SearchClient() {
                         : "Discover top savings & verified deals"}
                     </h2>
                     <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
-                      We couldn&rsquo;t find verified coupons, partner brands, or
-                      deals matching your search term. Try exploring popular categories.
+                      We couldn&rsquo;t find verified coupons, partner brands,
+                      or deals matching your search term. Try exploring popular
+                      categories.
                     </p>
                   </div>
 
@@ -730,7 +776,10 @@ export default function SearchClient() {
                   </div>
 
                   <div className="pt-4 border-t border-slate-100">
-                    <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
+                    <Button
+                      asChild
+                      className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
+                    >
                       <Link href="/deals" className="gap-2">
                         <span>Browse All Verified Deals</span>
                         <ArrowRight className="w-4 h-4" />
@@ -750,7 +799,8 @@ export default function SearchClient() {
                     No items match the active filters
                   </h3>
                   <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                    Try adjusting your discount range, price slider, or category to see matching deals.
+                    Try adjusting your discount range, price slider, or category
+                    to see matching deals.
                   </p>
                   <div>
                     <Button
@@ -767,6 +817,59 @@ export default function SearchClient() {
               {/* ── Content Sections ── */}
               {!loading && filteredTotal > 0 ? (
                 <div className="space-y-10">
+                  {/* ── 0. SUB-CATEGORY TAGS CHIPS SECTION ── */}
+                  {searchData.tags?.length > 0 &&
+                  (activeTab === "all" || activeTab === "tags") ? (
+                    <section className="bg-gradient-to-r from-indigo-50/80 via-blue-50/50 to-purple-50/40 border border-indigo-100 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded-lg bg-indigo-100 text-indigo-700">
+                            <Tag className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h2 className="text-sm sm:text-base font-bold text-slate-900">
+                              Matching Sub-Category Tags
+                            </h2>
+                            <p className="text-[11px] text-slate-500 font-medium">
+                              Sub-category tags &amp; keywords from merchant
+                              registration and deals
+                            </p>
+                          </div>
+                        </div>
+                        <Badge
+                          variant="secondary"
+                          className="text-xs font-semibold bg-indigo-100 text-indigo-700 border-indigo-200"
+                        >
+                          {searchData.tags.length} Tags
+                        </Badge>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {searchData.tags.map((tagItem) => (
+                          <button
+                            key={tagItem.id}
+                            type="button"
+                            onClick={() => {
+                              setActiveQuery(tagItem.title);
+                              router.push(
+                                `/search?q=${encodeURIComponent(tagItem.title)}`,
+                              );
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white border border-indigo-200 hover:border-indigo-500 hover:bg-indigo-600 hover:text-white text-indigo-900 shadow-2xs transition-all cursor-pointer group"
+                          >
+                            <Tag className="w-3.5 h-3.5 text-indigo-500 group-hover:text-white transition-colors" />
+                            <span>{tagItem.title}</span>
+                            {tagItem.merchantName && (
+                              <span className="text-[10px] text-slate-400 group-hover:text-indigo-100 font-normal">
+                                • {tagItem.merchantName}
+                              </span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </section>
+                  ) : null}
+
                   {/* ── 1. BRANDS & STORES SECTION ── */}
                   {(activeTab === "all" || activeTab === "brands") &&
                   filteredBrands.length > 0 ? (
@@ -779,7 +882,10 @@ export default function SearchClient() {
                           <h2 className="text-base font-bold text-slate-900">
                             Matching Brands & Stores
                           </h2>
-                          <Badge variant="secondary" className="text-xs font-semibold">
+                          <Badge
+                            variant="secondary"
+                            className="text-xs font-semibold"
+                          >
                             {filteredBrands.length}
                           </Badge>
                         </div>
@@ -815,7 +921,8 @@ export default function SearchClient() {
                                         alt={brand.title}
                                         className="w-full h-full object-contain p-1"
                                         onError={(e) => {
-                                          e.currentTarget.style.display = "none";
+                                          e.currentTarget.style.display =
+                                            "none";
                                         }}
                                       />
                                     ) : (
@@ -835,13 +942,35 @@ export default function SearchClient() {
                                               <TwitterVerifiedBadge className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                                             </span>
                                           </TooltipTrigger>
-                                          <TooltipContent>Verified Store</TooltipContent>
+                                          <TooltipContent>
+                                            Verified Store
+                                          </TooltipContent>
                                         </Tooltip>
                                       ) : null}
                                     </div>
                                     <p className="text-[11px] sm:text-xs text-slate-500 capitalize truncate mt-0.5">
-                                      {brand.category || "Store"} • {brand.totalCoupons || 0} Deals
+                                      {brand.category || "Store"} •{" "}
+                                      {brand.totalCoupons || 0} Deals
                                     </p>
+                                    {(brand.subCategoryTags || brand.tags || [])
+                                      .length > 0 && (
+                                      <div className="flex flex-wrap gap-1 mt-1.5">
+                                        {(
+                                          brand.subCategoryTags ||
+                                          brand.tags ||
+                                          []
+                                        )
+                                          .slice(0, 2)
+                                          .map((chip) => (
+                                            <span
+                                              key={chip}
+                                              className="text-[9px] px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700 font-medium border border-indigo-100 truncate max-w-[120px]"
+                                            >
+                                              🏷️ {chip}
+                                            </span>
+                                          ))}
+                                      </div>
+                                    )}
                                   </div>
                                 </div>
 
@@ -868,7 +997,10 @@ export default function SearchClient() {
                           <h2 className="text-base font-bold text-slate-900">
                             Verified Coupons & Offers
                           </h2>
-                          <Badge variant="secondary" className="text-xs font-semibold">
+                          <Badge
+                            variant="secondary"
+                            className="text-xs font-semibold"
+                          >
                             {filteredCoupons.length}
                           </Badge>
                         </div>
@@ -908,7 +1040,8 @@ export default function SearchClient() {
                                           alt={coupon.merchant.name}
                                           className="w-full h-full object-contain p-0.5"
                                           onError={(e) => {
-                                            e.currentTarget.style.display = "none";
+                                            e.currentTarget.style.display =
+                                              "none";
                                           }}
                                         />
                                       ) : (
@@ -918,7 +1051,8 @@ export default function SearchClient() {
                                     <div className="min-w-0">
                                       <div className="flex items-center gap-1">
                                         <span className="text-xs font-bold text-slate-800 truncate block">
-                                          {coupon.merchant?.name || "Partner Store"}
+                                          {coupon.merchant?.name ||
+                                            "Partner Store"}
                                         </span>
                                         <TwitterVerifiedBadge className="w-3 h-3 shrink-0" />
                                       </div>
@@ -956,13 +1090,17 @@ export default function SearchClient() {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => handleCopyCode(coupon.code, coupon.id)}
+                                    onClick={() =>
+                                      handleCopyCode(coupon.code, coupon.id)
+                                    }
                                     className="font-mono text-xs font-bold border-dashed border-blue-300 bg-blue-50/70 hover:bg-blue-100/80 text-blue-700 gap-1.5 h-8 rounded-lg cursor-pointer shadow-2xs"
                                   >
                                     {copiedId === coupon.id ? (
                                       <>
                                         <Check className="w-3.5 h-3.5 text-emerald-600" />
-                                        <span className="text-emerald-700 font-sans">Copied!</span>
+                                        <span className="text-emerald-700 font-sans">
+                                          Copied!
+                                        </span>
                                       </>
                                     ) : (
                                       <>
@@ -977,7 +1115,11 @@ export default function SearchClient() {
                                   </span>
                                 )}
 
-                                <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg gap-1.5 text-xs font-semibold h-8 shadow-xs">
+                                <Button
+                                  asChild
+                                  size="sm"
+                                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg gap-1.5 text-xs font-semibold h-8 shadow-xs"
+                                >
                                   <Link href={coupon.href}>
                                     <span>Claim Deal</span>
                                     <ChevronRight className="w-3.5 h-3.5" />
@@ -1003,7 +1145,10 @@ export default function SearchClient() {
                           <h2 className="text-base font-bold text-slate-900">
                             Matching Categories
                           </h2>
-                          <Badge variant="secondary" className="text-xs font-semibold">
+                          <Badge
+                            variant="secondary"
+                            className="text-xs font-semibold"
+                          >
                             {searchData.categories.length}
                           </Badge>
                         </div>
@@ -1045,7 +1190,10 @@ export default function SearchClient() {
                           <h2 className="text-base font-bold text-slate-900">
                             Curated Products & Deals
                           </h2>
-                          <Badge variant="secondary" className="text-xs font-semibold">
+                          <Badge
+                            variant="secondary"
+                            className="text-xs font-semibold"
+                          >
                             {filteredProducts.length}
                           </Badge>
                         </div>
@@ -1099,7 +1247,9 @@ export default function SearchClient() {
                                 <div className="space-y-1">
                                   <div className="flex items-center gap-1">
                                     <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider truncate block">
-                                      {prod.merchant?.name || prod.category || "Verified Deal"}
+                                      {prod.merchant?.name ||
+                                        prod.category ||
+                                        "Verified Deal"}
                                     </span>
                                     <TwitterVerifiedBadge className="w-3 h-3 shrink-0" />
                                   </div>
@@ -1117,7 +1267,8 @@ export default function SearchClient() {
                                       <span className="text-base font-extrabold text-slate-900">
                                         ₹{prod.discountPrice}
                                       </span>
-                                      {Number(prod.originalPrice) > Number(prod.discountPrice) ? (
+                                      {Number(prod.originalPrice) >
+                                      Number(prod.discountPrice) ? (
                                         <span className="text-xs text-slate-400 line-through">
                                           ₹{prod.originalPrice}
                                         </span>
@@ -1130,7 +1281,11 @@ export default function SearchClient() {
                                   )}
                                 </div>
 
-                                <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg gap-1.5 h-8 shadow-xs">
+                                <Button
+                                  asChild
+                                  size="sm"
+                                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg gap-1.5 h-8 shadow-xs"
+                                >
                                   <a
                                     href={prod.href}
                                     target="_blank"
@@ -1155,7 +1310,10 @@ export default function SearchClient() {
 
         {/* ── Mobile Filter Sheet Drawer (Shadcn Sheet) ── */}
         <Sheet open={mobileFilterOpen} onOpenChange={setMobileFilterOpen}>
-          <SheetContent side="right" className="w-full sm:max-w-sm p-0 flex flex-col bg-white">
+          <SheetContent
+            side="right"
+            className="w-full sm:max-w-sm p-0 flex flex-col bg-white"
+          >
             <SheetHeader className="p-4 border-b border-slate-100 flex flex-row items-center justify-between">
               <SheetTitle className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <Filter className="w-4 h-4 text-blue-600" />

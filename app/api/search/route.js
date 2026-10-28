@@ -64,7 +64,16 @@ export const GET = asyncHandler(async (request) => {
 
   const safeRegex = escapeRegex(cleanQ);
   const regex = new RegExp(safeRegex, "i");
-  const flexibleRegex = new RegExp(safeRegex.replace(/[\s-]+/g, "[\\s-]*"), "i");
+  const flexibleRegex = new RegExp(
+    safeRegex.replace(/[\s-]+/g, "[\\s-]*"),
+    "i",
+  );
+
+  // Multi-token words for deep cross-word and multi-keyword queries (e.g. "milton water bottle", "dine in combo")
+  const tokens = cleanQ
+    .split(/[\s,+-]+/)
+    .map((t) => t.trim())
+    .filter((t) => t.length > 1);
 
   const BRAND_SEARCH_ALIASES = {
     blissclub: "bliss club",
@@ -73,13 +82,19 @@ export const GET = asyncHandler(async (request) => {
     blackberrys: "blackberry",
   };
   const aliasQuery = BRAND_SEARCH_ALIASES[cleanQ.replace(/[^a-z0-9]/g, "")];
-  const aliasRegex = aliasQuery ? new RegExp(escapeRegex(aliasQuery), "i") : null;
+  const aliasRegex = aliasQuery
+    ? new RegExp(escapeRegex(aliasQuery), "i")
+    : null;
 
-  // 1. Matched Categories
+  // 1. Matched Categories (matches by name, slug, or query tokens)
   const matchedCategories = COUPON_CATEGORIES.filter((slug) => {
     if (slug === "others") return false;
     const name = (CATEGORY_NAMES[slug] || slug).toLowerCase();
-    return name.includes(cleanQ) || slug.toLowerCase().includes(cleanQ);
+    return (
+      name.includes(cleanQ) ||
+      slug.toLowerCase().includes(cleanQ) ||
+      (tokens.length > 0 && tokens.every((tok) => name.includes(tok)))
+    );
   }).map((slug) => ({
     id: `cat_${slug}`,
     title: CATEGORY_NAMES[slug] || slug,
@@ -88,37 +103,198 @@ export const GET = asyncHandler(async (request) => {
     href: `/category/${slug}`,
   }));
 
-  // 2. Find matching merchants — search by company name, slug, category, description, and location
+  // 2. Find matching merchants — in-depth search by:
+  //    - Business name & display trade name
+  //    - Sub-Category Tags Chips (entered during merchant registration)
+  //    - Tags array
+  //    - Category & custom category notes
+  //    - Slug
+  //    - Short and long descriptions
+  //    - Operating location (city, address)
+  const merchantOrConditions = [
+    { businessName: regex },
+    { businessName: flexibleRegex },
+    ...(aliasRegex ? [{ businessName: aliasRegex }, { slug: aliasRegex }] : []),
+    { slug: regex },
+    { slug: flexibleRegex },
+    { category: regex },
+    { customCategoryNotes: regex },
+    { subCategoryTags: regex },
+    { subCategoryTags: flexibleRegex },
+    { tags: regex },
+    { tags: flexibleRegex },
+    { shortDescription: regex },
+    { description: regex },
+    { "location.city": regex },
+    { "location.address": regex },
+  ];
+
+  // Deep multi-token matching: all words appear across merchant profile fields
+  if (tokens.length > 1) {
+    merchantOrConditions.push({
+      $and: tokens.map((token) => {
+        const tRegex = new RegExp(escapeRegex(token), "i");
+        return {
+          $or: [
+            { businessName: tRegex },
+            { subCategoryTags: tRegex },
+            { tags: tRegex },
+            { category: tRegex },
+            { customCategoryNotes: tRegex },
+            { shortDescription: tRegex },
+            { description: tRegex },
+            { "location.city": tRegex },
+          ],
+        };
+      }),
+    });
+  }
+
   const matchingMerchants = await Merchant.find({
     status: "approved",
-    $or: [
-      { businessName: regex },
-      { businessName: flexibleRegex },
-      ...(aliasRegex ? [{ businessName: aliasRegex }, { slug: aliasRegex }] : []),
-      { slug: regex },
-      { slug: flexibleRegex },
-      { category: regex },
-      { shortDescription: regex },
-      { description: regex },
-      { "location.city": regex },
-      { "location.address": regex },
-    ],
+    $or: merchantOrConditions,
   })
-    .select("businessName slug logo category isVerified totalCoupons shortDescription")
+    .select(
+      "businessName slug logo category isVerified totalCoupons shortDescription subCategoryTags tags location",
+    )
     .limit(limit)
     .lean();
 
   const matchedMerchantIds = matchingMerchants.map((m) => m._id);
 
-  // 3. Query Active & Verified Coupons
-  // Uses $and to safely combine the expiry filter with the search filter
-  // without one $or overwriting the other
+  // 2b. Extract matching Sub-Category Tags Chips
+  const matchedTagsMap = new Map();
+  const matchesTag = (tag) => {
+    if (!tag || typeof tag !== "string") return false;
+    const t = tag.toLowerCase().trim();
+    if (!t) return false;
+    if (t.includes(cleanQ) || cleanQ.includes(t)) return true;
+    if (tokens.length > 0 && tokens.every((tok) => t.includes(tok)))
+      return true;
+    if (tokens.some((tok) => t.includes(tok) && tok.length >= 3)) return true;
+    return false;
+  };
+
+  matchingMerchants.forEach((m) => {
+    const allTags = [...(m.subCategoryTags || []), ...(m.tags || [])];
+    allTags.forEach((tagStr) => {
+      if (matchesTag(tagStr)) {
+        const key = tagStr.toLowerCase().trim();
+        if (!matchedTagsMap.has(key)) {
+          matchedTagsMap.set(key, {
+            id: `tag_${encodeURIComponent(key)}`,
+            title: tagStr.trim(),
+            tag: tagStr.trim(),
+            type: "Tag",
+            subtitle: `Sub-Category Tag • ${m.businessName}`,
+            href: `/search?q=${encodeURIComponent(tagStr.trim())}`,
+            merchantName: m.businessName,
+          });
+        }
+      }
+    });
+  });
+
+  // Query extra matching tags from merchants and coupons
+  const [extraSubCatTags, extraCouponTags] = await Promise.all([
+    Merchant.distinct("subCategoryTags", {
+      status: "approved",
+      $or: [
+        { subCategoryTags: regex },
+        { subCategoryTags: flexibleRegex },
+        ...(tokens.length > 0
+          ? [
+              {
+                subCategoryTags: {
+                  $in: tokens.map((t) => new RegExp(escapeRegex(t), "i")),
+                },
+              },
+            ]
+          : []),
+      ],
+    }).catch(() => []),
+    Coupon.distinct("tags", {
+      status: "active",
+      $or: [
+        { tags: regex },
+        { tags: flexibleRegex },
+        ...(tokens.length > 0
+          ? [
+              {
+                tags: {
+                  $in: tokens.map((t) => new RegExp(escapeRegex(t), "i")),
+                },
+              },
+            ]
+          : []),
+      ],
+    }).catch(() => []),
+  ]);
+
+  [...(extraSubCatTags || []), ...(extraCouponTags || [])].forEach((tagStr) => {
+    if (matchesTag(tagStr)) {
+      const key = String(tagStr).toLowerCase().trim();
+      if (!matchedTagsMap.has(key)) {
+        matchedTagsMap.set(key, {
+          id: `tag_${encodeURIComponent(key)}`,
+          title: String(tagStr).trim(),
+          tag: String(tagStr).trim(),
+          type: "Tag",
+          subtitle: "Sub-Category Tag Chip",
+          href: `/search?q=${encodeURIComponent(String(tagStr).trim())}`,
+        });
+      }
+    }
+  });
+
+  const matchedTags = Array.from(matchedTagsMap.values()).slice(0, 8);
+
+  // 3. Query Active & Verified Coupons (Offers) in Depth
+  // Matches:
+  // - Title (exact, flexible, multi-token across words)
+  // - Description
+  // - Coupon Code
+  // - Category
+  // - Tags (including Sub-Category tags)
+  // - Merchant's store or tags
   const now = new Date();
+  const couponOrConditions = [
+    { title: regex },
+    { title: flexibleRegex },
+    { description: regex },
+    { code: regex },
+    { category: regex },
+    { tags: regex },
+    { tags: flexibleRegex },
+    ...(matchedMerchantIds.length > 0
+      ? [{ merchantId: { $in: matchedMerchantIds } }]
+      : []),
+  ];
+
+  if (tokens.length > 1) {
+    couponOrConditions.push({
+      $and: tokens.map((token) => {
+        const tRegex = new RegExp(escapeRegex(token), "i");
+        return {
+          $or: [
+            { title: tRegex },
+            { description: tRegex },
+            { code: tRegex },
+            { category: tRegex },
+            { tags: tRegex },
+            ...(matchedMerchantIds.length > 0
+              ? [{ merchantId: { $in: matchedMerchantIds } }]
+              : []),
+          ],
+        };
+      }),
+    });
+  }
+
   const couponQuery = {
     status: "active",
     isVerified: { $ne: false },
     $and: [
-      // Clause 1: must not be expired
       {
         $or: [
           { expiresAt: { $gt: now } },
@@ -126,58 +302,81 @@ export const GET = asyncHandler(async (request) => {
           { expiresAt: { $exists: false } },
         ],
       },
-      // Clause 2: must match search term in title/desc/code/category/tags/merchant
-      {
-        $or: [
-          { title: regex },
-          { description: regex },
-          { code: regex },
-          { category: regex },
-          { tags: regex },
-          ...(matchedMerchantIds.length > 0
-            ? [{ merchantId: { $in: matchedMerchantIds } }]
-            : []),
-        ],
-      },
+      { $or: couponOrConditions },
     ],
   };
 
-  // 4. Query Active Affiliate Products
-  // FIX: removed non-existent fields 'merchantName' and 'brand';
-  //      added 'description' which IS in the schema
+  // 4. Query Active Affiliate Products in Depth
+  // Matches:
+  // - Product Title (exact, flexible, multi-token e.g. "milton water bottle")
+  // - Product Description
+  // - Category
+  // - Discount text
+  // - Associated merchant name or tags
+  const productOrConditions = [
+    { title: regex },
+    { title: flexibleRegex },
+    { description: regex },
+    { category: regex },
+    { discountText: regex },
+    ...(matchedMerchantIds.length > 0
+      ? [{ merchantId: { $in: matchedMerchantIds } }]
+      : []),
+  ];
+
+  if (tokens.length > 1) {
+    productOrConditions.push({
+      $and: tokens.map((token) => {
+        const tRegex = new RegExp(escapeRegex(token), "i");
+        return {
+          $or: [
+            { title: tRegex },
+            { description: tRegex },
+            { category: tRegex },
+            { discountText: tRegex },
+            ...(matchedMerchantIds.length > 0
+              ? [{ merchantId: { $in: matchedMerchantIds } }]
+              : []),
+          ],
+        };
+      }),
+    });
+  }
+
   const productQuery = {
     status: "active",
-    $or: [
-      { title: regex },
-      { description: regex },
-      { category: regex },
-      ...(matchedMerchantIds.length > 0
-        ? [{ merchantId: { $in: matchedMerchantIds } }]
-        : []),
-    ],
+    $or: productOrConditions,
   };
 
   const [coupons, products] = await Promise.all([
     Coupon.find(couponQuery)
-      .select("title code discountType discountValue category expiresAt totalClaims merchantId isFeatured")
-      .populate("merchantId", "businessName slug logo")
+      .select(
+        "title code discountType discountValue originalPrice category expiresAt totalClaims merchantId isFeatured tags",
+      )
+      .populate("merchantId", "businessName slug logo subCategoryTags tags")
       .sort({ isFeatured: -1, totalClaims: -1, createdAt: -1 })
       .limit(limit)
       .lean(),
     AffiliateProduct.find(productQuery)
-      // FIX: select 'affiliateUrl' — the actual schema field; 'affiliateLink' does not exist
-      .select("title discountPrice originalPrice discountPercentage category imageUrl affiliateUrl merchantId description")
-      .populate("merchantId", "businessName slug logo")
+      .select(
+        "title discountPrice originalPrice discountPercentage discountText category imageUrl affiliateUrl merchantId description",
+      )
+      .populate("merchantId", "businessName slug logo subCategoryTags tags")
       .limit(limit)
       .lean(),
   ]);
 
   const brands = matchingMerchants;
   const total =
-    brands.length + coupons.length + matchedCategories.length + products.length;
+    brands.length +
+    coupons.length +
+    matchedCategories.length +
+    products.length +
+    matchedTags.length;
 
   const result = {
     query: q,
+    tags: matchedTags,
     brands: brands.map((b) => ({
       id: String(b._id),
       title: b.businessName,
@@ -188,6 +387,8 @@ export const GET = asyncHandler(async (request) => {
       href: `/brand/${b.slug}`,
       isVerified: b.isVerified ?? true,
       totalCoupons: b.totalCoupons || 0,
+      subCategoryTags: b.subCategoryTags || [],
+      tags: b.tags || [],
     })),
     coupons: coupons.map((c) => ({
       id: String(c._id),
@@ -195,9 +396,11 @@ export const GET = asyncHandler(async (request) => {
       code: c.code || "",
       discountType: c.discountType,
       discountValue: c.discountValue,
+      originalPrice: c.originalPrice,
       category: c.category,
       type: "Offer",
       href: `/deals/${c._id}`,
+      tags: c.tags || [],
       merchant: c.merchantId
         ? {
             id: String(c.merchantId._id || c.merchantId),
@@ -214,9 +417,9 @@ export const GET = asyncHandler(async (request) => {
       discountPrice: p.discountPrice,
       originalPrice: p.originalPrice,
       discountPercentage: p.discountPercentage,
+      discountText: p.discountText,
       category: p.category,
       type: "Product",
-      // FIX: use 'affiliateUrl' — the actual schema field name
       href: p.affiliateUrl || "#",
       imageUrl: p.imageUrl || "",
       merchant: p.merchantId
@@ -232,7 +435,9 @@ export const GET = asyncHandler(async (request) => {
 
   // Cache in Redis (fire-and-forget, 60 seconds)
   try {
-    redis.setex(cacheKey, REDIS_TTL.SEARCH_GLOBAL, JSON.stringify(result)).catch(() => {});
+    redis
+      .setex(cacheKey, REDIS_TTL.SEARCH_GLOBAL, JSON.stringify(result))
+      .catch(() => {});
   } catch (_) {}
 
   return ok(result);

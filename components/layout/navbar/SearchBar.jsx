@@ -12,11 +12,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SafeImage from "@/components/shared/SafeImage";
 import { apiFetch } from "@/lib/fetcher";
 
-// Animated typewriter placeholder phrases (concise and punchy so they never get truncated)
+// Animated rotating placeholder phrases
 const PLACEHOLDER_PHRASES = [
   "Search brands, deals, stores...",
   "Search for 'Zomato'...",
@@ -25,6 +25,7 @@ const PLACEHOLDER_PHRASES = [
   "Search for 'Milton'...",
   "Search for 'Food & Dining'...",
   "Search for 'Beauty'...",
+  "Search 'Dine-in Offers'...",
   "Search discount coupons...",
 ];
 
@@ -75,7 +76,14 @@ const QUICK_CATEGORIES = [
 export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+  const [allSuggestions, setAllSuggestions] = useState({
+    tags: [],
+    brands: [],
+    coupons: [],
+    products: [],
+    categories: [],
+  });
+  const [activeTab, setActiveTab] = useState("all");
   const [totalMatches, setTotalMatches] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -83,6 +91,7 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
 
   const containerRef = useRef(null);
   const inputRef = useRef(null);
+  const scrollBoxRef = useRef(null);
 
   // Auto-focus when triggered (e.g. mobile search toggle open)
   useEffect(() => {
@@ -94,9 +103,8 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
     }
   }, [autoFocus]);
 
-  // Smooth rotating placeholder phrase (updates every 3.5s instead of rapid 35ms re-render ticks)
+  // Smooth rotating placeholder phrase
   const [phraseIndex, setPhraseIndex] = useState(0);
-
   useEffect(() => {
     const timer = setInterval(() => {
       setPhraseIndex((prev) => (prev + 1) % PLACEHOLDER_PHRASES.length);
@@ -119,15 +127,22 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Compute search suggestions dynamically via Unified /api/search
+  // Compute search suggestions dynamically via in-depth /api/search
   useEffect(() => {
     const q = query.trim().toLowerCase();
     if (!q) {
-      setSuggestions([]);
+      setAllSuggestions({
+        tags: [],
+        brands: [],
+        coupons: [],
+        products: [],
+        categories: [],
+      });
       setTotalMatches(0);
       setIsOpen(false);
       setLoading(false);
       setSelectedIndex(-1);
+      setActiveTab("all");
       return;
     }
 
@@ -144,31 +159,57 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
       emoji: c.emoji,
     }));
 
-    setSuggestions(instantCategories);
+    setAllSuggestions({
+      tags: [],
+      brands: [],
+      coupons: [],
+      products: [],
+      categories: instantCategories,
+    });
     setIsOpen(true);
     setLoading(true);
     setSelectedIndex(-1);
 
-    // 2. Query unified search API
+    // 2. Query in-depth unified search API
     let isCancelled = false;
     const timer = setTimeout(async () => {
       try {
         const json = await apiFetch(
-          `/api/search?q=${encodeURIComponent(q)}&limit=6`,
+          `/api/search?q=${encodeURIComponent(q)}&limit=15`,
         ).catch(() => null);
         if (!json || isCancelled) return;
 
         const data = json.data || {};
 
-        const brandItems = (data.brands || []).map((b) => ({
-          id: `brand_${b.id || b.slug}`,
-          title: b.title,
-          subtitle: b.category ? `${b.category} • Store` : "Verified Store",
-          type: "Brand",
-          href: b.href || `/brand/${b.slug}`,
-          logo: b.logo,
-          iconType: "brand",
+        // Sub-Category Tags Chips during merchant registration & coupons
+        const tagItems = (data.tags || []).map((t) => ({
+          id: `tag_${t.tag || t.title}`,
+          title: t.title,
+          subtitle: t.subtitle || "Sub-Category Tag Chip",
+          type: "Tag",
+          href: t.href || `/search?q=${encodeURIComponent(t.title)}`,
+          iconType: "tag",
         }));
+
+        const brandItems = (data.brands || []).map((b) => {
+          const matchedChip = (b.subCategoryTags || b.tags || []).find((t) =>
+            t.toLowerCase().includes(q),
+          );
+          return {
+            id: `brand_${b.id || b.slug}`,
+            title: b.title,
+            subtitle: matchedChip
+              ? `Sub-Category Tag: "${matchedChip}" • Store`
+              : b.category
+                ? `${b.category} • Store`
+                : "Verified Store",
+            type: "Brand",
+            href: b.href || `/brand/${b.slug}`,
+            logo: b.logo,
+            iconType: "brand",
+            subCategoryTags: b.subCategoryTags || [],
+          };
+        });
 
         const couponItems = (data.coupons || []).map((c) => ({
           id: `coupon_${c.id}`,
@@ -182,17 +223,6 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
           href: c.href || `/deals/${c.id}`,
           logo: c.merchant?.logo,
           iconType: "deal",
-        }));
-
-        const categoryItems = (data.categories || []).map((cat) => ({
-          id: `cat_${cat.slug}`,
-          title: cat.title,
-          subtitle: "Explore Category",
-          type: "Category",
-          href: cat.href || `/category/${cat.slug}`,
-          iconType: "category",
-          emoji:
-            QUICK_CATEGORIES.find((q) => q.slug === cat.slug)?.emoji || "🏷️",
         }));
 
         const productItems = (data.products || []).map((p) => ({
@@ -210,24 +240,27 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
           isExternal: !!p.href && p.href.startsWith("http"),
         }));
 
-        // Deduplicate by href
-        const hrefMap = new Map();
-        const all = [
-          ...brandItems,
-          ...couponItems,
-          ...categoryItems,
-          ...productItems,
-        ];
-        all.forEach((item) => {
-          if (!hrefMap.has(item.href)) {
-            hrefMap.set(item.href, item);
-          }
-        });
+        const categoryItems = (data.categories || []).map((cat) => ({
+          id: `cat_${cat.slug}`,
+          title: cat.title,
+          subtitle: "Explore Category",
+          type: "Category",
+          href: cat.href || `/category/${cat.slug}`,
+          iconType: "category",
+          emoji:
+            QUICK_CATEGORIES.find((q) => q.slug === cat.slug)?.emoji || "🏷️",
+        }));
 
-        const combined = Array.from(hrefMap.values());
         if (!isCancelled) {
-          setSuggestions(combined.length > 0 ? combined : instantCategories);
-          setTotalMatches(data.total || combined.length);
+          setAllSuggestions({
+            tags: tagItems,
+            brands: brandItems,
+            coupons: couponItems,
+            products: productItems,
+            categories:
+              categoryItems.length > 0 ? categoryItems : instantCategories,
+          });
+          setTotalMatches(data.total || 0);
           setLoading(false);
         }
       } catch (err) {
@@ -242,23 +275,96 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
     };
   }, [query]);
 
+  // Filtered displayed suggestions based on active tab
+  const displayedSuggestions = useMemo(() => {
+    const { tags, brands, coupons, products, categories } = allSuggestions;
+
+    if (activeTab === "tags") return tags;
+    if (activeTab === "offers") return coupons;
+    if (activeTab === "products") return products;
+    if (activeTab === "brands") return brands;
+    if (activeTab === "categories") return categories;
+
+    // "all": Intelligent balanced interleaving so offers, products, tags, and brands are all prominently visible
+    const hrefMap = new Map();
+    const ordered = [
+      ...tags,
+      ...coupons.slice(0, 4),
+      ...products.slice(0, 4),
+      ...brands.slice(0, 6),
+      ...coupons.slice(4),
+      ...products.slice(4),
+      ...brands.slice(6),
+      ...categories,
+    ];
+
+    const deduplicated = [];
+    for (const item of ordered) {
+      if (!hrefMap.has(item.href)) {
+        hrefMap.set(item.href, true);
+        deduplicated.push(item);
+      }
+    }
+    return deduplicated;
+  }, [allSuggestions, activeTab]);
+
+  // CRITICAL: Isolated inside wheel scrolling prevention
+  // 1. Lenis will ignore this element because of data-lenis-prevent="true"
+  // 2. Wheel event is prevented from bubbling to document/window, stopping background scrolling
+  // 3. At top/bottom boundary, preventDefault avoids scroll chaining to the page body
+  useEffect(() => {
+    if (!isOpen) return;
+    const el = scrollBoxRef.current;
+    if (!el) return;
+
+    const handleWheel = (e) => {
+      e.stopPropagation();
+
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      const delta = e.deltaY;
+
+      const atTop = scrollTop <= 0 && delta < 0;
+      const atBottom =
+        scrollTop + clientHeight >= scrollHeight - 1 && delta > 0;
+
+      if (atTop || atBottom) {
+        e.preventDefault();
+      }
+    };
+
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
+  }, [isOpen]);
+
+  // Auto-scroll selected item into view during keyboard navigation
+  useEffect(() => {
+    if (selectedIndex >= 0 && scrollBoxRef.current) {
+      const activeElem = scrollBoxRef.current.querySelector(
+        `[data-index="${selectedIndex}"]`,
+      );
+      if (activeElem) {
+        activeElem.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }, [selectedIndex]);
+
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prev) => {
         const next = prev + 1;
-        return next > suggestions.length ? 0 : next;
+        return next > displayedSuggestions.length ? 0 : next;
       });
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelectedIndex((prev) => {
         const next = prev - 1;
-        return next < 0 ? suggestions.length : next;
+        return next < 0 ? displayedSuggestions.length : next;
       });
     } else if (e.key === "Enter") {
       e.preventDefault();
-      if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
-        const selected = suggestions[selectedIndex];
+      if (selectedIndex >= 0 && selectedIndex < displayedSuggestions.length) {
+        const selected = displayedSuggestions[selectedIndex];
         setIsOpen(false);
         if (onSelect) onSelect();
         if (selected.isExternal) {
@@ -287,14 +393,28 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
 
   const handleClear = () => {
     setQuery("");
-    setSuggestions([]);
+    setAllSuggestions({
+      tags: [],
+      brands: [],
+      coupons: [],
+      products: [],
+      categories: [],
+    });
     setTotalMatches(0);
     setIsOpen(false);
     setSelectedIndex(-1);
+    setActiveTab("all");
     if (inputRef.current) {
       inputRef.current.focus();
     }
   };
+
+  const hasAnyResults =
+    allSuggestions.tags.length > 0 ||
+    allSuggestions.brands.length > 0 ||
+    allSuggestions.coupons.length > 0 ||
+    allSuggestions.products.length > 0 ||
+    allSuggestions.categories.length > 0;
 
   return (
     <div ref={containerRef} className="w-full relative flex items-center">
@@ -308,7 +428,7 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
         placeholder={placeholderText || "Search brands, deals, coupons..."}
         value={query}
         onFocus={() => {
-          if (query.trim() && (suggestions.length > 0 || loading)) {
+          if (query.trim() && (hasAnyResults || loading)) {
             setIsOpen(true);
           }
         }}
@@ -336,25 +456,166 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
 
       {/* Live Suggestions Floating Dropdown */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-slate-200 shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-1 duration-150 text-left">
-          {/* Header section */}
-          <div className="px-3.5 py-2 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between text-[11px] font-medium text-slate-500">
-            <span>
-              {loading ? "Searching..." : `Results (${suggestions.length})`}
-            </span>
-            <span className="text-[10px] text-slate-400">
-              Press Enter to search
-            </span>
+        <div
+          data-lenis-prevent="true"
+          className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-slate-200 shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-1 duration-150 text-left"
+          style={{ overscrollBehavior: "contain" }}
+        >
+          {/* Header section with counts and quick category filter tabs */}
+          <div className="px-3.5 py-2 border-b border-slate-100 bg-slate-50/80">
+            <div className="flex items-center justify-between text-[11px] font-medium text-slate-500 mb-1.5">
+              <span>
+                {loading
+                  ? "Searching everywhere in-depth..."
+                  : `Results (${displayedSuggestions.length})`}
+              </span>
+              <span className="text-[10px] text-slate-400">
+                Press Enter to search
+              </span>
+            </div>
+
+            {/* In-depth filter pills if multiple result types exist */}
+            {hasAnyResults && (
+              <div
+                className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-0.5 pb-1"
+                data-lenis-prevent="true"
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab("all");
+                    setSelectedIndex(-1);
+                  }}
+                  className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border ${
+                    activeTab === "all"
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"
+                  }`}
+                >
+                  All ({totalMatches || displayedSuggestions.length})
+                </button>
+
+                {allSuggestions.tags.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab("tags");
+                      setSelectedIndex(-1);
+                    }}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                      activeTab === "tags"
+                        ? "bg-indigo-600 text-white border-indigo-600"
+                        : "bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50"
+                    }`}
+                  >
+                    <span>🏷️ Sub-Category Tags</span>
+                    <span className="opacity-80">
+                      ({allSuggestions.tags.length})
+                    </span>
+                  </button>
+                )}
+
+                {allSuggestions.coupons.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab("offers");
+                      setSelectedIndex(-1);
+                    }}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                      activeTab === "offers"
+                        ? "bg-amber-600 text-white border-amber-600"
+                        : "bg-white text-amber-700 border-amber-200 hover:bg-amber-50"
+                    }`}
+                  >
+                    <span>🎟️ Offers</span>
+                    <span className="opacity-80">
+                      ({allSuggestions.coupons.length})
+                    </span>
+                  </button>
+                )}
+
+                {allSuggestions.products.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab("products");
+                      setSelectedIndex(-1);
+                    }}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                      activeTab === "products"
+                        ? "bg-purple-600 text-white border-purple-600"
+                        : "bg-white text-purple-700 border-purple-200 hover:bg-purple-50"
+                    }`}
+                  >
+                    <span>🛍️ Products</span>
+                    <span className="opacity-80">
+                      ({allSuggestions.products.length})
+                    </span>
+                  </button>
+                )}
+
+                {allSuggestions.brands.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab("brands");
+                      setSelectedIndex(-1);
+                    }}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                      activeTab === "brands"
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-blue-700 border-blue-200 hover:bg-blue-50"
+                    }`}
+                  >
+                    <span>🏬 Brands</span>
+                    <span className="opacity-80">
+                      ({allSuggestions.brands.length})
+                    </span>
+                  </button>
+                )}
+
+                {allSuggestions.categories.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab("categories");
+                      setSelectedIndex(-1);
+                    }}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                      activeTab === "categories"
+                        ? "bg-emerald-600 text-white border-emerald-600"
+                        : "bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                    }`}
+                  >
+                    <span>📁 Categories</span>
+                    <span className="opacity-80">
+                      ({allSuggestions.categories.length})
+                    </span>
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Scrollable suggestions box */}
-          <div className="max-h-72 overflow-y-auto divide-y divide-slate-100">
-            {suggestions.length > 0 ? (
-              suggestions.map((item, index) => {
+          {/* Fully Isolated Scrollable Suggestions Box */}
+          <div
+            ref={scrollBoxRef}
+            data-lenis-prevent="true"
+            className="max-h-80 overflow-y-auto overscroll-contain divide-y divide-slate-100 search-dropdown-scroll"
+            style={{
+              overscrollBehavior: "contain",
+              WebkitOverflowScrolling: "touch",
+              touchAction: "pan-y",
+            }}
+          >
+            {displayedSuggestions.length > 0 ? (
+              displayedSuggestions.map((item, index) => {
                 const isSelected = selectedIndex === index;
                 return (
                   <Link
                     key={item.id}
+                    data-index={index}
                     href={item.href}
                     target={item.isExternal ? "_blank" : undefined}
                     rel={item.isExternal ? "noopener noreferrer" : undefined}
@@ -371,7 +632,9 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       {/* Logo / Icon Container */}
                       <div className="w-8 h-8 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-blue-300 transition-colors">
-                        {item.iconType === "category" ? (
+                        {item.iconType === "tag" ? (
+                          <Tag className="w-4 h-4 text-indigo-600" />
+                        ) : item.iconType === "category" ? (
                           <span className="text-sm select-none">
                             {item.emoji || "🏷️"}
                           </span>
@@ -393,8 +656,13 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs font-semibold truncate group-hover:text-blue-600 transition-colors">
-                          {item.title}
+                        <div className="text-xs font-semibold truncate group-hover:text-blue-600 transition-colors flex items-center gap-1.5">
+                          <span>{item.title}</span>
+                          {item.type === "Tag" && (
+                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 font-medium shrink-0">
+                              Tag Chip
+                            </span>
+                          )}
                         </div>
                         {item.subtitle && (
                           <div className="text-[10px] text-slate-400 font-medium truncate">
@@ -407,13 +675,15 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                     <div className="flex items-center gap-1.5 shrink-0">
                       <span
                         className={`text-[9px] font-semibold uppercase px-2 py-0.5 rounded-full border ${
-                          item.type === "Brand"
-                            ? "bg-blue-50 text-blue-700 border-blue-200"
-                            : item.type === "Category"
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : item.type === "Product"
-                                ? "bg-purple-50 text-purple-700 border-purple-200"
-                                : "bg-amber-50 text-amber-700 border-amber-200"
+                          item.type === "Tag"
+                            ? "bg-indigo-50 text-indigo-700 border-indigo-200"
+                            : item.type === "Brand"
+                              ? "bg-blue-50 text-blue-700 border-blue-200"
+                              : item.type === "Category"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                : item.type === "Product"
+                                  ? "bg-purple-50 text-purple-700 border-purple-200"
+                                  : "bg-amber-50 text-amber-700 border-amber-200"
                         }`}
                       >
                         {item.type}
@@ -425,7 +695,7 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
               })
             ) : !loading ? (
               <div className="p-4 text-center text-xs text-slate-500">
-                No instant matches found.
+                No instant matches found for &ldquo;{query}&rdquo;.
                 <button
                   type="button"
                   onClick={handleSearchClick}
@@ -439,12 +709,12 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
 
           {/* Bottom Action: View all search results */}
           {query.trim() && (
-            <div className="p-2 border-t border-slate-100 bg-slate-50/70">
+            <div className="p-2 border-t border-slate-100 bg-slate-50/80">
               <button
                 type="button"
                 onClick={handleSearchClick}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                  selectedIndex === suggestions.length
+                  selectedIndex === displayedSuggestions.length
                     ? "bg-blue-600 text-white"
                     : "text-blue-600 hover:bg-blue-50"
                 }`}
