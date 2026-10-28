@@ -2,11 +2,14 @@
 
 import {
   ChevronRight,
+  Folder,
+  Layers,
   Loader2,
   Search,
   ShoppingBag,
   Store,
   Tag,
+  Ticket,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -461,22 +464,19 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
           style={{ overscrollBehavior: "contain" }}
         >
           {/* Header section with counts and quick category filter tabs */}
-          <div className="px-3.5 py-2 border-b border-slate-100 bg-slate-50/80">
-            <div className="flex items-center justify-between text-[11px] font-medium text-slate-500 mb-1.5">
+          <div className="px-3 py-2 border-b border-slate-200/80 bg-slate-50/70">
+            <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 mb-1.5">
               <span>
                 {loading
-                  ? "Searching everywhere in-depth..."
+                  ? "Searching..."
                   : `Results (${displayedSuggestions.length})`}
-              </span>
-              <span className="text-[10px] text-slate-400">
-                Press Enter to search
               </span>
             </div>
 
             {/* In-depth filter pills if multiple result types exist */}
             {hasAnyResults && (
               <div
-                className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-0.5 pb-1"
+                className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5 pb-0.5"
                 data-lenis-prevent="true"
               >
                 <button
@@ -485,13 +485,19 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                     setActiveTab("all");
                     setSelectedIndex(-1);
                   }}
-                  className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1.5 ${
                     activeTab === "all"
-                      ? "bg-blue-600 text-white border-blue-600"
+                      ? "bg-blue-600 text-white border-blue-600 shadow-xs"
                       : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"
                   }`}
                 >
-                  All ({totalMatches || displayedSuggestions.length})
+                  <Layers
+                    className={`w-3 h-3 ${activeTab === "all" ? "text-white" : "text-blue-500"}`}
+                  />
+                  <span>All</span>
+                  <span className="opacity-75 text-[10px]">
+                    ({totalMatches || displayedSuggestions.length})
+                  </span>
                 </button>
 
                 {allSuggestions.tags.length > 0 && (
@@ -501,14 +507,17 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                       setActiveTab("tags");
                       setSelectedIndex(-1);
                     }}
-                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1.5 ${
                       activeTab === "tags"
-                        ? "bg-indigo-600 text-white border-indigo-600"
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-xs"
                         : "bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50"
                     }`}
                   >
-                    <span>🏷️ Sub-Category Tags</span>
-                    <span className="opacity-80">
+                    <Tag
+                      className={`w-3 h-3 ${activeTab === "tags" ? "text-white" : "text-indigo-500"}`}
+                    />
+                    <span>Sub-Category Tags</span>
+                    <span className="opacity-75 text-[10px]">
                       ({allSuggestions.tags.length})
                     </span>
                   </button>
@@ -521,14 +530,17 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                       setActiveTab("offers");
                       setSelectedIndex(-1);
                     }}
-                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1.5 ${
                       activeTab === "offers"
-                        ? "bg-amber-600 text-white border-amber-600"
+                        ? "bg-amber-600 text-white border-amber-600 shadow-xs"
                         : "bg-white text-amber-700 border-amber-200 hover:bg-amber-50"
                     }`}
                   >
-                    <span>🎟️ Offers</span>
-                    <span className="opacity-80">
+                    <Ticket
+                      className={`w-3 h-3 ${activeTab === "offers" ? "text-white" : "text-amber-500"}`}
+                    />
+                    <span>Offers</span>
+                    <span className="opacity-75 text-[10px]">
                       ({allSuggestions.coupons.length})
                     </span>
                   </button>
@@ -541,14 +553,17 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                       setActiveTab("products");
                       setSelectedIndex(-1);
                     }}
-                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1.5 ${
                       activeTab === "products"
-                        ? "bg-purple-600 text-white border-purple-600"
+                        ? "bg-purple-600 text-white border-purple-600 shadow-xs"
                         : "bg-white text-purple-700 border-purple-200 hover:bg-purple-50"
                     }`}
                   >
-                    <span>🛍️ Products</span>
-                    <span className="opacity-80">
+                    <ShoppingBag
+                      className={`w-3 h-3 ${activeTab === "products" ? "text-white" : "text-purple-500"}`}
+                    />
+                    <span>Products</span>
+                    <span className="opacity-75 text-[10px]">
                       ({allSuggestions.products.length})
                     </span>
                   </button>
@@ -561,14 +576,17 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                       setActiveTab("brands");
                       setSelectedIndex(-1);
                     }}
-                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1.5 ${
                       activeTab === "brands"
-                        ? "bg-blue-600 text-white border-blue-600"
+                        ? "bg-blue-600 text-white border-blue-600 shadow-xs"
                         : "bg-white text-blue-700 border-blue-200 hover:bg-blue-50"
                     }`}
                   >
-                    <span>🏬 Brands</span>
-                    <span className="opacity-80">
+                    <Store
+                      className={`w-3 h-3 ${activeTab === "brands" ? "text-white" : "text-blue-500"}`}
+                    />
+                    <span>Brands</span>
+                    <span className="opacity-75 text-[10px]">
                       ({allSuggestions.brands.length})
                     </span>
                   </button>
@@ -581,14 +599,17 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                       setActiveTab("categories");
                       setSelectedIndex(-1);
                     }}
-                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1 ${
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer shrink-0 border flex items-center gap-1.5 ${
                       activeTab === "categories"
-                        ? "bg-emerald-600 text-white border-emerald-600"
+                        ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
                         : "bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50"
                     }`}
                   >
-                    <span>📁 Categories</span>
-                    <span className="opacity-80">
+                    <Folder
+                      className={`w-3 h-3 ${activeTab === "categories" ? "text-white" : "text-emerald-500"}`}
+                    />
+                    <span>Categories</span>
+                    <span className="opacity-75 text-[10px]">
                       ({allSuggestions.categories.length})
                     </span>
                   </button>
@@ -622,35 +643,33 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                       setIsOpen(false);
                       if (onSelect) onSelect();
                     }}
-                    className={`flex items-center justify-between gap-3 p-2.5 transition-colors group cursor-pointer ${
+                    className={`flex items-center justify-between gap-2.5 py-2 px-3 border-b border-slate-100 last:border-b-0 transition-colors group cursor-pointer ${
                       isSelected
                         ? "bg-blue-50/80 text-blue-900"
-                        : "hover:bg-slate-50 text-slate-800"
+                        : "hover:bg-slate-50/80 text-slate-800"
                     }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       {/* Logo / Icon Container */}
-                      <div className="w-8 h-8 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-blue-300 transition-colors">
+                      <div className="w-7 h-7 rounded-md border border-slate-200/90 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-blue-300 transition-colors">
                         {item.iconType === "tag" ? (
-                          <Tag className="w-4 h-4 text-indigo-600" />
+                          <Tag className="w-3.5 h-3.5 text-indigo-600" />
                         ) : item.iconType === "category" ? (
-                          <span className="text-sm select-none">
-                            {item.emoji || "🏷️"}
-                          </span>
+                          <Folder className="w-3.5 h-3.5 text-emerald-600" />
                         ) : item.logo && typeof item.logo === "string" ? (
                           <SafeImage
                             src={item.logo}
                             alt={item.title}
-                            width={32}
-                            height={32}
+                            width={28}
+                            height={28}
                             className="w-full h-full object-contain p-0.5"
                           />
                         ) : item.iconType === "deal" ? (
-                          <Tag className="w-4 h-4 text-amber-500" />
+                          <Ticket className="w-3.5 h-3.5 text-amber-500" />
                         ) : item.iconType === "product" ? (
-                          <ShoppingBag className="w-4 h-4 text-purple-500" />
+                          <ShoppingBag className="w-3.5 h-3.5 text-purple-500" />
                         ) : (
-                          <Store className="w-4 h-4 text-blue-600" />
+                          <Store className="w-3.5 h-3.5 text-blue-600" />
                         )}
                       </div>
 

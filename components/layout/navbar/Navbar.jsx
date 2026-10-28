@@ -20,7 +20,9 @@ export const Navbar = () => {
 
   // Automatically close mobile search when navigating to a new route
   useEffect(() => {
-    setIsMobileSearchOpen(false);
+    if (pathname) {
+      setIsMobileSearchOpen(false);
+    }
   }, [pathname]);
 
   return (
@@ -83,22 +85,12 @@ export const Navbar = () => {
 
       {/* Mobile Search Row (Shown ONLY when user clicks the search icon on mobile) */}
       {isMobileSearchOpen && (
-        <div className="block md:hidden px-3 sm:px-4 py-2 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-xs animate-in fade-in slide-in-from-top-1 duration-150 max-w-[1440px] mx-auto">
-          <div className="flex items-center gap-2">
-            <div className="flex-1 min-w-0">
-              <SearchBar
-                autoFocus={true}
-                onSelect={() => setIsMobileSearchOpen(false)}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsMobileSearchOpen(false)}
-              className="p-1.5 text-slate-500 hover:text-slate-800 text-[13px] font-medium px-2.5 py-1.5 rounded-lg hover:bg-slate-100 shrink-0 cursor-pointer border-0 bg-transparent transition-colors"
-              aria-label="Cancel search"
-            >
-              Cancel
-            </button>
+        <div className="block md:hidden px-3 sm:px-4 py-2 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-xs animate-in fade-in slide-in-from-top-1 duration-150 max-w-[1440px] mx-auto w-full">
+          <div className="w-full">
+            <SearchBar
+              autoFocus={true}
+              onSelect={() => setIsMobileSearchOpen(false)}
+            />
           </div>
         </div>
       )}
