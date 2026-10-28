@@ -8,6 +8,7 @@ import {
   IndianRupee,
   Layers,
   Loader2,
+  Lock,
   MessageSquare,
   Percent,
   Settings,
@@ -17,7 +18,7 @@ import {
   Upload,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
   FormActions,
@@ -49,6 +50,7 @@ const CATEGORIES = [
   { id: "entertainment", label: "Gaming & Entertainment" },
   { id: "grocery", label: "Grocery & Essentials" },
   { id: "finance", label: "Finance & Insurance" },
+  { id: "services", label: "Services & IT Solutions" },
   { id: "others", label: "Others / Custom Category" },
 ];
 
@@ -85,6 +87,8 @@ export default function CouponForm({
   isEdit = false,
   merchantPlan = "starter",
   merchantName = "Store Name",
+  merchantCategory = null,
+  isCategoryLocked = true,
 }) {
   const [uploadingImage, setUploadingImage] = useState(false);
 
@@ -136,10 +140,32 @@ export default function CouponForm({
     }
   };
 
+  const resolvedCategory = merchantCategory || formData.category || "food";
+
   const selectedCategory =
     CATEGORIES.find(
-      (c) => c.id === formData.category || c.label === formData.category,
-    ) ?? CATEGORIES[0];
+      (c) =>
+        c.id === resolvedCategory ||
+        c.label.toLowerCase() === String(resolvedCategory).toLowerCase(),
+    ) ||
+    CATEGORIES.find(
+      (c) =>
+        c.id === formData.category ||
+        c.label.toLowerCase() === String(formData.category).toLowerCase(),
+    ) ||
+    CATEGORIES.find((c) => c.id === "others") ||
+    CATEGORIES[0];
+
+  // Keep formData.category in sync with the locked category slug
+  useEffect(() => {
+    if (
+      isCategoryLocked &&
+      selectedCategory?.id &&
+      formData.category !== selectedCategory.id
+    ) {
+      setFormData((prev) => ({ ...prev, category: selectedCategory.id }));
+    }
+  }, [isCategoryLocked, selectedCategory?.id, formData.category, setFormData]);
 
   const canFeature = merchantPlan === "pro" || merchantPlan === "enterprise";
 
@@ -205,18 +231,45 @@ export default function CouponForm({
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <FormSelect
-                name="category"
-                label="Category"
-                icon={Layers}
-                options={CATEGORIES.map((c) => ({
-                  value: c.id,
-                  label: c.label,
-                }))}
-                value={selectedCategory.id}
-                onValueChange={(val) => update("category", val)}
-                required
-              />
+              {isCategoryLocked ? (
+                <div className="flex flex-col gap-1.5">
+                  <Label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5 text-[#F72853]" />
+                    <span>Offer Category</span>
+                    <span className="text-red-500 font-medium ml-0.5">*</span>
+                  </Label>
+                  <div className="h-10 px-3.5 flex items-center justify-between rounded-xl border border-rose-200/90 bg-rose-50/30 text-slate-900 font-medium text-xs shadow-2xs">
+                    <span className="flex items-center gap-2 truncate">
+                      <span className="text-[#F72853] font-bold">★</span>
+                      <span className="font-semibold text-slate-900">
+                        {selectedCategory.label}
+                      </span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#F72853] bg-white border border-rose-200 px-2 py-0.5 rounded-md shrink-0 shadow-2xs">
+                      <Lock className="w-3 h-3 text-[#F72853]" /> Locked to
+                      Merchant Industry
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 font-normal">
+                    Offers are automatically fixed to your registered business
+                    category.
+                  </p>
+                </div>
+              ) : (
+                <FormSelect
+                  name="category"
+                  label="Category"
+                  icon={Layers}
+                  options={CATEGORIES.map((c) => ({
+                    value: c.id,
+                    label: c.label,
+                  }))}
+                  value={selectedCategory.id}
+                  onValueChange={(val) => update("category", val)}
+                  required
+                />
+              )}
+
               <FormInput
                 name="code"
                 label="Promo Code"

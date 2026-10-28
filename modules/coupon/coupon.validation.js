@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { COUPON_CATEGORIES } from "@/utils/constants";
+import { COUPON_CATEGORIES, normalizeCategory } from "@/utils/constants";
 
 /**
  * Validation schemas for coupon-related inputs.
@@ -30,7 +30,10 @@ export const createCouponSchema = z
 
     originalPrice: z.number().nonnegative().optional(),
 
-    category: z.enum(COUPON_CATEGORIES),
+    category: z.preprocess(
+      (val) => normalizeCategory(val),
+      z.enum(COUPON_CATEGORIES),
+    ),
 
     tags: z.array(z.string().max(30)).max(10).optional(),
 
@@ -73,7 +76,10 @@ export const updateCouponSchema = createCouponSchema.partial();
 export const couponQuerySchema = z.object({
   page: z.coerce.number().int().positive().optional(),
   limit: z.coerce.number().int().min(1).max(100).optional(),
-  category: z.enum(COUPON_CATEGORIES).optional(),
+  category: z.preprocess(
+    (val) => (val ? normalizeCategory(val) : undefined),
+    z.enum(COUPON_CATEGORIES).optional(),
+  ),
   search: z.string().max(100).optional(),
   city: z.string().optional(),
   pincode: z.string().optional(),

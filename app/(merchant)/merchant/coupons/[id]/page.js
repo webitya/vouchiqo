@@ -14,6 +14,7 @@ import {
   validateExpiryDate,
 } from "@/hooks/use-coupons";
 import { useMerchantProfile } from "@/hooks/use-merchant";
+import { normalizeCategory } from "@/utils/constants";
 import CouponForm from "../components/CouponForm";
 
 export default function EditCouponPage() {
@@ -53,11 +54,15 @@ export default function EditCouponPage() {
         }
       }
 
+      const resolvedCategory = normalizeCategory(
+        merchant?.category || coupon.category || "food",
+      );
+
       setFormData({
         title: coupon.title || "",
         description: coupon.description || "",
         code: coupon.code || "",
-        category: coupon.category || "food",
+        category: resolvedCategory,
         discountType: coupon.discountType || "percentage",
         discountValue:
           coupon.discountValue !== undefined
@@ -80,7 +85,17 @@ export default function EditCouponPage() {
         isFeatured: coupon.isFeatured || false,
       });
     }
-  }, [coupon]);
+  }, [coupon, merchant?.category]);
+
+  // Keep category synchronized with merchant's registered business category
+  useEffect(() => {
+    if (merchant?.category) {
+      setFormData((prev) => ({
+        ...prev,
+        category: normalizeCategory(merchant.category),
+      }));
+    }
+  }, [merchant?.category]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -95,10 +110,14 @@ export default function EditCouponPage() {
     const parsedMaxClaims = parseInt(formData.maxClaims, 10);
     const parsedDiscount = parseFloat(formData.discountValue);
 
+    const resolvedCategory = normalizeCategory(
+      merchant?.category || formData.category || coupon?.category || "food",
+    );
+
     const payload = {
       title: formData.title,
       description: formData.description || undefined,
-      category: formData.category,
+      category: resolvedCategory,
       code: formData.code.trim().toUpperCase(),
       expiresAt: new Date(formData.expiresAt).toISOString(),
       discountType: formData.discountType,
@@ -216,6 +235,8 @@ export default function EditCouponPage() {
           isEdit={true}
           merchantPlan={merchant?.plan}
           merchantName={merchant?.businessName || "Store Name"}
+          merchantCategory={merchant?.category}
+          isCategoryLocked={true}
         />
       </div>
     </DashboardLayout>

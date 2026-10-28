@@ -40,6 +40,7 @@ export const COUPON_CATEGORIES = [
   "entertainment",
   "grocery",
   "finance",
+  "services",
   "others",
 ];
 
@@ -49,21 +50,65 @@ export function normalizeCategory(raw) {
 
   if (COUPON_CATEGORIES.includes(lower)) return lower;
 
-  if (lower.includes("food") || lower.includes("dining") || lower.includes("restaurant") || lower.includes("caf")) return "food";
+  if (
+    lower.includes("food") ||
+    lower.includes("dining") ||
+    lower.includes("restaurant") ||
+    lower.includes("caf")
+  )
+    return "food";
   if (lower.includes("fashion") || lower.includes("cloth")) return "fashion";
-  if (lower.includes("auto") || lower.includes("car") || lower.includes("vehicle")) return "automotive";
-  if (lower.includes("electr") || lower.includes("gadget")) return "electronics";
-  if (lower.includes("beauty") || lower.includes("well") || lower.includes("salon")) return "beauty";
-  if (lower.includes("travel") || lower.includes("hotel") || lower.includes("hospitality")) return "travel";
+  if (
+    lower.includes("auto") ||
+    lower.includes("car") ||
+    lower.includes("vehicle")
+  )
+    return "automotive";
+  if (lower.includes("electr") || lower.includes("gadget"))
+    return "electronics";
+  if (
+    lower.includes("beauty") ||
+    lower.includes("well") ||
+    lower.includes("salon")
+  )
+    return "beauty";
+  if (
+    lower.includes("travel") ||
+    lower.includes("hotel") ||
+    lower.includes("hospitality")
+  )
+    return "travel";
   if (lower.includes("improvement")) return "home-improvement";
   if (lower.includes("home") || lower.includes("living")) return "home";
-  if (lower.includes("fit") || lower.includes("health") || lower.includes("gym")) return "fitness";
-  if (lower.includes("edu") || lower.includes("course") || lower.includes("school")) return "education";
+  if (
+    lower.includes("fit") ||
+    lower.includes("health") ||
+    lower.includes("gym")
+  )
+    return "fitness";
+  if (
+    lower.includes("edu") ||
+    lower.includes("course") ||
+    lower.includes("school")
+  )
+    return "education";
   if (lower.includes("kid") || lower.includes("baby")) return "kids-baby";
   if (lower.includes("jewel") || lower.includes("gold")) return "jewellery";
-  if (lower.includes("game") || lower.includes("entertain")) return "entertainment";
+  if (lower.includes("game") || lower.includes("entertain"))
+    return "entertainment";
   if (lower.includes("groc") || lower.includes("essential")) return "grocery";
   if (lower.includes("finan") || lower.includes("insur")) return "finance";
+  if (
+    lower.includes("service") ||
+    lower.includes("web") ||
+    lower.includes("soft") ||
+    lower.includes("tech") ||
+    lower.includes("consult") ||
+    lower.includes("agency") ||
+    lower.includes("design") ||
+    lower.includes("digital")
+  )
+    return "services";
 
   return "others";
 }
@@ -232,37 +277,37 @@ export const ADDONS_PRICING = [
   },
 ];
 export const REDIS_TTL = {
-  SESSION: 86400,      // 24 hours
-  OTP: 300,            // 5 minutes
-  RATE_LIMIT: 60,      // 1 minute
-  FEATURED: 300,       // 5 minutes
-  TRENDING: 120,       // 2 minutes
-  REDEEM_LOCK: 10,     // 10 seconds
-  BANNERS: 300,        // 5 minutes
-  PAYMENT_LOCK: 30,    // 30 seconds distributed lock for payment processing
-  PAYMENT_INTENT: 1800,// 30 minutes intent cache
-  PAYMENT_STATE: 86400,// 24 hours state cache
+  SESSION: 86400, // 24 hours
+  OTP: 300, // 5 minutes
+  RATE_LIMIT: 60, // 1 minute
+  FEATURED: 300, // 5 minutes
+  TRENDING: 120, // 2 minutes
+  REDEEM_LOCK: 10, // 10 seconds
+  BANNERS: 300, // 5 minutes
+  PAYMENT_LOCK: 30, // 30 seconds distributed lock for payment processing
+  PAYMENT_INTENT: 1800, // 30 minutes intent cache
+  PAYMENT_STATE: 86400, // 24 hours state cache
   // Auth session cache TTLs (Redis-cached auth layer)
-  AUTH_SESSION: 300,   // 5 minutes -- cached session token lookup
-  AUTH_USER: 300,      // 5 minutes -- cached user role lookup
+  AUTH_SESSION: 300, // 5 minutes -- cached session token lookup
+  AUTH_USER: 300, // 5 minutes -- cached user role lookup
   MERCHANT_PROFILE: 300, // 5 minutes -- cached merchant profile lookup
-  MERCHANT_BADGES: 30,   // 30 seconds -- cached merchant badge counts
+  MERCHANT_BADGES: 30, // 30 seconds -- cached merchant badge counts
   // Public data caches (high-traffic, read-heavy)
-  PLATFORM_STATS: 120,     // 2 minutes - countDocuments expensive
-  PLATFORM_PLANS: 3600,    // 1 hour - plans change rarely
+  PLATFORM_STATS: 120, // 2 minutes - countDocuments expensive
+  PLATFORM_PLANS: 3600, // 1 hour - plans change rarely
   MERCHANT_ANALYTICS: 120, // 2 minutes - 8 aggregations per request
-  MERCHANT_CAMPAIGNS: 60,  // 60 seconds - per-merchant campaign list
-  COUPON_DETAIL: 120,      // 2 minutes - individual coupon page
-  CATEGORIES: 3600,        // 1 hour - static category list
-  BRANDS_LIST: 300,        // 5 minutes - public /brands listing
-  MERCHANTS_LIST: 300,    // 5 minutes - public /merchants listing
-  BRAND_DETAIL: 300,       // 5 minutes - public brand page /brand/[slug]
-  CATEGORIES_SUMMARY: 3600,// 1 hour - public categories summary
-  CATEGORY_DEALS: 300,     // 5 minutes - public deals in category /category/[slug]
-  ADMIN_ANALYTICS: 60,     // 60 seconds - admin dashboard KPIs
-  ADMIN_REVENUE: 120,      // 2 minutes - admin revenue stats
-  MERCHANT_PUBLIC: 300,    // 5 minutes - single merchant public profile
-  SEARCH_GLOBAL: 60,       // 60 seconds - public search query cache
+  MERCHANT_CAMPAIGNS: 60, // 60 seconds - per-merchant campaign list
+  COUPON_DETAIL: 120, // 2 minutes - individual coupon page
+  CATEGORIES: 3600, // 1 hour - static category list
+  BRANDS_LIST: 300, // 5 minutes - public /brands listing
+  MERCHANTS_LIST: 300, // 5 minutes - public /merchants listing
+  BRAND_DETAIL: 300, // 5 minutes - public brand page /brand/[slug]
+  CATEGORIES_SUMMARY: 3600, // 1 hour - public categories summary
+  CATEGORY_DEALS: 300, // 5 minutes - public deals in category /category/[slug]
+  ADMIN_ANALYTICS: 60, // 60 seconds - admin dashboard KPIs
+  ADMIN_REVENUE: 120, // 2 minutes - admin revenue stats
+  MERCHANT_PUBLIC: 300, // 5 minutes - single merchant public profile
+  SEARCH_GLOBAL: 60, // 60 seconds - public search query cache
 };
 
 export const REDIS_KEYS = {
@@ -285,7 +330,8 @@ export const REDIS_KEYS = {
   PLATFORM_PLANS: "platform:plans",
   CATEGORIES: "platform:categories",
   // Merchant-specific data caches
-  merchantAnalytics: (merchantId, period) => `merchant:analytics:${merchantId}:${period}`,
+  merchantAnalytics: (merchantId, period) =>
+    `merchant:analytics:${merchantId}:${period}`,
   merchantCampaigns: (merchantId) => `merchant:campaigns:${merchantId}`,
   couponDetail: (couponId) => `coupon:detail:${couponId}`,
   merchantPublic: (id) => `merchant:public:${id}`,

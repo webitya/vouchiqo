@@ -3,6 +3,7 @@ import {
   COUPON_CATEGORIES,
   COUPON_STATUS,
   DISCOUNT_TYPE,
+  normalizeCategory,
 } from "@/utils/constants";
 
 /**
@@ -60,6 +61,7 @@ const couponSchema = new Schema(
       enum: COUPON_CATEGORIES,
       required: true,
       index: true,
+      set: (val) => normalizeCategory(val),
     },
 
     tags: [{ type: String, maxlength: 30 }],
@@ -117,7 +119,13 @@ couponSchema.index({ status: 1, category: 1, expiresAt: 1 });
 couponSchema.index({ merchantId: 1, status: 1, expiresAt: 1 });
 couponSchema.index({ status: 1, expiresAt: 1 });
 couponSchema.index({ isFeatured: 1, status: 1, createdAt: -1 });
-couponSchema.index({ isHot: 1, isVerified: 1, status: 1, expiresAt: 1, totalClaims: -1 });
+couponSchema.index({
+  isHot: 1,
+  isVerified: 1,
+  status: 1,
+  expiresAt: 1,
+  totalClaims: -1,
+});
 couponSchema.index({ category: 1, status: 1, expiresAt: 1 });
 couponSchema.index({ merchantId: 1, status: 1 });
 couponSchema.index({ isFeatured: 1, status: 1 });
