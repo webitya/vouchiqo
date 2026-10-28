@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowRight,
   ChevronRight,
   Loader2,
   Search,
@@ -353,13 +352,13 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
       e.preventDefault();
       setSelectedIndex((prev) => {
         const next = prev + 1;
-        return next > displayedSuggestions.length ? 0 : next;
+        return next >= displayedSuggestions.length ? 0 : next;
       });
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelectedIndex((prev) => {
         const next = prev - 1;
-        return next < 0 ? displayedSuggestions.length : next;
+        return next < 0 ? displayedSuggestions.length - 1 : next;
       });
     } else if (e.key === "Enter") {
       e.preventDefault();
@@ -656,38 +655,13 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs font-semibold truncate group-hover:text-blue-600 transition-colors flex items-center gap-1.5">
-                          <span>{item.title}</span>
-                          {item.type === "Tag" && (
-                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 font-medium shrink-0">
-                              Tag Chip
-                            </span>
-                          )}
+                        <div className="text-xs font-semibold truncate group-hover:text-blue-600 transition-colors">
+                          {item.title}
                         </div>
-                        {item.subtitle && (
-                          <div className="text-[10px] text-slate-400 font-medium truncate">
-                            {item.subtitle}
-                          </div>
-                        )}
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <span
-                        className={`text-[9px] font-semibold uppercase px-2 py-0.5 rounded-full border ${
-                          item.type === "Tag"
-                            ? "bg-indigo-50 text-indigo-700 border-indigo-200"
-                            : item.type === "Brand"
-                              ? "bg-blue-50 text-blue-700 border-blue-200"
-                              : item.type === "Category"
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                : item.type === "Product"
-                                  ? "bg-purple-50 text-purple-700 border-purple-200"
-                                  : "bg-amber-50 text-amber-700 border-amber-200"
-                        }`}
-                      >
-                        {item.type}
-                      </span>
+                    <div className="flex items-center shrink-0">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-blue-500 transition-colors" />
                     </div>
                   </Link>
@@ -706,34 +680,6 @@ export const SearchBar = ({ autoFocus = false, onSelect = null }) => {
               </div>
             ) : null}
           </div>
-
-          {/* Bottom Action: View all search results */}
-          {query.trim() && (
-            <div className="p-2 border-t border-slate-100 bg-slate-50/80">
-              <button
-                type="button"
-                onClick={handleSearchClick}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                  selectedIndex === displayedSuggestions.length
-                    ? "bg-blue-600 text-white"
-                    : "text-blue-600 hover:bg-blue-50"
-                }`}
-              >
-                <span className="flex items-center gap-1.5 truncate">
-                  <Search className="w-3.5 h-3.5 shrink-0" />
-                  <span>View all results for &ldquo;{query.trim()}&rdquo;</span>
-                </span>
-                <span className="flex items-center gap-1 shrink-0 text-[11px] font-normal">
-                  {totalMatches > 0 && (
-                    <span className="px-1.5 py-0.2 bg-blue-100 text-blue-700 rounded-full font-semibold text-[10px]">
-                      {totalMatches}
-                    </span>
-                  )}
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </span>
-              </button>
-            </div>
-          )}
         </div>
       )}
     </div>
