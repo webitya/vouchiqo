@@ -1,7 +1,7 @@
 // components/landing/PopularStores.jsx
 "use client";
 
-import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BrandGridItem from "@/components/shared/cards/BrandGridItem";
@@ -34,12 +34,27 @@ const CATEGORY_FALLBACK_BANNERS = {
 const DEFAULT_BANNER =
   "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=600&auto=format&fit=crop";
 
+// Pure helper to filter out internal platform / test dummy merchants
+const isRealBrand = (m) => {
+  if (!m) return false;
+  const name = (m.businessName || m.name || "").toLowerCase().trim();
+  const slug = (m.slug || "").toLowerCase().trim();
+  return (
+    !name.includes("vouchiqo") &&
+    !slug.includes("vouchiqo") &&
+    !name.startsWith("test")
+  );
+};
+
 export default function PopularStores({ merchants = [] }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   // Map database merchants into standard structure with fallback support
   const finalStoresList = useMemo(() => {
-    return (merchants || []).map((m) => {
+    const validMerchants = (merchants || []).filter(isRealBrand);
+    const listToMap =
+      validMerchants.length > 0 ? validMerchants : merchants || [];
+    return listToMap.map((m) => {
       const rawCat = m.category || "Deals";
       const cleanCat =
         rawCat.charAt(0).toUpperCase() + rawCat.slice(1).toLowerCase();
@@ -62,69 +77,41 @@ export default function PopularStores({ merchants = [] }) {
     });
   }, [merchants]);
 
-  // Candidate pool of eligible stores: prioritize active coupons + logo + banner
+  // Candidate pool of eligible stores: prioritize active coupons + logo + banner of real brands
   const eligibleCandidates = useMemo(() => {
     if (!merchants || merchants.length === 0) return [];
 
-    const topTier = merchants.filter(
+    const validMerchants = merchants.filter(isRealBrand);
+    const pool = validMerchants.length > 0 ? validMerchants : merchants;
+
+    const topTier = pool.filter(
       (m) => (m.totalCoupons || 0) > 0 && m.logo && (m.banner || m.shopImage),
     );
     if (topTier.length > 0) return topTier;
 
-    const secondTier = merchants.filter(
-      (m) => (m.totalCoupons || 0) > 0 && m.logo,
-    );
+    const secondTier = pool.filter((m) => (m.totalCoupons || 0) > 0 && m.logo);
     if (secondTier.length > 0) return secondTier;
 
-    const thirdTier = merchants.filter((m) => (m.totalCoupons || 0) > 0);
+    const thirdTier = pool.filter((m) => (m.totalCoupons || 0) > 0);
     if (thirdTier.length > 0) return thirdTier;
 
-    return merchants;
+    return pool;
   }, [merchants]);
 
-  // Helper to pick a random store different from current
-  const getRandomStore = useCallback(
-    (currentSlug) => {
-      if (!eligibleCandidates || eligibleCandidates.length === 0) return null;
-      if (eligibleCandidates.length === 1) return eligibleCandidates[0];
-      const others = eligibleCandidates.filter((m) => m.slug !== currentSlug);
-      const pool = others.length > 0 ? others : eligibleCandidates;
-      const idx = Math.floor(Math.random() * pool.length);
-      return pool[idx];
-    },
-    [eligibleCandidates],
-  );
-
-  // Initial deterministic selection for clean SSR matching
-  const [storeOfTheDay, setStoreOfTheDay] = useState(() => {
-    if (!merchants || merchants.length === 0) return null;
-    const topTier = merchants.filter(
-      (m) => (m.totalCoupons || 0) > 0 && m.logo && (m.banner || m.shopImage),
-    );
-    const pool = topTier.length > 0 ? topTier : merchants;
-    const daySeed = Math.floor(Date.now() / 86400000);
-    return pool[daySeed % pool.length] || pool[0];
-  });
-
-  const [isSomHovered, setIsSomHovered] = useState(false);
-
-  // 1. Pick a random store on client mount (ensures fresh random store on each page visit/reload)
-  useEffect(() => {
-    if (!eligibleCandidates || eligibleCandidates.length <= 1) return;
-    setStoreOfTheDay((prev) => getRandomStore(prev?.slug) || prev);
-  }, [eligibleCandidates, getRandomStore]);
-
-  // 2. Automatically change to another random store every 12 seconds (pauses on hover)
-  useEffect(() => {
-    if (!eligibleCandidates || eligibleCandidates.length <= 1 || isSomHovered)
-      return;
-
-    const timer = setInterval(() => {
-      setStoreOfTheDay((prev) => getRandomStore(prev?.slug) || prev);
-    }, 12000);
-
-    return () => clearInterval(timer);
-  }, [eligibleCandidates, isSomHovered, getRandomStore]);
+  // Store of the Day changes once every 24 hours (consistent throughout the day)
+  const storeOfTheDay = useMemo(() => {
+    if (!eligibleCandidates || eligibleCandidates.length === 0) {
+      return merchants?.[0] || null;
+    }
+    // 24-hour day index based on UTC epoch days
+    const dayNumber = Math.floor(Date.now() / 86400000);
+    // Hash to distribute stores evenly across days without consecutive repeats
+    let x = dayNumber | 0;
+    x = Math.imul(x ^ (x >>> 16), 0x45d9f3b);
+    x = Math.imul(x ^ (x >>> 16), 0x45d9f3b);
+    const hash = (x ^ (x >>> 16)) >>> 0;
+    return eligibleCandidates[hash % eligibleCandidates.length];
+  }, [eligibleCandidates, merchants]);
 
   const sodName =
     storeOfTheDay?.businessName || storeOfTheDay?.name || "Featured Partner";
@@ -304,14 +291,9 @@ export default function PopularStores({ merchants = [] }) {
       {storeOfTheDay && (
         <div className="block lg:hidden mb-2.5 sm:mb-3">
           <Link
-            key={sodHref}
             href={sodHref}
             prefetch={true}
-            onMouseEnter={() => setIsSomHovered(true)}
-            onMouseLeave={() => setIsSomHovered(false)}
-            onTouchStart={() => setIsSomHovered(true)}
-            onTouchEnd={() => setIsSomHovered(false)}
-            className="relative flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-2xl border border-rose-200/90 bg-gradient-to-r from-rose-50/70 via-white to-pink-50/30 shadow-2xs hover:shadow-md hover:border-rose-300 transition-all duration-300 overflow-hidden no-underline group select-none animate-in fade-in duration-300"
+            className="relative flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-2xl border border-rose-200/90 bg-gradient-to-r from-rose-50/70 via-white to-pink-50/30 shadow-2xs hover:shadow-md hover:border-rose-300 transition-all duration-200 overflow-hidden no-underline group select-none"
           >
             {/* Subtle banner accent watermark on the right */}
             <div className="absolute right-0 top-0 bottom-0 w-2/5 overflow-hidden pointer-events-none opacity-20">
@@ -326,12 +308,12 @@ export default function PopularStores({ merchants = [] }) {
             </div>
 
             {/* Brand Logo */}
-            <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white p-1 border border-slate-150 shadow-xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform z-10">
+            <div className="relative w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-white p-1 border border-slate-150 shadow-xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform z-10">
               <SafeImage
                 src={sodLogo}
                 alt={sodName}
-                width={56}
-                height={56}
+                width={52}
+                height={52}
                 className="max-h-full max-w-full object-contain rounded-lg"
                 fallbackSrc="/placeholder-brand.png"
               />
@@ -339,13 +321,12 @@ export default function PopularStores({ merchants = [] }) {
 
             {/* Content Details */}
             <div className="flex-1 min-w-0 z-10">
-              {/* Badges line */}
+              {/* Badges line: compact, no gemini icon, single line */}
               <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-[#F72853] text-white tracking-wider uppercase shadow-2xs">
-                  <Sparkles className="w-2.5 h-2.5 fill-white shrink-0" />
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] sm:text-[9px] font-extrabold bg-[#F72853] text-white tracking-wide uppercase shadow-2xs whitespace-nowrap shrink-0">
                   Store of the Day
                 </span>
-                <span className="inline-flex items-center text-[10px] font-bold text-slate-500 bg-slate-100/90 px-2 py-0.5 rounded-full capitalize truncate">
+                <span className="inline-flex items-center text-[9.5px] sm:text-[10px] font-bold text-slate-500 bg-slate-100/90 px-2 py-0.5 rounded-full capitalize truncate">
                   {sodCategory}
                 </span>
               </div>
@@ -372,13 +353,8 @@ export default function PopularStores({ merchants = [] }) {
               </div>
             </div>
 
-            {/* CTA Button */}
-            <div className="z-10 shrink-0">
-              <div className="h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-xl bg-[#F72853] text-white font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1 shadow-xs group-hover:bg-[#e01e47] transition-colors">
-                <span>Explore</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            </div>
+            {/* Subtle Chevron indicator on right */}
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#F72853] group-hover:translate-x-0.5 transition-all shrink-0 z-10 mr-0.5" />
           </Link>
         </div>
       )}
@@ -387,12 +363,9 @@ export default function PopularStores({ merchants = [] }) {
         {/* ── Store of the Day Card ── */}
         <div className="hidden lg:flex lg:w-1/4 shrink-0 flex-col self-stretch">
           <Link
-            key={sodHref}
             href={sodHref}
             prefetch={true}
-            onMouseEnter={() => setIsSomHovered(true)}
-            onMouseLeave={() => setIsSomHovered(false)}
-            className="flex-1 relative flex flex-col no-underline cursor-pointer rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-2xs group transition-all duration-300 hover:shadow-[0_12px_28px_rgba(247,40,83,0.16)] hover:border-[#F72853]/60 h-full min-h-0 animate-in fade-in duration-300"
+            className="flex-1 relative flex flex-col no-underline cursor-pointer rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-2xs group transition-all duration-300 hover:shadow-[0_12px_28px_rgba(247,40,83,0.16)] hover:border-[#F72853]/60 h-full min-h-0"
           >
             {/* 1. Hero Visual Cover (Rich, vibrant banner - 100% opacity with subtle dark scrim) */}
             <div className="relative w-full h-44 sm:h-48 md:h-52 overflow-hidden bg-slate-900 shrink-0">
