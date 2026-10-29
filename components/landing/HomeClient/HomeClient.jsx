@@ -103,7 +103,7 @@ export function HomeClient({
             <PopularOffers coupons={initialCoupons} />
           </Suspense>
 
-          {/* Popular Stores (with Store of the Month) */}
+          {/* Popular Stores (with Store of the Day) */}
           <Suspense
             fallback={
               <div className="w-full h-80 bg-slate-100/60 rounded-2xl animate-pulse" />

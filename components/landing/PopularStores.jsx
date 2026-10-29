@@ -1,7 +1,7 @@
 // components/landing/PopularStores.jsx
 "use client";
 
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BrandGridItem from "@/components/shared/cards/BrandGridItem";
@@ -62,35 +62,84 @@ export default function PopularStores({ merchants = [] }) {
     });
   }, [merchants]);
 
-  // Store of the Month (Prioritize merchant with active coupons, logo, and banner/shopImage)
-  const storeOfTheMonth = useMemo(() => {
-    return (
-      merchants.find(
-        (m) => (m.totalCoupons || 0) > 0 && m.logo && (m.banner || m.shopImage),
-      ) ||
-      merchants.find((m) => (m.totalCoupons || 0) > 0 && m.logo) ||
-      merchants.find((m) => (m.totalCoupons || 0) > 0) ||
-      merchants.find((m) => (m.totalRedemptions || 0) > 0) ||
-      merchants[0]
+  // Candidate pool of eligible stores: prioritize active coupons + logo + banner
+  const eligibleCandidates = useMemo(() => {
+    if (!merchants || merchants.length === 0) return [];
+
+    const topTier = merchants.filter(
+      (m) => (m.totalCoupons || 0) > 0 && m.logo && (m.banner || m.shopImage),
     );
+    if (topTier.length > 0) return topTier;
+
+    const secondTier = merchants.filter(
+      (m) => (m.totalCoupons || 0) > 0 && m.logo,
+    );
+    if (secondTier.length > 0) return secondTier;
+
+    const thirdTier = merchants.filter((m) => (m.totalCoupons || 0) > 0);
+    if (thirdTier.length > 0) return thirdTier;
+
+    return merchants;
   }, [merchants]);
 
-  const somName =
-    storeOfTheMonth?.businessName ||
-    storeOfTheMonth?.name ||
-    "Featured Partner";
-  const somCategory = storeOfTheMonth?.category
-    ? `${storeOfTheMonth.category.charAt(0).toUpperCase() + storeOfTheMonth.category.slice(1).toLowerCase()} Deals`
+  // Helper to pick a random store different from current
+  const getRandomStore = useCallback(
+    (currentSlug) => {
+      if (!eligibleCandidates || eligibleCandidates.length === 0) return null;
+      if (eligibleCandidates.length === 1) return eligibleCandidates[0];
+      const others = eligibleCandidates.filter((m) => m.slug !== currentSlug);
+      const pool = others.length > 0 ? others : eligibleCandidates;
+      const idx = Math.floor(Math.random() * pool.length);
+      return pool[idx];
+    },
+    [eligibleCandidates],
+  );
+
+  // Initial deterministic selection for clean SSR matching
+  const [storeOfTheDay, setStoreOfTheDay] = useState(() => {
+    if (!merchants || merchants.length === 0) return null;
+    const topTier = merchants.filter(
+      (m) => (m.totalCoupons || 0) > 0 && m.logo && (m.banner || m.shopImage),
+    );
+    const pool = topTier.length > 0 ? topTier : merchants;
+    const daySeed = Math.floor(Date.now() / 86400000);
+    return pool[daySeed % pool.length] || pool[0];
+  });
+
+  const [isSomHovered, setIsSomHovered] = useState(false);
+
+  // 1. Pick a random store on client mount (ensures fresh random store on each page visit/reload)
+  useEffect(() => {
+    if (!eligibleCandidates || eligibleCandidates.length <= 1) return;
+    setStoreOfTheDay((prev) => getRandomStore(prev?.slug) || prev);
+  }, [eligibleCandidates, getRandomStore]);
+
+  // 2. Automatically change to another random store every 12 seconds (pauses on hover)
+  useEffect(() => {
+    if (!eligibleCandidates || eligibleCandidates.length <= 1 || isSomHovered)
+      return;
+
+    const timer = setInterval(() => {
+      setStoreOfTheDay((prev) => getRandomStore(prev?.slug) || prev);
+    }, 12000);
+
+    return () => clearInterval(timer);
+  }, [eligibleCandidates, isSomHovered, getRandomStore]);
+
+  const sodName =
+    storeOfTheDay?.businessName || storeOfTheDay?.name || "Featured Partner";
+  const sodCategory = storeOfTheDay?.category
+    ? `${storeOfTheDay.category.charAt(0).toUpperCase() + storeOfTheDay.category.slice(1).toLowerCase()} Deals`
     : "Verified Deals";
-  const somCatKey = (storeOfTheMonth?.category || "").toLowerCase().trim();
-  const somFallback = CATEGORY_FALLBACK_BANNERS[somCatKey] || DEFAULT_BANNER;
-  const somBanner =
-    storeOfTheMonth?.banner || storeOfTheMonth?.shopImage || somFallback;
-  const somLogo = storeOfTheMonth?.logo || "/placeholder-brand.webp";
-  const somHref = storeOfTheMonth ? `/brand/${storeOfTheMonth.slug}` : "/deals";
-  const somCoupons = storeOfTheMonth ? storeOfTheMonth.totalCoupons || 0 : 0;
-  const somMaxDiscount = storeOfTheMonth?.maxDiscount
-    ? `Up to ${storeOfTheMonth.maxDiscount}% OFF`
+  const sodCatKey = (storeOfTheDay?.category || "").toLowerCase().trim();
+  const sodFallback = CATEGORY_FALLBACK_BANNERS[sodCatKey] || DEFAULT_BANNER;
+  const sodBanner =
+    storeOfTheDay?.banner || storeOfTheDay?.shopImage || sodFallback;
+  const sodLogo = storeOfTheDay?.logo || "/placeholder-brand.webp";
+  const sodHref = storeOfTheDay ? `/brand/${storeOfTheDay.slug}` : "/deals";
+  const sodCoupons = storeOfTheDay ? storeOfTheDay.totalCoupons || 0 : 0;
+  const sodMaxDiscount = storeOfTheDay?.maxDiscount
+    ? `Up to ${storeOfTheDay.maxDiscount}% OFF`
     : null;
 
   // Responsive grouping: 2 cols x 3 rows = 6 on phone, 3 cols x 3 rows = 9 on tablet, 4 cols x 3 rows = 12 on desktop
@@ -251,22 +300,108 @@ export default function PopularStores({ merchants = [] }) {
         )}
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 lg:gap-6 mt-1 sm:mt-2 items-stretch">
-        {/* ── Store of the Month Card ── */}
-        <div className="w-full lg:w-1/4 shrink-0 flex flex-col self-stretch">
+      {/* ── Mobile / Tablet View (< lg): Compact & Simple Store of the Day ── */}
+      {storeOfTheDay && (
+        <div className="block lg:hidden mb-2.5 sm:mb-3">
           <Link
-            href={somHref}
+            key={sodHref}
+            href={sodHref}
             prefetch={true}
-            className="flex-1 relative flex flex-col no-underline cursor-pointer rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-2xs group transition-all duration-300 hover:shadow-[0_12px_28px_rgba(247,40,83,0.16)] hover:border-[#F72853]/60 h-full min-h-[380px] sm:min-h-[460px] lg:min-h-0"
+            onMouseEnter={() => setIsSomHovered(true)}
+            onMouseLeave={() => setIsSomHovered(false)}
+            onTouchStart={() => setIsSomHovered(true)}
+            onTouchEnd={() => setIsSomHovered(false)}
+            className="relative flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-2xl border border-rose-200/90 bg-gradient-to-r from-rose-50/70 via-white to-pink-50/30 shadow-2xs hover:shadow-md hover:border-rose-300 transition-all duration-300 overflow-hidden no-underline group select-none animate-in fade-in duration-300"
+          >
+            {/* Subtle banner accent watermark on the right */}
+            <div className="absolute right-0 top-0 bottom-0 w-2/5 overflow-hidden pointer-events-none opacity-20">
+              <SafeImage
+                src={sodBanner}
+                alt={sodName}
+                fill
+                fallbackSrc={sodFallback}
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
+            </div>
+
+            {/* Brand Logo */}
+            <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white p-1 border border-slate-150 shadow-xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform z-10">
+              <SafeImage
+                src={sodLogo}
+                alt={sodName}
+                width={56}
+                height={56}
+                className="max-h-full max-w-full object-contain rounded-lg"
+                fallbackSrc="/placeholder-brand.png"
+              />
+            </div>
+
+            {/* Content Details */}
+            <div className="flex-1 min-w-0 z-10">
+              {/* Badges line */}
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-[#F72853] text-white tracking-wider uppercase shadow-2xs">
+                  <Sparkles className="w-2.5 h-2.5 fill-white shrink-0" />
+                  Store of the Day
+                </span>
+                <span className="inline-flex items-center text-[10px] font-bold text-slate-500 bg-slate-100/90 px-2 py-0.5 rounded-full capitalize truncate">
+                  {sodCategory}
+                </span>
+              </div>
+
+              {/* Brand Name */}
+              <div className="flex items-center gap-1 min-w-0">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#F72853] transition-colors truncate">
+                  {sodName}
+                </h3>
+                <TwitterVerifiedBadge className="w-3.5 h-3.5 shrink-0" />
+              </div>
+
+              {/* Highlights & Discount */}
+              <div className="flex items-center gap-1.5 text-[11px] mt-0.5">
+                <span className="font-extrabold text-[#F72853] whitespace-nowrap">
+                  {sodCoupons > 0
+                    ? `${sodCoupons} Live Offers`
+                    : "Active Deals"}
+                </span>
+                <span className="text-slate-300">•</span>
+                <span className="font-semibold text-emerald-600 truncate">
+                  {sodMaxDiscount || "Verified Partner"}
+                </span>
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <div className="z-10 shrink-0">
+              <div className="h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-xl bg-[#F72853] text-white font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1 shadow-xs group-hover:bg-[#e01e47] transition-colors">
+                <span>Explore</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </div>
+          </Link>
+        </div>
+      )}
+
+      <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 lg:gap-6 mt-1 sm:mt-2 items-stretch">
+        {/* ── Store of the Day Card ── */}
+        <div className="hidden lg:flex lg:w-1/4 shrink-0 flex-col self-stretch">
+          <Link
+            key={sodHref}
+            href={sodHref}
+            prefetch={true}
+            onMouseEnter={() => setIsSomHovered(true)}
+            onMouseLeave={() => setIsSomHovered(false)}
+            className="flex-1 relative flex flex-col no-underline cursor-pointer rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-2xs group transition-all duration-300 hover:shadow-[0_12px_28px_rgba(247,40,83,0.16)] hover:border-[#F72853]/60 h-full min-h-0 animate-in fade-in duration-300"
           >
             {/* 1. Hero Visual Cover (Rich, vibrant banner - 100% opacity with subtle dark scrim) */}
             <div className="relative w-full h-44 sm:h-48 md:h-52 overflow-hidden bg-slate-900 shrink-0">
               <SafeImage
-                src={somBanner}
-                alt={somName}
+                src={sodBanner}
+                alt={sodName}
                 fill
                 priority
-                fallbackSrc={somFallback}
+                fallbackSrc={sodFallback}
                 sizes="(max-width: 1024px) 100vw, 25vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
@@ -276,10 +411,10 @@ export default function PopularStores({ merchants = [] }) {
               {/* Top Floating Badges */}
               <div className="absolute top-3 left-3 right-3 z-10 flex items-center justify-between gap-2">
                 <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-[#F72853] text-white tracking-wider uppercase shadow-xs">
-                  Store Of The Month
+                  Store Of The Day
                 </span>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-black/55 backdrop-blur-md text-white border border-white/20 shadow-2xs capitalize">
-                  {somCategory}
+                  {sodCategory}
                 </span>
               </div>
             </div>
@@ -288,8 +423,8 @@ export default function PopularStores({ merchants = [] }) {
             <div className="relative -mt-9 sm:-mt-10 px-3.5 sm:px-4.5 z-20 flex items-end justify-between">
               <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-white p-2 shadow-lg ring-4 ring-white border border-slate-100 flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:shadow-xl transition-all duration-300">
                 <SafeImage
-                  src={somLogo}
-                  alt={somName}
+                  src={sodLogo}
+                  alt={sodName}
                   width={72}
                   height={72}
                   className="max-h-full max-w-full object-contain rounded-xl"
@@ -308,7 +443,7 @@ export default function PopularStores({ merchants = [] }) {
               <div>
                 <div className="flex items-center gap-1.5 min-w-0">
                   <h3 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-[#F72853] transition-colors leading-tight tracking-tight line-clamp-1">
-                    {somName}
+                    {sodName}
                   </h3>
                   <TwitterVerifiedBadge className="w-4 h-4 shrink-0" />
                 </div>
@@ -325,7 +460,7 @@ export default function PopularStores({ merchants = [] }) {
                       Partner Highlights
                     </span>
                     <span className="bg-white px-2 py-0.5 rounded-full text-[10px] font-bold text-slate-700 border border-slate-200/80 shadow-2xs">
-                      {somMaxDiscount || "Verified Partner"}
+                      {sodMaxDiscount || "Verified Partner"}
                     </span>
                   </div>
 
@@ -335,7 +470,7 @@ export default function PopularStores({ merchants = [] }) {
                         Live Offers
                       </div>
                       <div className="text-sm font-black text-[#F72853]">
-                        {somCoupons > 0 ? `${somCoupons} Deals` : "Active"}
+                        {sodCoupons > 0 ? `${sodCoupons} Deals` : "Active"}
                       </div>
                     </div>
                     <div className="bg-white/95 backdrop-blur-xs rounded-xl p-2 border border-slate-100 shadow-2xs">
@@ -343,8 +478,8 @@ export default function PopularStores({ merchants = [] }) {
                         Access
                       </div>
                       <div className="text-sm font-black text-emerald-600">
-                        {somMaxDiscount
-                          ? somMaxDiscount.replace(/^Up to\s*/i, "")
+                        {sodMaxDiscount
+                          ? sodMaxDiscount.replace(/^Up to\s*/i, "")
                           : "100% Free"}
                       </div>
                     </div>
@@ -356,8 +491,8 @@ export default function PopularStores({ merchants = [] }) {
               <div className="pt-1 mt-auto">
                 <div className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-gradient-to-r from-[#F72853] to-[#e01e47] text-white font-bold text-xs sm:text-sm text-center shadow-md shadow-rose-500/20 group-hover:shadow-lg group-hover:shadow-rose-500/30 group-hover:from-[#e01e47] group-hover:to-[#c7173e] transition-all flex items-center justify-center gap-2">
                   <span>
-                    {somCoupons > 0
-                      ? `Explore All ${somCoupons} Offers`
+                    {sodCoupons > 0
+                      ? `Explore All ${sodCoupons} Offers`
                       : "Explore Store Offers"}
                   </span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -368,7 +503,7 @@ export default function PopularStores({ merchants = [] }) {
         </div>
 
         {/* ── Sliding Grid of Partner Stores (2 cols on mobile, 3 on tablet, 4 on desktop) ── */}
-        <div className="gp-store-wrap lg:w-3/4 overflow-hidden">
+        <div className="gp-store-wrap w-full lg:w-3/4 overflow-hidden">
           <div
             className="vouchiqo-carousel-viewport w-full cursor-grab active:cursor-grabbing"
             onTouchStart={handleTouchStart}
